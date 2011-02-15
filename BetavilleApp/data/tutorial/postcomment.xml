@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slidedeck>
+	<properties>
+		<authors>
+			<author>Skye Book</author>
+		</authors>
+		<title>Post a Comment</title>
+		<date>12-28-2010</date>
+		<default>
+			<font>verdana</font>
+			<size>8</size>
+			<color r="255" g="255" b="255" a="255"/>
+		</default>
+	</properties>
+	<slides>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide">
+			<title size="10" color="0 0 0 255">Welcome > post comment</title>
+			<image>findedit_a.png</image>
+			<caption>A. Select an object (it will turn yellow)</caption>
+		</slide>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide">
+			<title size="10" color="0 0 0 255">Welcome > post comment</title>
+			<image>findedit_b.png</image>
+			<caption>B. Right-click on it (a menu will appear like this)</caption>
+		</slide>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
+			<title size="10" color="0 0 0 255">Welcome > post comment</title>
+			<bullets>
+				<bullet>Say what's on your mind!</bullet>
+				<bullet>Be honest!</bullet>
+				<bullet>Be courteous!</bullet>
+			</bullets>
+		</slide>
+	</slides>
+</slidedeck>

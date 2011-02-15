@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slidedeck>
+	<properties>
+		<authors>
+			<author>Carl Skelton</author>
+			<author>Skye Book</author>
+		</authors>
+		<title>Moving Around</title>
+		<date>12-22-2010</date>
+		<default>
+			<font>verdana</font>
+			<size>8</size>
+			<color r="255" g="255" b="255" a="255"/>
+		</default>
+	</properties>
+	<slides>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
+			<title size="10" color="0 0 0 255">Welcome > move around</title>
+			<bullets>
+				<bullet>forward: press W</bullet>
+				<bullet>back: press S</bullet>
+				<bullet>slide left: press A</bullet>
+				<bullet>slide right: press d</bullet>
+				<bullet>increase altitude: press Q</bullet>
+				<bullet>decrease altitude: press Z</bullet>
+				<bullet>rotate left: left arrow</bullet>
+				<bullet>rotate right: right arrow</bullet>
+			</bullets>
+		</slide>
+	</slides>
+</slidedeck>

@@ -1,0 +1,28 @@
+<Proposals>
+	<Proposal>
+		<Name>Test</Name>
+		<User>sbook</User>
+		<Description>some description</Description>
+		<Address>123 lol lane</Address>
+		<URL>www.super.com</URL>
+		<Type>MODEL</Type>
+		<CityID>1</CityID>
+		<Location>
+			<Easting>12345</Easting>
+			<Northing>54321</Northing>
+			<LatZone>B</LatZone>
+			<LonZone>12</LonZone>
+			<Altitude>333</Altitude>
+		</Location>
+		<OpenIterations>true</OpenIterations>
+		<Media>
+			<MediaFile>sbook.jme</MediaFile>
+			<ThumbnailImage>test.jpg</ThumbnailImage>
+		</Media>
+		<Requirements>
+			<SourceID>0</SourceID>
+			<RemoveSourceOnLoad>false</RemoveSourceOnLoad>
+			<RequiresRemovalOf>{0;1;2;3;4;}</RequiresRemovalOf>
+		</Requirements>
+	</Proposal>
+</Proposals>

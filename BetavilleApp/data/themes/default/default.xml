@@ -1,0 +1,1133 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<FengGUI:Theme>
+	<FengGUI:init>
+		<!-- COLORS -->
+		<Color rgba="255, 255, 255, 255" 	name="c_text"/>
+		<Color rgba="0, 0, 0, 255" 			name="c_blacktext"/>
+
+		<Color rgba="200, 200, 200, 255" 	name="c_label"/>
+		
+		<Color rgba="102, 102, 102, 255" 	name="c_buttonBackground"/>
+		<Color rgba="77, 77, 77, 255" 		name="c_buttonPressedBackground"/>
+		
+
+		<Color rgba="115,179,31,255"	 	name="c_buttonActionBg0"/>
+		<Color rgba="73,114,19,255" 		name="c_buttonActionBg1"/>
+		<Color rgba="138,194,37,255" 		name="c_buttonActionHoveredBg0"/>
+		<Color rgba="88,137,23,255" 		name="c_buttonActionHoveredBg1"/>
+		<Color rgba="51,91,0,255"		 	name="c_buttonActionPressedBg0"/>
+		<Color rgba="93,156,10,255" 		name="c_buttonActionPressedBg1"/>
+		<Color rgba="109,163,32,255"		name="c_buttonActionDisabledBg"/>
+
+    <!-- <Color rgba="141,138,125,255"    name="c_buttonBg0"/>
+    <Color rgba="86,83,76,255"      name="c_buttonBg1"/> -->
+    <Color rgba="109,106,95,255"    name="c_buttonBg0"/>
+    <Color rgba="77,74,68,255"      name="c_buttonBg1"/>
+
+		<Color rgba="127,124,114,255" 		name="c_buttonHoveredBg0"/>
+		<Color rgba="93,90,82,255" 		name="c_buttonHoveredBg1"/>
+		<Color rgba="83,80,73,255"		 	name="c_buttonPressedBg0"/>
+		<Color rgba="119,116,106,255" 		name="c_buttonPressedBg1"/>
+		<Color rgba="41,40,39,255"		name="c_buttonDisabledBg"/>
+
+
+		<Color rgba="255, 255, 255, 255" 	name="c_buttonText"/>
+		<Color rgba="255, 255, 255, 40" 	name="c_buttonTextDisabled"/>
+		<Color rgba="0, 0, 0, 150" 			name="c_buttonTextPressed"/>
+		<Color rgba="0, 0, 0, 150" 	name="c_buttonTextShadow"/>
+		<Color rgba="255, 255, 255, 50" 	name="c_buttonTextPressedShadow"/>
+
+		<Color rgba="111, 111, 111, 255" 	name="c_comboBoxListBackground"/>
+		<Color rgba="34, 34, 34, 255" 		name="c_comboBoxListHoveredBackground"/>
+		<Color rgba="17, 17, 17, 255" 		name="c_comboBoxListSelectedBackground"/>
+		
+		<Color rgba="0, 0, 0, 178" 			name="c_textfieldBackground"/>
+		<Color rgba="255, 204, 0, 81" 		name="c_textfieldBorder"/>
+		<Color rgba="255, 204, 0, 255" 		name="c_textfieldFocusedBorder"/>
+		<Color rgba="255, 255, 255, 255" 		name="c_textfieldText"/>
+		<Color rgba="255, 255, 255, 120" 		name="c_textfieldPlaceholder"/>
+		<Color rgba="255, 204, 0, 81" 		name="c_textfieldSelection"/>
+		
+		
+		<Color rgba="0, 0, 0, 0" 			name="c_defaultBackground"/>
+		<Color rgba="0, 0, 0, 178"		name="c_windowBackground"/>
+		<Color rgba="255, 204, 0, 81" 		name="c_selectionHighlight"/>
+		<Color rgba="255, 204, 0, 81" 		name="c_windowBorder"/>
+		<Color rgba="255, 204, 0, 255" 		name="c_windowTitleBackground"/>
+		
+		<Color rgba="204, 204, 204, 204" 	name="c_tabHeaderBg0"/>
+		<Color rgba="138, 138, 138, 204" 	name="c_tabHeaderBg1"/>
+		<Color rgba="0, 0, 0, 153" 			name="c_tabHeaderText"/>
+		<Color rgba="255, 255, 255, 230" 	name="c_tabHeaderHoveredBg0"/>
+		<Color rgba="170, 170, 170, 230" 	name="c_tabHeaderHoveredBg1"/>
+		<Color rgba="0, 0, 0, 255"			name="c_tabHeaderHoveredBgText"/>
+		<Color rgba="255, 204, 0, 255" 		name="c_tabHeaderSelectedBg"/>
+		<Color rgba="0, 0, 0, 255" 			name="c_tabHeaderSelectedText"/>
+		<Color rgba="111, 111, 111, 255" 	name="c_tabContentBg"/>
+		<Color rgba="255, 204, 0, 81" 		name="c_tabContentBorder"/>
+		
+		<Color rgba="255, 204, 0, 255" 		name="c_tabTopBorder"/>
+		<Color rgba="255, 204, 0, 81" 		name="c_tabSideBorder"/>
+		
+		
+		
+
+		<!-- FONTS -->	
+		<ImageFont name="font10"><create fontName="Verdana" type="plain" size="10" antialiasing="true"/></ImageFont>
+		<ImageFont name="font10Bold"><create fontName="Verdana" type="bold" size="10" antialiasing="true"/></ImageFont>
+		<ImageFont name="font10Italic"><create fontName="Verdana" type="italic" size="10" antialiasing="true"/></ImageFont>
+		<ImageFont name="font11"><create fontName="Verdana" type="plain" size="11" antialiasing="true"/></ImageFont>
+		<ImageFont name="font11Bold"><create fontName="Verdana" type="bold" size="11" antialiasing="true"/></ImageFont>
+		<ImageFont name="font12"><create fontName="Verdana" type="plain" size="12" antialiasing="true"/></ImageFont>
+		<ImageFont name="font12Bold"><create fontName="Verdana" type="bold" size="12" antialiasing="true"/></ImageFont>
+		<ImageFont name="font14"><create fontName="Verdana" type="plain" size="14" antialiasing="true"/></ImageFont>
+
+		<ImageFont name="font12DIN">
+      <!-- <create fontName="Alte DIN 1451 Mittelschrift gepraegt" type="plain" size="12" antialiasing="true"/> -->
+        <load fontName="Alte DIN" type="plain" size="12" antialiasing="true" map="fonts/font_din_12.font" image="fonts/font_din_12.png"/>
+		</ImageFont>
+		
+
+		<SimpleShadowTextRenderer name="btr_default" y="-1">
+			<Font ref="font11" />
+			<Color ref="c_buttonTextShadow" />
+		</SimpleShadowTextRenderer>
+		
+		<SimpleShadowTextRenderer name="btr_pressed" y="1">
+			<Font ref="font11" />
+			<Color ref="c_buttonTextPressedShadow" />
+		</SimpleShadowTextRenderer>
+		
+		
+		<!-- TEXTRENDERERS -->
+		<DirectTextRenderer name="tr_font10"><Font ref="font10"/></DirectTextRenderer>
+		<DirectTextRenderer name="tr_font10Bold"><Font ref="font10Bold"/></DirectTextRenderer>
+		<DirectTextRenderer name="tr_font10Italic"><Font ref="font10Italic"/></DirectTextRenderer>
+		<DirectTextRenderer name="tr_font11"><Font ref="font11"/></DirectTextRenderer>
+		<DirectTextRenderer name="tr_font11Bold"><Font ref="font11Bold"/></DirectTextRenderer>
+		<DirectTextRenderer name="tr_font12"><Font ref="font12"/></DirectTextRenderer>
+		<DirectTextRenderer name="tr_font14"><Font ref="font14"/></DirectTextRenderer>
+		<DirectTextRenderer name="tr_tabHeader"><Font ref="font12DIN"/></DirectTextRenderer>
+		<DirectTextRenderer name="tr_textfield"><Font ref="font11"/></DirectTextRenderer>
+		
+		<!-- TEXTURES -->
+		<Texture name="QtCurve" filename="pixmaps.png"/>		
+		<Texture name="texture_checkBox" filename="components/checkbox.normal.png"/>
+		<Texture name="texture_checkBoxChecked" filename="components/checkbox.checked.png"/>
+		<Texture name="texture_closeBtn" filename="components/CloseButton.png"/>
+		<Texture name="texture_comboBox" filename="components/dropdown.closed.png"/>
+		<Texture name="texture_comboBox_arrow" filename="components/dropdown.arrow.png"/>
+		<Texture name="texture_comboBoxList" filename="components/dropdown.body.png"/>
+		<Texture name="texture_radioBtn" filename="components/radio.normal.png"/>
+		<Texture name="texture_radioBtnChecked" filename="components/radio.checked.png"/>
+		<Texture name="texture_scrollBody" filename="components/scrollbar.body.png"/>
+		<Texture name="texture_scrollLine" filename="components/scrollbar.line.png"/>
+		<Texture name="texture_sliderBody" filename="components/VertSlider.png"/>
+		<Texture name="texture_sliderLine" filename="components/slider.line.png"/>		
+		
+		<!-- CONTENT - default parameters: font and color of the text -->
+		<ContentFactory default="true">
+			<Color ref="c_text"/>
+			<DirectTextRenderer ref="tr_font11"/>
+		</ContentFactory>
+		
+		<!-- BACKGROUNDS - default color -->
+		<PlainBackground name="defaultBackground"><Color ref="c_defaultBackground"/></PlainBackground>
+		
+		<PixmapBackground enabled="true" name="comboBox_background" scaled="true">
+			<CenterPixmap 		x="5" 	y="2" 	width="103" height="3">		<Texture ref="texture_comboBox"/></CenterPixmap>
+			<TopLeftPixmap 		x="0" 	y="0" 	width="5" 	height="2">		<Texture ref="texture_comboBox"/></TopLeftPixmap>			
+			<TopPixmap 			x="5" 	y="0" 	width="103" height="2">		<Texture ref="texture_comboBox"/></TopPixmap>			
+			<TopRightPixmap 	x="108" y="2" 	width="20" height="2">		<Texture ref="texture_comboBox"/></TopRightPixmap>		
+			<RightPixmap 		x="108" y="2" 	width="20" 	height="3">		<Texture ref="texture_comboBox"/></RightPixmap>			
+			<BottomRightPixmap 	x="108"	y="5" 	width="20" 	height="15">	<Texture ref="texture_comboBox"/></BottomRightPixmap>			
+			<BottomPixmap 		x="5" 	y="5" 	width="103" height="15">	<Texture ref="texture_comboBox"/></BottomPixmap>			
+			<BottomLeftPixmap 	x="0" 	y="5" 	width="5" 	height="15">	<Texture ref="texture_comboBox"/></BottomLeftPixmap>		
+			<LeftPixmap			x="0" 	y="5" 	width="5" 	height="15">	<Texture ref="texture_comboBox"/></LeftPixmap>	
+		</PixmapBackground>
+		
+		<PixmapBackground enabled="true" name="comboBoxList_background" scaled="true">
+			<CenterPixmap x="0" y="0" width="128" height="82"><Texture ref="texture_comboBoxList"/></CenterPixmap>
+		</PixmapBackground>
+		
+		<PixmapBackground enable="true" name="scrollLine_background" scaled="true">
+			<CenterPixmap x="0" y="0" width="8" height="5"><Texture ref="texture_scrollLine"/></CenterPixmap>
+		</PixmapBackground>
+		
+		<PixmapBackground enable="true" name="sliderLine_background" scaled="true">
+			<CenterPixmap x="0" y="0" width="7" height="9"><Texture ref="texture_sliderLine"/></CenterPixmap>
+		</PixmapBackground>
+
+		<!-- BORDERS - definition -->			
+				
+					
+		<PixmapBorder enabled="true" name="border_tabHeader">
+			<TopLeftPixmap x="0" y="13" width="2" height="2"><Texture ref="QtCurve"/></TopLeftPixmap>
+			<TopEdgePixmap x="4" y="13" width="2" height="2"><Texture ref="QtCurve"/></TopEdgePixmap>
+			<TopRightPixmap x="8" y="13" width="2" height="2"><Texture ref="QtCurve"/></TopRightPixmap>
+			<RightEdgePixmap x="8" y="17" width="2" height="2"><Texture ref="QtCurve"/></RightEdgePixmap>
+			<BottomRightPixmap x="8" y="17" width="2" height="0"><Texture ref="QtCurve"/></BottomRightPixmap>
+			<BottomEdgePixmap x="4" y="21" width="2" height="0"><Texture ref="QtCurve"/></BottomEdgePixmap>
+			<BottomLeftPixmap x="0" y="21" width="2" height="0"><Texture ref="QtCurve"/></BottomLeftPixmap>
+			<LeftEdgePixmap x="0" y="17" width="2" height="2"><Texture ref="QtCurve"/></LeftEdgePixmap>
+		</PixmapBorder>
+		
+
+	</FengGUI:init>
+		
+		
+	<!-- Define the appearance of a Button widget -->
+	<Button>
+		<Appearance alignment="middle">
+			<!-- define the spacing of this widget -->
+			<Border all="0"/>
+			<Margin left="5" right="5" bottom="5" top="0"/>
+			<Padding all="5"/>
+
+			<!-- define textrenderers -->
+<!--		<BufferedTextRenderer ref="btr_default" key="default" />-->
+<!--      	<BufferedTextRenderer ref="btr_pressed" key="fs_buttonPressed" /> -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+					
+			<Switches>
+         <FontStyleSwitch label="#Default" fontStyle="default" enabled="true" />
+        <FontStyleSwitch label="Pressed#Pressed" fontStyle="fs_buttonPressed" enabled="false" /> 
+				<TextColorSwitch label="#Default" enabled="true"><Color ref="c_buttonText" /></TextColorSwitch>
+				<TextColorSwitch label="Active#Disabled" enabled="false"><Color ref="c_buttonTextDisabled" /></TextColorSwitch>
+				<TextColorSwitch label="Pressed#Pressed" enabled="false"><Color ref="c_buttonTextPressed" /></TextColorSwitch>
+			</Switches>
+		
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="shadow"><Color ref="c_buttonText" /></Style>
+			</TextStyle>
+
+			
+			<BackgroundDecorators clear="true">
+				<GradientBackground label="#Default" enabled="true">
+					<TopLeftColor ref="c_buttonBg0"/>
+					<TopRightColor ref="c_buttonBg0"/>
+					<BottomLeftColor ref="c_buttonBg1"/>
+					<BottomRightColor ref="c_buttonBg1"/>
+				</GradientBackground>
+
+				<GradientBackground label="Focus#Focused" enabled="false">
+					<TopLeftColor ref="c_buttonHoveredBg0"/>
+					<TopRightColor ref="c_buttonHoveredBg0"/>
+					<BottomLeftColor ref="c_buttonHoveredBg1"/>
+					<BottomRightColor ref="c_buttonHoveredBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Hover#Hovered" enabled="false">
+					<TopLeftColor ref="c_buttonHoveredBg0"/>
+					<TopRightColor ref="c_buttonHoveredBg0"/>
+					<BottomLeftColor ref="c_buttonHoveredBg1"/>
+					<BottomRightColor ref="c_buttonHoveredBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Pressed#Pressed" enabled="false">
+					<TopLeftColor ref="c_buttonPressedBg0"/>
+					<TopRightColor ref="c_buttonPressedBg0"/>
+					<BottomLeftColor ref="c_buttonPressedBg1"/>
+					<BottomRightColor ref="c_buttonPressedBg1"/>
+				</GradientBackground>
+				<PlainBackground label="Active#Disabled" enabled="false">
+					<Color ref="c_buttonDisabledBg"/>
+				</PlainBackground>
+				
+			</BackgroundDecorators>
+		</Appearance>
+	</Button>
+	
+	
+	<ActionButton>
+		<Appearance alignment="middle">
+			<!-- define the spacing of this widget -->
+			<Border all="0"/>
+			<Margin left="5" right="5" bottom="5" top="0"/>
+			<Padding all="5"/>
+
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+		
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="shadow"><Color ref="c_text" /></Style>
+			</TextStyle>
+			
+			<BackgroundDecorators>
+				<GradientBackground label="#Default">
+					<TopLeftColor ref="c_buttonActionBg0"/>
+					<TopRightColor ref="c_buttonActionBg0"/>
+					<BottomLeftColor ref="c_buttonActionBg1"/>
+					<BottomRightColor ref="c_buttonActionBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Focus#Focused">
+					<TopLeftColor ref="c_buttonActionHoveredBg0"/>
+					<TopRightColor ref="c_buttonActionHoveredBg0"/>
+					<BottomLeftColor ref="c_buttonActionHoveredBg1"/>
+					<BottomRightColor ref="c_buttonActionHoveredBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Hover#Hovered">
+					<TopLeftColor ref="c_buttonActionHoveredBg0"/>
+					<TopRightColor ref="c_buttonActionHoveredBg0"/>
+					<BottomLeftColor ref="c_buttonActionHoveredBg1"/>
+					<BottomRightColor ref="c_buttonActionHoveredBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Button#Pressed">
+					<TopLeftColor ref="c_buttonActionPressedBg0"/>
+					<TopRightColor ref="c_buttonActionPressedBg0"/>
+					<BottomLeftColor ref="c_buttonActionPressedBg1"/>
+					<BottomRightColor ref="c_buttonActionPressedBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Active#Disabled">
+					<TopLeftColor ref="c_buttonActionDisabledBg0"/>
+					<TopRightColor ref="c_buttonActionDisabledBg0"/>
+					<BottomLeftColor ref="c_buttonActionDisabledBg1"/>
+					<BottomRightColor ref="c_buttonvDisabledBg1"/>
+				</GradientBackground>
+				
+			</BackgroundDecorators>
+		</Appearance>
+	</ActionButton>
+	
+	<FixedButton>
+		<Appearance alignment="middle">
+			<BackgroundDecorators>
+				<PlainBackground>
+				<GradientBackground label="#Default">
+					<TopLeftColor ref="c_buttonBg0"/>
+					<TopRightColor ref="c_buttonBg0"/>
+					<BottomLeftColor ref="c_buttonBg1"/>
+					<BottomRightColor ref="c_buttonBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Focus#Focused">
+					<TopLeftColor ref="c_buttonHoveredBg0"/>
+					<TopRightColor ref="c_buttonHoveredBg0"/>
+					<BottomLeftColor ref="c_buttonHoveredBg1"/>
+					<BottomRightColor ref="c_buttonHoveredBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Hover#Hovered">
+					<TopLeftColor ref="c_buttonHoveredBg0"/>
+					<TopRightColor ref="c_buttonHoveredBg0"/>
+					<BottomLeftColor ref="c_buttonHoveredBg1"/>
+					<BottomRightColor ref="c_buttonHoveredBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Button#Pressed">
+					<TopLeftColor ref="c_buttonPressedBg0"/>
+					<TopRightColor ref="c_buttonPressedBg0"/>
+					<BottomLeftColor ref="c_buttonPressedBg1"/>
+					<BottomRightColor ref="c_buttonPressedBg1"/>
+				</GradientBackground>
+				<GradientBackground label="Active#Disabled">
+					<TopLeftColor ref="c_buttonDisabledBg0"/>
+					<TopRightColor ref="c_buttonDisabledBg0"/>
+					<BottomLeftColor ref="c_buttonDisabledBg1"/>
+					<BottomRightColor ref="c_buttonDisabledBg1"/>
+				</GradientBackground>
+				</PlainBackground>				
+				<Border all="0" />
+			</BackgroundDecorators>
+		</Appearance>
+	</FixedButton>
+			
+	<CheckBox>
+		<Appearance>
+			<!-- define the spacing of this widget -->
+			<Border all="0"/>
+			<Margin all="0"/>
+			<Padding all="0"/>
+		
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default"><Color ref="c_text" /></Style>
+			</TextStyle>
+			
+			<!-- define background -->
+			<Switches>
+				<PixmapSwitch x="0" y="0" width="12" height="12" label="Checkbox#Selected"><Texture ref="texture_checkBoxChecked"/></PixmapSwitch>
+				<PixmapSwitch x="0" y="0" width="12" height="12" label="Checkbox#Deselected"><Texture ref="texture_checkBox"/></PixmapSwitch>
+			</Switches>
+		</Appearance>
+	</CheckBox>
+			
+	<ComboBox>
+		<Appearance>
+			<!-- define the spacing of this widget -->
+			<Border all="0"/>
+			<Margin right="5" left="5" bottom="5" top="0"/>
+			<Padding right="5" left="5" bottom="0" top="0"/>		
+			
+			<!-- define background -->
+			<BackgroundDecorators>				
+				<PixmapBackground enabled="true" ref="comboBox_background"/>
+	    	</BackgroundDecorators>
+		</Appearance>		
+		
+		<Label>
+			<Appearance alignment="left">
+				<!-- define the spacing of this widget -->
+				<Border all="0"/>
+				<Margin all="0"/>
+				<Padding all="0"/>
+				
+				<!-- define textrenderers -->
+				<DirectTextRenderer ref="tr_font11" key="default" />
+	
+				<!-- define text styles -->
+				<TextStyle key="default">
+					<Style key="default" fontstyle="default"><Color ref="c_text" /></Style>
+				</TextStyle>
+			</Appearance>
+		</Label>
+		
+		<List>
+			<Appearance rowHeight="16" alignment="left">
+				<!-- define the spacing of this widget -->
+				<Border all="1"/>
+				<Margin all="0"/>
+				<Padding right="5" left="5" bottom="2" top="2"/>	
+			
+				<!-- define background -->
+				<BackgroundDecorators>				
+					<PixmapBackground enabled="true" ref="comboBoxList_background"/>
+				</BackgroundDecorators>
+				
+				<HoverUnderlay>
+					<PlainBackground>
+						<Color ref="c_comboBoxListHoveredBackground"/>
+					</PlainBackground>				
+				</HoverUnderlay>
+				
+				<SelectionUnderlay>
+					<PlainBackground>
+						<Color ref="c_comboBoxListSelectedBackground"/>
+					</PlainBackground>				
+				</SelectionUnderlay>
+				
+				<!-- define textrenderers -->
+				<DirectTextRenderer ref="tr_font11" key="default" />
+	
+				<!-- define text styles -->
+				<TextStyle key="default">
+					<Style key="default" fontstyle="default"><Color ref="c_text" /></Style>
+				</TextStyle>
+			</Appearance>
+		</List>
+	</ComboBox>
+		
+	<Container>
+		<Appearance>
+			<!-- define the spacing of this widget -->
+			<Border all="0"/>
+			<Margin all="0"/>
+			<Padding all="0"/>
+		</Appearance>
+	</Container>
+	
+	<!-- define the appearance of a Label widget -->
+	<Label>
+		<Appearance alignment="left">
+			<!-- define the spacing of this widget -->
+			<Border all="0"/>
+			<Margin all="0"/>
+			<Padding left="5" right="2" top="0" bottom="5"/>
+
+			<!-- define TextRenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+			
+			<!-- define how text will look -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default"><Color ref="c_label" /></Style>
+			</TextStyle>
+		</Appearance>
+	</Label>
+		
+	<!-- DEFAULT - define the appearance of a List widget -->
+	<List>
+		<Appearance rowHeight="16" alignment="left">
+			<!-- define the spacing of this widget -->
+			<Border all="1"/>
+			<Margin all="0"/>
+			<Padding right="3" left="3" bottom="3" top="3"/>
+
+			<!-- define TextRenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+			
+			<!-- define how text will look -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default"><Color ref="c_text" /></Style>
+			</TextStyle>
+			
+			<!-- define backgrounds -->
+			<BackgroundDecorators>				
+				<PixmapBackground enabled="true" ref="comboBoxList_background"/>
+			</BackgroundDecorators>
+			
+			<HoverUnderlay>
+				<PlainBackground>
+					<Color ref="c_comboBoxListHoveredBackground"/>
+				</PlainBackground>				
+			</HoverUnderlay>
+			
+			<SelectionUnderlay>
+				<PlainBackground>
+					<Color ref="c_comboBoxListSelectedBackground"/>
+				</PlainBackground>				
+			</SelectionUnderlay>
+		</Appearance>
+	</List>
+	
+	<!-- DEFAULT - define the appearance of a Menu widget -->
+	<Menu>
+		<Appearance alignment="left">
+			<!-- define the spacing of this widget -->
+			<Border all="1"/>
+			<Padding right="4" left="4" top="0" bottom="0"/>
+			<Margin all="0"/>
+
+			<!-- define TextRenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+			
+			<!-- define how text will look -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default"><Color ref="c_text" /></Style>
+			</TextStyle>
+			<!--
+			<BackgroundDecorators>
+				<GradientBackground enabled="true">
+					<TopLeftColor rgba="236, 233, 216, 220"/>
+					<TopRightColor rgba="236, 233, 216, 220"/>
+					<BottomLeftColor rgba="233, 217, 198, 220"/>
+					<BottomRightColor rgba="233, 217, 198, 220"/>
+				</GradientBackground>
+				<PlainBorder enabled="true" all="1" span="border">
+					<Color rgba="233, 217, 198, 255"/>
+				</PlainBorder>
+			</BackgroundDecorators>
+			<HoverUnderlay>
+				<PlainBackground>
+					<Color rgba="255, 200, 150, 100"/>
+				</PlainBackground>
+			</HoverUnderlay>
+			<SelectionColor rgba="255, 0, 0, 255"/>
+			<HoverColor rgba="80, 80, 80, 255"/>
+			
+			-->
+		</Appearance>
+	</Menu>
+	
+	<!-- DEFAULT - define the appearance of a MenuBar widget -->
+	<MenuBar>
+		<Appearance>
+			<Border all="1"/>
+			<Padding right="2" left="2" top="0" bottom="0"/>
+			<Margin all="0"/>
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default">
+					<Color ref="c_text" />
+				</Style>
+			</TextStyle>		
+			<BackgroundDecorators>
+				<PlainBackground>
+					<Color ref="windowBackgroundColor"/>
+				</PlainBackground>
+				<PlainBorder enabled="true" all="1" span="border">
+					<Color rgba="233, 217, 198, 255"/>
+				</PlainBorder>
+			</BackgroundDecorators>
+			<SelectionUnderlay>
+				<PlainBackground enabled="false">
+					<Color rgba="255, 255, 255, 130"/>
+				</PlainBackground>
+			</SelectionUnderlay>
+			<HoverUnderlay>
+				<GradientBackground enabled="true">
+					<TopLeftColor rgba="249, 247, 242, 180"/>
+					<TopRightColor rgba="249, 247, 242, 180"/>
+					<BottomLeftColor rgba="233, 217, 198, 180"/>
+					<BottomRightColor rgba="233, 217, 198, 180"/>
+				</GradientBackground>
+			</HoverUnderlay>
+			<SelectionColor rgba="255, 0, 0, 255"/>
+			<HoverColor rgba="50, 0, 0, 255"/>
+			<Color ref="c_text"/>
+		</Appearance>	
+	</MenuBar>
+		
+	<!-- DEFAULT - define the appearance of a ProgressBar widget -->
+	<ProgressBar>
+		<Appearance>
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default">
+					<Color ref="c_text" />
+				</Style>
+			</TextStyle>	
+			<SelectionUnderlay>
+				<GradientBackground enabled="true">
+					<TopLeftColor rgba="127, 183, 252, 255"/>
+					<TopRightColor rgba="127, 183, 252, 255"/>
+					<BottomLeftColor rgba="17, 99, 161, 255"/>
+					<BottomRightColor rgba="17, 99, 161, 255"/>
+				</GradientBackground>	
+			</SelectionUnderlay>
+			<Padding all="2"/>
+			<Margin all="2"/>
+			<Border all="1"/>
+			<BackgroundDecorators>
+				<PlainBackground ref="brightBackground"/>
+			</BackgroundDecorators>
+		</Appearance>
+	</ProgressBar>
+   	
+	<!-- define the appearance of a RadioButton widget -->
+	<RadioButton>
+		<Appearance alignment="middle">
+			<!-- define the spacing of this widget -->
+			<Margin all="0"/>
+			<Padding all="0"/>
+			
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default"><Color ref="c_text" /></Style>
+			</TextStyle>
+			
+			<!-- define backgrounds -->
+			<Switches>
+				<PixmapSwitch x="0" y="0" width="12" height="12" label="RadioButton#Deselected">
+					<Texture ref="texture_radioBtn"/>
+				</PixmapSwitch>
+				<PixmapSwitch x="0" y="0" width="12" height="12" label="RadioButton#Selected">
+					<Texture ref="texture_radioBtnChecked"/>
+				</PixmapSwitch>
+			</Switches>
+		</Appearance>
+	</RadioButton>
+	
+	<Slider>
+			<VerticalAppearance>
+				<!-- define the spacing of this widget -->
+				<Border all="0"/>
+				<Margin all="0"/>
+				<Padding all="0"/>
+			</VerticalAppearance>
+			<HorizontalAppearance>
+				<!-- define the spacing of this widget -->
+				<Border all="0"/>
+				<Margin all="0"/>
+				<Padding all="0"/>
+				
+				<!-- define backgrounds -->
+				<BackgroundDecorators>				
+					<PixmapBackground enabled="true" ref="scrollLine_background"/>
+				</BackgroundDecorators>	
+			</HorizontalAppearance>
+			<HorizontalSliderButton>
+				<Appearance alignment="middle">
+					<!-- define the spacing of this widget -->
+					<Border all="0"/>
+					<Margin all="0"/>
+					<Padding all="0"/>
+				</Appearance>
+				<Pixmap x="0" y="0" width="20" height="9"><Texture ref="texture_scrollBody"/></Pixmap>
+			</HorizontalSliderButton>			
+			<VerticalSliderButton>
+				<Appearance alignment="middle">
+					<!-- define the spacing of this widget -->
+					<Border all="0"/>
+					<Margin all="0"/>
+					<Padding all="0"/>
+				</Appearance>
+				<Pixmap x="0" y="0" width="9" height="20"><Texture ref="texture_sliderBody"/></Pixmap>
+			</VerticalSliderButton>
+		</Slider>
+			
+	<!-- define the appearance of a ScrollBar widget -->
+	<ScrollBar>
+		<ScrollLeftButton width="27"/>
+		<ScrollRightButton width="27"/>
+		<ScrollUpButton width="10"/>
+		<ScrollDownButton width="10"/>
+	</ScrollBar>
+			
+	<!-- define the appearance of a ScrollContainer widget -->
+	<ScrollContainer>
+		<Appearance>
+			<!-- define the spacing of this widget -->
+			<Border all="0"/>
+			<Margin all="0"/>
+			<Padding all="0"/>		
+		</Appearance>
+	</ScrollContainer>
+	
+	<!-- DEFAULT - define the appearance of a SplitContainer widget -->
+	<SplitContainer>
+		<VerticalPixmap x="153" y="12" width="5" height="11"> 
+			<Texture ref="QtCurve"/>
+		</VerticalPixmap>
+		<HorizontalPixmap x="157" y="1" width="11" height="5"> 
+			<Texture ref="QtCurve"/>
+		</HorizontalPixmap>
+		<Appearance>
+			<!-- define the spacing of this widget -->
+			<Border all="0"/>
+			<Margin all="0"/>
+			<Padding all="0"/>
+			<BarDecorator>
+				<PlainBackground>
+					<Color ref="windowBackgroundColor"/>
+				</PlainBackground>			
+				<PlainBorder>
+					<Color value="gray"/>
+				</PlainBorder>
+			</BarDecorator>
+		</Appearance>
+	</SplitContainer>
+	
+	<!-- define the appearance of a TextEditor widget -->
+	<TextEditor shrinkable="true" expandable="false">
+		<Appearance alignment="left">
+			<!-- define the spacing of this widget -->
+			<Border all="1" />
+			<Margin left="5" right="5" bottom="5" top="0"/>
+			<Padding left="5" right="5" top="2" bottom="2" />
+
+			<!-- define a background -->
+			<BackgroundDecorators>
+				<PlainBackground><Color ref="c_textfieldBackground"/></PlainBackground>
+					<PlainBorder all="1">
+						<Color ref="c_textfieldBorder"/>
+					</PlainBorder>
+  				<PlainBorder label="Focus#Focused">
+						<Color ref="c_textfieldFocusedBorder"/>
+  				</PlainBorder>
+					
+
+			</BackgroundDecorators>
+			
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_textfield" key="default" />
+
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default">
+					<Color ref="c_textfieldText" />
+					<SelectionColor ref="c_textfieldText" />
+					<SelectionBackground>
+						<PlainBackground>
+							<Color ref="c_textfieldSelection"/>
+						</PlainBackground>
+					</SelectionBackground>
+				</Style>
+			</TextStyle>	
+			
+			<TextStyle key="ts_placeholder">
+				<Style key="default" fontstyle="default">
+					<Color ref="c_textfieldPlaceholder" />
+				</Style>
+			</TextStyle>	
+			
+			<Switches>
+				<TextColorSwitch label="#Default" enabled="true">
+					<Color ref="c_textfieldText" />
+				</TextColorSwitch>
+				<TextColorSwitch label="Text#Empty" enabled="false">
+					<Color ref="c_textfieldPlaceholder" />
+				</TextColorSwitch>
+			</Switches>
+			
+			
+
+			<!-- define the cursor to use -->
+			<!--<Cursor x="0" y="100" width="3" height="15">
+				<Texture ref="QtCurve"/>
+			</Cursor>
+			<CursorColor rgba="255, 255, 255, 255"/>-->
+		</Appearance>
+	</TextEditor>
+	
+	<!-- define the appearance of a Window widget -->
+	<Window shrinkable="false" expandable="false">
+		<Appearance>
+			<!-- define the spacing of this widget -->
+			<Margin all="0"/>
+			<Padding all="0"/>
+			<Border all="1"/>
+			
+			<!-- define background -->
+			<BackgroundDecorators>
+				<PlainBackground><Color ref="c_windowBackground"/></PlainBackground>
+				<PlainBorder><Color ref="c_windowBorder"/></PlainBorder>
+			</BackgroundDecorators>
+		</Appearance>
+		
+		<CloseButton shrinkable="false" expandable="false" text="">
+			<Appearance alignment="top right">
+				<Margin all="0"/>
+				<Padding all="2"/>
+				<Border all="2"/>
+				
+				<!-- define textrenderers -->
+				<DirectTextRenderer ref="tr_font11" key="default" />
+	
+				<!-- define text styles -->
+				<TextStyle key="default">
+					<Style key="default" fontstyle="default"><Color ref="c_text" /></Style>
+				</TextStyle>
+			</Appearance>
+			
+			<Pixmap x="0" y="0" width="9" height="9"><Texture ref="texture_closeBtn"/></Pixmap>
+		</CloseButton>
+		
+		<TitleBar shrinkable="false" expandable="true" >
+			<Appearance alignment="left">
+				<!-- define the spacing of this widget -->
+				<Margin all="0"/>
+				<Padding all="0"/>
+				<Border all="0"/>
+			
+			<!-- define background -->
+			<BackgroundDecorators>
+				<PlainBackground><Color ref="c_windowTitleBackground"/></PlainBackground>
+			</BackgroundDecorators>
+			</Appearance>
+		</TitleBar>	
+		
+		<TitleLabel>
+			<Appearance alignment="left">
+				<!-- define the spacing of this widget -->
+				<Border bottom="0" top="0" left="5" right="5"/>
+				<Margin all="0"/>
+				<Padding all="0"/>
+				
+				<!-- define textrenderer -->
+				<DirectTextRenderer ref="tr_tabHeader" key="default" />
+
+				<!-- define textstyle -->
+				<TextStyle key="default">
+					<Style key="default" fontstyle="default"><Color ref="c_blacktext" /></Style>
+				</TextStyle>
+			</Appearance>
+		</TitleLabel>	
+		
+		<Content>
+			<Appearance>
+				<!-- define the spacing of this widget -->
+				<Border all="0"/>
+				<Margin all="0"/>
+				<Padding all="0"/>
+			</Appearance>
+		</Content>
+	</Window>
+	
+	<!-- DEFAULT - define the appearance of a TabItem widget -->
+	<TabItem>
+		<Appearance>
+			<Margin all="0"/>
+			<Padding all="0"/>
+			<Border all="0"/>
+			<BackgroundDecorators>
+				<PlainBackground label="default" enabled="true">
+					<Color rgba="0, 0, 0, 0"/>
+				</PlainBackground>
+				<PlainBackground enabled="true">
+					<Color rgba="0, 0, 0, 0"/>
+				</PlainBackground>
+			</BackgroundDecorators>
+		</Appearance>
+		<TabButton>
+				<Appearance alignment="middle">
+			    <Margin right="12" />
+			    <Padding left="10" right="10" top="2" bottom="2" />
+			    <Border all="0" />
+				<!-- define textrenderers -->
+				<DirectTextRenderer ref="tr_font12" key="default" />
+	
+				<!-- define text styles -->
+				<Switches>
+					<TextColorSwitch label="#Default" enabled="true">
+						<Color ref="c_tabHeaderText" />
+					</TextColorSwitch>
+					<TextColorSwitch label="RadioButton#Selected" enabled="false">
+						<Color ref="c_tabHeaderSelectedText" />
+					</TextColorSwitch>
+					<TextColorSwitch label="Focus#Focused" enabled="false">
+						<Color ref="c_tabHeaderSelectedText" />
+					</TextColorSwitch>
+					<TextColorSwitch label="Hover#Hovered" >
+						<Color rgba="255, 0, 0, 255" />
+					</TextColorSwitch>
+				</Switches>
+			    <BackgroundDecorators>
+						<GradientBackground enabled="true">
+							<TopLeftColor ref="c_tabHeaderBg0"/>
+							<TopRightColor ref="c_tabHeaderBg0"/>
+							<BottomLeftColor ref="c_tabHeaderBg1"/>
+							<BottomRightColor ref="c_tabHeaderBg1"/>
+						</GradientBackground>
+						<PlainBackground label="RadioButton#Selected" enabled="false">
+							<Color ref="c_tabHeaderSelectedBg"/>
+						</PlainBackground>
+						<GradientBackground label="Hover#Hovered" enabled="false">
+							<TopLeftColor ref="c_tabHeaderHoveredBg0"/>
+							<TopRightColor ref="c_tabHeaderHoveredBg0"/>
+							<BottomLeftColor ref="c_tabHeaderHoveredBg1"/>
+							<BottomRightColor ref="c_tabHeaderHoveredBg1"/>
+						</GradientBackground>
+			    </BackgroundDecorators>
+			  </Appearance>
+			</TabButton>
+	</TabItem>
+	
+	<BottomTabItem>
+		<Appearance>
+			<Margin all="0"/>
+			<Padding all="0"/>
+			<Border all="0"/>
+			<BackgroundDecorators>
+				<PlainBackground label="default" enabled="true">
+					<Color rgba="0, 0, 0, 0"/>
+				</PlainBackground>
+				<PlainBackground enabled="true">
+					<Color rgba="0, 0, 0, 0"/>
+				</PlainBackground>
+			</BackgroundDecorators>
+		</Appearance>
+		<TabButton>
+				<Appearance alignment="middle">
+			    <Margin right="12" />
+			    <Padding left="5" right="5" top="1" bottom="1" />
+			    <Border all="0" />
+				<!-- define textrenderers -->
+				<DirectTextRenderer ref="tr_tabHeader" key="default" />
+	
+				<!-- define text styles -->
+				<Switches>
+					<TextColorSwitch label="#Default" enabled="true">
+						<Color ref="c_tabHeaderText" />
+					</TextColorSwitch>
+					<TextColorSwitch label="Focus#Focused" enabled="false">
+						<Color ref="c_tabHeaderSelectedText" />
+					</TextColorSwitch>
+					<TextColorSwitch label="Hover#Hovered" >
+						<Color rgba="255, 0, 0, 255" />
+					</TextColorSwitch>
+					<TextColorSwitch label="RadioButton#Selected" >
+						<Color ref="c_tabHeaderSelectedText" />
+					</TextColorSwitch>
+				</Switches>
+			    <BackgroundDecorators>
+						<GradientBackground enabled="true">
+							<TopLeftColor ref="c_tabHeaderBg1"/>
+							<TopRightColor ref="c_tabHeaderBg1"/>
+							<BottomLeftColor ref="c_tabHeaderBg0"/>
+							<BottomRightColor ref="c_tabHeaderBg0"/>
+						</GradientBackground>
+						<PlainBackground label="RadioButton#Selected" enabled="false">
+							<Color ref="c_tabHeaderSelectedBg"/>
+						</PlainBackground>
+						<GradientBackground label="Hover#Hovered" enabled="false">
+							<TopLeftColor ref="c_tabHeaderHoveredBg1"/>
+							<TopRightColor ref="c_tabHeaderHoveredBg1"/>
+							<BottomLeftColor ref="c_tabHeaderHoveredBg0"/>
+							<BottomRightColor ref="c_tabHeaderHoveredBg0"/>
+						</GradientBackground>
+			    </BackgroundDecorators>
+			  </Appearance>
+			</TabButton>
+	</BottomTabItem>
+		
+	<!-- DEFAULT - define the appearance of a Tab widget -->
+	<Tabs>
+		<Appearance>
+			<Margin all="0"/>
+			<Padding all="0"/>
+			<Border all="0"/>
+		</Appearance>
+		<Header>
+			<Appearance>
+				<Margin left="10"/>
+				<Padding all="0"/>
+				<Border all="0"/>	
+			</Appearance>
+		</Header>
+		<Content>
+			<Appearance>
+			<Padding all="10" />
+			<Border left="1" right="1" top="2"/>
+			<Margin left="0" />
+				<BackgroundDecorators>
+					<PlainBackground>
+						<Color rgba="0, 0, 0, 180" />
+					</PlainBackground>
+					<PlainBorder top="2" right="1" bottom="0" left="1">
+						<TopColor ref="c_tabTopBorder" />
+						<RightColor ref="c_tabSideBorder" />
+						<BottomColor ref="c_tabTopBorder" />
+						<LeftColor ref="c_tabSideBorder" />
+					</PlainBorder>
+				</BackgroundDecorators>
+			</Appearance>
+		</Content>
+	</Tabs>
+	
+	<BottomTabs>
+		<Appearance>
+			<Margin all="0"/>
+			<Padding all="0"/>
+			<Border all="0"/>
+		</Appearance>
+		<Header>
+			<Appearance>
+				<Margin left="10"/>
+				<Padding all="0"/>
+				<Border all="0"/>	
+			</Appearance>
+		</Header>
+		<Content>
+			<Appearance>
+			<Padding all="10" />
+			<Margin left="0" />
+			<Border bottom="2" left="1" right="1"/>
+				<BackgroundDecorators>
+					<PlainBackground>
+						<Color rgba="0, 0, 0, 180" />
+					</PlainBackground>
+					<PlainBorder top="0" right="1" bottom="2" left="1">
+						<TopColor ref="c_tabTopBorder" />
+						<RightColor ref="c_tabSideBorder" />
+						<BottomColor ref="c_tabTopBorder" />
+						<LeftColor ref="c_tabSideBorder" />
+					</PlainBorder>
+				</BackgroundDecorators>
+			</Appearance>
+		</Content>
+	</BottomTabs>
+	
+	<TabContent>
+
+	</TabContent>
+	
+	<!-- DEFAULT - define the appearance of a SnappingSlider widget -->
+   	<SnappingSlider>
+		<SliderPixmap x="2" y="61" width="15" height="16"> 
+			<Texture ref="QtCurve"/>
+		</SliderPixmap>
+	</SnappingSlider>			
+		
+	<!-- DEFAULT- define the appearance of a VerticalList widget -->
+	<VerticalList>
+		<Appearance>
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default">
+					<Color ref="c_text" />
+				</Style>
+			</TextStyle>		
+		
+			<BackgroundDecorators>
+				<PlainBackground>
+					<Color value="white"/>
+				</PlainBackground>		
+			</BackgroundDecorators>
+		</Appearance>
+	</VerticalList>
+		
+	<!-- DEFAULT - define the appearance of a Tree widget -->
+	<Tree>
+		<Appearance alignment="left">
+			<Padding all="2"/>
+
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default">
+					<Color ref="c_text" />
+				</Style>
+			</TextStyle>
+
+			<!-- define some special pixmaps (keys are defined by the widget) -->
+			<Pixmap key="PlusIconPixmap" x="6" y="41" width="9" height="9">
+				<Texture ref="QtCurve"/>
+			</Pixmap>
+			<Pixmap key="MinusIconPixmap" x="6" y="51" width="9" height="9">
+				<Texture ref="QtCurve"/>
+			</Pixmap>		
+			<BackgroundDecorators>
+				<PlainBackground>
+					<Color ref="c_windowBackground"/>
+				</PlainBackground>
+			</BackgroundDecorators>
+			
+			<SelectionUnderlay>
+				<PlainBackground>
+					<Color ref="c_defaultBackground"/>
+				</PlainBackground>				
+			</SelectionUnderlay>
+			
+			<HoverUnderlay>
+				<PlainBackground>
+					<Color ref="c_selectionHighlight"/>
+				</PlainBackground>				
+			</HoverUnderlay>
+		</Appearance>	
+	</Tree>
+		
+	<!-- DEFAULT - define the appearance of a Table widget -->
+	<Table>
+		<Appearance alignment="left">
+			<Border all="0"/>
+			<Padding all="0"/>
+			<Margin all="0"/>
+			<!-- define textrenderers -->
+			<DirectTextRenderer ref="tr_font11" key="default" />
+
+			<!-- define text styles -->
+			<TextStyle key="default">
+				<Style key="default" fontstyle="default">
+					<Color ref="c_text" />
+				</Style>
+			</TextStyle>
+			<BackgroundDecorators>
+				<PlainBackground>
+					<Color rgba="255, 255, 255, 255"/>
+				</PlainBackground>
+			</BackgroundDecorators>
+			<SelectionUnderlay>
+				<PlainBackground>
+					<Color rgba="155, 155, 255, 130"/>
+				</PlainBackground>				
+			</SelectionUnderlay>
+			
+			<HoverUnderlay>
+				<PlainBackground>
+					<Color rgba="255, 200, 150, 100"/>
+				</PlainBackground>				
+			</HoverUnderlay>
+		</Appearance>
+	</Table>	
+		
+	<!-- DEFAULT - define the appearance of a TabContainer widget -->
+	<TabContainer/>
+		
+	<!-- DEFAULT - define the appearance of a Canvas widget -->
+	<Canvas/>
+</FengGUI:Theme>

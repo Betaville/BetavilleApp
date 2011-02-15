@@ -1,0 +1,35 @@
+// author: Levis Reyes
+// Version 0.1
+// See the forum thread at: http://128.238.56.115/forum/index.php?topic=8
+window
+-title "Building Export .DAE"
+-widthHeight 100 100;
+ rowLayout -numberOfColumns 2;
+columnLayout -adjustableColumn true;
+button -label "1.CenterPivot"
+-command
+CenterPivot;
+button -label "2.MoveToZero-Axis"
+-command
+"move -rpr 0 0 0; snapMode -point true";
+button -label "3.--------FIT OBJECT----------"
+-command
+"fitPanel -selected";
+button -label "4.----MOVE Pivot MANUALLY-----"
+-command
+EnterEditMode;
+ctxEditMode;
+button -label "5.MoveToZero-Axis"
+-command
+"move -rpr 0 0 0; snapMode -point false ; ";
+button -label "6.FreezeTransformations"
+-command
+FreezeTransformations;
+button -label "7.-------FINISH--------"
+-command
+EnterEditMode;
+ctxEditMode;
+button -label "8.-------EXPORT--------"
+-command
+ExportSelection;
+showWindow;

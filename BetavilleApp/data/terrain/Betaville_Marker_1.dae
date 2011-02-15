@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>Levis</author>
+      <authoring_tool>Maya2008 | ColladaMaya v3.05B</authoring_tool>
+      <comments>ColladaMaya export options: bakeTransforms=1;exportPolygonMeshes=1;bakeLighting=0;isSampling=0;
+curveConstrainSampling=0;removeStaticCurves=1;exportCameraAsLookat=0;
+exportLights=0;exportCameras=0;exportJointsAndSkin=0;
+exportAnimations=0;exportTriangles=1;exportInvisibleNodes=0;
+exportNormals=1;exportTexCoords=1;
+exportVertexColors=0;exportVertexColorsAnimation=0;exportTangents=0;
+exportTexTangents=0;exportConstraints=0;exportPhysics=0;exportXRefs=1;
+dereferenceXRefs=0;cameraXFov=0;cameraYFov=1</comments>
+      <source_data>file:///C:/Users/Levis/Desktop/Poly/Battery_Manhattan/MAYA/scenes/Manhattan_Scene/RN/ManhattanBuildings_1.2c.mb</source_data>
+    </contributor>
+    <contributor>
+      <author>Levis</author>
+      <authoring_tool>Maya2008 | ColladaMaya v3.05B</authoring_tool>
+      <comments>ColladaMaya export options: bakeTransforms=1;exportPolygonMeshes=1;bakeLighting=0;isSampling=0;
+curveConstrainSampling=0;removeStaticCurves=1;exportCameraAsLookat=0;
+exportLights=0;exportCameras=0;exportJointsAndSkin=0;
+exportAnimations=0;exportTriangles=1;exportInvisibleNodes=0;
+exportNormals=1;exportTexCoords=1;
+exportVertexColors=0;exportVertexColorsAnimation=0;exportTangents=0;
+exportTexTangents=0;exportConstraints=0;exportPhysics=0;exportXRefs=1;
+dereferenceXRefs=0;cameraXFov=0;cameraYFov=1</comments>
+      <source_data>file:///C:/Users/Levis/Desktop/Poly/Battery_Manhattan/MAYA/scenes/Manhattan_Scene/RN/BlocksAndSidewalks.mb</source_data>
+    </contributor>
+    <contributor>
+      <author>Levis</author>
+      <authoring_tool>Maya2008 | ColladaMaya v3.05B</authoring_tool>
+      <comments>ColladaMaya export options: bakeTransforms=1;exportPolygonMeshes=1;bakeLighting=0;isSampling=0;
+curveConstrainSampling=0;removeStaticCurves=1;exportCameraAsLookat=0;
+exportLights=0;exportCameras=0;exportJointsAndSkin=0;
+exportAnimations=0;exportTriangles=1;exportInvisibleNodes=0;
+exportNormals=1;exportTexCoords=1;
+exportVertexColors=0;exportVertexColorsAnimation=0;exportTangents=0;
+exportTexTangents=0;exportConstraints=0;exportPhysics=0;exportXRefs=1;
+dereferenceXRefs=0;cameraXFov=0;cameraYFov=1</comments>
+      <source_data>file:///C:/Users/Levis/Desktop/Poly/Battery_Manhattan/MAYA/scenes/Manhattan_Scene/RN/Master_Terrain_FLAT%2BTopo.mb</source_data>
+    </contributor>
+    <contributor>
+      <author>Levis</author>
+      <authoring_tool>Maya2008 | ColladaMaya v3.05B</authoring_tool>
+      <comments>ColladaMaya export options: bakeTransforms=1;exportPolygonMeshes=1;bakeLighting=0;isSampling=0;
+curveConstrainSampling=0;removeStaticCurves=1;exportCameraAsLookat=0;
+exportLights=0;exportCameras=0;exportJointsAndSkin=0;
+exportAnimations=0;exportTriangles=0;exportInvisibleNodes=0;
+exportNormals=1;exportTexCoords=1;
+exportVertexColors=0;exportVertexColorsAnimation=0;exportTangents=0;
+exportTexTangents=0;exportConstraints=0;exportPhysics=0;exportXRefs=1;
+dereferenceXRefs=0;cameraXFov=0;cameraYFov=1</comments>
+      <source_data>file:///C:/Users/Levis/Desktop/Poly/MAYA_Betaville/Bville_Project/Manhattan_Terrain_Contruct/untitled</source_data>
+    </contributor>
+    <created>2010-07-20T04:19:01Z</created>
+    <modified>2010-12-10T22:49:07Z</modified>
+    <unit meter="0.3048" name="foot"/>
+    <up_axis>Y_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="lambert1" name="lambert8">
+      <instance_effect url="#lambert1-fx"/>
+    </material>
+    <material id="lambert2" name="lambert1">
+      <instance_effect url="#lambert2-fx"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="lambert1-fx">
+      <profile_COMMON>
+        <technique sid="common">
+          <lambert>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color>1 0 0 1</color>
+            </diffuse>
+            <transparent opaque="RGB_ZERO">
+              <color>0 0 0 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </lambert>
+          <extra>
+            <technique profile="FCOLLADA"/>
+          </extra>
+        </technique>
+      </profile_COMMON>
+    </effect>
+    <effect id="lambert2-fx">
+      <profile_COMMON>
+        <technique sid="common">
+          <lambert>
+            <emission>
+              <color>0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color>0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <color>0.4 0.4 0.4 0.8</color>
+            </diffuse>
+            <transparent opaque="RGB_ZERO">
+              <color>0 0 0 1</color>
+            </transparent>
+            <transparency>
+              <float>1</float>
+            </transparency>
+          </lambert>
+          <extra>
+            <technique profile="FCOLLADA"/>
+          </extra>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="Marker_Shape1" name="Marker_Shape1">
+      <mesh>
+        <source id="Marker_Shape1-positions" name="position">
+          <float_array id="Marker_Shape1-positions-array" count="126">15.6071 42.2399 -2.09729 13.2762 43.0129 2.41158 9.64571 43.6265 5.98984 5.07105 44.0204 8.28722 0 44.1561 9.07884 -5.07105 44.0204 8.28722 -9.64571 43.6265 5.98983 -13.2762 43.0129 2.41158 -15.6071 42.2399 -2.09729 -16.4103 41.3829 -7.0954 -15.6071 40.5259 -12.0935 -13.2762 39.7529 -16.6024 -9.64571 39.1393 -20.1806 -5.07105 38.7454 -22.478 0.000000 38.6097 -23.2696 5.07105 38.7454 -22.478 9.64571 39.1393 -20.1806 13.2762 39.7529 -16.6024 15.6071 40.5259 -12.0935 16.4103 41.3829 -7.0954 0 -0.000000 0 13.3427 92.6598 -11.4886 11.35 93.3207 -7.63393 8.24625 93.8452 -4.57484 4.33531 94.1819 -2.61077 0 94.298 -1.934 -4.33531 94.1819 -2.61077 -8.24625 93.8452 -4.57484 -11.35 93.3207 -7.63394 -13.3427 92.6598 -11.4886 -14.0294 91.9271 -15.7616 -13.3427 91.1945 -20.0345 -11.35 90.5336 -23.8892 -8.24625 90.0091 -26.9483 -4.33531 89.6723 -28.9124 0.000000 89.5563 -29.5892 4.33531 89.6723 -28.9124 8.24625 90.0091 -26.9483 11.35 90.5336 -23.8892 13.3427 91.1945 -20.0345 14.0294 91.9271 -15.7616 0 0.000000 -0.000000</float_array>
+          <technique_common>
+            <accessor source="#Marker_Shape1-positions-array" count="42" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Marker_Shape1-normals" name="normal">
+          <float_array id="Marker_Shape1-normals-array" count="246">0.000001 0.985618 -0.168989 0.000000 0.985618 -0.168991 0 0.985618 -0.168992 0 0.985617 -0.168992 0.000000 0.985617 -0.168992 0.000000 0.985618 -0.168991 0 0.985617 -0.168992 0 0.985618 -0.168991 0 0.985618 -0.168991 0 0.985617 -0.168992 0 0.985618 -0.168991 0 0.985617 -0.168992 0 0.985617 -0.168991 0 0.985617 -0.168992 0 0.985617 -0.168992 0 0.985618 -0.168991 0 0.985617 -0.168992 0 0.985618 -0.16899 -0.000000 0.985617 -0.168992 -0.000001 0.985616 -0.168998 0.885803 -0.310154 0.345192 0.753509 -0.266276 0.6011 0 -0.985618 0.168991 0.547456 -0.231455 0.804189 0.287815 -0.209099 0.93458 -0.000000 -0.201395 0.97951 -0.287815 -0.209099 0.93458 -0.547456 -0.231455 0.804189 -0.753509 -0.266276 0.6011 -0.885803 -0.310153 0.345193 -0.931388 -0.358792 0.061517 -0.885803 -0.40743 -0.222158 -0.753509 -0.451307 -0.478065 -0.547456 -0.486128 -0.681154 -0.287815 -0.508485 -0.811545 0 -0.516188 -0.856475 0.287815 -0.508485 -0.811545 0.547456 -0.486128 -0.681154 0.753509 -0.451307 -0.478065 0.885803 -0.40743 -0.222158 0.931388 -0.358792 0.061516 0.000001 0.985615 -0.169003 0.000001 0.985617 -0.168996 0.000000 0.985617 -0.168991 0 0.985618 -0.16899 0.000000 0.985618 -0.168992 0.000000 0.985617 -0.168992 0.000000 0.985617 -0.168992 0 0.985618 -0.168991 0 0.985618 -0.168991 -0.000000 0.985618 -0.168991 -0.000000 0.985617 -0.168992 0 0.985618 -0.16899 0 0.985618 -0.168991 0 0.985618 -0.16899 0 0.985617 -0.168992 0 0.985617 -0.168992 -0.000000 0.985617 -0.168993 0.000000 0.985617 -0.168995 0.000000 0.985619 -0.168983 -0.000000 0.98562 -0.168976 0.940477 -0.094966 0.326321 0.800017 -0.04838 0.598024 0 -0.985618 0.168991 0.581246 -0.01141 0.813648 0.305579 0.012326 0.952087 -0.000000 0.020505 0.99979 -0.305579 0.012326 0.952087 -0.581246 -0.01141 0.813648 -0.800017 -0.04838 0.598023 -0.940476 -0.094966 0.326321 -0.988875 -0.146606 0.025136 -0.940476 -0.198247 -0.276048 -0.800017 -0.244832 -0.54775 -0.581246 -0.281802 -0.763374 -0.305579 -0.305539 -0.901814 0 -0.313718 -0.949516 0.305579 -0.305539 -0.901813 0.581246 -0.281802 -0.763374 0.800017 -0.244832 -0.54775 0.940476 -0.198246 -0.276048 0.988876 -0.146606 0.025135</float_array>
+          <technique_common>
+            <accessor source="#Marker_Shape1-normals-array" count="82" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Marker_Shape1-map1" name="map1">
+          <float_array id="Marker_Shape1-map1-array" count="168">0.737764 0.172746 0.702254 0.103054 0.646946 0.047745 0.577254 0.012235 0.5 0 0.422746 0.012235 0.353054 0.047745 0.297746 0.103054 0.262236 0.172746 0.25 0.25 0.262236 0.327254 0.297746 0.396946 0.353054 0.452254 0.422746 0.487764 0.5 0.5 0.577254 0.487764 0.646946 0.452254 0.702254 0.396946 0.737764 0.327254 0.75 0.25 0.25 0.5 0.275 0.5 0.3 0.5 0.325 0.5 0.35 0.5 0.375 0.5 0.4 0.5 0.425 0.5 0.45 0.5 0.475 0.5 0.5 0.5 0.525 0.5 0.55 0.5 0.575 0.5 0.6 0.5 0.625 0.5 0.65 0.5 0.675 0.5 0.7 0.5 0.725 0.5 0.75 0.5 0.5 1 0.737764 0.172746 0.75 0.25 0.737764 0.327254 0.702254 0.396946 0.646946 0.452254 0.577254 0.487764 0.5 0.5 0.422746 0.487764 0.353054 0.452254 0.297746 0.396946 0.262236 0.327254 0.25 0.25 0.262236 0.172746 0.297746 0.103054 0.353054 0.047745 0.422746 0.012235 0.5 0 0.577254 0.012235 0.646946 0.047745 0.702254 0.103054 0.25 0.5 0.275 0.5 0.5 1 0.3 0.5 0.325 0.5 0.35 0.5 0.375 0.5 0.4 0.5 0.425 0.5 0.45 0.5 0.475 0.5 0.5 0.5 0.525 0.5 0.55 0.5 0.575 0.5 0.6 0.5 0.625 0.5 0.65 0.5 0.675 0.5 0.7 0.5 0.725 0.5 0.75 0.5</float_array>
+          <technique_common>
+            <accessor source="#Marker_Shape1-map1-array" count="84" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Marker_Shape1-vertices">
+          <input semantic="POSITION" source="#Marker_Shape1-positions"/>
+        </vertices>
+        <triangles material="lambert8SG" count="76">
+          <input semantic="VERTEX" source="#Marker_Shape1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Marker_Shape1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#Marker_Shape1-map1" offset="2" set="0"/>
+          <p>0 0 0 19 1 19 1 2 1 19 1 19 18 3 18 1 2 1 18 3 18 17 4 17 1 2 1 17 4 17 16 5 16 1 2 1 16 5 16 15 6 15 1 2 1 15 6 15 14 7 14 1 2 1 14 7 14 13 8 13 1 2 1 13 8 13 12 9 12 1 2 1 12 9 12 11 10 11 1 2 1 11 10 11 10 11 10 1 2 1 10 11 10 9 12 9 1 2 1 9 12 9 8 13 8 1 2 1 8 13 8 7 14 7 1 2 1 7 14 7 6 15 6 1 2 1 6 15 6 5 16 5 1 2 1 5 16 5 4 17 4 1 2 1 4 17 4 3 18 3 1 2 1 3 18 3 2 19 2 1 2 1 0 20 20 1 21 21 20 22 41 1 21 21 2 23 22 20 22 41 2 23 22 3 24 23 20 22 41 3 24 23 4 25 24 20 22 41 4 25 24 5 26 25 20 22 41 5 26 25 6 27 26 20 22 41 6 27 26 7 28 27 20 22 41 7 28 27 8 29 28 20 22 41 8 29 28 9 30 29 20 22 41 9 30 29 10 31 30 20 22 41 10 31 30 11 32 31 20 22 41 11 32 31 12 33 32 20 22 41 12 33 32 13 34 33 20 22 41 13 34 33 14 35 34 20 22 41 14 35 34 15 36 35 20 22 41 15 36 35 16 37 36 20 22 41 16 37 36 17 38 37 20 22 41 17 38 37 18 39 38 20 22 41 18 39 38 19 40 39 20 22 41 19 40 39 0 20 40 20 22 41 21 41 42 40 42 43 22 43 61 40 42 43 39 44 44 22 43 61 39 44 44 38 45 45 22 43 61 38 45 45 37 46 46 22 43 61 37 46 46 36 47 47 22 43 61 36 47 47 35 48 48 22 43 61 35 48 48 34 49 49 22 43 61 34 49 49 33 50 50 22 43 61 33 50 50 32 51 51 22 43 61 32 51 51 31 52 52 22 43 61 31 52 52 30 53 53 22 43 61 30 53 53 29 54 54 22 43 61 29 54 54 28 55 55 22 43 61 28 55 55 27 56 56 22 43 61 27 56 56 26 57 57 22 43 61 26 57 57 25 58 58 22 43 61 25 58 58 24 59 59 22 43 61 24 59 59 23 60 60 22 43 61 21 61 62 22 62 63 41 63 64 22 62 63 23 64 65 41 63 64 23 64 65 24 65 66 41 63 64 24 65 66 25 66 67 41 63 64 25 66 67 26 67 68 41 63 64 26 67 68 27 68 69 41 63 64 27 68 69 28 69 70 41 63 64 28 69 70 29 70 71 41 63 64 29 70 71 30 71 72 41 63 64 30 71 72 31 72 73 41 63 64 31 72 73 32 73 74 41 63 64 32 73 74 33 74 75 41 63 64 33 74 75 34 75 76 41 63 64 34 75 76 35 76 77 41 63 64 35 76 77 36 77 78 41 63 64 36 77 78 37 78 79 41 63 64 37 78 79 38 79 80 41 63 64 38 79 80 39 80 81 41 63 64 39 80 81 40 81 82 41 63 64 40 81 82 21 61 83 41 63 64</p>
+        </triangles>
+        <polylist material="initialShadingGroup" count="0">
+          <input semantic="VERTEX" source="#Marker_Shape1-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Marker_Shape1-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#Marker_Shape1-map1" offset="2" set="0"/>
+          <vcount/>
+          <p/>
+        </polylist>
+      </mesh>
+      <extra>
+        <technique profile="MAYA">
+          <double_sided>1</double_sided>
+        </technique>
+      </extra>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="VisualSceneNode" name="untitled">
+      <node id="Marker_1" name="Marker_1" type="NODE">
+        <matrix sid="transform">0.444944 0 0 0 0 0.444944 0 0 0 0 0.444944 0 0 0 0 1</matrix>
+        <instance_geometry url="#Marker_Shape1">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="lambert8SG" target="#lambert1"/>
+              <instance_material symbol="initialShadingGroup" target="#lambert2"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+      <extra>
+        <technique profile="FCOLLADA">
+          <start_time>0.041666</start_time>
+          <end_time>2</end_time>
+        </technique>
+      </extra>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#VisualSceneNode"/>
+  </scene>
+</COLLADA>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="BetavilleApp">
+    <property environment="env"/>
+    <property name="BetavilleServer.location" value="../BetavilleServer"/>
+    <property name="ShapeWorker.location" value="../ShapeWorker"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+	<property name="keypass" value="..."/>
+    <path id="Persisted container [SWT_CONTAINER for project [BetavilleApp]].libraryclasspath"/>
+    <path id="BetavilleApp.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/jdom/build/jdom.jar"/>
+        <pathelement location="lib/jme/jme-audio.jar"/>
+        <pathelement location="lib/jme/jme-awt.jar"/>
+        <pathelement location="lib/jme/jme-collada.jar"/>
+        <pathelement location="lib/jme/jme-editors.jar"/>
+        <pathelement location="lib/jme/jme-effects.jar"/>
+        <pathelement location="lib/jme/jme-font.jar"/>
+        <pathelement location="lib/jme/jme-gamestates.jar"/>
+        <pathelement location="lib/jme/jme-model.jar"/>
+        <pathelement location="lib/jme/jme-ogrexml.jar"/>
+        <pathelement location="lib/jme/jme-scene.jar"/>
+        <pathelement location="lib/jme/jme-terrain.jar"/>
+        <pathelement location="lib/jme/jme-xml.jar"/>
+        <pathelement location="lib/jme/jme.jar"/>
+        <pathelement location="lib/jme/lib/jogl/gluegen-rt.jar"/>
+        <pathelement location="lib/jme/lib/jogl/jogl.jar"/>
+        <pathelement location="lib/jme/lib/junit/junit-4.1.jar"/>
+        <pathelement location="lib/jme/lib/jorbis/jorbis-0.0.17.jar"/>
+        <pathelement location="lib/rss_utils_1/rssutils.jar"/>
+        <pathelement location="lib/BareBonesBrowserLaunch.jar"/>
+        <path refid="Persisted container [SWT_CONTAINER for project [BetavilleApp]].libraryclasspath"/>
+        <pathelement location="lib/SoundSystem/CodecWav.jar"/>
+        <pathelement location="lib/SoundSystem/CodecJOgg.jar"/>
+        <pathelement location="lib/SoundSystem/LibraryJavaSound.jar"/>
+        <pathelement location="lib/SoundSystem/LibraryLWJGLOpenAL.jar"/>
+        <pathelement location="lib/SoundSystem/SoundSystem.jar"/>
+        <pathelement location="lib/jme/lib/lwjgl/jinput.jar"/>
+        <pathelement location="lib/jme/lib/lwjgl/lwjgl_util.jar"/>
+        <pathelement location="lib/jme/lib/lwjgl/lwjgl.jar"/>
+        <pathelement location="lib/FengGUI/FengGUI.jar"/>
+        <pathelement location="lib/FengGUI/FengGUI-Optional.jar"/>
+        <pathelement location="lib/log4j/log4j-1.2.16.jar"/>
+        <pathelement location="lib/geonames-1.0.4.jar"/>
+        <pathelement location="lib/timingframework/TimingFramework-1.0.jar"/>
+        <pathelement location="lib/ogg-video-codec.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="BetavilleApp.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="${BetavilleServer.location}/build.xml" dir="${BetavilleServer.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${BetavilleServer.location}/build.xml" dir="${BetavilleServer.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="${ShapeWorker.location}/build.xml" dir="${ShapeWorker.location}" inheritAll="false" target="clean"/>
+        <ant antfile="${ShapeWorker.location}/build.xml" dir="${ShapeWorker.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="BetavilleNoCanvas">
+        <java classname="edu.poly.bxmc.betaville.jme.BetavilleNoCanvas" failonerror="true" fork="yes">
+            <jvmarg line="-Xmx512M"/>
+            <classpath refid="BetavilleApp.classpath"/>
+        </java>
+    </target>
+	<target name="jar" depends="build">
+			 <delete file="BetavilleApp.jar"/>
+			 <delete file="BetavilleData.jar"/>
+			 <delete file="MANIFEST.MF"/>
+		
+		 	<manifest file="MANIFEST.MF">
+				<attribute name="Built-By" value="${user.name}"/>
+			</manifest>
+
+			<jar destfile="BetavilleApp.jar"
+				basedir="bin/"
+				includes="**/*.class"
+				manifest="MANIFEST.MF"
+			/>
+		
+			<jar destfile="BetavilleData.jar"
+				basedir="./"
+				includes="data/**"
+				manifest="MANIFEST.MF"
+			/>
+			 <delete file="MANIFEST.MF"/>
+	</target>
+	<target name="sign-jars" depends="jar" description="sign JARs for JNLP distribution">
+	    <signjar jar="BetavilleApp.jar"									alias="betaville" storepass="${keypass}" />
+	    <signjar jar="BetavilleData.jar"								alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jdom/build/jdom.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-audio.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-awt.jar"								alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-collada.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-editors.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-effects.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-font.jar"								alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-gamestates.jar"						alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-model.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-ogrexml.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-scene.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-terrain.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme-xml.jar"								alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/jme.jar"									alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/lib/jogl/gluegen-rt.jar"					alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/lib/jogl/jogl.jar"						alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/lib/junit/junit-4.1.jar"					alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/lib/jorbis/jorbis-0.0.17.jar"				alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/rss_utils_1/rssutils.jar"						alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/BareBonesBrowserLaunch.jar"					alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/SoundSystem/CodecWav.jar"						alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/SoundSystem/CodecJOgg.jar"					alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/SoundSystem/LibraryJavaSound.jar"				alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/SoundSystem/LibraryLWJGLOpenAL.jar"			alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/SoundSystem/SoundSystem.jar"					alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/lib/lwjgl/jinput.jar"						alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/lib/lwjgl/lwjgl_util.jar"					alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/jme/lib/lwjgl/lwjgl.jar"						alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/FengGUI/FengGUI.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/FengGUI/FengGUI-Optional.jar"					alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/log4j/log4j-1.2.16.jar"						alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/geonames-1.0.4.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/timingframework/TimingFramework-1.0.jar"		alias="betaville" storepass="${keypass}" />
+	    <signjar jar="lib/ogg-video-codec.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="webstart/native.jar"								alias="betaville" storepass="${keypass}" />
+	    <signjar jar="webstart/windows-native.jar"						alias="betaville" storepass="${keypass}" />
+	    <signjar jar="webstart/mac-native.jar"							alias="betaville" storepass="${keypass}" />
+	    <signjar jar="webstart/linux-native.jar"						alias="betaville" storepass="${keypass}" />
+	  </target>
+</project>

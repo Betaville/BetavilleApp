@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+"
+      codebase="http://betaville.net/nightly"
+      href="nightly.jnlp">
+ 
+  <information>
+    <title>Betaville Nightly Build</title>
+    <vendor>BxmC</vendor>
+    <homepage href="http://bxmc.poly.edu"/>
+    <description>Every living city is in Beta. (Builds at midnight EST)</description>
+    <description kind="short">Participatory Urban Planning</description>
+    <icon kind="splash" href="http://bxmc.poly.edu/sites/default/files/inline_images/BetavilleLogoColor.gif"/> 
+    <!-- Moon image taken from http://commons.wikimedia.org/wiki/User:Ozgurmulazimoglu -->
+    <icon href="http://betaville.net/nightly/nightly_logo.png"/> 
+    <association extensions="bxb" mime-type="text/plain"/>
+    <offline-allowed/>
+    <shortcut online="false">
+  	<desktop />
+  	<menu submenu="Brooklyn eXperimental Media Center"/>
+  </shortcut>
+  </information>
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+    <jar href="BetavilleApp.jar"/>
+    <jar href="BetavilleData.jar"/>
+    <jar href="jdom.jar"/>
+    <jar href="jme-audio.jar"/>
+    <jar href="jme-awt.jar"/>
+    <jar href="jme-collada.jar"/>
+    <jar href="jme-editors.jar"/>
+    <jar href="jme-effects.jar"/>
+    <jar href="jme-font.jar"/>
+    <jar href="jme-gamestates.jar"/>
+    <jar href="jme-model.jar"/>
+    <jar href="jme-ogrexml.jar"/>
+    <jar href="jme-scene.jar"/>
+    <jar href="jme-terrain.jar"/>
+    <jar href="jme-xml.jar"/>
+    <jar href="jme.jar"/>
+    <jar href="gluegen-rt.jar"/>
+    <jar href="jogl.jar"/>
+    <jar href="junit-4.1.jar"/>
+    <jar href="jorbis-0.0.17.jar"/>
+    <jar href="rssutils.jar"/>
+    <jar href="BareBonesBrowserLaunch.jar"/>
+    <jar href="CodecWav.jar"/>
+    <jar href="CodecJOgg.jar"/>
+    <jar href="LibraryJavaSound.jar"/>
+    <jar href="LibraryLWJGLOpenAL.jar"/>
+    <jar href="SoundSystem.jar"/>
+    <jar href="jinput.jar"/>
+    <jar href="lwjgl_util.jar"/>
+    <jar href="lwjgl.jar"/>
+    <jar href="FengGUI.jar"/>
+    <jar href="FengGUI-Optional.jar"/>
+    <jar href="log4j-1.2.16.jar"/>
+    <jar href="geonames-1.0.4.jar"/>
+    <jar href="TimingFramework-1.0.jar"/>
+    <jar href="ogg-video-codec.jar"/>
+    <nativelib href="native.jar"/>
+  </resources>
+
+<property key="java.library.path" value="." />
+
+<resources os="Windows">
+  	<j2se version="1.5+" max-heap-size="768M"/>
+    <nativelib href="windows-native.jar"/>
+  </resources>
+  <resources os="Mac OS">
+    <j2se version="1.5+" max-heap-size="768M"/>
+    <nativelib href="mac-native.jar"/>
+  </resources>
+  <resources os="Linux" arch="i386">
+    <j2se version="1.5+" max-heap-size="768M"/>
+    <nativelib href="linux-native.jar"/>
+  </resources>
+
+  <application-desc main-class="edu.poly.bxmc.betaville.jme.BetavilleNoCanvas"/> 
+  <component-desc/>
+</jnlp>

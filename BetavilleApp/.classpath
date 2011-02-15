@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="junit"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-audio.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-awt.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-editors.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-effects.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-font.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-gamestates.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-model.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-scene.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-terrain.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme-xml.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/jme.jar" sourcepath="/jme"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/lib/jogl/gluegen-rt.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/lib/jogl/jogl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="BetavilleApp/lib/jme/lib/jogl/native/macosx"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/jme/lib/junit/junit-4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jme/lib/jorbis/jorbis-0.0.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/rss_utils_1/rssutils.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/BareBonesBrowserLaunch.jar"/>
+	<classpathentry exported="true" kind="con" path="SWT_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/SoundSystem/CodecWav.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/SoundSystem/LibraryJavaSound.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/SoundSystem/LibraryLWJGLOpenAL.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/SoundSystem/SoundSystem.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.paulscode.com/docs/SoundSystem/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jme/jme-collada.jar" sourcepath="/jme_wonderland"/>
+	<classpathentry kind="lib" path="lib/log4j/log4j-1.2.16.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://logging.apache.org/log4j/1.2/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jme/jme-ogrexml.jar" sourcepath="/jme"/>
+	<classpathentry kind="lib" path="lib/FengGUI/FengGUI.jar" sourcepath="/FengGUI/src"/>
+	<classpathentry kind="lib" path="lib/FengGUI/FengGUI-Optional.jar" sourcepath="/FengGUI/optional"/>
+	<classpathentry kind="lib" path="lib/SoundSystem/CodecJOgg.jar"/>
+	<classpathentry kind="lib" path="lib/jdom/build/jdom.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.jdom.org/docs/apidocs/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jme/lib/lwjgl/jinput.jar"/>
+	<classpathentry kind="lib" path="lib/jme/lib/lwjgl/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="lib/jme/lib/lwjgl/lwjgl.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://lwjgl.org/javadoc/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="BetavilleApp/lib/jme/lib/lwjgl/native"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/geonames-1.0.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.geonames.org/source-code/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/timingframework/TimingFramework-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/ogg-video-codec.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
