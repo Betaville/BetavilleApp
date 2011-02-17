@@ -40,11 +40,16 @@ import org.fenggui.event.ISelectionChangedListener;
 import org.fenggui.event.SelectionChangedEvent;
 import org.fenggui.layout.RowExLayout;
 
+import com.jme.math.Vector3f;
+
+import edu.poly.bxmc.betaville.CityManager;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
@@ -88,6 +93,8 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 
 			public void selectionChanged(Object sender,
 					SelectionChangedEvent selectionChangedEvent){
+				logger.info("selection changed: " + selectionChangedEvent.getSpecialType());
+				//selectionChangedEvent.isSelected();
 				updateWormholeList(((CityItem)citySelector.getSelectedItem()).getCity().getCityID());
 			}
 		});
@@ -104,6 +111,22 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 
 		Button go = FengGUI.createWidget(Button.class);
 		go.setText("Go!");
+		go.addButtonPressedListener(new IButtonPressedListener() {
+
+			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				// perform the wormhole jump here
+				Wormhole w = ((WormholeItem)wormholeSelector.getSelectedItem()).getWormhole();
+
+				logger.info("Wormhole to "+w.getName()+" selected.");
+				SceneScape.setUTMZone(w.getLocation().getLonZone(), w.getLocation().getLatZone());
+				CityManager.swapCities(SceneScape.getCurrentCityID(), w.getCityID());
+
+				// finally we move the camera
+				SceneGameState.getInstance().getCamera().lookAt(MapManager.locationToBetaville(w.getLocation()), Vector3f.UNIT_Y);
+
+
+			}
+		});
 
 		Button add = FengGUI.createWidget(Button.class);
 		add.setText("Create Here");
@@ -117,12 +140,13 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		buttonContainer.addWidget(go, add);
 	}
 
-	private void updateWormholeList(final int cityID){
+	private synchronized void updateWormholeList(final int cityID){
 		wormholeSelector.getList().clear();
 		wormholeSelector.addItem("Searching...");
 		//citySelector.setEnabled(false);
 		SettingsPreferences.getGUIThreadPool().submit(new Runnable() {
 			public void run() {
+				logger.info("Looking for wormholes in city " + cityID);
 				List<Wormhole> wormholes = NetPool.getPool().getConnection().getAllWormholesInCity(cityID);
 				if(wormholes!=null){
 					logger.info(wormholes.size()+" wormholes found");

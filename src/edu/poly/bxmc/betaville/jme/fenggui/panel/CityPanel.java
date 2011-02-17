@@ -49,7 +49,6 @@ import edu.poly.bxmc.betaville.jme.fenggui.ModelSwapWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.MyLocationWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.NetworkedWormholeWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.TerrainLoader;
-import edu.poly.bxmc.betaville.jme.fenggui.WormholeWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.experimental.ButtonToy;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -87,7 +86,6 @@ public class CityPanel extends Window implements IBetavilleWindow{
 	private TerrainLoader terrainWindow;
 	private ModelSwapWindow modelSwapper;
 	private ButtonToy buttonToy;
-	private WormholeWindow wormholeWindow;
 	
 	private List<PanelAction> panelActions;
 	
@@ -139,7 +137,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		//addAction(new OnOffPanelAction("Hierarchy Editor", "Stuff", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, HierarchyEditorWindow.class, false));
 		addAction(new OnOffPanelAction("My Location", "Shows My Location!", AvailabilityRule.ALWAYS, UserType.MEMBER, false, MyLocationWindow.class, false));
 		//addAction(new OnOffPanelAction("Bookmarks", "Manage your bookmarks", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, BookmarkWindow.class, false));
-		//addAction(new OnOffPanelAction("Wormhole", "Wormholes", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, NetworkedWormholeWindow.class, false));
+		addAction(new OnOffPanelAction("Wormhole", "Wormholes", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, NetworkedWormholeWindow.class, false));
 		addAction(new PerformancePanelAction());
 		
 		
