@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.geonames.FeatureClass;
 import org.geonames.InsufficientStyleException;
 import org.geonames.Toponym;
 import org.geonames.ToponymSearchCriteria;
@@ -80,6 +81,45 @@ public class GeoNamesSearchQuery extends SearchQuery implements IConfigurableSea
 				}
 
 				results.add(result);
+			}
+		}catch(Exception e){
+			if(e.getMessage().contains("overloaded")){
+				logger.warn(e.getMessage());
+				GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Geonames Search",
+						"The Geonames search servers are currently overloaded!", "ok", true));
+			}
+		}
+		return results;
+	}
+	
+	/**
+	 * Search functionality for finding just a city from GeoNames
+	 * @param searchString
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SearchResult> citySearch(String searchString) throws Exception {
+		List<SearchResult> results = new ArrayList<SearchResult>();
+		searchCriteria.setQ(searchString);
+		searchCriteria.setFeatureClass(FeatureClass.P);
+		searchCriteria.setFeatureCode("PPL");
+		try{
+			ToponymSearchResult searchResult = WebService.search(searchCriteria);
+			
+			for (Toponym toponym : searchResult.getToponyms()) {
+				if(toponym.getFeatureClass()!=null){
+					if(toponym.getFeatureClass().equals(FeatureClass.P)&&toponym.getFeatureCode().equals("PPL")){
+						GeoNamesSearchResult result;
+						try{
+							result  = new GeoNamesSearchResult(toponym.getGeoNameId(), toponym.getName(), toponym.getElevation(), toponym.getLatitude(), toponym.getLongitude());
+						}catch(InsufficientStyleException e){
+							logger.debug("An elevation could not be found for the GeoNames result \'"+toponym.getName()+"\' ("+toponym.getGeoNameId()+")");
+							result  = new GeoNamesSearchResult(toponym.getGeoNameId(), toponym.getName(), toponym.getLatitude(), toponym.getLongitude());
+						}
+						
+						results.add(result);
+					}
+				}
 			}
 		}catch(Exception e){
 			if(e.getMessage().contains("overloaded")){

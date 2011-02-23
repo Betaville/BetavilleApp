@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -22,9 +22,10 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package bvtest.map;
 
+import org.geonames.FeatureClass;
 import org.geonames.Toponym;
 import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
@@ -42,11 +43,18 @@ public class GeoNamesTest {
 	 */
 	public static void main(String[] args) throws Exception {
 		ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
-		searchCriteria.setQ("leogane");
+		searchCriteria.setQ("Manhattan");
+		searchCriteria.setFeatureClass(FeatureClass.P);
+		searchCriteria.setFeatureCode("PPL");
 		ToponymSearchResult searchResult = WebService.search(searchCriteria);
 		for (Toponym toponym : searchResult.getToponyms()) {
 			System.out.println(toponym.getName()+" "+ toponym.getCountryName());
 			System.out.println("\t"+toponym.getLatitude()+", "+toponym.getLongitude());
+			if(toponym.getFeatureClass()!=null){
+				if(toponym.getFeatureClass().equals(FeatureClass.P)&&toponym.getFeatureCode().equals("PPL")){
+					System.out.println("CITY!");
+				}
+			}
 		}
 	}
 
