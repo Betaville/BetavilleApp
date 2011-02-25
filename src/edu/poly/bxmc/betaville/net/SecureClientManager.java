@@ -48,6 +48,7 @@ import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.Comment;
 import edu.poly.bxmc.betaville.model.Design;
@@ -654,11 +655,11 @@ public class SecureClientManager extends ClientManager{
 	 * @param cityID The ID of the city in which this wormhole is located
 	 * @return The ID of the new wormhole or a server error code.
 	 */
-	public int addWormhole(UTMCoordinate location, String name, int cityID){
+	public int addWormhole(ILocation location, String name, int cityID){
 		Integer response = null;
 		busy=true;
 		try {
-			output.writeObject(new Object[]{"wormhole", "add", location, name, cityID, SettingsPreferences.getSessionToken()});
+			output.writeObject(new Object[]{"wormhole", "add", location.getUTM(), name, cityID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy=false;
 			return response;

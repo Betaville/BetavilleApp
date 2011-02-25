@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.search;
 
 import java.util.ArrayList;
@@ -73,13 +73,7 @@ public class GeoNamesSearchQuery extends SearchQuery implements IConfigurableSea
 
 			for (Toponym toponym : searchResult.getToponyms()) {
 				GeoNamesSearchResult result;
-				try{
-					result  = new GeoNamesSearchResult(toponym.getGeoNameId(), toponym.getName(), toponym.getElevation(), toponym.getLatitude(), toponym.getLongitude());
-				}catch(InsufficientStyleException e){
-					logger.debug("An elevation could not be found for the GeoNames result \'"+toponym.getName()+"\' ("+toponym.getGeoNameId()+")");
-					result  = new GeoNamesSearchResult(toponym.getGeoNameId(), toponym.getName(), toponym.getLatitude(), toponym.getLongitude());
-				}
-
+				result  = new GeoNamesSearchResult(toponym);
 				results.add(result);
 			}
 		}catch(Exception e){
@@ -91,7 +85,7 @@ public class GeoNamesSearchQuery extends SearchQuery implements IConfigurableSea
 		}
 		return results;
 	}
-	
+
 	/**
 	 * Search functionality for finding just a city from GeoNames
 	 * @param searchString
@@ -105,18 +99,12 @@ public class GeoNamesSearchQuery extends SearchQuery implements IConfigurableSea
 		searchCriteria.setFeatureCode("PPL");
 		try{
 			ToponymSearchResult searchResult = WebService.search(searchCriteria);
-			
+
 			for (Toponym toponym : searchResult.getToponyms()) {
 				if(toponym.getFeatureClass()!=null){
 					if(toponym.getFeatureClass().equals(FeatureClass.P)&&toponym.getFeatureCode().equals("PPL")){
 						GeoNamesSearchResult result;
-						try{
-							result  = new GeoNamesSearchResult(toponym.getGeoNameId(), toponym.getName(), toponym.getElevation(), toponym.getLatitude(), toponym.getLongitude());
-						}catch(InsufficientStyleException e){
-							logger.debug("An elevation could not be found for the GeoNames result \'"+toponym.getName()+"\' ("+toponym.getGeoNameId()+")");
-							result  = new GeoNamesSearchResult(toponym.getGeoNameId(), toponym.getName(), toponym.getLatitude(), toponym.getLongitude());
-						}
-						
+						result  = new GeoNamesSearchResult(toponym);
 						results.add(result);
 					}
 				}
@@ -145,20 +133,14 @@ public class GeoNamesSearchQuery extends SearchQuery implements IConfigurableSea
 
 	public List<SearchResult> searchNameField(String searchString, boolean exactMatch) throws Exception {
 		List<SearchResult> results = new ArrayList<SearchResult>();
-		
+
 		if(exactMatch)searchCriteria.setNameEquals(searchString);
 		else searchCriteria.setName(searchString);
-		
+
 		ToponymSearchResult searchResult = WebService.search(searchCriteria);
 		for (Toponym toponym : searchResult.getToponyms()) {
 			GeoNamesSearchResult result;
-			try{
-				result  = new GeoNamesSearchResult(toponym.getGeoNameId(), toponym.getName(), toponym.getElevation(), toponym.getLatitude(), toponym.getLongitude());
-			}catch(InsufficientStyleException e){
-				logger.debug("An elevation could not be found for the GeoNames result \'"+toponym.getName()+"\' ("+toponym.getGeoNameId()+")");
-				result  = new GeoNamesSearchResult(toponym.getGeoNameId(), toponym.getName(), toponym.getLatitude(), toponym.getLongitude());
-			}
-
+			result  = new GeoNamesSearchResult(toponym);
 			results.add(result);
 		}
 		return results;

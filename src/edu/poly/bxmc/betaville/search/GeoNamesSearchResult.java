@@ -25,6 +25,8 @@
 */
 package edu.poly.bxmc.betaville.search;
 
+import org.geonames.Toponym;
+
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 
 /**
@@ -34,13 +36,19 @@ import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 public class GeoNamesSearchResult extends LocationalSearchResult {
 	private int geonamesID;
 	
-	public GeoNamesSearchResult(int geonamesID, String mainTitle, double latitude, double longitude) {
-		this(geonamesID, mainTitle, 0, latitude, longitude);
+	private Toponym toponym;
+	
+	public GeoNamesSearchResult(Toponym toponym) {
+		this(toponym.getGeoNameId(), toponym.getName(), 0, toponym.getLatitude(), toponym.getLongitude());
 	}
 	
 	public GeoNamesSearchResult(int geonamesID, String mainTitle, int altitude, double latitude, double longitude) {
 		super(mainTitle, new GPSCoordinate(altitude, latitude, longitude));
 		this.geonamesID=geonamesID;
+	}
+	
+	public Toponym getToponym(){
+		return toponym;
 	}
 
 	/*

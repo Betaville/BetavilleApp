@@ -616,8 +616,10 @@ public class GeometryUtilities {
 	
 	/**
 	 * 
-	 * @param s
-	 * @return
+	 * @param s  The {@link Spatial} to find the extents of
+	 * @return An array made up of two {@link Vector3f} objects.  Index 0
+	 * represents the minimum extent while index 1 represents the maximum
+	 * extent
 	 */
 	public static Vector3f[] findObjectExtents(Spatial s){
 		Vector3f min = new Vector3f(0, 0, 0);
@@ -650,6 +652,41 @@ public class GeometryUtilities {
 				if(tempX>max.x)max.x=tempX;
 				if(tempY>max.y)max.y=tempY;
 				if(tempZ>max.z)max.z=tempZ;
+			}
+		}
+	}
+	
+	/**
+	 * Internally adjusts a model by its own offset from the origin so that its
+	 * point closest to the origin rests <em>at</em> the origin
+	 * @param s The model to adjust
+	 */
+	public static void relocateObjectToOrigin(Spatial s){
+		Vector3f pointClosestToOrigin = findObjectExtents(s)[0];
+		relocateObjectToOriginImpl(s, pointClosestToOrigin);
+	}
+	
+	private static void relocateObjectToOriginImpl(Spatial s, Vector3f pointClosestToOrigin){
+		if(s instanceof Node){
+			if(((Node)s).getQuantity()>0){
+				for(Spatial child : ((Node)s).getChildren()){
+					relocateObjectToOriginImpl(child, pointClosestToOrigin);
+				}
+			}
+		}
+		else if(s instanceof Geometry){
+			float tempX;
+			float tempY;
+			float tempZ;
+			FloatBuffer buffer = ((Geometry)s).getVertexBuffer();
+			buffer.rewind();
+			for(int i=0; i<((Geometry)s).getVertexCount(); i++){
+				tempX=buffer.get(i*3);
+				tempY=buffer.get((i*3)+1);
+				tempZ=buffer.get((i*3)+2);
+				buffer.put(i*3, tempX-pointClosestToOrigin.x);
+				buffer.put((i*3)+1, tempY-pointClosestToOrigin.y);
+				buffer.put((i*3)+2, tempZ-pointClosestToOrigin.z);
 			}
 		}
 	}

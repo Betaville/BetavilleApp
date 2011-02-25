@@ -39,20 +39,22 @@ import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.event.ISelectionChangedListener;
 import org.fenggui.event.SelectionChangedEvent;
 import org.fenggui.layout.RowExLayout;
+import org.fenggui.layout.StaticLayout;
 
 import com.jme.math.Vector3f;
 
 import edu.poly.bxmc.betaville.CityManager;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.jme.fenggui.FindCityWindow.ISelectionDeselectionListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
+import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
-import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
+import edu.poly.bxmc.betaville.search.GeoNamesSearchResult;
 
 /**
  * @author Skye Book
@@ -69,6 +71,10 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 	private ComboBox citySelector;
 	private ComboBox wormholeSelector;
 	private Container buttonContainer;
+	
+	private Button createCity;
+	
+	private FindCityWindow fcw;
 
 	/**
 	 * 
@@ -128,16 +134,55 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 			}
 		});
 
-		Button add = FengGUI.createWidget(Button.class);
-		add.setText("Create Here");
-		add.addButtonPressedListener(new IButtonPressedListener() {
+		Button createHere = FengGUI.createWidget(Button.class);
+		createHere.setText("Create Here");
+		createHere.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				int response = NetPool.getPool().getSecureConnection().addWormhole(MapManager.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), "test", SceneScape.getCurrentCityID());
 				logger.info("New Wormhole created (response: "+response+")");
 			}
 		});
+		
+		Button findCity = FengGUI.createWidget(Button.class);
+		findCity.setText("Find City");
+		findCity.addButtonPressedListener(new IButtonPressedListener() {
+			
+			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				if(fcw==null){
+					fcw = FengGUI.createWidget(FindCityWindow.class);
+					fcw.finishSetup();
+					StaticLayout.center(fcw, GUIGameState.getInstance().getDisp());
+					
+					/* This listener ensures that the create city button is only enabled when
+					 * there is a city selected */
+					fcw.addSelectionDeslectionListener(new ISelectionDeselectionListener() {
+						public void resultSelected(GeoNamesSearchResult result) {
+							createCity.setEnabled(true);
+						}
+						public void resultDeselected() {
+							createCity.setEnabled(false);
+						}
+					});
+				}
+				if(!fcw.isInWidgetTree()) GUIGameState.getInstance().getDisp().addWidget(fcw);
+			}
+		});
+		
+		createCity = FengGUI.createWidget(Button.class);
+		createCity.setText("Create City");
+		createCity.setEnabled(false);
+		createCity.addButtonPressedListener(new IButtonPressedListener() {
+			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				GeoNamesSearchResult city = fcw.getSelectedCity();
+				int newCityID = NetPool.getPool().getConnection().addCity(city.getToponym().getCountryCode(), "", "");
+				int response = NetPool.getPool().getSecureConnection().addWormhole(city.getLocation(), city.getMainTitle(), newCityID);
+			}
+		});
 
-		buttonContainer.addWidget(go, add);
+		buttonContainer.addWidget(go);
+		//buttonContainer.addWidget(createHere);
+		buttonContainer.addWidget(findCity);
+		buttonContainer.addWidget(createCity);
 	}
 
 	private synchronized void updateWormholeList(final int cityID){
