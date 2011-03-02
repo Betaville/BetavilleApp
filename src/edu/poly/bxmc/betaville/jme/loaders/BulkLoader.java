@@ -58,14 +58,19 @@ public class BulkLoader {
 			
 			// calculate the geographical offset
 			Vector3f closestToOrigin = GeometryUtilities.findObjectExtents(ml.getModel())[0];
+			ILocation original = design.getCoordinate().clone();
 			design.getCoordinate().move((int)closestToOrigin.z*-1, (int)closestToOrigin.x*-1, 0);
+			ILocation corrected = design.getCoordinate().clone();
+			
+			
 			
 			// move the model to 0,0,0 on its own axis
 			GeometryUtilities.relocateObjectToOrigin(ml.getModel());
 			SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
+			SceneScape.getCity().addDesign(design);
 			SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
 			SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).updateRenderState();
-			progress.modelMovedToLocation(currentCounter);
+			progress.modelMovedToLocation(currentCounter, original, corrected);
 			
 			
 			//SceneScape.getCity().addDesign(design);
@@ -105,7 +110,7 @@ public class BulkLoader {
 		 * the model has been relocated to the correct location.
 		 * @param currentFile The current file being loaded (i.e: first, second, third)
 		 */
-		public void modelMovedToLocation(int currentFile);
+		public void modelMovedToLocation(int currentFile, ILocation originalLocation, ILocation correctedLocation);
 		
 		/**
 		 * Provides notification that a model is currently being uploaded
