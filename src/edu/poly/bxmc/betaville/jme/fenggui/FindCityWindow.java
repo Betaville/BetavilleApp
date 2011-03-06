@@ -62,7 +62,7 @@ import edu.poly.bxmc.betaville.search.SearchResult;
 public class FindCityWindow extends Window implements IBetavilleWindow {
 	private static final Logger logger = Logger.getLogger(FindCityWindow.class);
 	
-	private int targetWidth = 200;
+	private int targetWidth = 250;
 	private int targetHeight = 150;
 	
 	private Container searchContainer;
@@ -113,6 +113,8 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 	
 	private void performSearch(){
 		
+		logger.info("Doing search: "+FengUtils.getText(entry));
+		
 		selectedID=-1;
 		
 		// hand the search task off to another thread as it is dependent on a server response.
@@ -124,7 +126,8 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 					List<SearchResult> cities = q.citySearch(FengUtils.getText(entry));
 					
 					for(SearchResult result : cities){
-						ResultLabel l = FengGUI.createWidget(ResultLabel.class);
+						//ResultLabel l = FengGUI.createWidget(ResultLabel.class);
+						ResultLabel l = new ResultLabel();
 						l.configure((GeoNamesSearchResult)result);
 						isc.addWidget(l);
 					}
@@ -182,11 +185,11 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 		setSize(targetWidth, targetHeight);
 	}
 
-	private class ResultLabel extends Container{
+	public class ResultLabel extends Container{
 		
 		private GeoNamesSearchResult result;
 		
-		private ResultLabel(){
+		public ResultLabel(){
 			setLayoutManager(new RowExLayout(true));
 			
 			addEventListener(EVENT_MOUSE, new IGenericEventListener() {
