@@ -50,6 +50,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.FindCityWindow.ISelectionDeselectionL
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
@@ -128,7 +129,10 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 				CityManager.swapCities(SceneScape.getCurrentCityID(), w.getCityID());
 
 				// finally we move the camera
-				SceneGameState.getInstance().getCamera().lookAt(MapManager.locationToBetaville(w.getLocation()), Vector3f.UNIT_Y);
+				SceneGameState.getInstance().getCamera().setLocation(MapManager.locationToBetaville(w.getLocation()));
+				ILocation lookAt = w.getLocation().clone();
+				lookAt.getUTM().move(300, 300, 0);
+				SceneGameState.getInstance().getCamera().lookAt(MapManager.locationToBetaville(lookAt), Vector3f.UNIT_Y);
 
 
 			}
