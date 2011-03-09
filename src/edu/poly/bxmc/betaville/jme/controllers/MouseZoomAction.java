@@ -70,4 +70,21 @@ public class MouseZoomAction extends MouseInputAction {
         camera.update();
 	}
 
+	/**
+	 * @return The sensitivity of the mouse or trackpad
+	 * wheel/scroller
+	 */
+	public float getSensitivity() {
+		return sensitivity;
+	}
+
+	/**
+	 * @param sensitivity The sensitivity of the trackpad or
+	 * mouse wheel wheel/scroll.  Clamped between 0 and 1
+	 */
+	public void setSensitivity(float sensitivity) {
+		if(sensitivity>1)this.sensitivity=1;
+		else if(sensitivity<0)this.sensitivity=0;
+		else this.sensitivity = sensitivity;
+	}
 }

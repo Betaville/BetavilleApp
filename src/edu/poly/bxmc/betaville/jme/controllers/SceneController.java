@@ -117,7 +117,7 @@ public class SceneController extends Controller {
 		firstPersonHandler.getMouseLookHandler().getMouseLook().setSpeed(.5f);
 		
 		MouseZoomAction mouseZoom = new MouseZoomAction(camera, moveSpeed);
-		//firstPersonHandler.addAction(mouseZoom);
+		firstPersonHandler.addAction(mouseZoom);
 		
 		adjustPerLocale();
 		camera.getDirection();
