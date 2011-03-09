@@ -25,7 +25,9 @@
  */
 package edu.poly.bxmc.betaville.updater;
 
+import java.util.List;
 import java.util.Timer;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -36,20 +38,29 @@ import org.apache.log4j.Logger;
 public class BetavilleUpdater extends Timer{
 	private static Logger logger = Logger.getLogger(BetavilleUpdater.class);
 	
+	private List<BetavilleTask> tasks;
+	
 	/**
 	 * Creates a new update timer.
 	 */
 	public BetavilleUpdater(){
 		super();
+		tasks = new Vector<BetavilleTask>();
 	}
 	
 	public void addTask(BetavilleTask task){
 		scheduleAtFixedRate(task, task.getUpdater().getUpdateInterval(), task.getUpdater().getUpdateInterval());
+		tasks.add(task);
 	}
 	
 	public void removeTask(BetavilleTask task){
 		logger.info("Removing task from update schedule");
 		task.cancel();
+		tasks.remove(task);
+	}
+	
+	public List<BetavilleTask> getTasks(){
+		return tasks;
 	}
 	
 	/**
@@ -58,6 +69,7 @@ public class BetavilleUpdater extends Timer{
 	 */
 	public void shutdown(){
 		logger.info("Shutting down update timer");
+		tasks.clear();
 		cancel();
 	}
 }

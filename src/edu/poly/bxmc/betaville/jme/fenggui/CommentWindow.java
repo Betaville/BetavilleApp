@@ -182,14 +182,23 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 	}
 	
 	private void createCommentUpdater(){
+		
 		commentUpdater = new AbstractUpdater(15000) {
+			private boolean isInUpdate=false;
 			
 			public void doUpdate(){
+				isInUpdate=true;
 				refresh(false);
+				isInUpdate=false;
 			}
 			
 			public boolean isUpdateRequired() {
 				return isInWidgetTree();
+			}
+
+			@Override
+			public boolean isInUpdate() {
+				return isInUpdate;
 			}
 		};
 		

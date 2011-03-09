@@ -115,30 +115,30 @@ public class SecureClientManager extends ClientManager{
 	}
 	
 	public boolean authenticateUser(String name, String pass){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Authenticating User");
 			output.writeObject(new Object[]{"user", "auth", name, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
 	public boolean startSession(String name, String pass){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Starting User Session");
 			output.writeObject(new Object[]{"user", "startsession", name, pass});
 			Object[] response = (Object[])readResponse();
 			int sessionID = Integer.parseInt((String)response[0]);
 			String sessionToken = (String)response[1];
-			busy=false;
+			busy.getAndSet(false);
 			if(sessionID>0){
 				SettingsPreferences.setSessionID(sessionID);
 				SettingsPreferences.setSessionToken(sessionToken);
@@ -155,17 +155,17 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
 	public boolean endSession(String sessionToken){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Ending user session");
 			output.writeObject(new Object[]{"user", "endsession", sessionToken});
 			int response = Integer.parseInt((String)readResponse());
-			busy=false;
+			busy.getAndSet(false);
 			if(response==0){
 				SettingsPreferences.setSessionToken("");
 				return true;
@@ -176,7 +176,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 
@@ -190,7 +190,7 @@ public class SecureClientManager extends ClientManager{
 	 * @return Whether or not the operation succeeded.
 	 */
 	public boolean addUser(String name, String pass, String email, String twitter, String bio){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Adding User");
 			output.writeObject(new Object[]{"user", "add", name, pass, email, twitter, bio});
@@ -198,14 +198,14 @@ public class SecureClientManager extends ClientManager{
 			if(Boolean.parseBoolean(response)){
 				System.out.println("bool read correctly");
 			}
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean(response);
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
@@ -217,18 +217,18 @@ public class SecureClientManager extends ClientManager{
 	 * @return Whether or not the operation succeeded.
 	 */
 	public boolean changePassword(String name, String pass, String newPass){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Changing user password");
 			output.writeObject(new Object[]{"user", "changepass", name, pass, newPass});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 
@@ -241,18 +241,18 @@ public class SecureClientManager extends ClientManager{
 	 * @return Whether or not the operation succeeded.
 	 */
 	public boolean changeBio(String name, String pass, String newBio){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Changing user information");
 			output.writeObject(new Object[]{"user", "changebio", name, pass, newBio});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
@@ -270,12 +270,12 @@ public class SecureClientManager extends ClientManager{
 	 * @see PhysicalFileTransporter
 	 */
 	public int addDesign(Design design, String user, String pass, PhysicalFileTransporter pft){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Adding a design");
 			output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft});
 			logger.info("Data transmission complete for design addition");
-			busy=false;
+			busy.getAndSet(false);
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -284,7 +284,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -3;
 	}
 	
@@ -302,11 +302,11 @@ public class SecureClientManager extends ClientManager{
 	 * @see PhysicalFileTransporter
 	 */
 	public int addEmptyDesign(EmptyDesign design, String user, String pass){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Adding an empty design");
 			output.writeObject(new Object[]{"design", "addempty", design, user, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -315,7 +315,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -3;
 	}
 	
@@ -333,11 +333,11 @@ public class SecureClientManager extends ClientManager{
 	 * @see PhysicalFileTransporter
 	 */
 	public int addProposal(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, ProposalPermission permission){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Adding a proposal");
 			output.writeObject(new Object[]{"design", "addproposal", design, user, pass, pft, removables, thumbTransporter, permission});
-			busy=false;
+			busy.getAndSet(false);
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -346,7 +346,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -3;
 	}
 	
@@ -364,12 +364,12 @@ public class SecureClientManager extends ClientManager{
 	 * @see PhysicalFileTransporter
 	 */
 	public int addVersion(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Adding a design");
 			output.writeObject(new Object[]{"proposal", "addversion", design, user, pass, pft, removables, thumbTransporter});
 			logger.info("Data transmission complete for design addition");
-			busy=false;
+			busy.getAndSet(false);
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -378,7 +378,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -3;
 	}
 	
@@ -396,11 +396,11 @@ public class SecureClientManager extends ClientManager{
 	 * @see PhysicalFileTransporter
 	 */
 	public int addBase(Design design, String user, String pass, PhysicalFileTransporter pft){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Adding a base design");
 			output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft});
-			busy=false;
+			busy.getAndSet(false);
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -409,7 +409,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -3;
 	}
 
@@ -422,11 +422,11 @@ public class SecureClientManager extends ClientManager{
 	 * @return 0 for success, -2 for networking error, -3 for failed authentication
 	 */
 	public int removeDesign(int designID, String user, String pass){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Removing a design");
 			output.writeObject(new Object[]{"design", "remove", designID, user, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -435,7 +435,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -2;
 	}
 
@@ -448,35 +448,35 @@ public class SecureClientManager extends ClientManager{
 	 * @return Whether or not the name change operation succeeded.
 	 */
 	public boolean changeDesignName(int designID, String user, String pass, String newName){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Changing name of design " + designID + " to \""+newName+"\"");
 			output.writeObject(new Object[]{"design", "changename", designID, newName, user, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
 	public boolean changeDesignFile(int designID, String user, String pass, PhysicalFileTransporter pft, boolean textureOnOff){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Changing the file for design " + designID);
 			output.writeObject(new Object[]{"design", "changefile", designID, user, pass, textureOnOff, pft});
 			logger.info("Data transmission complete for file change");
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 
@@ -489,18 +489,18 @@ public class SecureClientManager extends ClientManager{
 	 * @return Whether or not the description change operation succeeded.
 	 */
 	public boolean changeDesignDescription(int designID, String user, String pass, String newDescription){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Changing description for design " + designID);
 			output.writeObject(new Object[]{"design", "changedescription", designID, newDescription, user, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
@@ -513,18 +513,18 @@ public class SecureClientManager extends ClientManager{
 	 * @return Whether or not the address change operation succeeded.
 	 */
 	public boolean changeDesignAddress(int designID, String user, String pass, String newAddress){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Changing the address of design " + designID);
 			output.writeObject(new Object[]{"design", "changeaddress", designID, newAddress, user, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
@@ -537,18 +537,18 @@ public class SecureClientManager extends ClientManager{
 	 * @return Whether or not the URL change operation succeeded.
 	 */
 	public boolean changeDesignURL(int designID, String user, String pass, String newURL){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Changing the URL for design " + designID);
 			output.writeObject(new Object[]{"design", "changeurl", designID, newURL, user, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 
@@ -563,18 +563,18 @@ public class SecureClientManager extends ClientManager{
 	 * @see UTMCoordinate
 	 */
 	public boolean changeModeledDesignLocation(int designID, int rotY, String user, String pass, UTMCoordinate newLocation){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Changing the location for design " + designID);
 			output.writeObject(new Object[]{"design", "changemodellocation", designID, newLocation, rotY, user, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
@@ -586,7 +586,7 @@ public class SecureClientManager extends ClientManager{
 	 * @return 0 for success, -1 for SQL error, -2 if its already faved, -3 for failed authentication, or -4 for a network error
 	 */
 	public int faveDesign(int designID, String user, String pass){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"fave", "add", user, pass, designID});
 			return Integer.parseInt((String)readResponse());
@@ -595,7 +595,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -4;
 	}
 
@@ -607,20 +607,20 @@ public class SecureClientManager extends ClientManager{
 	 * @see Comment
 	 */
 	public boolean addComment(Comment comment, String pass){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Inserting a comment for about design " + comment.getDesignID());
 			output.writeObject(new Object[]{"comment", "add", comment, pass});
 			boolean response = Boolean.parseBoolean((String)readResponse());
 			System.out.println("received net response");
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 
@@ -633,18 +633,18 @@ public class SecureClientManager extends ClientManager{
 	 * @return Whether or not the comment was deleted.
 	 */
 	public boolean deleteComment(int commentID, String user, String pass){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Deleting comment " + commentID);
 			output.writeObject(new Object[]{"comment", "delete", commentID, user, pass});
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 	
@@ -657,11 +657,11 @@ public class SecureClientManager extends ClientManager{
 	 */
 	public int addWormhole(ILocation location, String name, int cityID){
 		Integer response = null;
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"wormhole", "add", location.getUTM(), name, cityID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -670,17 +670,17 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return response;
 	}
 	
 	public int deleteWormhole(int wormholeID){
 		Integer response = null;
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"wormhole", "delete", wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -689,17 +689,17 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return response;
 	}
 	
 	public int editWormholeName(int wormholeID, String newName){
 		Integer response = null;
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"wormhole", "editname", newName, wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -708,17 +708,17 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return response;
 	}
 	
 	public int editWormholeLocation(int wormholeID, UTMCoordinate newLocation){
 		Integer response = null;
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"wormhole", "editname", newLocation, wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -727,7 +727,7 @@ public class SecureClientManager extends ClientManager{
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return response;
 	}
 }

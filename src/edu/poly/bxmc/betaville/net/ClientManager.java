@@ -32,6 +32,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
@@ -68,18 +69,18 @@ public abstract class ClientManager {
 	/**
 	 * @return the busy
 	 */
-	public boolean isBusy() {
-		return busy;
+	public synchronized boolean isBusy() {
+		return busy.get();
 	}
 
 	/**
 	 * @param busy the busy to set
 	 */
 	public void setBusy(boolean busy) {
-		this.busy = busy;
+		this.busy.getAndSet(busy);
 	}
 
-	protected boolean busy=false;
+	protected AtomicBoolean busy = new AtomicBoolean(false);
 	
 	/**
 	 * Close the socket
@@ -121,22 +122,22 @@ public abstract class ClientManager {
 	 * @return Whether or not this name is available.
 	 */
 	public boolean checkNameAvailability(String name){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Checking if a name is available");
 			output.writeObject(new Object[]{"user", "available", name});
 			String response = (String)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return Boolean.parseBoolean(response);
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 		} catch (UnexpectedServerResponse e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return false;
 	}
 
@@ -146,20 +147,20 @@ public abstract class ClientManager {
 	 * @return The user's email address.
 	 */
 	public String getUserEmail(String user){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Getting user email");
 			output.writeObject(new Object[]{"user", "getmail", user});
 			String response = (String)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -171,7 +172,7 @@ public abstract class ClientManager {
 	 * @see Design
 	 */
 	public Design findDesignByID(int designID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.debug("Finding design " + designID);
 			output.writeObject(new Object[]{"design", "findbyid", designID});
@@ -180,20 +181,20 @@ public abstract class ClientManager {
 				CacheManager.getCacheManager().requestFile(((Design)response).getID(), ((Design)response).getFilepath());
 				CacheManager.getCacheManager().requestThumbnail(designID);
 				
-				busy=false;
+				busy.getAndSet(false);
 				return (Design)response;
 			}
 			else{
-				busy=false;
+				busy.getAndSet(false);
 				return null;
 			}
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -208,32 +209,32 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Vector<Design> findDesignsByName(String name){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs named \""+name+"\"");
 			output.writeObject(new Object[]{"design", "findbyname", name});
 			Object response = readResponse();
 			if(response instanceof Vector<?>){
 				if(((Vector<?>)(response)).get(0) instanceof Design){
-					busy=false;
+					busy.getAndSet(false);
 					return (Vector<Design>)response;
 				}
 				else{
-					busy=false;
+					busy.getAndSet(false);
 					return null;
 				}
 			}
 			else{
-				busy=false;
+				busy.getAndSet(false);
 				return null;
 			}
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -247,7 +248,7 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Vector<Design> findDesignsByUser(String user){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs by \""+user+"\"");
 
@@ -256,30 +257,30 @@ public abstract class ClientManager {
 			if(response instanceof Vector<?>){
 				if(((Vector<?>)response).size()>0){
 					if(((Vector<?>)(response)).get(0) instanceof Design){
-						busy=false;
+						busy.getAndSet(false);
 						return (Vector<Design>)response;
 					}
 					else{
-						busy=false;
+						busy.getAndSet(false);
 						return null;
 					}
 				}
 				else{
-					busy=false;
+					busy.getAndSet(false);
 					return null;
 				}
 			}
 			else{
-				busy=false;
+				busy.getAndSet(false);
 				return null;
 			}
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -293,7 +294,7 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Vector<Design> findDesignsByDate(String date){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs dates \""+date+"\"");
 
@@ -301,16 +302,16 @@ public abstract class ClientManager {
 			Object response = readResponse();
 			if(response instanceof Vector<?>){
 				if(((Vector<?>)(response)).get(0) instanceof Design){
-					busy=false;
+					busy.getAndSet(false);
 					return (Vector<Design>)response;
 				}
 				else{
-					busy=false;
+					busy.getAndSet(false);
 					return null;
 				}
 			}
 			else{
-				busy=false;
+				busy.getAndSet(false);
 				return null;
 			}
 		} catch (IOException e) {
@@ -318,7 +319,7 @@ public abstract class ClientManager {
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -353,7 +354,7 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	private Vector<Design> findDesignsByCity(int cityID, boolean onlyBase){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs from city " + cityID);
 			output.writeObject(new Object[]{"design", "findbycity", cityID, onlyBase});
@@ -361,30 +362,30 @@ public abstract class ClientManager {
 			if(response instanceof Vector<?>){
 				if(((Vector<?>)response).size()>0){
 					if(((Vector<?>)(response)).get(0) instanceof Design){
-						busy=false;
+						busy.getAndSet(false);
 						return (Vector<Design>)response;
 					}
 					else{
-						busy=false;
+						busy.getAndSet(false);
 						return null;
 					}
 				}
 				else{
-					busy=false;
+					busy.getAndSet(false);
 					return null;
 				}
 			}
 			else{
-				busy=false;
+				busy.getAndSet(false);
 				return null;
 			}
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -399,7 +400,7 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Vector<Design> findTerrainByCity(int cityID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs from city " + cityID);
 			output.writeObject(new Object[]{"design", "terrainbycity", cityID});
@@ -407,42 +408,42 @@ public abstract class ClientManager {
 			if(response instanceof Vector<?>){
 				if(((Vector<?>)response).size()>0){
 					if(((Vector<?>)(response)).get(0) instanceof Design){
-						busy=false;
+						busy.getAndSet(false);
 						return (Vector<Design>)response;
 					}
 					else{
-						busy=false;
+						busy.getAndSet(false);
 						return null;
 					}
 				}
 				else{
-					busy=false;
+					busy.getAndSet(false);
 					return null;
 				}
 			}
 			else{
-				busy=false;
+				busy.getAndSet(false);
 				return null;
 			}
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
 
 	public int[] findVersionsOfProposal(int proposalDesignID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"version", "versionsofproposal", proposalDesignID});
 			Object response = readResponse();
 			if(response!=null){
 				if(response instanceof int[]){
-					busy=false;
+					busy.getAndSet(false);
 					return (int[])response;
 				}
 			}
@@ -452,18 +453,18 @@ public abstract class ClientManager {
 			e.printStackTrace();
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return null;
 	}
 
 	public ProposalPermission getProposalPermissions(int designID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"proposal", "getpermissions", designID});
 			ProposalPermission response = (ProposalPermission) readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -471,10 +472,10 @@ public abstract class ClientManager {
 			e.printStackTrace();
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return null;
 	}
 
@@ -485,11 +486,11 @@ public abstract class ClientManager {
 	 * @see #findDesignByID(int)
 	 */
 	public int[] findAllProposals(int designID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"design", "allproposals", designID});
 			int[] response = (int[]) readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -497,9 +498,9 @@ public abstract class ClientManager {
 			e.printStackTrace();
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return null;
 	}
 	
@@ -511,40 +512,40 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public ArrayList<Design> findAllProposalsNearLocation(UTMCoordinate coordinate, int meterRadius){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding proposals within " + meterRadius + " of " + coordinate.toString());
 			output.writeObject(new Object[]{"proposal", "findinradius", coordinate, meterRadius});
 			Object response = readResponse();
 			if(response instanceof ArrayList){
-				busy=false;
+				busy.getAndSet(false);
 				return (ArrayList<Design>)response;
 			}
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return null;
 	}
 	
 	public PhysicalFileTransporter requestThumbnail(int designID){
-		busy=true;
+		busy.getAndSet(true);
 		try{
 			logger.debug("Requesting thumbnail for design " + designID);
 			output.writeObject(new Object[]{"design", "requestthumb", designID});
 			PhysicalFileTransporter response = (PhysicalFileTransporter)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 		
@@ -571,20 +572,20 @@ public abstract class ClientManager {
 	 * @see PhysicalFileTransporter
 	 */
 	public PhysicalFileTransporter requestFile(int designID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.debug("Requesting file for design " + designID);
 			output.writeObject(new Object[]{"design", "requestfile", designID});
 			PhysicalFileTransporter response = (PhysicalFileTransporter)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -597,12 +598,12 @@ public abstract class ClientManager {
 	 * @return The ID of this new city.
 	 */
 	public int addCity(String name, String state, String country){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Adding a city [if it doesn't already exist]: " + name + ", " + state + ", " + country);
 			output.writeObject(new Object[]{"city", "add", name, state, country});
 			int response = Integer.parseInt((String)readResponse());
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -610,27 +611,27 @@ public abstract class ClientManager {
 			e.printStackTrace();
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -3;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<City> findAllCities(){
 		try {
-			busy=true;
+			busy.getAndSet(true);
 			output.writeObject(new String[]{"city", "getall"});
 			List<City> response = (List<City>)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -643,20 +644,20 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Vector<Integer> findCitiesByName(String name){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding cities named \""+name+"\"");
 			output.writeObject(new Object[]{"city", "findbyname", name});
 			Vector<Integer> response = (Vector<Integer>)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -669,20 +670,20 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Vector<Integer> findCitiesByState(String state){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding cities located in \""+state+"\"");
 			output.writeObject(new Object[]{"city", "findbystate", state});
 			Vector<Integer> response = (Vector<Integer>)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -695,20 +696,20 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Vector<Integer> findCitiesByCountry(String country){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding cities located in \""+country+"\"");
 			output.writeObject(new Object[]{"city", "findbycountry", country});
 			Vector<Integer> response = (Vector<Integer>)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -727,20 +728,20 @@ public abstract class ClientManager {
 	 * @see City
 	 */
 	public String[] findCityByID(int cityID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding city with ID: "+cityID);
 			output.writeObject(new Object[]{"city", "findbyid", cityID});
 			String[] response = (String[])readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -761,20 +762,20 @@ public abstract class ClientManager {
 	 * @see City
 	 */
 	public String[] findCityByAll(String name, String state, String country){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Finding city: \""+name+"\", \""+state+"\", \""+country+"\"");
 			output.writeObject(new Object[]{"city", "findbyall", name, state, country});
 			String[] response = (String[])readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -784,15 +785,15 @@ public abstract class ClientManager {
 	 * @param commentID The ID of the comment to report.
 	 */
 	public void reportSpamComment(int commentID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Reporting comment " + commentID + " as spam");
 			output.writeObject(new Object[]{"comment", "reportspam", commentID});
-			busy=false;
+			busy.getAndSet(false);
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		}
-		busy=false;
+		busy.getAndSet(false);
 	}
 
 	/**
@@ -803,21 +804,21 @@ public abstract class ClientManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public Vector<Comment> getComments(int designID){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			logger.info("Retrieving comments for design " + designID);
 			output.writeObject(new Object[]{"comment", "getforid", designID});
 			Vector<Comment> response = (Vector<Comment>)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return null;
 	}
 
@@ -828,11 +829,11 @@ public abstract class ClientManager {
 	 * @return 1 for yes, 0 for no, negative numbers are errors
 	 */
 	public int checkUserLevel(String user, 	UserType userType){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"user", "checklevel", user, userType});
 			int response =  Integer.parseInt((String) readResponse());
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -840,9 +841,9 @@ public abstract class ClientManager {
 			e.printStackTrace();
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -2;
 	}
 
@@ -852,11 +853,11 @@ public abstract class ClientManager {
 	 * @return The version of the design of -2 for an error
 	 */
 	public long getDesignVersion(){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"softwareversion", "getdesign"});
 			long response =  Long.parseLong((String) readResponse());
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -864,9 +865,9 @@ public abstract class ClientManager {
 			e.printStackTrace();
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return -2;
 	}
 
@@ -876,27 +877,27 @@ public abstract class ClientManager {
 	 * @return The type of user
 	 */
 	public UserType getUserLevel(String user){
-		busy=true;
+		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"user", "getlevel", user});
 			UserType response = (UserType)readResponse();
-			busy=false;
+			busy.getAndSet(false);
 			return response;
 		} catch (IOException e){
 			logger.error("Network issue detected", e);
-			busy=false;
+			busy.getAndSet(false);
 		} catch (UnexpectedServerResponse e){
 			e.printStackTrace();
-			busy=false;
+			busy.getAndSet(false);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<Wormhole> getWormholesWithin(UTMCoordinate location, int extentNorth, int extentEast){
 		ArrayList<Wormhole> wormholes = null;
-		busy=true;
+		busy.getAndSet(true);
 		try{
 			output.writeObject(new Object[]{"wormhole", "getwithin", location, extentNorth, extentEast});
 			wormholes = (ArrayList<Wormhole>)readResponse();
@@ -905,7 +906,7 @@ public abstract class ClientManager {
 		} catch (UnexpectedServerResponse e){
 			logger.error("The server has returned an unexpected type!", e);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return wormholes;
 	}
 	
@@ -916,7 +917,7 @@ public abstract class ClientManager {
 	@SuppressWarnings("unchecked")
 	public ArrayList<Wormhole> getAllWormholes(){
 		ArrayList<Wormhole> wormholes = null;
-		busy=true;
+		busy.getAndSet(true);
 		try{
 			output.writeObject(new Object[]{"wormhole", "getall"});
 			wormholes = (ArrayList<Wormhole>)readResponse();
@@ -925,7 +926,7 @@ public abstract class ClientManager {
 		} catch (UnexpectedServerResponse e){
 			logger.error("The server has returned an unexpected type!", e);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return wormholes;
 	}
 	
@@ -939,7 +940,7 @@ public abstract class ClientManager {
 	public ArrayList<Wormhole> getAllWormholesInCity(int cityID){
 		logger.info("looking for all wormholes in city");
 		ArrayList<Wormhole> wormholes = null;
-		busy=true;
+		busy.getAndSet(true);
 		try{
 			output.writeObject(new Object[]{"wormhole", "getallincity", cityID});
 			wormholes = (ArrayList<Wormhole>)readResponse();
@@ -948,7 +949,7 @@ public abstract class ClientManager {
 		} catch (UnexpectedServerResponse e){
 			logger.error("The server has returned an unexpected type!", e);
 		}
-		busy=false;
+		busy.getAndSet(false);
 		return wormholes;
 	}
 }

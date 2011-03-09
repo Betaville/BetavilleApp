@@ -46,6 +46,7 @@ import com.jme.math.Vector3f;
 import edu.poly.bxmc.betaville.CityManager;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.fenggui.FindCityWindow.ISelectionDeselectionListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -56,6 +57,7 @@ import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.search.GeoNamesSearchResult;
+import edu.poly.bxmc.betaville.updater.BetavilleTask;
 
 /**
  * @author Skye Book
@@ -121,6 +123,25 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		go.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				// make sure there is no update in process
+				for(BetavilleTask task : BetavilleNoCanvas.getUpdater().getTasks()){
+					if(task.getUpdater().isInUpdate()){
+						logger.warn("Task is updating, ideally we should be waiting for this to finish");
+					}
+					// need to figure out what to do about this!
+					/*
+					while(task.getUpdater().isInUpdate()){
+						try {
+							Thread.currentThread().sleep(25);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+					*/
+				}
+				
+				
 				// perform the wormhole jump here
 				Wormhole w = ((WormholeItem)wormholeSelector.getSelectedItem()).getWormhole();
 

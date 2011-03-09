@@ -43,6 +43,8 @@ import edu.poly.bxmc.betaville.net.NetPool;
  */
 public class BaseUpdater extends AbstractUpdater {
 	private static Logger logger = Logger.getLogger(BaseUpdater.class);
+	
+	private boolean updating=false;
 
 	/**
 	 * @param updateInterval
@@ -62,6 +64,7 @@ public class BaseUpdater extends AbstractUpdater {
 	 * @see edu.poly.bxmc.betaville.updater.Updater#doUpdate()
 	 */
 	public void doUpdate(){
+		updating=true;
 		if(SceneGameState.getInstance()==null){
 			// If the graphics layer has shutdown or otherwise crashed, shutdown the application.
 			SafeShutdown.doSafeShutdown();
@@ -94,11 +97,20 @@ public class BaseUpdater extends AbstractUpdater {
 					}
 				}
 			}
+			
+			updating=false;
 		} catch (IOException e) {
 			logger.error("Dearie me!  File not found!", e);
+			updating=false;
 		} catch (URISyntaxException e) {
 			logger.error("URI exception, this really shouldn't happen", e);
+			updating=false;
 		}
+	}
+
+	@Override
+	public boolean isInUpdate() {
+		return updating;
 	}
 
 }

@@ -51,6 +51,8 @@ public class NetPool extends AbstractUpdater{
 	
 	private List<Module> modules;
 	
+	private boolean isInUpdate = false;
+	
 	/**
 	 * 
 	 */
@@ -144,7 +146,8 @@ public class NetPool extends AbstractUpdater{
 		return netPool;
 	}
 
-	public void doUpdate() {
+	public void doUpdate(){
+		isInUpdate=true;
 		logger.debug("Performing network connection cleanup ("+managers.size()+" currently)");
 		int startingTotal = managers.size();
 		// This is reserved for the first idle connection we come across, it will be saved
@@ -172,9 +175,15 @@ public class NetPool extends AbstractUpdater{
 		}
 
 		logger.info("Network cleanup complete: " + (startingTotal-managers.size()) + " connections dropped");
+		isInUpdate=false;
 	}
 
 	public boolean isUpdateRequired() {
 		return autoCleanupEnabled;
+	}
+
+	@Override
+	public boolean isInUpdate() {
+		return isInUpdate;
 	}
 }

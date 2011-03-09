@@ -50,4 +50,13 @@ public abstract class AbstractUpdater implements Updater{
 	public void setLastUpdate(long lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
+	
+	/**
+	 * Implementable method to give other objects the
+	 * opportunity to see if any systems are in the
+	 * middle of an update
+	 * @return true if there is an update in progress,
+	 * false if there is no update currently occuring
+	 */
+	public abstract boolean isInUpdate();
 }
