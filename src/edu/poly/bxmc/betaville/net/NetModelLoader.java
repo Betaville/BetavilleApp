@@ -36,7 +36,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
@@ -69,7 +68,7 @@ import edu.poly.bxmc.betaville.model.ModeledDesign;
  * Loads models from the network.  Different options for what is loaded
  * can be configured by using the constructor's {@link LookupRoutine} parameter.
  * @author Skye Book
- *@see LookupRoutine
+ * @see LookupRoutine
  */
 public class NetModelLoader{
 	private static Logger logger = Logger.getLogger(NetModelLoader.class);
@@ -136,7 +135,6 @@ public class NetModelLoader{
 			throw new NullPointerException("designs not received!");
 		}
 		else{
-			Comparator<Design> comparator = null;
 			Collections.sort(designs, Design.distanceComparator(MapManager.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
 			for(int i=0; i<designs.size(); i++){
 				if(limit==-1 || i<limit){

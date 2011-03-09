@@ -25,68 +25,21 @@
 */
 package edu.poly.bxmc.betaville.flags;
 
-import java.util.Iterator;
-
-import org.apache.log4j.Logger;
-
-import com.jme.scene.Node;
-import com.jme.scene.Spatial;
-import com.jme.scene.TriMesh;
-
-import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.model.Design;
-import edu.poly.bxmc.betaville.model.EmptyDesign;
 
 /**
  * @author Skye Book
  *
  */
-public class DesktopFlagPositionStrategy extends AbstractFlagPositionStrategy {
-	private static Logger logger = Logger.getLogger(DesktopFlagPositionStrategy.class);
-	private float currentMaxHeight=0;
-	
-	/**
-	 * 
-	 */
-	public DesktopFlagPositionStrategy() {}
+public class FixedFlagPositionStrategy extends AbstractFlagPositionStrategy {
 
-	
-	public int findHeight(Design base){
-		
-		// an EmptyDesign won't be found in the scene so we set its height manually
-		if(base instanceof EmptyDesign){
-			logger.debug("Handling an EmptyDesign, setting default height");
-			return 50;
-		}
-		
-		Spatial s = SceneGameState.getInstance().getDesignNode().getChild(base.getFullIdentifier());
-		logger.info("Finding height of " + s.getName());
-		long start = System.currentTimeMillis();
-		currentMaxHeight=0;
-		tester(s);
-		logger.info("height is " + currentMaxHeight + " | Took " + (System.currentTimeMillis()-start) + " ms");
-		return (int) currentMaxHeight;
-	}
-	
-	/**
-	 * Finds the height of a spatial
-	 * TODO convert to self-standing recursive (pass in currentMaxHeight)
-	 * @param s
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.flags.AbstractFlagPositionStrategy#findHeight(edu.poly.bxmc.betaville.model.Design)
 	 */
-	private void tester(Spatial s){
-		if(s instanceof TriMesh){
-			float maxHeightIncoming = GeometryUtilities.findHeightOfTriMesh((TriMesh)s);
-			
-			if(maxHeightIncoming>currentMaxHeight){
-				currentMaxHeight=maxHeightIncoming;
-			}
-		}
-		else if(s instanceof Node){
-			Iterator<Spatial> it = ((Node)s).getChildren().iterator();
-			while(it.hasNext()){
-				tester(it.next());
-			}
-		}
+	@Override
+	public int findHeight(Design base) {
+		// place each flag at 50 meters
+		return 50;
 	}
+
 }

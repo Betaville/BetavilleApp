@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,8 @@ package edu.poly.bxmc.betaville.flags;
 
 import java.util.ArrayList;
 
+import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.Design;
 
@@ -34,7 +36,16 @@ import edu.poly.bxmc.betaville.model.Design;
  * @author Skye Book
  *
  */
-public interface IFlagPositionStrategy{
-	public void placeFlag(UTMCoordinate location, int baseID, ArrayList<Design> proposals);
-	public int findHeight(Design base);
+public abstract class AbstractFlagPositionStrategy{
+	
+	public void placeFlag(UTMCoordinate location, int baseID, ArrayList<Design> proposals) {
+		SceneGameState.getInstance().addToFlagNode(MapManager.locationToBetaville(location), baseID, proposals.size());
+	}
+	
+	/**
+	 * Finds the appropriate height where a flag should be placed
+	 * @param base The object that this flag should be placed over
+	 * @return The height at which to place a flag
+	 */
+	public abstract int findHeight(Design base);
 }

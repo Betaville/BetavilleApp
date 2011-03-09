@@ -42,7 +42,7 @@ import edu.poly.bxmc.betaville.net.NetPool;
 public class FlagProducer {
 	private static Logger logger = Logger.getLogger(FlagProducer.class);
 	private UTMCoordinate currentLocation;
-	private IFlagPositionStrategy flagPositionStrategy;
+	private AbstractFlagPositionStrategy flagPositionStrategy;
 	
 	// all of the proposals found in an area
 	private ArrayList<Design>proposalDesigns = null;
@@ -55,7 +55,7 @@ public class FlagProducer {
 	/**
 	 * 
 	 */
-	public FlagProducer(UTMCoordinate currentLocation, IFlagPositionStrategy flagPositionStrategy){
+	public FlagProducer(UTMCoordinate currentLocation, AbstractFlagPositionStrategy flagPositionStrategy){
 		this.currentLocation=currentLocation;
 		this.flagPositionStrategy=flagPositionStrategy;
 	}
