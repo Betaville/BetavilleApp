@@ -43,6 +43,7 @@ import org.fenggui.event.WidgetListChangedEvent;
 import org.fenggui.event.WindowClosedEvent;
 
 import com.jme.image.Texture;
+import com.jme.input.KeyInput;
 import com.jme.input.MouseInput;
 import com.jme.math.Plane;
 import com.jme.math.Ray;
@@ -447,7 +448,8 @@ public class GUIGameState extends GameState {
 			((GUIModule)module).update();
 		}
 
-		if(MouseInput.get().isButtonDown(0) && withinClickBounds()){
+		if(MouseInput.get().isButtonDown(0) && withinClickBounds()  && !KeyInput.get().isKeyDown(KeyInput.KEY_LMENU)
+				&& !KeyInput.get().isKeyDown(KeyInput.KEY_RMENU)){
 			leftClickAction();
 			previousLeftClick = true;
 		}
