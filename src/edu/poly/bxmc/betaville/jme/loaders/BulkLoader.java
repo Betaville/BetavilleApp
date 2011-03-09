@@ -66,6 +66,7 @@ public class BulkLoader {
 			
 			// move the model to 0,0,0 on its own axis
 			GeometryUtilities.relocateObjectToOrigin(ml.getModel());
+			logger.info("Model Originally At: " + closestToOrigin.toString()+"\nNow At: "+ GeometryUtilities.findObjectExtents(ml.getModel())[0].toString());
 			SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
 			SceneScape.getCity().addDesign(design);
 			SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
