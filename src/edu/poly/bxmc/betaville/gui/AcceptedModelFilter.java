@@ -30,11 +30,12 @@ import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * {@link FileFilter} which shows only directories and Esri Shapefiles
+ * {@link FileFilter} which shows only directories and known file
+ * types for 3d objects that are acceptable for import
  * @author Skye Book
  *
  */
-public class EsriShapefileFilter extends FileFilter {
+public class AcceptedModelFilter extends FileFilter {
 
 	/*
 	 * (non-Javadoc)
@@ -42,7 +43,7 @@ public class EsriShapefileFilter extends FileFilter {
 	 */
 	@Override
 	public String getDescription() {
-		return "Esri Shapefile";
+		return "All Accepted Formats";
 	}
 
 	/*
@@ -51,7 +52,7 @@ public class EsriShapefileFilter extends FileFilter {
 	 */
 	@Override
 	public boolean accept(File f) {
-		if(f.toString().endsWith(".shp")||f.isDirectory()) return true;
+		if(f.toString().endsWith(".dae")||f.toString().endsWith(".obj")||f.isDirectory()) return true;
 		else return false;
 	}
 
