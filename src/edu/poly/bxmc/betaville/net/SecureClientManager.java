@@ -43,6 +43,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
+import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
@@ -106,7 +107,8 @@ public class SecureClientManager extends ClientManager{
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("Network issue detected", e);
+			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
+			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
 		} catch (UnrecoverableKeyException e) {
 			e.printStackTrace();
 		} catch (KeyManagementException e) {

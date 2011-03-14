@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,17 @@
  */
 package edu.poly.bxmc.betaville;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.log4j.Logger;
 
+import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.NetModelLoader;
 import edu.poly.bxmc.betaville.net.NetModelLoader.LookupRoutine;
+import edu.poly.bxmc.betaville.updater.BaseUpdater;
+import edu.poly.bxmc.betaville.updater.BetavilleTask;
 
 /**
  * Allows for the removal and addition of cities to the scene.
@@ -41,30 +46,58 @@ public class CityManager {
 	private static final Logger logger = Logger.getLogger(CityManager.class);
 
 	public static void swapCities(final int oldCity, final int newCity){
+		// make sure there is no update in process
+		for(BetavilleTask task : BetavilleNoCanvas.getUpdater().getTasks()){
+			if(task.getUpdater() instanceof BaseUpdater){
+				BetavilleNoCanvas.getUpdater().removeTask(task);
+				logger.info("BaseUpdater removed");
+				break;
+			}
+		}
+
+		final AtomicBoolean newCityIsLoaded = new AtomicBoolean(false);
+		final AtomicBoolean oldCityIsUnloaded = new AtomicBoolean(false);
+
 		SettingsPreferences.getThreadPool().execute(new Runnable() {
-			
+
 			public void run() {
 				constructCity(newCity);
+				newCityIsLoaded.set(true);
 			}
 		});
-		deconstructCurrentCity(oldCity);
+
+		SettingsPreferences.getThreadPool().execute(new Runnable() {
+
+			public void run() {
+				deconstructCurrentCity(oldCity);
+				oldCityIsUnloaded.set(true);
+			}
+		});
+
+		if(!newCityIsLoaded.get() || !oldCityIsUnloaded.get()){
+			try {
+				Thread.currentThread().sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		try {
 			SceneScape.setCurrentCity(newCity);
 		} catch (Exception e) {
 			logger.error("City " + newCity + " could not be found", e);
 		}
 	}
-	
+
 	public static void deconstructCurrentCity(int cityID){
 		for(Design d : SceneScape.getCity().getDesigns()){
 			if(d.getCityID()==cityID){
 				SceneGameState.getInstance().removeDesignFromDisplay(d.getID());
 			}
 		}
-		
+
 		SceneGameState.getInstance().getTerrainNode().detachAllChildren();
 	}
-	
+
 	public static void constructCity(int cityID){
 		NetModelLoader.loadCityTerrain(cityID);
 		NetModelLoader.load(LookupRoutine.ALL_IN_CITY, NetModelLoader.NO_LIMIT, cityID);

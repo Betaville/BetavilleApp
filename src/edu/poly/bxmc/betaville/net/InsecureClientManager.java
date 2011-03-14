@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
@@ -43,7 +45,6 @@ import edu.poly.bxmc.betaville.module.Module;
  * 
  * @author Caroline Bouchat
  * @author Skye Book
- * @version 0.1 - Spring 2009
  */
 public class InsecureClientManager extends ClientManager{
 	private static Logger logger = Logger.getLogger(InsecureClientManager.class);
@@ -64,7 +65,8 @@ public class InsecureClientManager extends ClientManager{
 			output = new ObjectOutputStream(clientSocket.getOutputStream());
 			input = new ObjectInputStream(clientSocket.getInputStream());
 		} catch (UnknownHostException e) {
-			logger.fatal("Cannot connect to server at " + SettingsPreferences.getServerIP(), e);
+			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
+			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

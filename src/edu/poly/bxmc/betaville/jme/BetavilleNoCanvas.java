@@ -131,9 +131,9 @@ public class BetavilleNoCanvas {
 		DisplaySystem.getDisplaySystem().setMinStencilBits(4);
 
 		LogManager.setupLoggers();
-
+		
 		if (args != null) {
-			logger.info("Main started with " + args.length + " arguments:");
+			logger.info("Main started with " + args.length + " arguments"+((args.length>0)?":":""));
 			for (int i = 0; i < args.length; i++) {
 				logger.info("Argument " + i + ": " + args[i]);
 			}

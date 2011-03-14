@@ -73,13 +73,6 @@ public abstract class ClientManager {
 		return busy.get();
 	}
 
-	/**
-	 * @param busy the busy to set
-	 */
-	public void setBusy(boolean busy) {
-		this.busy.getAndSet(busy);
-	}
-
 	protected AtomicBoolean busy = new AtomicBoolean(false);
 	
 	/**

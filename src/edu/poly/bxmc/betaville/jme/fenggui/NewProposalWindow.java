@@ -80,6 +80,9 @@ import com.jme.util.geom.BufferUtils;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.gui.AcceptedModelFilter;
+import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
+import edu.poly.bxmc.betaville.gui.WavefrontFileFilter;
 import edu.poly.bxmc.betaville.jme.fenggui.MakeRoomWindow.IFinishedListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -788,6 +791,12 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						JDialog dialog = new JDialog();
 						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
+						AcceptedModelFilter modelFilter = new AcceptedModelFilter();
+						fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
+						fileChooser.addChoosableFileFilter(modelFilter);
+						fileChooser.addChoosableFileFilter(new ColladaFileFilter());
+						fileChooser.addChoosableFileFilter(new WavefrontFileFilter());
+						fileChooser.setFileFilter(modelFilter);
 						fileChooser.showOpenDialog(dialog);
 						File file = fileChooser.getSelectedFile();
 						
