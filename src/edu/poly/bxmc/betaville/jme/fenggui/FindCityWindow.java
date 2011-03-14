@@ -33,7 +33,6 @@ import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.IWidget;
 import org.fenggui.Label;
-import org.fenggui.ScrollContainer;
 import org.fenggui.TextEditor;
 import org.fenggui.composite.Window;
 import org.fenggui.decorator.background.PlainBackground;
@@ -48,6 +47,7 @@ import org.fenggui.layout.RowExLayout;
 import org.fenggui.util.Color;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.search.GeoNamesSearchQuery;
@@ -69,7 +69,7 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 	private TextEditor entry;
 	private FixedButton search;
 	
-	private ScrollContainer results;
+	private BlockingScrollContainer results;
 	private Container isc;
 	
 	// The geonames ID of the selected city feature (Code: P/Class: PPL)
@@ -87,7 +87,7 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 		
 		selectionListeners = new ArrayList<FindCityWindow.ISelectionDeselectionListener>();
 		
-		results = FengGUI.createWidget(ScrollContainer.class);
+		results = FengGUI.createWidget(BlockingScrollContainer.class);
 		results.setShowScrollbars(true);
 		isc = FengGUI.createWidget(Container.class);
 		isc.setLayoutManager(new RowExLayout(false));

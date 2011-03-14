@@ -33,7 +33,6 @@ import org.fenggui.ComboBox;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
-import org.fenggui.ScrollContainer;
 import org.fenggui.binding.render.Binding;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
@@ -47,6 +46,7 @@ import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.CityManager;
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
@@ -132,7 +132,7 @@ public class WormholeWindow extends Window implements IBetavilleWindow{
 	}
 	
 	private void createCityList(){
-		ScrollContainer sc = FengGUI.createWidget(ScrollContainer.class);
+		BlockingScrollContainer sc = FengGUI.createWidget(BlockingScrollContainer.class);
 		Container container = FengGUI.createWidget(Container.class);
 		globalSelector = FengGUI.createWidget(ComboBox.class);
 		localSelector = FengGUI.createWidget(ComboBox.class);

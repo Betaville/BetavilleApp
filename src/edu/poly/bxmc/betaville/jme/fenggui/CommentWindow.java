@@ -34,7 +34,6 @@ import org.apache.log4j.Logger;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
-import org.fenggui.ScrollContainer;
 import org.fenggui.TextEditor;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
@@ -49,6 +48,7 @@ import com.jme.scene.Spatial;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
@@ -78,7 +78,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 	private TextEditor newCommentEditor;
 	private FixedButton postComment;
 	
-	private ScrollContainer sc;
+	private BlockingScrollContainer sc;
 	private double rememberedPosition=0;
 	private TextEditor commentText;
 	private Label intermediary;
@@ -124,7 +124,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 	}
 	
 	private void createCommentContainer(){
-		sc = FengGUI.createWidget(ScrollContainer.class);
+		sc = FengGUI.createWidget(BlockingScrollContainer.class);
 		sc.setSize(targetWidth, targetHeight-titleBar.getHeight()-newCommentEditor.getHeight()-postComment.getHeight()-20);
 		sc.setXY(0, newCommentEditor.getHeight()+postComment.getHeight()+5);
 		sc.setShowScrollbars(true);

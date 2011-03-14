@@ -22,8 +22,10 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.controllers;
+
+import java.util.ArrayList;
 
 import com.jme.input.MouseInput;
 import com.jme.input.action.InputActionEvent;
@@ -38,11 +40,13 @@ import com.jme.renderer.Camera;
  *
  */
 public class MouseZoomAction extends MouseInputAction {
-	
+
 	private static final Vector3f tempVa = new Vector3f();
 	private int mouseDelta = 0;
 	private float sensitivity = 0.001f;
 	private Camera camera;
+
+	private ArrayList<ZoomLock> zoomLocks;
 
 	/**
 	 * 
@@ -50,24 +54,31 @@ public class MouseZoomAction extends MouseInputAction {
 	public MouseZoomAction(Camera camera, float speedPerMouseWheelClick) {
 		this.camera=camera;
 		speed=speedPerMouseWheelClick;
+		zoomLocks = new ArrayList<MouseZoomAction.ZoomLock>();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.jme.input.action.InputActionInterface#performAction(com.jme.input.action.InputActionEvent)
 	 */
 	public void performAction(InputActionEvent evt) {
+
+		// check if zoom is locked
+		for(ZoomLock zl : zoomLocks){
+			if(!zl.zoomIsAllowed()) return;
+		}
+
 		mouseDelta = MouseInput.get().getWheelDelta();
 		if(mouseDelta==0) return;
-		
+
 		Vector3f loc = camera.getLocation();
-		
-        if ( !camera.isParallelProjection() ) {
-            loc.addLocal(camera.getDirection().mult(speed * mouseDelta*sensitivity, tempVa));
-        } else {
-            // move up instead of forward if in parallel mode
-            loc.addLocal(camera.getUp().mult(speed * mouseDelta*sensitivity, tempVa));
-        }
-        camera.update();
+
+		if ( !camera.isParallelProjection() ) {
+			loc.addLocal(camera.getDirection().mult(speed * mouseDelta*sensitivity, tempVa));
+		} else {
+			// move up instead of forward if in parallel mode
+			loc.addLocal(camera.getUp().mult(speed * mouseDelta*sensitivity, tempVa));
+		}
+		camera.update();
 	}
 
 	/**
@@ -86,5 +97,26 @@ public class MouseZoomAction extends MouseInputAction {
 		if(sensitivity>1)this.sensitivity=1;
 		else if(sensitivity<0)this.sensitivity=0;
 		else this.sensitivity = sensitivity;
+	}
+
+	public void addZoomLock(ZoomLock zl){
+		zoomLocks.add(zl);
+	}
+
+	public void removeZoomLock(ZoomLock zl){
+		zoomLocks.remove(zl);
+	}
+
+	public void removeAllZoomLocks(){
+		zoomLocks.clear();
+	}
+
+	public interface ZoomLock{
+		
+		/**
+		 * @return True if the zoom action should be allowed
+		 * to proceed, false if not
+		 */
+		public boolean zoomIsAllowed();
 	}
 }

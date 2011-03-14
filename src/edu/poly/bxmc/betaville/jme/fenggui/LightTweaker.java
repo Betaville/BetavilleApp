@@ -33,7 +33,6 @@ import org.fenggui.ComboBox;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
-import org.fenggui.ScrollContainer;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ISelectionChangedListener;
 import org.fenggui.event.SelectionChangedEvent;
@@ -43,6 +42,7 @@ import org.fenggui.layout.StaticLayout;
 import com.jme.light.Light;
 import com.jme.scene.state.LightState;
 
+import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.RGBAContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.panel.IPanelOnScreenAwareWindow;
@@ -68,7 +68,7 @@ public class LightTweaker extends Window implements IBetavilleWindow, IPanelOnSc
 	
 	private ComboBox lightSelector;
 	
-	private ScrollContainer sc;
+	private BlockingScrollContainer sc;
 	private Container inner;
 	
 	/**
@@ -79,7 +79,7 @@ public class LightTweaker extends Window implements IBetavilleWindow, IPanelOnSc
 		logger.info("Creating Light Tweaker");
 		getContentContainer().setLayoutManager(new StaticLayout());
 		
-		sc = FengGUI.createWidget(ScrollContainer.class);
+		sc = FengGUI.createWidget(BlockingScrollContainer.class);
 		
 		inner = FengGUI.createWidget(Container.class);
 		inner.setLayoutManager(new RowExLayout(false));

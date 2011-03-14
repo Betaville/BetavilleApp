@@ -147,22 +147,22 @@ public class GUIGameState extends GameState {
 	private static ArrayList<TextEditor> textEditors = new ArrayList<TextEditor>();
 	private boolean textEntryMode = false;
 	private boolean flagIsSelected=false;
-	
+
 	private List<Module> modules;
-	
+
 	private WormholeWindow wormholeWindow;
 	private UTMCoordinate location;
-	
+
 	// CONSTRUCTORS
 	/**
 	 * Constructor of the GUI GameState
 	 */
 	public GUIGameState(String name) {
-		
+
 		this.setName(name);
-		
+
 		modules = new ArrayList<Module>();
-		
+
 		Texture defTex = TextureState.getDefaultTexture().createSimpleClone();
 		defTex.setScale(new Vector3f(1, 1, 1));
 
@@ -190,16 +190,16 @@ public class GUIGameState extends GameState {
 
 					disp = new Display(binding);
 					input = new FengJMEInputHandler(disp);
-					
+
 					disp.addWidgetListChangedListener(new IWidgetListChangedListener() {
-						
+
 						public void widgetRemoved(Object sender,
 								WidgetListChangedEvent widgetRemovedEvent) {
 							for(IWidget w : widgetRemovedEvent.getWidget()){
 								if(w instanceof Container) removeTextEditorsFromList((Container) w);
 							}
 						}
-						
+
 						public void widgetAdded(Object sender,
 								WidgetListChangedEvent widgetAddedEvent) {
 							for(IWidget w : widgetAddedEvent.getWidget()){
@@ -212,7 +212,7 @@ public class GUIGameState extends GameState {
 					theme = new BetavilleXMLTheme("data/themes/default/default.xml");
 					FengGUI.AddTheme("default", theme);
 					FengGUI.setTheme("default");
-					
+
 					//NetModelLoader.initDummies();
 
 					topWindow = new TopSelectionWindow();
@@ -227,7 +227,7 @@ public class GUIGameState extends GameState {
 							removeTextEditorsFromList(commentWindow);
 						}
 					});
-					
+
 					navContainer = new NavContainer();
 					//editContainer = new EditContainer();
 
@@ -235,17 +235,17 @@ public class GUIGameState extends GameState {
 					newProposalWindow.finishSetup();
 					newProposalWindow.setXY((disp.getWidth()/2)-(newProposalWindow.getWidth()/2),
 							(disp.getHeight()/2)-(newProposalWindow.getHeight()/2));
-					
+
 					bottomProposals = new BottomProposals();
 					bottomProposals.setXY(0, bottomProposals.getHeight()*-1);
 					disp.addWidget(bottomProposals);
-					
+
 					bottomVersions = new BottomVersions();
 					bottomVersions.setXY(bottomProposals.getWidth(), bottomVersions.getHeight()*-1);
 					disp.addWidget(bottomVersions);
-					
+
 					logger.debug("FENGGUI VERSION: " + FengGUI.VERSION);
-					
+
 					disp.layout();
 					return null;
 				}
@@ -266,7 +266,7 @@ public class GUIGameState extends GameState {
 				mousePickingEnabled=true;
 			}
 			else*/ if(!contextOn){
-				
+
 				FengUtils.setAtSafeMousePosition(navContainer);
 				disp.addWidget(navContainer);
 				contextOn = true;
@@ -294,13 +294,13 @@ public class GUIGameState extends GameState {
 		if(previousLeftClick){
 			return;
 		}
-		
+
 		// Ray casting from mouse
 		Vector2f screenPosition = new Vector2f(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute());
 		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
 		Ray mouseRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(),
 				worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
-		
+
 		// Place red square
 		Vector3f location = new Vector3f();
 		if(mouseRay.intersectsWherePlane(new Plane(new Vector3f(0,1,0), 0), location)){
@@ -309,7 +309,7 @@ public class GUIGameState extends GameState {
 		else{
 			SceneGameState.getInstance().removeGroundBox();
 		}
-		
+
 		this.location = MapManager.betavilleToUTM(location);
 		// Check if new proposal window is active
 		if(newProposalWindow.isInWidgetTree()){
@@ -326,27 +326,27 @@ public class GUIGameState extends GameState {
 			for(IFlagSelectionListener listener : SceneScape.getFlagSelectionListeners()){
 				listener.flagDeselected();
 			}
-			
+
 			flagIsSelected=false;
 		}
-		
+
 		if(mp.getPickedTerrainNode()==null){
 			if(SceneScape.getSelectedTerrain()!=null) SceneScape.clearTerrainSelection();
 		}
 		else{
 			SceneScape.setSelectedTerrain(mp.getPickedTerrainNode());
 		}
-		
+
 		if(mp.flagPicked()){
 			flagIsSelected=true;
-			
+
 			Design d = SceneScape.getCity().findDesignByFullIdentifier(mp.getNameOfClosestFlag());
 			logger.debug("design "+ d.getID() +" name " + d.getName());
-			
+
 			for(IFlagSelectionListener listener : SceneScape.getFlagSelectionListeners()){
 				listener.flagSelected(d);
 			}
-			
+
 			// EmptyDesigns don't appear in the scene, so we can't set them as target spatials
 			if(!(d instanceof EmptyDesign)){
 				SceneScape.setTargetSpatial(mp.getDesignFromFlag());
@@ -439,11 +439,11 @@ public class GUIGameState extends GameState {
 	 */
 	public void update(float tpf) {
 		input.update(tpf);
-		
+
 		if(disp.getPopupWidget()!=null){
 			disp.bringToFront(disp.getPopupWidget());
 		}
-		
+
 		for(Module module : modules){
 			((GUIModule)module).update();
 		}
@@ -469,10 +469,10 @@ public class GUIGameState extends GameState {
 		int x = MouseInput.get().getXAbsolute();
 		int y = MouseInput.get().getYAbsolute();
 		for(IWidget w : disp.getWidgets()){
-				if(y>w.getY() && y<w.getY()+w.getSize().getHeight()
-						&& x>w.getX() && x<w.getX()+w.getSize().getWidth()){
-					return false;
-				}
+			if(y>w.getY() && y<w.getY()+w.getSize().getHeight()
+					&& x>w.getX() && x<w.getX()+w.getSize().getWidth()){
+				return false;
+			}
 		}
 		return true;
 	}
@@ -512,14 +512,14 @@ public class GUIGameState extends GameState {
 			textEntryMode=false;
 		}
 	}
-	
+
 	public void resetProposalWindow(){
 		newProposalWindow.resetForNewProposal();
 		disp.addWidget(newProposalWindow);
 		addTextEditorsToList(newProposalWindow);
 		newProposalWindow.preload(SceneScape.getPickedDesign());
 	}
-	
+
 	public boolean isProposalWindowOn(){
 		return newProposalWindow.isInWidgetTree();
 	}
@@ -527,12 +527,12 @@ public class GUIGameState extends GameState {
 	public void setContextOn(boolean on){
 		contextOn=on;
 	}
-	
+
 	/*
 	public void removeEditMenu(){
 		disp.removeWidget(editContainer);
 	}
-	*/
+	 */
 
 	public void removeNavMenu(){
 		disp.removeWidget(navContainer);
@@ -544,20 +544,20 @@ public class GUIGameState extends GameState {
 		editContainer.setXY(MouseInput.get().getXAbsolute()-(editContainer.getWidth()/2), MouseInput.get().getYAbsolute()-(editContainer.getHeight()/2));
 		mousePickingEnabled=false;
 	}
-	*/
+	 */
 
 	public CommentWindow getCommentWindow() {
 		return commentWindow;
 	}
-	
+
 	public TopSelectionWindow getTopSelectionWindow() {
 		return topWindow;
 	}
-	
+
 	public UTMCoordinate getCurrentTerrainSelection(){
 		return location;
 	}
-	
+
 	public void showCommentWindow(){
 		if(!commentWindow.isInWidgetTree()){
 			disp.addWidget(commentWindow);
@@ -565,9 +565,9 @@ public class GUIGameState extends GameState {
 			if(!SceneScape.isTargetSpatialEmpty() && !SceneScape.isTargetSpatialLocal()) commentWindow.setCurrentDesign(SceneScape.getPickedDesign().getID());
 		}
 	}
-	
+
 	public void showWormholeWindow(String location){
-		
+
 		if(wormholeWindow==null){
 			wormholeWindow = FengGUI.createWidget(WormholeWindow.class);
 			wormholeWindow.finishSetup();
@@ -580,39 +580,39 @@ public class GUIGameState extends GameState {
 			if(!wormholeWindow.isInWidgetTree()){
 				disp.addWidget(wormholeWindow);
 				addTextEditorsToList(wormholeWindow);
-//				wormholeWindow.addLocationString(location);
+				//				wormholeWindow.addLocationString(location);
 			}
 		}else{
 			if(!wormholeWindow.isInWidgetTree()){
 				disp.addWidget(wormholeWindow);
 				addTextEditorsToList(wormholeWindow);
-//				wormholeWindow.addLocationString(location);
+				//				wormholeWindow.addLocationString(location);
 			}
 		}
 	}
-	
+
 	public void forceSelectionWindowUpdate(){
 		topWindow.forceUpdate();
 	}
-	
+
 	public BottomVersions getVersionsWindow(){
 		return bottomVersions;
 	}
-	
+
 	public void forceFocus(IWidget w, boolean focusOn){
 		for(IWidget child : disp.getWidgets()){
 			if(child!=w) child.setEnabled(!focusOn);
 		}
 	}
-	
+
 	public void addModuleToUpdateList(Module module){
 		modules.add(module);
 	}
-	
+
 	public void removeModuleFromUpdateList(GUIModule module){
 		modules.remove(module);
 	}
-	
+
 	public static GUIGameState getInstance(){
 		return (GUIGameState)GameStateManager.getInstance().getChild("guiGameState");
 	}

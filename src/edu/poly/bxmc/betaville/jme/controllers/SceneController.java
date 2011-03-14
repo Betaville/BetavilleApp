@@ -86,6 +86,11 @@ public class SceneController extends Controller {
 	 * Attribute <firstPersonHandler> - Controller the movement of the camera
 	 */
 	private FirstPersonHandler firstPersonHandler;
+	
+	private MouseZoomAction mouseZoom;
+	
+	private MouseMoveAction mouseMove;
+	
 	/**
 	 * Attribute <manager> - Game Control's manager
 	 */
@@ -116,8 +121,8 @@ public class SceneController extends Controller {
 				.setMouseButtonForRequired(2);
 		firstPersonHandler.getMouseLookHandler().getMouseLook().setSpeed(.5f);
 		
-		MouseZoomAction mouseZoom = new MouseZoomAction(camera, moveSpeed);
-		MouseMoveAction mouseMove = new MouseMoveAction(camera, moveSpeed, true, true);
+		mouseZoom = new MouseZoomAction(camera, moveSpeed);
+		mouseMove = new MouseMoveAction(camera, moveSpeed, true, true);
 		mouseMove.setSensitivity(0.005f);
 		firstPersonHandler.addAction(mouseZoom);
 		firstPersonHandler.addAction(mouseMove);
@@ -287,6 +292,14 @@ public class SceneController extends Controller {
 	 */
 	public void setTurnSpeed(float turnSpeed) {
 		this.turnSpeed = turnSpeed;
+	}
+	
+	public MouseZoomAction getMouseZoom() {
+		return mouseZoom;
+	}
+
+	public MouseMoveAction getMouseMove() {
+		return mouseMove;
 	}
 
 	@Override
