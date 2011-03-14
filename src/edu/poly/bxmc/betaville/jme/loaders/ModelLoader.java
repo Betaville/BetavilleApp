@@ -53,6 +53,7 @@ import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.loaders.util.OBJScaler;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
 
@@ -127,8 +128,12 @@ public class ModelLoader {
 		if(importer.getUpAxis()!=null){
 			String up = importer.getUpAxis().toLowerCase();
 			if(!up.startsWith("y")){
-				logger.debug("Non-Standard Up-Axis: " + up);
+				logger.info("Non-Standard Up-Axis: " + up);
 				if(up.startsWith("z")){
+					if(importer.getTool().toLowerCase().contains("sketchup")){
+						logger.info("Model built in Sketchup, rotation should be safe");
+						model.setLocalRotation(Rotator.fromThreeAngles(-90, 0, 0));
+					}
 					//model.rotateUpTo(Vector3f.UNIT_Z);
 					//model.setLocalRotation(Rotator.fromThreeAngles(-90, 0, 0));
 				}

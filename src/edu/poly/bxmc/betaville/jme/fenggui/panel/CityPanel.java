@@ -117,7 +117,6 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new VolumeControl());
 		addAction(new WireframePanelAction());
 		addAction(new FocusOnSelectedAction());
-		addAction(new CreateDummyAction());
 		//addAction(new BulkImportAction());
 		//addAction(new BookmarkPanel());
 		/*

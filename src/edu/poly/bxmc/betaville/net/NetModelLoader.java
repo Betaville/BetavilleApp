@@ -25,21 +25,11 @@
  */
 package edu.poly.bxmc.betaville.net;
 
-import java.awt.Dialog.ModalityType;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.util.Collections;
 import java.util.Vector;
 import java.util.concurrent.Callable;
-
-import javax.swing.JDialog;
 
 import org.apache.log4j.Logger;
 
@@ -47,20 +37,15 @@ import com.jme.scene.Node;
 import com.jme.util.GameTaskQueueManager;
 
 import edu.poly.bxmc.betaville.CacheManager;
-import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
 import edu.poly.bxmc.betaville.flags.FlagProducer;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.ModelLoader;
-import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.jme.map.Scale;
-import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.Design;
-import edu.poly.bxmc.betaville.model.Design.Classification;
 import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
 
@@ -72,22 +57,6 @@ import edu.poly.bxmc.betaville.model.ModeledDesign;
  */
 public class NetModelLoader{
 	private static Logger logger = Logger.getLogger(NetModelLoader.class);
-	
-	private static int duplicated = 0;
-	
-//	stuff for saving
-	
-	private static String modelIdentifier = "";
-	private static URL mediaURL = null;
-	private static Design designToSave;
-	private static String northingDesign;
-	private static String eastingDesign;
-	private static String altitudeDesign;
-	private static String rotXDesign;
-	private static String rotYDesign;
-	private static String rotZDesign;
-	private static String designName;
-	private static UTMCoordinate location;
 
 	/** Options for what kind of models to load from the network.
 	 * @author Skye Book
@@ -119,7 +88,6 @@ public class NetModelLoader{
 	 * @see NetModelLoader#NO_LIMIT
 	 */
 	public static void load(LookupRoutine lookupRoutine, int limit, int cityID){
-		Vector<Design> duplicateDesigns = new Vector<Design>();
 		logger.info("Loading City " + cityID);
 		Vector<Design> designs = null;
 		ClientManager manager = NetPool.getPool().getConnection();
@@ -216,138 +184,6 @@ public class NetModelLoader{
 		FlagProducer testFlagger = new FlagProducer(MapManager.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
 		testFlagger.getProposals(5000);
 		testFlagger.placeFlags();
-	}
-	
-	
-	
-	public static void initDummies() throws URISyntaxException{
-		File boxFile = new File(ResourceLoader.loadResource("/data/terrain/BaseObject1.dae").toURI());
-		File markerFile = new File(ResourceLoader.loadResource("/data/terrain/Betaville_Marker_1.dae").toURI());
-		File treeFile1 = new File(ResourceLoader.loadResource("/data/terrain/White_Oak_1.dae").toURI());
-		File treeFile2 = new File(ResourceLoader.loadResource("/data/terrain/White_Oak.png").toURI());
-		URL u1 = null;
-		URL u2 = null;
-		URL u3 = null;
-		URL u4 = null;
-		try {
-			u1 = new URL(SettingsPreferences.getDataFolder()+"Betaville_Marker_1.dae");
-			u2 = new URL(SettingsPreferences.getDataFolder()+"BaseObject1.dae");
-			u3 = new URL(SettingsPreferences.getDataFolder()+"White_Oak_1.dae");
-			u4 = new URL(SettingsPreferences.getDataFolder()+"White_Oak.png");
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			copyFile(markerFile, new File(u1.getFile()));
-			copyFile(boxFile, new File(u2.getFile()));
-			copyFile(treeFile1, new File(u3.getFile()));
-			copyFile(treeFile2, new File(u4.getFile()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	 private static void copyFile(File in, File out)throws IOException{
-	     FileChannel inChannel = new FileInputStream(in).getChannel();
-	     FileChannel outChannel = new FileOutputStream(out).getChannel();
-	     try {
-	         inChannel.transferTo(0, inChannel.size(),
-	                 outChannel);
-	     } 
-	     catch (IOException e) {
-	         throw e;
-	     }
-	     finally {
-	         if (inChannel != null) inChannel.close();
-	         if (outChannel != null) outChannel.close();
-	     }
-	 }
-
-	
-	public static void createDummy(UTMCoordinate selection, String file){
-		designName = file;
-		location = selection;
-		savingMode();
-	}
-	
-	private static void savingMode(){
-		SettingsPreferences.getThreadPool().submit(new Runnable() {
-			public void run() {
-				
-//				BROWSE
-				
-				JDialog dialog = new JDialog();
-				dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-
-				try {
-					mediaURL = new URL(""+SettingsPreferences.getDataFolder()+designName);
-				} catch (MalformedURLException e) {
-					logger.warn("Problem occured when selecting from file browser", e);
-				}
-				
-//				IMPORT
-				
-				UTMCoordinate utm = location;
-//				utm.move(Integer.parseInt(eastingDesign.trim()), Integer.parseInt(northingDesign.trim()), Integer.parseInt(altitudeDesign.trim()));
-			
-				
-				ModeledDesign design = new ModeledDesign("Dummy", utm, "None", 2, SettingsPreferences.getUser(), "None", mediaURL.toString(), "None", true, 0, 0, 0, false);
-				
-				design.setClassification(Classification.BASE);
-				
-				try {
-					SceneGameState.getInstance().addDesignToCity(design, mediaURL, mediaURL, design.getSourceID());
-					modelIdentifier=design.getFullIdentifier();
-					logger.info("modelIdentifier"+modelIdentifier);
-					/*
-					Vector3f distanceFromZero = GeometryUtilities.getDistanceFromZero(SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier));
-					if(distanceFromZero.getX()!=0 || distanceFromZero.getY()!=0 || distanceFromZero.getZ()!=0){
-						showSimpleError("Not at Zero! " + distanceFromZero.getX() +","+distanceFromZero.getY()+distanceFromZero.getZ());
-					}
-					*/
-					
-					logger.info(design.toString() + " imported");
-				} catch (URISyntaxException uriException){
-					logger.warn(uriException);
-					// send error to add design window
-				} catch (IOException ioException){
-					logger.warn("File could not be found when trying to import!", ioException);
-				}
-				
-//				PUBLISH
-				
-				Design design2 = SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier);
-				try {
-					SecureClientManager manager = NetPool.getPool().getSecureConnection();
-					int response=-4;
-					logger.info("+"+design2.getID());
-					logger.info("+"+design2.getFilepath());
-					response = manager.addBase(design2, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design2.getFullIdentifier()));
-					if(response>0){
-						SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).setID(response);
-						SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier).setName(SceneScape.getCity().findDesignByID(response).getFullIdentifier());
-						
-						SceneScape.clearTargetSpatial();
-						logger.info("Added design: " + response);
-					}
-					else if(response == -3){
-						logger.warn("Authentication failed when uploading model");
-					}
-					else if (response == -2){
-						logger.warn("A currently unsupported type of design was not able to be uploaded");
-					}
-					else if(response == -1){
-						logger.warn("Database error on the server");
-					}
-				} catch (FileNotFoundException e1) {
-					logger.error("File could not be found", e1);
-				} catch (URISyntaxException e1) {
-					logger.error("URI exception", e1);
-				} catch (IOException e1) {
-					logger.error("Error uploading file", e1);
-				}
-			}
-		});
 	}
 	
 	/**
