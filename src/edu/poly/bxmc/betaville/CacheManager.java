@@ -100,7 +100,7 @@ public class CacheManager {
 		File target;
 		try {
 			target = new File(new URL(SettingsPreferences.getDataFolder()+"thumbnail/"+designID+".png").toURI());
-			logger.info("Looking for thumbnail in " + target.toString());
+			logger.debug("Looking for thumbnail in " + target.toString());
 			return target.exists();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -213,7 +213,7 @@ public class CacheManager {
 	 */
 	public boolean requestThumbnail(int designID){
 		if(!findThumb(designID)){
-			logger.info("Requesting a thumbnail for design "+designID);
+			logger.debug("Requesting a thumbnail for design "+designID);
 			PhysicalFileTransporter pft = NetPool.getPool().getConnection().requestThumbnail(designID);
 			if(pft!=null){
 				try {
@@ -229,7 +229,7 @@ public class CacheManager {
 				return true;
 			}
 			else{
-				logger.info("thumbnail PFT is null");
+				logger.debug("thumbnail PFT is null");
 				return false;
 			}
 		}

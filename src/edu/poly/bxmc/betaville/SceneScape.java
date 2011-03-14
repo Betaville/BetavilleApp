@@ -270,7 +270,7 @@ public class SceneScape {
 	}
 	
 	public static void setSelectedTerrain(Node terrainSelection){
-		logger.info("terrain selected: " + terrainSelection.getName());
+		logger.debug("terrain selected: " + terrainSelection.getName());
 		selectedTerrain = terrainSelection;
 		for(ITerrainSelectionListener l : terrainListeners){
 			l.terrainSelected(selectedTerrain);

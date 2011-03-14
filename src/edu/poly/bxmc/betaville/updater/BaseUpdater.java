@@ -35,6 +35,7 @@ import edu.poly.bxmc.betaville.SafeShutdown;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.Design;
+import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.net.NetPool;
 
 /**
@@ -81,12 +82,18 @@ public class BaseUpdater extends AbstractUpdater {
 				}
 
 				Design old = SceneScape.getCity().findDesignByID(d.getID());
-				if(old==null){
+				if(SceneGameState.getInstance().getDesignNode().getChild(d.getFullIdentifier())==null
+						&& !(d instanceof EmptyDesign)){
+					logger.info("Design " + d.getID() + " could not be found in the scene");
 					// add to scene
 					SceneScape.getCity().addDesign(d);
 					SceneGameState.getInstance().addDesignToDisplay(d.getID());
 				}
 				else{
+					if(old==null){
+						logger.warn("Design " + d.getID() + " skipped");
+						continue;
+					}
 					if(!old.equals(d)){
 						// if the design has changed, SWAP!
 						SceneScape.getCity().swapDesigns(old, d);
