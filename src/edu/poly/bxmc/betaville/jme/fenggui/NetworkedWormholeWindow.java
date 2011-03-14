@@ -47,7 +47,6 @@ import com.jme.math.Vector3f;
 import edu.poly.bxmc.betaville.CityManager;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
-import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.fenggui.FindCityWindow.ISelectionDeselectionListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -58,8 +57,6 @@ import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.search.GeoNamesSearchResult;
-import edu.poly.bxmc.betaville.updater.BaseUpdater;
-import edu.poly.bxmc.betaville.updater.BetavilleTask;
 
 /**
  * @author Skye Book
