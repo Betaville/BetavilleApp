@@ -26,6 +26,7 @@
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Button;
@@ -57,6 +58,7 @@ import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.search.GeoNamesSearchResult;
+import edu.poly.bxmc.betaville.updater.BaseUpdater;
 import edu.poly.bxmc.betaville.updater.BetavilleTask;
 
 /**
@@ -74,10 +76,12 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 	private ComboBox citySelector;
 	private ComboBox wormholeSelector;
 	private Container buttonContainer;
-	
+
 	private Button createCity;
-	
+
 	private FindCityWindow fcw;
+	
+	private AtomicBoolean currentlySearching = new AtomicBoolean(false);
 
 	/**
 	 * 
@@ -102,8 +106,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 
 			public void selectionChanged(Object sender,
 					SelectionChangedEvent selectionChangedEvent){
-				logger.info("selection changed: " + selectionChangedEvent.getSpecialType());
-				//selectionChangedEvent.isSelected();
+				logger.debug("selection changed");
 				updateWormholeList(((CityItem)citySelector.getSelectedItem()).getCity().getCityID());
 			}
 		});
@@ -123,25 +126,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		go.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				// make sure there is no update in process
-				for(BetavilleTask task : BetavilleNoCanvas.getUpdater().getTasks()){
-					if(task.getUpdater().isInUpdate()){
-						logger.warn("Task is updating, ideally we should be waiting for this to finish");
-					}
-					// need to figure out what to do about this!
-					/*
-					while(task.getUpdater().isInUpdate()){
-						try {
-							Thread.currentThread().sleep(25);
-						} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-					*/
-				}
-				
-				
+
 				// perform the wormhole jump here
 				Wormhole w = ((WormholeItem)wormholeSelector.getSelectedItem()).getWormhole();
 
@@ -154,8 +139,6 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 				ILocation lookAt = w.getLocation().clone();
 				lookAt.getUTM().move(300, 300, 0);
 				SceneGameState.getInstance().getCamera().lookAt(MapManager.locationToBetaville(lookAt), Vector3f.UNIT_Y);
-
-
 			}
 		});
 
@@ -167,17 +150,17 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 				logger.info("New Wormhole created (response: "+response+")");
 			}
 		});
-		
+
 		Button findCity = FengGUI.createWidget(Button.class);
 		findCity.setText("Find City");
 		findCity.addButtonPressedListener(new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(fcw==null){
 					fcw = FengGUI.createWidget(FindCityWindow.class);
 					fcw.finishSetup();
 					StaticLayout.center(fcw, GUIGameState.getInstance().getDisp());
-					
+
 					/* This listener ensures that the create city button is only enabled when
 					 * there is a city selected */
 					fcw.addSelectionDeslectionListener(new ISelectionDeselectionListener() {
@@ -192,7 +175,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 				if(!fcw.isInWidgetTree()) GUIGameState.getInstance().getDisp().addWidget(fcw);
 			}
 		});
-		
+
 		createCity = FengGUI.createWidget(Button.class);
 		createCity.setText("Create City");
 		createCity.setEnabled(false);
@@ -216,6 +199,8 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		//citySelector.setEnabled(false);
 		SettingsPreferences.getGUIThreadPool().submit(new Runnable() {
 			public void run() {
+				if(currentlySearching.get()) return;
+				currentlySearching.set(true);
 				logger.info("Looking for wormholes in city " + cityID);
 				List<Wormhole> wormholes = NetPool.getPool().getConnection().getAllWormholesInCity(cityID);
 				if(wormholes!=null){
@@ -233,6 +218,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 				// go back to normal status
 				//citySelector.setEnabled(true);
 				setTitle(title);
+				currentlySearching.set(false);
 			}
 		});
 	}
