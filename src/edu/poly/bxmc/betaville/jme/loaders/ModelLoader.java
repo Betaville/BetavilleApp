@@ -37,6 +37,7 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 
+import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.state.RenderState.StateType;
 import com.jme.util.export.binary.BinaryExporter;
@@ -119,7 +120,7 @@ public class ModelLoader {
 		}
 	}
 	
-	private void loadDAE(Design design) throws IOException, URISyntaxException{
+	private void loadDAE(ModeledDesign design) throws IOException, URISyntaxException{
 		ThreadSafeColladaImporter importer = new ThreadSafeColladaImporter(design.getName());
 		importer.load(modelURL.openStream());
 		model = importer.getModel();
@@ -132,13 +133,13 @@ public class ModelLoader {
 				if(up.startsWith("z")){
 					if(importer.getTool().toLowerCase().contains("sketchup")){
 						logger.info("Model built in Sketchup, rotation should be safe");
-						model.setLocalRotation(Rotator.fromThreeAngles(-90, 0, 0));
+						model.setLocalRotation(Rotator.fromThreeAngles(270, 0, 0));
+						design.setRotationX(270);
 					}
-					//model.rotateUpTo(Vector3f.UNIT_Z);
-					//model.setLocalRotation(Rotator.fromThreeAngles(-90, 0, 0));
 				}
 				else{ // This means that the up is X (should be quite rare)
-					//model.setLocalRotation(Rotator.fromThreeAngles(-90, 90, 0));
+					model.setLocalRotation(Rotator.fromThreeAngles(0, 0, 270));
+					design.setRotationZ(270);
 				}
 			}
 		}

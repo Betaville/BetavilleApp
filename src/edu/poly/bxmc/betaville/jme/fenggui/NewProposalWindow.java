@@ -94,7 +94,6 @@ import edu.poly.bxmc.betaville.jme.gamestates.SoundGameState.SOUNDS;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.jme.map.Translator;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
@@ -116,18 +115,18 @@ import edu.poly.bxmc.betaville.net.SecureClientManager;
  */
 public class NewProposalWindow extends Window implements IBetavilleWindow{
 	private static Logger logger = Logger.getLogger(NewProposalWindow.class);
-	
+
 	private Window baseModelOption;
 	private FixedButton baseDesignButton;
 	private FixedButton proposalDesignButton;
-	
+
 	private Window errorWindow;
 	private FixedButton errorDismiss;
 	private FixedButton errorMoveOn;
-	
+
 	private Window simpleErrorWindow;
 	private FixedButton simpleErrorOK;
-	
+
 	private boolean canCommitBase = false;
 
 	private Pixmap green;
@@ -154,17 +153,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	private int currentStep=1;
 	private int selectedStep=0;
 	private boolean lockAtCurrentStep=false;
-	
+
 	// pre-access options
 	private Design selectedDesignWhenOpened=null;
-	
-	private double latDegX;
-	private double latMinX;
-	private double latSecX;
-	private double lonDegX;
-	private double lonMinX;
-	private double lonSecX;
-	
+
 	private NewProposalWindow currentNewProposalWindow;
 
 	// Step One
@@ -209,11 +201,11 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	private String lonDegDefaultContent="Lon Deg.";
 	private String lonMinDefaultContent="Lon Min.";
 	private String lonSecDefaultContent="Lon Sec.";
-	
+
 	private FixedButton removeObstructionsButton;
 	private MakeRoomWindow makeRoomWindow;
 	private String removables="";
-	
+
 	private TextEditor mediaPath;
 	private URL mediaURL = null;
 	private FixedButton browseButton;
@@ -223,6 +215,8 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 	private boolean locationIsSet=false;
 	private boolean modelIsLoaded=false;
+
+	private ModeledDesign designCreatedInThisWindow;
 
 
 	// Step Three
@@ -238,7 +232,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	private Slider moveSpeedSlider;
 	private int maxMoveSpeed=50;
 	private int moveSpeed=1;
-	
+
 	private Label rotationLabel;
 	private String rotationText = "Rotation";
 	private Label xRotationLabel;
@@ -279,27 +273,27 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	private boolean groupSelected=false;
 	private boolean groupEntered=false;
 
-	
+
 	private int targetWidth=300;
 	private int targetHeight=425;
 	private int stepFourWindowHeight=200;
 
-	
-	
+
+
 	public NewProposalWindow() {
 		super(true, true);
 		currentNewProposalWindow = this;
-		
+
 		if(SettingsPreferences.getUser()!=null){
 			UserType ut = NetPool.getPool().getConnection().getUserLevel(SettingsPreferences.getUser());
-			
+
 			// check if the user is a base committer or higher
 			if(ut.compareTo(UserType.BASE_COMMITTER)>=0){
 				canCommitBase=true;
 			}
 			else canCommitBase=false;
 		}
-		
+
 		getContentContainer().setLayoutManager(new StaticLayout());
 		createSwitcher();
 		createStepOne();
@@ -352,7 +346,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 								setY(DisplaySystem.getDisplaySystem().getHeight()-getHeight());
 							}
 						}
-						
+
 						// test the make room window
 						if(makeRoomWindow.isInWidgetTree()){
 							makeRoomWindow.setXY(removeObstructionsButton.getDisplayX()+removeObstructionsButton.getWidth(), removeObstructionsButton.getDisplayY()+removeObstructionsButton.getHeight()-makeRoomWindow.getHeight());
@@ -504,7 +498,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				setStepOneTextFields();
 			}
 		});
-		
+
 		newBase = FengGUI.createWidget(FixedButton.class);
 		newBase.setText("add to base");
 		newBase.setWidth(newProposal.getWidth());
@@ -607,18 +601,18 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				versionDescriptionChanged=true;
 			}
 		});
-		
-		
+
+
 
 		stepOne.addWidget(newProposal, proposalTitle, proposalDescription, proposalAddress, proposalURL,
 				newVersion, versionAdvisor, versionDescription);
-		
+
 		newProposal.setEnabled(false);
 		if(canCommitBase){
 			stepOne.addWidget(newBase);
 		}
 	}
-	
+
 	private void setStepOneTextFields(){
 		String titleTag=null;
 		String descTag=null;
@@ -675,14 +669,14 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		lonDeg = FengGUI.createWidget(TextEditor.class);
 		lonMin = FengGUI.createWidget(TextEditor.class);
 		lonSec = FengGUI.createWidget(TextEditor.class);
-//		this.latDegX = latDegX;
-//		this.latMinX = latMinX;
-//		this.latSecX = latSecX;
-//		this.lonDegX = lonDegX;
-//		this.lonMinX = lonMinX;
-//		this.lonSecX = lonSecX;
-		
-		
+		//		this.latDegX = latDegX;
+		//		this.latMinX = latMinX;
+		//		this.latSecX = latSecX;
+		//		this.lonDegX = lonDegX;
+		//		this.lonMinX = lonMinX;
+		//		this.lonSecX = lonSecX;
+
+
 		latDeg.setText(latDegDefaultContent);
 		latMin.setText(latMinDefaultContent);
 		latSec.setText(latSecDefaultContent);
@@ -728,7 +722,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				logger.debug("Remove String: " + removables);
 			}
 		};
-		
+
 		makeRoomWindow = FengGUI.createWidget(MakeRoomWindow.class);
 		makeRoomWindow.finishSetup(new ICloseAction() {
 			public void close() {
@@ -738,7 +732,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			}
 		}, finishedListener);
 
-		
+
 		removeObstructionsButton = FengGUI.createWidget(FixedButton.class);
 		removeObstructionsButton.setText("remove obstructions");
 		removeObstructionsButton.setWidth(removeObstructionsButton.getWidth()+10);
@@ -759,7 +753,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 			}
 		});
-		
+
 		if(stepOneSelection.equals(Classification.BASE)){
 			removeObstructionsButton.setText("Nothing to Remove");
 			removeObstructionsButton.setEnabled(false);
@@ -780,13 +774,13 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		browseButton.setWidth(browseButton.getWidth()+5);
 		int tripletY=mediaPath.getY()-browseButton.getHeight()-heightOffset;
 		browseButton.setXY(5, tripletY);
-		
+
 		// SWING FILE BROWSER
 		browseButton.addButtonPressedListener(new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				SettingsPreferences.getThreadPool().submit(new Runnable() {
-					
+
 					public void run() {
 						JDialog dialog = new JDialog();
 						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -799,7 +793,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						fileChooser.setFileFilter(modelFilter);
 						fileChooser.showOpenDialog(dialog);
 						File file = fileChooser.getSelectedFile();
-						
+
 						String pathToDisplay = file.toString();
 						if(pathToDisplay.contains("/")){
 							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("/")+1);
@@ -819,7 +813,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				});
 			}
 		});
-		
+
 		// FENGGUI FILE BROWSER
 		/*
 		browseButton.addButtonPressedListener(new IButtonPressedListener(){
@@ -862,8 +856,8 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				});
 			}
 		});
-		*/
-		
+		 */
+
 		textureSelector = FengGUI.createWidget(ComboBox.class);
 		textureSelector.addItem("Textured");
 		textureSelector.addItem("Untextured");
@@ -915,8 +909,8 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					mediaPath.setText("MODEL NOT SELECTED!");
 					return;
 				}
-				
-				
+
+
 				try {
 					coordinate = createCoordinate();
 				} catch (NumberFormatException e1) {
@@ -925,24 +919,23 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 				if(coordinate!=null){
 					boolean textured = textureSelector.getSelectedValue().equals("Textured");
-					
+
 					// create a design from the supplied information, it will initialize with an ID and sourceID of zero
-					ModeledDesign design = new ModeledDesign(title, coordinate, address, SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), description, mediaURL.toString(), url, true, 0, 0, 0, textured);
-					//ModeledDesign design = 
-					design.setClassification(stepOneSelection);
-					
+					designCreatedInThisWindow = new ModeledDesign(title, coordinate, address, SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), description, mediaURL.toString(), url, true, 0, 0, 0, textured);
+					designCreatedInThisWindow.setClassification(stepOneSelection);
+
 					try {
-						SceneGameState.getInstance().addDesignToCity(design, mediaURL, mediaURL, design.getSourceID());
-						modelIdentifier=design.getFullIdentifier();
+						SceneGameState.getInstance().addDesignToCity(designCreatedInThisWindow, mediaURL, mediaURL, designCreatedInThisWindow.getSourceID());
+						modelIdentifier=designCreatedInThisWindow.getFullIdentifier();
 						logger.info("modelIdentifier"+modelIdentifier);
 						/*
 						Vector3f distanceFromZero = GeometryUtilities.getDistanceFromZero(SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier));
 						if(distanceFromZero.getX()!=0 || distanceFromZero.getY()!=0 || distanceFromZero.getZ()!=0){
 							showSimpleError("Not at Zero! " + distanceFromZero.getX() +","+distanceFromZero.getY()+distanceFromZero.getZ());
 						}
-						*/
-						
-						logger.info(design.toString() + " imported");
+						 */
+
+						logger.info(designCreatedInThisWindow.toString() + " imported");
 						modelIsLoaded=true;
 					} catch (URISyntaxException uriException){
 						logger.warn(uriException);
@@ -954,7 +947,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 			}
 		});
-		
+
 		stepTwo.addWidget(setItUp, setItUpAdvisor, latContainer, lonContainer,
 				removeObstructionsButton, mediaPath, browseButton, textureSelector, importModel);
 	}
@@ -979,7 +972,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					showSimpleError("Load a model first!");
 					return;
 				}
-				
+
 				Translator.moveX(SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier), moveSpeed);
 				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, moveSpeed, 0);
 			}
@@ -992,7 +985,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				if(!modelIsLoaded){
 					showSimpleError("Load a model first!");
 				}
-				
+
 				Translator.moveX(SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier), -moveSpeed);
 				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, -moveSpeed, 0);
 			}
@@ -1006,10 +999,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					showSimpleError("Load a model first!");
 					return;
 				}
-				
+
 				Translator.moveZ(SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier), moveSpeed);
 				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(moveSpeed, 0, 0);
-				
+
 				//final Node dNode = (Node)SceneGameState.getInstance().getDesignNode().getChild("$1357");
 				//dNode.setLocalTranslation(MapManager.utmToBetaville(new UTMCoordinate(583558,4506150,18,'T',10)));
 				//Translator.moveY(SceneGameState.getInstance().getDesignNode().getChild("$1357"), 1);
@@ -1034,7 +1027,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					showSimpleError("Load a model first!");
 					return;
 				}
-				
+
 				Translator.moveZ(SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier), -moveSpeed);
 				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(-moveSpeed, 0, 0);
 			}
@@ -1048,7 +1041,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					showSimpleError("Load a model first!");
 					return;
 				}
-				
+
 				Translator.moveY(SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier), moveSpeed);
 				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, 0, moveSpeed);
 			}
@@ -1062,7 +1055,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					showSimpleError("Load a model first!");
 					return;
 				}
-				
+
 				Translator.moveY(SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier), -moveSpeed);
 				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, 0, -moveSpeed);
 			}
@@ -1098,23 +1091,23 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				moveSpeedLabel.setText(moveSpeedPrefix+moveSpeed);
 			}
 		});
-		
 
-		
-		
+
+
+
 		rotationLabel = FengGUI.createWidget(Label.class);
 		rotationLabel.setText(rotationText);
 		rotationLabel.setXY((stepThree.getWidth()/2)-(rotationLabel.getWidth()/2), moveSpeedSlider.getY()-rotationLabel.getHeight()-(offset/2));
-		
+
 		xRotationLabel = FengGUI.createWidget(Label.class);
 		xRotationLabel.setText(xRotationPrefix+"0");
-		
+
 		yRotationLabel = FengGUI.createWidget(Label.class);
 		yRotationLabel.setText(yRotationPrefix+"0");
-		
+
 		zRotationLabel = FengGUI.createWidget(Label.class);
 		zRotationLabel.setText(zRotationPrefix+"0");
-		
+
 		xRotationSlider = FengGUI.createSlider(true);
 		xRotationSlider.setWidth(stepThree.getWidth()-20-xRotationLabel.getWidth());
 		xRotationSlider.setXY(stepThree.getWidth()-xRotationSlider.getWidth()-5, rotationLabel.getY()-xRotationSlider.getHeight()-(offset/8));
@@ -1131,7 +1124,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 			}
 		});
-		
+
 		yRotationSlider = FengGUI.createSlider(true);
 		yRotationSlider.setWidth(stepThree.getWidth()-20-xRotationLabel.getWidth());
 		yRotationSlider.setXY(stepThree.getWidth()-yRotationSlider.getWidth()-5, xRotationSlider.getY()-yRotationSlider.getHeight()-(offset/4));
@@ -1147,7 +1140,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 			}
 		});
-		
+
 		zRotationSlider = FengGUI.createSlider(true);
 		zRotationSlider.setWidth(stepThree.getWidth()-20-xRotationLabel.getWidth());
 		zRotationSlider.setXY(stepThree.getWidth()-zRotationSlider.getWidth()-5, yRotationSlider.getY()-zRotationSlider.getHeight()-(offset/4));
@@ -1163,7 +1156,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 			}
 		});
-		
+
 		xRotationLabel.setXY(5, xRotationSlider.getY()-(xRotationLabel.getHeight()/2));
 		yRotationLabel.setXY(5, yRotationSlider.getY()-(yRotationLabel.getHeight()/2));
 		zRotationLabel.setXY(5, zRotationSlider.getY()-(zRotationLabel.getHeight()/2));
@@ -1344,7 +1337,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 			}
 		});
-		
+
 		groupList = FengGUI.createWidget(TextEditor.class);
 		groupList.getAppearance().add(TextEditor.STATE_DISABLED.toString(), new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 		groupList.setText(defaultGroupListText);
@@ -1363,7 +1356,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				SettingsPreferences.getThreadPool().submit(new Runnable(){
 					public void run() {
-						
+
 						// handle permissions
 						ProposalPermission permission=null;
 						if(stepOneSelection.equals(Classification.PROPOSAL)){
@@ -1386,17 +1379,17 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							else{
 								permission = new ProposalPermission(Type.CLOSED, null);
 							}
-							
-							
+
+
 							if(permission!=null) logger.info("Permissions created");
 							else logger.error("Problem creating permissions!");
 						}
-						
-						
+
+
 						// Get the imported model's data
 						Design design = SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier);
 						try {
-							
+
 							// Check if the user has supplied their credentials yet
 							if(!SettingsPreferences.isAuthenticated()){
 								// TODO flash login window
@@ -1411,15 +1404,15 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 								response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()));
 							}
 							else if(stepOneSelection.equals(Classification.VERSION)){
-								
+
 								if(selectedDesignWhenOpened==null){
 									logger.info("Versions require a proposal to be linked to");
 									showSimpleError("Please re-open the window with a proposal selected.");
 									return;
 								}
-								
+
 								int rootProposalID=0;
-								
+
 								if(selectedDesignWhenOpened.isProposal()) rootProposalID = selectedDesignWhenOpened.getID();
 								else if(selectedDesignWhenOpened.isVersion()) rootProposalID = selectedDesignWhenOpened.getSourceID();
 								else{
@@ -1427,7 +1420,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 									showSimpleError("Proposals cannot be added to a base design");
 									return;
 								}
-								
+
 								design.setSourceID(rootProposalID);
 								design.setDescription(FengUtils.getText(versionDescription));
 
@@ -1443,7 +1436,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 									}
 								}
 								response = manager.addVersion(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter);
-								
+
 								/*
 								// If something is selected, assume that this is the root
 								if(SceneScape.getTargetSpatial().getName()!="$empty"){
@@ -1461,12 +1454,12 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 										showSimpleError("Versions only allowed in proposals");
 										return;
 									}
-									
+
 									// set the description
 									design.setDescription(FengUtils.getText(versionDescription));
 									response = manager.addVersion(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()));
 								}
-								*/
+								 */
 							}
 							else if(stepOneSelection.equals(Classification.PROPOSAL)){
 								PhysicalFileTransporter thumbTransporter=null;
@@ -1484,16 +1477,16 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 								else logger.info("No screenshots taken for proposal");
 								response = manager.addProposal(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, permission);
 							}
-							
+
 							// interpret responses
 							if(response>0){
 								SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).setID(response);
 								//SceneScape.getTargetSpatial().setName("$"+response);
 								SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier).setName(SceneScape.getCity().findDesignByID(response).getFullIdentifier());
-								
+
 								// we need to reset or clearthe target spatial here in accordance with its new name
 								SceneScape.clearTargetSpatial();
-								
+
 								showSimpleError("Success!");
 								logger.info("Added design: " + response);
 								currentNewProposalWindow.close();
@@ -1566,12 +1559,12 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	}
 
 	private void switchTo(int step, boolean forceMove){
-		
+
 		if(lockAtCurrentStep){
 			showSimpleError("Close any dialogs first");
 			return;
 		}
-		
+
 		selectedStep=step;
 		// if the current step is complete, change the icons and move to a new step
 		if(isCurrentStepComplete(forceMove) || forceMove){
@@ -1592,7 +1585,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 				getContentContainer().addWidget(stepOne);
 				statusOne.setPixmap(yellow);
-				
+
 				// select the correct button to disable
 				switch (stepOneSelection) {
 				case BASE:
@@ -1615,6 +1608,29 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				break;
 			case 3:
 				getContentContainer().addWidget(stepThree);
+
+				// set up according to rotation (if available)
+				if(designCreatedInThisWindow==null){
+					logger.info("Using zeroed rotations");
+					xRotationLabel.setText(xRotationPrefix+"0");
+					yRotationLabel.setText(yRotationPrefix+"0");
+					zRotationLabel.setText(zRotationPrefix+"0");
+
+					xRotationSlider.setValue(0);
+					yRotationSlider.setValue(0);
+					zRotationSlider.setValue(0);
+				}
+				else{
+					logger.info("Using supplied rotations: "+designCreatedInThisWindow.getRotationX()+","+designCreatedInThisWindow.getRotationY()+","+designCreatedInThisWindow.getRotationZ());
+					xRotationLabel.setText(xRotationPrefix+designCreatedInThisWindow.getRotationX());
+					yRotationLabel.setText(yRotationPrefix+designCreatedInThisWindow.getRotationY());
+					zRotationLabel.setText(zRotationPrefix+designCreatedInThisWindow.getRotationZ());
+
+					xRotationSlider.setValue((1f/360f)*designCreatedInThisWindow.getRotationX());
+					yRotationSlider.setValue((1f/360f)*designCreatedInThisWindow.getRotationY());
+					zRotationSlider.setValue((1f/360f)*designCreatedInThisWindow.getRotationZ());
+				}
+				
 				statusThree.setPixmap(yellow);
 				break;
 			case 4:
@@ -1715,14 +1731,14 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		errorWindow.setSize(errorMoveOn.getWidth()+errorDismiss.getWidth()+20, errorMoveOn.getHeight()+20);
 		errorWindow.getContentContainer().addWidget(errorDismiss, errorMoveOn);
 	}
-	
+
 	private void createSimpleErrorWindow(){
 		simpleErrorWindow = FengGUI.createWindow(false, false);
 		simpleErrorWindow.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 		simpleErrorWindow.getContentContainer().setLayoutManager(new StaticLayout());
 		simpleErrorWindow.setTitle("oops!");
 		simpleErrorWindow.setSize(95, 50);
-		
+
 		simpleErrorOK = FengGUI.createWidget(FixedButton.class);
 		simpleErrorOK.setText("OK!");
 		simpleErrorOK.setWidth(simpleErrorOK.getWidth()+10);
@@ -1737,18 +1753,18 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 			}
 		});
-		
+
 		simpleErrorWindow.addWidget(simpleErrorOK);
 	}
-	
+
 	private void createProposalOrBaseWindow(){
 		baseModelOption = FengGUI.createWindow(false, false);
 		baseModelOption.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 		baseModelOption.getContentContainer().setLayoutManager(new StaticLayout());
 		baseModelOption.setTitle("Base Model or Proposal?");
 		baseModelOption.setSize(95, 50);                                                
-		
-		
+
+
 		proposalDesignButton = FengGUI.createWidget(FixedButton.class);
 		proposalDesignButton.setText("Proposal");
 		proposalDesignButton.setWidth(proposalDesignButton.getWidth()+10);
@@ -1758,7 +1774,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				GUIGameState.getInstance().getDisp().removeWidget(baseModelOption);
 			}
 		});
-		
+
 		baseDesignButton = FengGUI.createWidget(FixedButton.class);
 		baseDesignButton.setText("Base");
 		baseDesignButton.setWidth(proposalDesignButton.getWidth());
@@ -1768,9 +1784,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				GUIGameState.getInstance().getDisp().removeWidget(baseModelOption);
 			}
 		});
-		
+
 	}
-	
+
 	private void showSimpleError(String error){
 		// Turn off the back and next buttons
 		setSwitcherStatus(false);
@@ -1845,7 +1861,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			w.setEnabled(enabled);
 		}
 	}
-	
+
 	/**
 	 * Sets the proposal/base/version buttons in step one
 	 * to their correct states of enabled/disabled
@@ -1906,7 +1922,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		setY(getY()-200);
 		layout();
 	}
-	
+
 	public int getCurrentStep(){
 		return currentStep;
 	}
@@ -1927,14 +1943,14 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			int lonDegVal = FengUtils.getNumber(lonDeg);
 			int lonMinVal = FengUtils.getNumber(lonMin);
 			float lonSecVal = FengUtils.getFloat(lonSec);
-			
+
 			return new GPSCoordinate(0, latDegVal, latMinVal, latSecVal, lonDegVal, lonMinVal, lonSecVal).getUTM();
 		} catch (FengTextContentException e) {
 			logger.error("TextEditors not set correctly", e);
 			return null;
 		}
 	}
-	
+
 	public void setProposalLocation(UTMCoordinate utm){
 		GPSCoordinate gps = utm.getGPS();
 		float[] lat = DecimalDegreeConverter.ddToDMS(gps.getLatitude());
@@ -1970,7 +1986,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			return false;
 		}
 	}
-	
+
 	private boolean isCurrentStepComplete(boolean moveForced){
 		switch (currentStep) {
 		case 1:
@@ -2016,7 +2032,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				logger.debug("Step Three Complete");
 				return true;
 			}
-			*/
+			 */
 		case 4:
 			if(!pictureTakenAndAccepted){
 				if(!moveForced)showError("Finish Step Four First!");
@@ -2040,7 +2056,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		}
 		return false;
 	}
-	
+
 	private boolean isStepComplete(int step){
 		switch (step) {
 		case 1:
@@ -2059,10 +2075,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			if(statusFive.getPixmap()==green) return true;
 			else return false;
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * If a design is loaded, it is updated based on the current
 	 * selection in step one.
@@ -2072,10 +2088,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		// yet a design to modify
 		if(modelIdentifier==null)
 			return;
-		
+
 		Design design = SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier);
 		design.setClassification(stepOneSelection);
-		
+
 		if(stepOneSelection.equals(Classification.BASE)){
 			removeObstructionsButton.setText("Nothing to Remove");
 			removeObstructionsButton.setEnabled(false);
@@ -2084,7 +2100,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			removeObstructionsButton.setEnabled(true);
 			removeObstructionsButton.setText("make room for " + stepOneSelection.toString().toLowerCase());
 		}
-		
+
 		// Base and Proposal share the same fields, so the method of data application is the same.
 		if(stepOneSelection.equals(Classification.BASE) || stepOneSelection.equals(Classification.PROPOSAL)){
 			design.setName(FengUtils.getText(proposalTitle));
@@ -2096,18 +2112,18 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			if(versionDescriptionChanged) design.setDescription(FengUtils.getText(versionDescription));
 		}
 	}
-	
+
 	private void placeMakeRoomWindow(){
 		makeRoomWindow.setXY(removeObstructionsButton.getDisplayX()+removeObstructionsButton.getWidth(), removeObstructionsButton.getDisplayY()+removeObstructionsButton.getHeight()-makeRoomWindow.getHeight());
 		GUIGameState.getInstance().getDisp().addWidget(makeRoomWindow);
 		lockAtCurrentStep=true;
 		setSwitcherStatus(false);
 	}
-	
+
 	public boolean isMakeRoomWindowActive(){
 		return makeRoomWindow.isInWidgetTree();
 	}
-	
+
 	/**
 	 * Checks on whether or not a design has been loaded into the scene
 	 * @return
@@ -2115,30 +2131,30 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	public boolean isModelLoaded(){
 		return modelIsLoaded;
 	}
-	
+
 	private boolean verifyGroupNames(){
 		String groupListText = FengUtils.getText(groupList);
-		
+
 		if(!groupListText.equals(defaultGroupListText)){
-			
+
 			// show progress window
 			final Window progress = FengGUI.createWindow(false, false);
 			progress.setTitle("Betaville");
-			
+
 			final Label progressLabel = FengGUI.createWidget(Label.class);
 			progressLabel.setText("Verifying Usernames");
 			progress.addWidget(progressLabel);
-			
+
 			progress.setSize(progressLabel.getWidth()+30, progressLabel.getHeight()+30);
 			progress.setXY(Binding.getInstance().getCanvasWidth()/2-progress.getWidth()/2,
 					Binding.getInstance().getCanvasHeight()/2-progress.getHeight()/2);
 			progressLabel.setXY(15, 15);
-			
+
 			GUIGameState.getInstance().getDisp().addWidget(progress);
 			verifyingNames=true;
-			
+
 			SettingsPreferences.getThreadPool().submit(new Runnable() {
-				
+
 				@SuppressWarnings("static-access")
 				public void run() {
 					while(verifyingNames){
@@ -2155,17 +2171,17 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							e.printStackTrace();
 						}
 					}
-					
+
 					GUIGameState.getInstance().getDisp().removeWidget(progress);
 				}
 			});
-			
+
 			// separate and validate names
 			ArrayList<String> nameList = getGroupNamesList(groupListText);
 			if(nameList==null) return false;
-			
-			
-			
+
+
+
 			// validate all of the names
 			for(String s : nameList){
 				if(!StringVerifier.isValidUsername(s)){
@@ -2174,7 +2190,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					return false;
 				}
 			}
-			
+
 			// check on server
 			for(String user : nameList){
 				logger.info("Checking user: " + user);
@@ -2184,17 +2200,17 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					return false;
 				}
 			}
-			
+
 			logger.info("All users seem to be valid");
-			
+
 			verifyingNames=false;
 			return true;
 		}
-		
+
 		showSimpleError("Please Enter Names!");
 		return false;
 	}
-	
+
 	private ArrayList<String> getGroupNamesList(String groupListText){
 		// The only valid characters are those in a username, commas, and spaces
 		if(!groupListText.matches("[A-Za-z0-9 ,]+")){
@@ -2202,9 +2218,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			verifyingNames=false;
 			return null;
 		}
-		
+
 		ArrayList<String> nameList = new ArrayList<String>();
-		
+
 		if(groupListText.contains(",")){
 			String[] splitNames = groupListText.split(" *, *");
 			for(String s : splitNames){
@@ -2220,22 +2236,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 	public void resetForNewProposal(){
 		switchTo(1, true);
-		
-		//set location
-		
-		GPSCoordinate location = MapManager.betavilleToUTM(SceneGameState.getInstance().getGroundSelectorLocation()).getGPS();
-		
-		float[] lat = DecimalDegreeConverter.ddToDMS(location.getLatitude());
-		float[] lon = DecimalDegreeConverter.ddToDMS(location.getLongitude());
-		
-		
-		this.latDegX = lat[0];
-		this.latMinX = lat[1];
-		this.latSecX = lat[2];
-		this.lonDegX = lon[0];
-		this.lonMinX = lon[1];
-		this.lonSecX = lon[2];
-		
+
 		// reset state variables
 		currentStep=1;
 		selectedStep=0;
@@ -2260,13 +2261,13 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		moveSpeed=1;
 
 		photoFrameLive=false;         
-		                              
+
 		atLeastOnePictureTaken=false; 
 		pictureTakenAndAccepted=false;
 
 		groupSelected=false;
 		groupEntered=false;
-		
+
 		// reset switcher status statusOne.setPixmap(yellow);
 		statusTwo.setPixmap(red);
 		statusThree.setPixmap(red);
@@ -2280,20 +2281,20 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		proposalURL.setText(proposalURLDefaultContent);
 		versionDescription.setText(versionDescriptionDefault);
 
-//		latDeg.setText(Double.toString(latDegX));
-//		latMin.setText(Double.toString(latMinX));
-//		latSec.setText(Double.toString(latSecX));
-//		lonDeg.setText(Double.toString(lonDegX));
-//		lonMin.setText(Double.toString(lonMinX));
-//		lonSec.setText(Double.toString(lonSecX));
-		
+		//		latDeg.setText(Double.toString(latDegX));
+		//		latMin.setText(Double.toString(latMinX));
+		//		latSec.setText(Double.toString(latSecX));
+		//		lonDeg.setText(Double.toString(lonDegX));
+		//		lonMin.setText(Double.toString(lonMinX));
+		//		lonSec.setText(Double.toString(lonSecX));
+
 		latDeg.setText(latDegDefaultContent);
 		latMin.setText(latMinDefaultContent);
 		latSec.setText(latSecDefaultContent);
 		lonDeg.setText(lonDegDefaultContent);
 		lonMin.setText(lonMinDefaultContent);
 		lonSec.setText(lonSecDefaultContent);
-		
+
 		// set the coordinate to null so we don't use the old one.
 		coordinate= null;
 
@@ -2308,7 +2309,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 		groupList.setText(defaultGroupListText);
 	}
-	
+
 	public void preload(Design selectedDesign){
 		selectedDesignWhenOpened=selectedDesign;
 		if(selectedDesignWhenOpened==null) newVersion.setEnabled(false);
