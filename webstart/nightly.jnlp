@@ -13,7 +13,6 @@
     <!-- Moon image taken from http://commons.wikimedia.org/wiki/User:Ozgurmulazimoglu -->
     <icon href="http://betaville.net/nightly/nightly_logo.png"/> 
     <association extensions="bxb" mime-type="text/plain"/>
-    <offline-allowed/>
     <shortcut online="false">
   	<desktop />
   	<menu submenu="Brooklyn eXperimental Media Center"/>
