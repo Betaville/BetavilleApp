@@ -31,7 +31,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
-import org.fenggui.ScrollContainer;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
@@ -50,6 +49,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.MyLocationWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.NetworkedWormholeWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.TerrainLoader;
 import edu.poly.bxmc.betaville.jme.fenggui.experimental.ButtonToy;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.tutorial.TutorialWindow;
@@ -72,7 +72,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 	private int targetWidth= 180;
 	private int targetHeight = 400;
 	
-	private ScrollContainer sc;
+	private BlockingScrollContainer sc;
 	private Container isc;
 	
 	private FixedButton move;
@@ -103,7 +103,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		
 		
 		
-		sc = FengGUI.createWidget(ScrollContainer.class);
+		sc = FengGUI.createWidget(BlockingScrollContainer.class);
 		sc.setSize(targetWidth, targetHeight);
 		getContentContainer().addWidget(sc);
 		sc.setShowScrollbars(true);
