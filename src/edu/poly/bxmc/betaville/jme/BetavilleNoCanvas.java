@@ -36,6 +36,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 
+import com.apple.eawt.Application;
+import com.apple.eawt.OpenFilesHandler;
+import com.apple.eawt.AppEvent.OpenFilesEvent;
 import com.jme.app.AbstractGame.ConfigShowMode;
 import com.jme.input.MouseInput;
 import com.jme.system.DisplaySystem;
@@ -64,6 +67,7 @@ import edu.poly.bxmc.betaville.terrain.TerrainLoader;
 import edu.poly.bxmc.betaville.updater.BaseUpdater;
 import edu.poly.bxmc.betaville.updater.BetavilleTask;
 import edu.poly.bxmc.betaville.updater.BetavilleUpdater;
+import edu.poly.bxmc.betaville.util.AppleCompatibility;
 import edu.poly.bxmc.betaville.xml.PreferenceReader;
 import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
 
@@ -86,6 +90,8 @@ public class BetavilleNoCanvas {
 	private static BetavilleUpdater betavilleUpdater;
 
 	private static ArrayList<IAppInitializationCompleteListener> listeners;
+	
+	private static File fileOpenArgument = null;
 
 	private static boolean validateResolutionString(String resString) {
 		return resString.matches("[0-9]+x[0-9]+");
@@ -101,6 +107,7 @@ public class BetavilleNoCanvas {
 					"com.apple.mrj.application.apple.menu.about.name",
 					"Betaville");
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
+			
 		}
 
 		try {
@@ -136,8 +143,29 @@ public class BetavilleNoCanvas {
 			logger.info("Main started with " + args.length + " arguments"+((args.length>0)?":":""));
 			for (int i = 0; i < args.length; i++) {
 				logger.info("Argument " + i + ": " + args[i]);
+				if(args[i].equals("-open")){
+					fileOpenArgument = new File(args[i+1]);
+				}
 			}
 		}
+		// get input files for os x
+		if (System.getProperty("os.name").startsWith("Mac")) {
+			Application appleApp = new Application();
+			
+			appleApp.setOpenFileHandler(new OpenFilesHandler() {
+				
+				public void openFiles(OpenFilesEvent arg0) {
+					logger.info("open files");
+					List<File> files = arg0.getFiles();
+					for(File file : files){
+						logger.info("Apple File Open Requested for: " + file.toString());
+						fileOpenArgument = file;
+					}
+				}
+			});
+		}
+		
+		if(fileOpenArgument!=null)logger.info("Application opened with file: " + fileOpenArgument.toString());
 
 		// warmup modules
 		LiveProposalManager.getInstance();

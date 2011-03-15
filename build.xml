@@ -50,6 +50,7 @@
         <pathelement location="lib/geonames-1.0.4.jar"/>
         <pathelement location="lib/timingframework/TimingFramework-1.0.jar"/>
         <pathelement location="lib/ogg-video-codec.jar"/>
+        <pathelement location="lib/AppleJavaExtensions/AppleJavaExtensions.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -165,6 +166,7 @@
 	    <signjar jar="lib/geonames-1.0.4.jar"							alias="betaville" storepass="${keypass}" />
 	    <signjar jar="lib/timingframework/TimingFramework-1.0.jar"		alias="betaville" storepass="${keypass}" />
 	    <signjar jar="lib/ogg-video-codec.jar"							alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/AppleJavaExtensions/AppleJavaExtensions.jar"	alias="betaville" storepass="${keypass}" />
 	    <signjar jar="webstart/native.jar"								alias="betaville" storepass="${keypass}" />
 	    <signjar jar="webstart/windows-native.jar"						alias="betaville" storepass="${keypass}" />
 	    <signjar jar="webstart/mac-native.jar"							alias="betaville" storepass="${keypass}" />

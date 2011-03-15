@@ -58,6 +58,7 @@
     <jar href="geonames-1.0.4.jar"/>
     <jar href="TimingFramework-1.0.jar"/>
     <jar href="ogg-video-codec.jar"/>
+    <jar href="AppleJavaExtensions.jar"/>
     <nativelib href="native.jar"/>
   </resources>
 
