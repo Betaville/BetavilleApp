@@ -91,7 +91,7 @@ public class BetavilleNoCanvas {
 	private static BetavilleUpdater betavilleUpdater;
 
 	private static ArrayList<IAppInitializationCompleteListener> listeners;
-	
+
 	private static File fileOpenArgument = null;
 
 	private static boolean validateResolutionString(String resString) {
@@ -106,9 +106,9 @@ public class BetavilleNoCanvas {
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			System.setProperty(
 					"com.apple.mrj.application.apple.menu.about.name",
-					"Betaville");
+			"Betaville");
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
-			
+
 		}
 
 		try {
@@ -139,7 +139,7 @@ public class BetavilleNoCanvas {
 		DisplaySystem.getDisplaySystem().setMinStencilBits(4);
 
 		LogManager.setupLoggers();
-		
+
 		if (args != null) {
 			logger.info("Main started with " + args.length + " arguments"+((args.length>0)?":":""));
 			for (int i = 0; i < args.length; i++) {
@@ -152,9 +152,9 @@ public class BetavilleNoCanvas {
 		// get input files for os x
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			Application appleApp = new Application();
-			
+
 			appleApp.setOpenFileHandler(new OpenFilesHandler() {
-				
+
 				public void openFiles(OpenFilesEvent arg0) {
 					logger.info("open files");
 					List<File> files = arg0.getFiles();
@@ -165,21 +165,22 @@ public class BetavilleNoCanvas {
 				}
 			});
 		}
-		
-		if(fileOpenArgument!=null)logger.info("Application opened with file: " + fileOpenArgument.toString());
-		
+
 		ILocation whereToStartTheCamera=null;
-		try {
-			if(fileOpenArgument.toString().toLowerCase().endsWith("bxb")){
-				BXBReader bxb = new BXBReader(fileOpenArgument);
-				whereToStartTheCamera = bxb.getCoordinate();
+		if(fileOpenArgument!=null){
+			logger.info("Application opened with file: " + fileOpenArgument.toString());
+			try {
+				if(fileOpenArgument.toString().toLowerCase().endsWith("bxb")){
+					BXBReader bxb = new BXBReader(fileOpenArgument);
+					whereToStartTheCamera = bxb.getCoordinate();
+				}
+			} catch (JDOMException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
 			}
-		} catch (JDOMException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
 		}
 
 		// warmup modules
@@ -190,7 +191,7 @@ public class BetavilleNoCanvas {
 		try {
 			PreferenceReader preferenceReader = new PreferenceReader(new File(
 					DriveFinder.getHomeDir().toString()
-							+ "/.betaville/preferences.xml"));
+					+ "/.betaville/preferences.xml"));
 			if (preferenceReader.isXMLLoaded()) {
 				preferenceReader.parse();
 				UpdatedPreferenceWriter.writeDefaultPreferences();
@@ -213,13 +214,13 @@ public class BetavilleNoCanvas {
 				.getProperty("betaville.display.resolution"))
 				|| SettingsPreferences.alwaysShowSettings()) {
 			if (BetavilleSettingsPanel.prompt(game.getSettings(),
-					"Betaville Settings")) {
+			"Betaville Settings")) {
 				logger.warn("Display settings set");
 			}
 		} else {
 			// load the resolution already there
 			String[] widthHeight = SettingsPreferences.getResolution().split(
-					"x");
+			"x");
 			game.getSettings().setWidth(Integer.parseInt(widthHeight[0]));
 			game.getSettings().setHeight(Integer.parseInt(widthHeight[1]));
 		}
