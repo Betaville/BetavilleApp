@@ -55,6 +55,7 @@ import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
 import edu.poly.bxmc.betaville.jme.gamestates.SoundGameState;
 import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
+import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.City;
@@ -67,6 +68,7 @@ import edu.poly.bxmc.betaville.terrain.TerrainLoader;
 import edu.poly.bxmc.betaville.updater.BaseUpdater;
 import edu.poly.bxmc.betaville.updater.BetavilleTask;
 import edu.poly.bxmc.betaville.updater.BetavilleUpdater;
+import edu.poly.bxmc.betaville.xml.BXBReader;
 import edu.poly.bxmc.betaville.xml.PreferenceReader;
 import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
 
@@ -165,6 +167,20 @@ public class BetavilleNoCanvas {
 		}
 		
 		if(fileOpenArgument!=null)logger.info("Application opened with file: " + fileOpenArgument.toString());
+		
+		ILocation whereToStartTheCamera=null;
+		try {
+			if(fileOpenArgument.toString().toLowerCase().endsWith("bxb")){
+				BXBReader bxb = new BXBReader(fileOpenArgument);
+				whereToStartTheCamera = bxb.getCoordinate();
+			}
+		} catch (JDOMException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 
 		// warmup modules
 		LiveProposalManager.getInstance();
@@ -246,7 +262,7 @@ public class BetavilleNoCanvas {
 
 		transitionGameState.setProgress(0.05f, "Initializing Scene");
 
-		sceneGameState = new SceneGameState("sceneGameState");
+		sceneGameState = new SceneGameState("sceneGameState", whereToStartTheCamera);
 		GameStateManager.getInstance().attachChild(sceneGameState);
 		sceneGameState.setActive(false);
 		if (!SettingsPreferences.useGeneratedTerrainEnabled())

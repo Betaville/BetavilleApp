@@ -169,6 +169,8 @@ public class SceneGameState extends BasicGameState {
 	private LoadingGameState transitionGameState;
 	/** Controls movement of the camera within the scene*/
 	private SceneController sceneController;
+	
+	private ILocation startingLocation;
 
 	private Foliage foliage;
 
@@ -201,9 +203,16 @@ public class SceneGameState extends BasicGameState {
 	 * 
 	 * @see com.jmex.game.state.BasicGameState#update(float)
 	 */
-	public SceneGameState(String name) {
+	public SceneGameState(String name, ILocation startingLocation) {
 		super(name);
 
+		if(startingLocation==null){
+			this.startingLocation = new GPSCoordinate(0.0, 40.69660664827642, -74.01919373745085);
+		}
+		else{
+			this.startingLocation=startingLocation;
+		}
+		
 		modules = new ArrayList<Module>();
 
 		ExtraPluginManager.registerExtraPlugin("GOOGLEEARTH", new GoogleEarthPlugin());
@@ -620,7 +629,6 @@ public class SceneGameState extends BasicGameState {
 	 */
 	public void cameraPerspectiveProjection() {
 		camera.setParallelProjection(false);
-		ILocation startingLocation = new GPSCoordinate(0.0, 40.69660664827642, -74.01919373745085);
 		camera.setLocation(MapManager.locationToBetaville(startingLocation));
 		camera.getLocation().setY(Scale.fromMeter(200));
 		float aspect = (float) DisplaySystem.getDisplaySystem().getWidth() / DisplaySystem.getDisplaySystem().getHeight();
