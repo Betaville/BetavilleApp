@@ -67,7 +67,6 @@ import edu.poly.bxmc.betaville.terrain.TerrainLoader;
 import edu.poly.bxmc.betaville.updater.BaseUpdater;
 import edu.poly.bxmc.betaville.updater.BetavilleTask;
 import edu.poly.bxmc.betaville.updater.BetavilleUpdater;
-import edu.poly.bxmc.betaville.util.AppleCompatibility;
 import edu.poly.bxmc.betaville.xml.PreferenceReader;
 import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
 
