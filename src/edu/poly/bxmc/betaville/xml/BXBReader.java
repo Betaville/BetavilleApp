@@ -28,6 +28,8 @@ package edu.poly.bxmc.betaville.xml;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JFileChooser;
+
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -69,7 +71,7 @@ public class BXBReader extends XMLReader {
 		designID = Integer.parseInt(designIDString);
 		Element coordinateElement = rootElement.getChild("coordinate");
 		coordinate=null;
-		if(coordinateElement.getChild("type").getText().equals(UTMCoordinate.class.getName())){
+		if(coordinateElement.getAttributeValue("type").equals(UTMCoordinate.class.getSimpleName())){
 			try{
 			int altitude = Integer.parseInt(coordinateElement.getChild("altitude").getText());
 			int northing = Integer.parseInt(coordinateElement.getChild("northing").getText());
@@ -98,9 +100,11 @@ public class BXBReader extends XMLReader {
 	}
 
 	public static void main(String[] args) throws JDOMException, IOException{
-		BXBReader pr = new BXBReader(new File(DriveFinder.getHomeDir().toString()+"/.betaville/preferences.xml"));
-		pr.parse();
-		PreferenceWriter pw = new PreferenceWriter();
-		pw.writeData();
+		System.out.println(UTMCoordinate.class.getSimpleName());
+		JFileChooser chooser = new JFileChooser();
+		chooser.showOpenDialog(null);
+		BXBReader pr = new BXBReader(chooser.getSelectedFile());
+		System.out.println("bxb design: "+pr.getDesignID());
+		System.out.println("bxb location: "+pr.getCoordinate().toString());
 	}
 }
