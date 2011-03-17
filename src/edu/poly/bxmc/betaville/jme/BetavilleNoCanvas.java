@@ -37,8 +37,8 @@ import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 
 import com.apple.eawt.Application;
-import com.apple.eawt.OpenFilesHandler;
-import com.apple.eawt.AppEvent.OpenFilesEvent;
+import com.apple.eawt.ApplicationEvent;
+import com.apple.eawt.ApplicationListener;
 import com.jme.app.AbstractGame.ConfigShowMode;
 import com.jme.input.MouseInput;
 import com.jme.system.DisplaySystem;
@@ -102,6 +102,7 @@ public class BetavilleNoCanvas {
 	 * @param args
 	 * @throws InterruptedException
 	 */
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws InterruptedException {
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			System.setProperty(
@@ -153,6 +154,7 @@ public class BetavilleNoCanvas {
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			Application appleApp = new Application();
 
+			/*
 			appleApp.setOpenFileHandler(new OpenFilesHandler() {
 
 				public void openFiles(OpenFilesEvent arg0) {
@@ -162,6 +164,45 @@ public class BetavilleNoCanvas {
 						logger.info("Apple File Open Requested for: " + file.toString());
 						fileOpenArgument = file;
 					}
+				}
+			});
+			*/
+			
+			appleApp.addApplicationListener(new ApplicationListener() {
+				
+				public void handleReOpenApplication(ApplicationEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void handleQuit(ApplicationEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void handlePrintFile(ApplicationEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void handlePreferences(ApplicationEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void handleOpenFile(ApplicationEvent arg0) {
+					logger.info("Apple File Open Requested for: " + arg0.getFilename());
+					fileOpenArgument=new File(arg0.getFilename());
+				}
+				
+				public void handleOpenApplication(ApplicationEvent arg0) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void handleAbout(ApplicationEvent arg0) {
+					// TODO Auto-generated method stub
+					
 				}
 			});
 		}
