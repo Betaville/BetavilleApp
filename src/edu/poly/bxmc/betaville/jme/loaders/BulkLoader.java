@@ -1,6 +1,28 @@
-/**
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+ * All rights reserved.
  * 
- */
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of Brooklyn eXperimental Media Center nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Brooklyn eXperimental Media Center BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 package edu.poly.bxmc.betaville.jme.loaders;
 
 import java.io.File;
@@ -10,12 +32,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.jme.math.Vector3f;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
+import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
@@ -31,60 +52,135 @@ public class BulkLoader {
 	
 	private ILocation origin;
 	private volatile int currentCounter=0;
+	private volatile int completionCounter=0;
+	
+	private String xPrefix;
+	private String yPrefix;
+	private String zPrefix;
 	
 	private IBulkLoadProgressListener progress;
 
 	public BulkLoader(ILocation commonOriginForFiles, IBulkLoadProgressListener progressListener){
+		this(commonOriginForFiles, progressListener, "x_", "y_", "z_");
+	}
+	
+	public BulkLoader(ILocation commonOriginForFiles, IBulkLoadProgressListener progressListener, String xPrefix, String yPrefix, String zPrefix){
 		origin = commonOriginForFiles;
 		progress = progressListener;
+		this.xPrefix=xPrefix;
+		this.yPrefix=yPrefix;
+		this.zPrefix=zPrefix;
 	}
 	
 	/**
 	 * Loads the specified files into Betaville.  Uses Filenames as the model's
 	 * names
 	 * @param files The files to load
-	 * @throws URISyntaxException 
-	 * @throws IOException 
 	 */
-	public void load(List<File> files) throws IOException, URISyntaxException{
-		while(currentCounter<files.size()){
-			// begin the laoding
-			progress.modelLoadStarting(files.get(currentCounter).getName(), currentCounter+1, files.size());
+	public void load(final List<File> files){
+		while(currentCounter<(files.size()-1)){
 			
-			// parse the model
-			ModeledDesign design = new ModeledDesign(files.get(currentCounter).getName(), origin.getUTM().clone(), "Not Supplied By Bulk Model", SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", files.get(currentCounter).toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
-			ModelLoader ml = new ModelLoader(design, false, null);
-			progress.modelParsed(currentCounter);
-			
-			// calculate the geographical offset
-			Vector3f closestToOrigin = GeometryUtilities.findObjectExtents(ml.getModel())[0];
-			ILocation original = design.getCoordinate().clone();
-			design.getCoordinate().move((int)closestToOrigin.z*-1, (int)closestToOrigin.x*-1, 0);
-			ILocation corrected = design.getCoordinate().clone();
-			
-			
-			
-			// move the model to 0,0,0 on its own axis
-			GeometryUtilities.relocateObjectToOrigin(ml.getModel());
-			logger.info("Model Originally At: " + closestToOrigin.toString()+"\nNow At: "+ GeometryUtilities.findObjectExtents(ml.getModel())[0].toString());
-			SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
-			SceneScape.getCity().addDesign(design);
-			SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
-			SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).updateRenderState();
-			progress.modelMovedToLocation(currentCounter, original, corrected);
-			
-			
-			//SceneScape.getCity().addDesign(design);
-			logger.debug("Model Added");
-			
-			// do model upload
-			
-			incrementCurrentCounter();
+			try {
+				loadModel(files.get(currentCounter), files.size());
+				incrementCurrentCounter();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+			/*
+			SettingsPreferences.getThreadPool().submit(new Runnable() {
+				public void run() {
+					
+				}
+			});
+			*/
 		}
+		/*
+		while(completionCounter<files.size()){
+			try {
+				Thread.sleep(25);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		*/
+		logger.info("Bulk load completed!");
+	}
+	
+	private void loadModel(File file, int numberFiles) throws IOException, URISyntaxException{
+		// begin the loading
+		progress.modelLoadStarting(file.getName(), currentCounter+1, numberFiles);
+		
+		// Read the x/y/z offsets
+		String fileString = file.getName();
+		String xOffsetString = fileString.substring(fileString.indexOf(xPrefix)+xPrefix.length(), fileString.indexOf(yPrefix));
+		String yOffsetString = fileString.substring(fileString.indexOf(yPrefix)+xPrefix.length(), fileString.indexOf(zPrefix));
+		// this is somewhat of a guess...  if a file is named something like "object.mesh.xml" then we're screwed
+		String zOffsetString = fileString.substring(fileString.indexOf(zPrefix)+xPrefix.length(), fileString.lastIndexOf("."));
+		
+		// parse the model
+		ModeledDesign design = new ModeledDesign(file.getName(), origin.getUTM().clone(), "Not Supplied By Bulk Model", SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", file.toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
+		ModelLoader ml = new ModelLoader(design, false, null);
+		progress.modelParsed(currentCounter);
+		
+		/*
+		 * This code no longer applies since we can't account for the proper transformations once
+		 * outside of the modeling application.  It is for this reason that we encourage any batch export
+		 * script to do a freeze on the object's transformations so that it is properly zeroed out when
+		 * exported from the application.  This will allow the batch importer to properly do its job by
+		 * placing the object at its own point of origin while still accounting for its offset within the
+		 * original DCC tool's scene (this offset is scripted through the filename)
+		 * 
+		// calculate the geographical offset
+		Vector3f closestToOrigin = GeometryUtilities.findObjectExtents(ml.getModel())[0];
+		ILocation original = design.getCoordinate().clone();
+		design.getCoordinate().move((int)closestToOrigin.z*-1, (int)closestToOrigin.x*-1, 0);
+		ILocation corrected = design.getCoordinate().clone();
+		
+		// move the model to 0,0,0 on its own axis
+		GeometryUtilities.relocateObjectToOrigin(ml.getModel());
+		logger.info("Model Originally At: " + closestToOrigin.toString()+"\nNow At: "+ GeometryUtilities.findObjectExtents(ml.getModel())[0].toString());
+		SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
+		SceneScape.getCity().addDesign(design);
+		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).updateRenderState();
+		progress.modelMovedToLocation(currentCounter, original, corrected);
+		*/
+		
+		// calculate the geographical offset
+		ILocation original = design.getCoordinate().clone();
+		logger.info("Original object cloned");
+		design.getCoordinate().move((int)Float.parseFloat(xOffsetString), (int)Float.parseFloat(zOffsetString), (int)Float.parseFloat(yOffsetString));
+		logger.info("design coordinate transformed");
+		ILocation corrected = design.getCoordinate().clone();
+		logger.info("corrected object cloned");
+		
+		// move the model to 0,0,0 on its own axis
+		SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
+		logger.info("model added to scene");
+		SceneScape.getCity().addDesign(design);
+		logger.info("model design object added to city");
+		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+		logger.info("object moved to correct orientation");
+		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).updateRenderState();
+		progress.modelMovedToLocation(currentCounter, original, corrected);
+		
+		
+		//SceneScape.getCity().addDesign(design);
+		logger.debug("Model Added");
+		
+		// do model upload
+		
+		incrementCompletionCounter();
 	}
 	
 	private synchronized void incrementCurrentCounter(){
 		currentCounter++;
+	}
+	
+	private synchronized void incrementCompletionCounter(){
+		completionCounter++;
 	}
 	
 	public ILocation getOrigin(){
@@ -125,5 +221,26 @@ public class BulkLoader {
 		 * @param success True if the upload operation was successful, false if it failed
 		 */
 		public void modelUploadCompleted(int currentFile, boolean success);
+	}
+	
+	public static void main(String[] args){
+		String xPrefix="x_";
+		String yPrefix="y_";
+		String zPrefix="z_";
+		String fileString = "posdmgpsidgx_-352.35y_3223.1z_34235.dae";
+		String xOffsetString = fileString.substring(fileString.indexOf(xPrefix)+xPrefix.length(), fileString.indexOf(yPrefix));
+		String yOffsetString = fileString.substring(fileString.indexOf(yPrefix)+xPrefix.length(), fileString.indexOf(zPrefix));
+		// this is somewhat of a guess...  if a file is named something like "object.mesh.xml" then we're screwed
+		String zOffsetString = fileString.substring(fileString.indexOf(zPrefix)+xPrefix.length(), fileString.lastIndexOf("."));
+		
+		ILocation loc = new GPSCoordinate(0, 40, -74);
+		System.out.println(loc.getUTM().toString());
+		loc.getUTM().move(Float.parseFloat(zOffsetString), Float.parseFloat(xOffsetString), Float.parseFloat(yOffsetString));
+		System.out.println(loc.getUTM().toString());
+		
+		
+		System.out.println(Float.parseFloat(xOffsetString));
+		System.out.println(yOffsetString);
+		System.out.println(zOffsetString);
 	}
 }

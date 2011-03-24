@@ -66,6 +66,22 @@ public class UTMCoordinate implements ILocation, Serializable{
 		this.altitude=altitude;
 	}
 	
+	/**
+	 * @deprecated - Do not use me, I am broken!
+	 * @experimental - Do not use me (23 March 2011)
+	 * @param eastingDeltaMeters
+	 * @param northingDeltaMeters
+	 * @param altitudeDelta
+	 * @return
+	 */
+	public UTMCoordinate move(float eastingDeltaMeters, float northingDeltaMeters, float altitudeDelta){
+		System.out.println("eastMeters: "+ (int)(eastingDeltaMeters/1));
+		System.out.println("northMeters: "+ (int)(northingDeltaMeters/1));
+		System.out.println("eastCenti: "+(int)(((float)eastingDeltaMeters%1)*100));
+		System.out.println("northCenti: "+(int)(((float)northingDeltaMeters%1)*100));
+		return move((int)(eastingDeltaMeters/1), (int)(northingDeltaMeters/1), (int)(((float)eastingDeltaMeters%1)*100), (int)(((float)northingDeltaMeters%1)*100), (int)altitudeDelta);
+	}
+	
 	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, int altitudeDelta){
 		return move(eastingDeltaMeters, northingDeltaMeters, 0, 0, altitudeDelta);
 	}

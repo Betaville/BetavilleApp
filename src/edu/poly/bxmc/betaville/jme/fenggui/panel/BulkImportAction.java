@@ -22,13 +22,11 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
 import java.awt.Dialog.ModalityType;
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import javax.swing.JDialog;
@@ -74,42 +72,43 @@ public class BulkImportAction extends PanelAction {
 						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
 						fileChooser.setMultiSelectionEnabled(true);
 						if(fileChooser.showOpenDialog(dialog)==JFileChooser.APPROVE_OPTION){
-							File[] files = fileChooser.getSelectedFiles();
+							final File[] files = fileChooser.getSelectedFiles();
 							logger.info(files.length + " files selected");
 							SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
-							
-							BulkLoader bl = new BulkLoader(MapManager.betavilleToUTM(SceneGameState.getInstance().getGroundSelectorLocation()), new BulkLoader.IBulkLoadProgressListener() {
-								
+
+							final BulkLoader bl = new BulkLoader(MapManager.betavilleToUTM(SceneGameState.getInstance().getGroundSelectorLocation()), new BulkLoader.IBulkLoadProgressListener() {
+
 								int totalFiles = 0;
-								
+
 								public void modelUploadStarted(int currentFile) {}
-								
+
 								public void modelUploadCompleted(int currentFile, boolean success) {}
-								
-								public void modelParsed(int currentFile) {}
-								
-								public void modelMovedToLocation(int currentFile, ILocation originalLocation, ILocation correctedLocation) {
-									logger.info("Model corrected from " + originalLocation.toString() +" to " + correctedLocation.toString());
+
+								public void modelParsed(int currentFile) {
+									logger.info("File " +currentFile+" parsed");
 								}
-								
+
+								public void modelMovedToLocation(int currentFile, ILocation originalLocation, ILocation correctedLocation) {
+									logger.info("Model "+currentFile+" corrected from " + originalLocation.toString() +" to " + correctedLocation.toString());
+								}
+
 								public void modelLoadStarting(String filename, int currentFile,
 										int totalNumberFiles) {
 									totalFiles = totalNumberFiles;
 									logger.info("Loading model " + currentFile + " of " + totalFiles + "\t-\t"+filename);
 								}
 							});
-							
-							try {
-								ArrayList<File> fileList = new ArrayList<File>();
-								for(File f : files){
-									fileList.add(f);
+
+							SettingsPreferences.getThreadPool().submit(new Runnable() {
+
+								public void run() {
+									ArrayList<File> fileList = new ArrayList<File>();
+									for(File f : files){
+										fileList.add(f);
+									}
+									bl.load(fileList);	
 								}
-								bl.load(fileList);
-							} catch (IOException e) {
-								logger.error("Can't open files!", e);
-							} catch (URISyntaxException e) {
-								e.printStackTrace();
-							}							
+							});			
 						}
 					}
 				});
