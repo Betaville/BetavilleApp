@@ -1,0 +1,1 @@
+rd %UserProfile%\.betaville\cache
