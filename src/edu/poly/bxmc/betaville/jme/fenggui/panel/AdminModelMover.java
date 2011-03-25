@@ -126,7 +126,7 @@ public class AdminModelMover extends Window {
 				setAllEnabled(getContentContainer(), false);
 			}
 			
-			public void designSelected(Spatial spatial, Design design, final Design previousDesign) {
+			public void designSelected(Spatial spatial, Design design) {
 				originalLocation=design.getCoordinate().clone();
 				if(design instanceof ModeledDesign) originalRotation =  ((ModeledDesign)design).getRotationY();
 				rotYSlider.setValue((double)originalRotation/360d);

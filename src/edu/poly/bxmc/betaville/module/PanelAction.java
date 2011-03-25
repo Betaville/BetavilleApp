@@ -104,8 +104,7 @@ public class PanelAction extends Module {
 					else button.setEnabled(false);
 				}
 
-				public void designSelected(Spatial spatial, Design design,
-						Design previousDesign) {
+				public void designSelected(Spatial spatial, Design design) {
 					if(rule.equals(AvailabilityRule.OBJECT_SELECTED) || rule.equals(AvailabilityRule.ALWAYS)){
 						button.setEnabled(true);
 					}

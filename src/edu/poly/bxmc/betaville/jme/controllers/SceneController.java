@@ -44,7 +44,7 @@ import com.jme.renderer.Camera;
 import com.jme.scene.Controller;
 import com.jme.system.DisplaySystem;
 
-import edu.poly.bxmc.betaville.SafeShutdown;
+import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -183,7 +183,7 @@ public class SceneController extends Controller {
 			closeWindow = FengUtils.createTwoOptionWindow("Betaville", "Are you sure you want to exit?", "Yes", "No", new IButtonPressedListener() {
 				public void buttonPressed(Object source, ButtonPressedEvent e) {
 					logger.info("Exit comment confirmed");
-					SafeShutdown.doSafeShutdown();
+					ShutdownManager.doSafeShutdown();
 				}
 			}, null, true, true);
 		}

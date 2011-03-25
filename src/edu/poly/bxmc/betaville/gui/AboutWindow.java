@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -23,30 +23,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package edu.poly.bxmc.betaville.jme.intersections;
+package edu.poly.bxmc.betaville.gui;
 
-import com.jme.scene.Spatial;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
 
-import edu.poly.bxmc.betaville.model.Design;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 
 /**
- * Actions called when a design is selected or deselected
+ * The 'About' window for use on OS X (Windows doesn't have this option)
  * @author Skye Book
  *
  */
-public interface ISpatialSelectionListener {
+public class AboutWindow extends JFrame {
+	
+	private static final long serialVersionUID = 1L;
 	
 	/**
-	 * Called when a design is selected
-	 * @param spatial The jME Spatial representing the selected design
-	 * @param design The Design object holding this object's data
-	 * @see Design
+	 * @throws HeadlessException
 	 */
-	public void designSelected(Spatial spatial, Design design);
+	public AboutWindow() throws HeadlessException {
+		super("About");
+		setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx=0;
+		c.gridy=0;
+		add(new JLabel("Betaville is open-source software"), c);
+		c.gridy++;
+		add(new JLabel("Copyright 2008-2011 Brooklyn eXperimental Media Center"), c);
+		c.gridy++;
+		add(new JLabel("http://betaville.net | http://bxmc.poly.edu | http://betaville.googlecode.com"), c);
+		
+		setSize(500, 275);
+		setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-getWidth()/2),
+				(int)(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-getHeight()/2));
+	}
 	
-	/**
-	 * Called when a design is deselected
-	 * @param previousDesign 
-	 */
-	public void selectionCleared(Design previousDesign);
+	
+	public static void main(String[] args) {
+		AboutWindow aw = new AboutWindow();
+		aw.setVisible(true);
+	}
+
 }

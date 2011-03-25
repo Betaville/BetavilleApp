@@ -117,7 +117,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new VolumeControl());
 		addAction(new WireframePanelAction());
 		addAction(new FocusOnSelectedAction());
-		//addAction(new BulkImportAction());
+		addAction(new BulkImportAction());
 		//addAction(new BookmarkPanel());
 		/*
 		addAction(new PanelAction("Wormhole", "Wormhole", "Wormhole", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, new IButtonPressedListener() {
@@ -256,7 +256,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 				lockToTerrain.setEnabled(false);
 			}
 			
-			public void designSelected(Spatial spatial, Design design, Design previousDesign) {
+			public void designSelected(Spatial spatial, Design design) {
 				move.setEnabled(true);
 				delete.setEnabled(true);
 				swap.setEnabled(true);

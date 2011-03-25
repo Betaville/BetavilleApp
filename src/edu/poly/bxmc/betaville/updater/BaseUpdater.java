@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import edu.poly.bxmc.betaville.SafeShutdown;
+import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.Design;
@@ -68,7 +68,7 @@ public class BaseUpdater extends AbstractUpdater {
 		updating=true;
 		if(SceneGameState.getInstance()==null){
 			// If the graphics layer has shutdown or otherwise crashed, shutdown the application.
-			SafeShutdown.doSafeShutdown();
+			ShutdownManager.doSafeShutdown();
 			return;
 		}
 		logger.info("Synchronizing base model");

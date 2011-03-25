@@ -75,8 +75,7 @@ public class PerformanceWindow extends Window  implements IBetavilleWindow{
 				if(isInWidgetTree()) selectedCount.setText("0");
 			}
 
-			public void designSelected(Spatial spatial, Design design,
-					Design previousDesign) {
+			public void designSelected(Spatial spatial, Design design) {
 				if(isInWidgetTree()){
 					if(trisInThousands){
 						triCount.setText(""+(SceneGameState.getInstance().getRootNode().getTriangleCount()/1000)+"k");

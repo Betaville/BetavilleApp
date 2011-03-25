@@ -120,7 +120,7 @@ public class MakeRoomWindow extends Window  implements IBetavilleWindow{
 		getContentContainer().addWidget(listContainer, listController, bc);
 		
 		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
-			public void designSelected(Spatial spatial, Design design, Design previousDesign) {
+			public void designSelected(Spatial spatial, Design design) {
 				if(!isInWidgetTree()) return;
 				logger.debug("something selected");
 				setSelectable(design.getName(), design.getID());

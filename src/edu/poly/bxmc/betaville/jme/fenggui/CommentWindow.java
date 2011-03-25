@@ -114,7 +114,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 			 * (non-Javadoc)
 			 * @see edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener#designSelected(com.jme.scene.Spatial, edu.poly.bxmc.betaville.model.Design, edu.poly.bxmc.betaville.model.Design)
 			 */
-			public void designSelected(Spatial spatial, Design design, Design previousDesign){
+			public void designSelected(Spatial spatial, Design design){
 				postComment.setEnabled(true);
 				if(isInWidgetTree()) setCurrentDesign(design.getID());
 			}

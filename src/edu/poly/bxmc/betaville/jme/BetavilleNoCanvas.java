@@ -48,6 +48,7 @@ import com.jmex.game.state.load.LoadingGameState;
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.gui.AboutWindow;
 import edu.poly.bxmc.betaville.gui.BetavilleSettingsPanel;
 import edu.poly.bxmc.betaville.gui.SwingLoginWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -200,9 +201,9 @@ public class BetavilleNoCanvas {
 					
 				}
 				
-				public void handleAbout(ApplicationEvent arg0) {
-					// TODO Auto-generated method stub
-					
+				public void handleAbout(ApplicationEvent arg0){
+					AboutWindow aw = new AboutWindow();
+					aw.setVisible(true);
 				}
 			});
 		}
@@ -268,6 +269,11 @@ public class BetavilleNoCanvas {
 
 		SwingLoginWindow.prompt();
 
+		if(game.getSettings().isFullscreen()){
+			// setup for undecorated window
+			//game.getSettings().setFullscreen(false);
+			//System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
+		}
 		game.start();
 
 		SettingsPreferences.getThreadPool().submit(new Runnable() {

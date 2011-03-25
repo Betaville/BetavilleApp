@@ -62,8 +62,7 @@ public class WireframePanelAction extends PanelAction {
 
 			public void selectionCleared(Design previousDesign) {}
 
-			public void designSelected(Spatial spatial, Design design,
-					Design previousDesign) {
+			public void designSelected(Spatial spatial, Design design) {
 				if(GeometryUtilities.checkForRenderState(spatial, StateType.Wireframe)){
 					button.setText("Turn Off Wireframe");
 					wireOn=true;

@@ -197,10 +197,11 @@ public class NetModelLoader{
 	 * Loads the terrain for the current city
 	 */
 	public static void loadCityTerrain(int cityID){
-		logger.info("Loading City Terrin" + cityID);
+		logger.info("Loading City Terrain " + cityID);
 		Vector<Design> designs = NetPool.getPool().getConnection().findTerrainByCity(cityID);
 		if(designs==null){
-			throw new NullPointerException("designs not received!");
+			//throw new NullPointerException("designs not received!");
+			return;
 		}
 		else{
 			for(int i=0; i<designs.size(); i++){

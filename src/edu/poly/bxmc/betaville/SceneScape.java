@@ -162,6 +162,10 @@ public class SceneScape {
 	}
 
 	public static void setTargetSpatial(Spatial s){
+		if(s==null){
+			logger.info("Nothing picked!");
+			return;
+		}
 		logger.debug("trying to pick Spatial named: " + s.getName());
 		
 		// remove the red box
@@ -175,7 +179,8 @@ public class SceneScape {
 			GeometryUtilities.replaceMaterials(targetSpatial);
 		}
 		
-		Design previousDesign = getPickedDesign();
+		Design previousDesign = null;
+		if(!isTargetSpatialEmpty()) previousDesign = getPickedDesign();
 
 		// Now update the render state.  The spatial should now be ready for release.
 		targetSpatial.updateRenderState();
@@ -199,9 +204,9 @@ public class SceneScape {
 
 		for(ISpatialSelectionListener listener : selectionListeners){
 			if(!isTargetSpatialEmpty()){
-				listener.designSelected(targetSpatial, getPickedDesign(), previousDesign);
+				listener.designSelected(targetSpatial, getPickedDesign());
 			}
-			else listener.selectionCleared(previousDesign);
+			else if(previousDesign!=null) listener.selectionCleared(previousDesign);
 		}
 		
 	}

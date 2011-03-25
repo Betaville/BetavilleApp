@@ -386,8 +386,6 @@ public abstract class ClientManager {
 	/**
 	 * Gets the designs located in a city.
 	 * @param cityID The ID of the city that we are looking in.
-	 * @param onlyBase Whether to retrieve only the base designs
-	 * (true) or all of them (false).
 	 * @return A Vector of <code>Design</code> objects.
 	 * @see Design
 	 */

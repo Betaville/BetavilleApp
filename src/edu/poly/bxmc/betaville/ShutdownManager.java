@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,8 @@
 */
 package edu.poly.bxmc.betaville;
 
+import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
@@ -37,8 +39,10 @@ import edu.poly.bxmc.betaville.net.NetPool;
  * @author Skye Book
  *
  */
-public class SafeShutdown {
-	private static Logger logger = Logger.getLogger(SafeShutdown.class);
+public class ShutdownManager {
+	private static final Logger logger = Logger.getLogger(ShutdownManager.class);
+	
+	public static final ArrayList<IShutdownProcedure> shutdownProcedures = new ArrayList<IShutdownProcedure>();
 	
 	public static void doSafeShutdown() {
 		BetavilleNoCanvas.getGame().shutdown();
@@ -63,5 +67,22 @@ public class SafeShutdown {
 				SettingsPreferences.getThreadPool().submit(new LocalExporter(d));
 			}
 		}
+	}
+	
+	/**
+	 * Provides a way of adding steps to the shutdown sequence
+	 * @author Skye Book
+	 */
+	public interface IShutdownProcedure{
+		
+		/**
+		 * The meat of the procedure.  Put the code
+		 * that needs to be run here. 
+		 * @return Lets the shutdown manager know whether
+		 * the procedure ran successfully.  Note that
+		 * if this method notifies the manager that it
+		 * was unsuccessful, the shutdown will terminate.
+		 */
+		public boolean runProcedure();
 	}
 }

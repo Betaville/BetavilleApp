@@ -183,7 +183,7 @@ public class TopSelectionWindow extends Window{
 
 		// create the listener that controls the information being displayed
 		changeListener = new ISpatialSelectionListener() {
-			public void designSelected(Spatial spatial, Design design, Design previousDesign){
+			public void designSelected(Spatial spatial, Design design){
 				setLabelText(design);
 				if(!design.getURL().toLowerCase().equals("none")){
 					urlToLaunch = design.getURL();

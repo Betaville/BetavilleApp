@@ -92,7 +92,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 			
 			public void selectionCleared(Design previousDesign) {}
 			
-			public void designSelected(Spatial spatial, Design design, Design previousDesign) {
+			public void designSelected(Spatial spatial, Design design) {
 				update(design);
 			}
 		};

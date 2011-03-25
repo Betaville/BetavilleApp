@@ -22,81 +22,70 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-package edu.poly.bxmc.betaville.jme.fenggui.scenegraph;
+ */
+package edu.poly.bxmc.betaville.jme.fenggui;
 
 import org.apache.log4j.Logger;
 import org.fenggui.FengGUI;
+import org.fenggui.Label;
+import org.fenggui.TextEditor;
 import org.fenggui.composite.Window;
-import org.fenggui.layout.StaticLayout;
+import org.fenggui.event.key.IKeyListener;
+import org.fenggui.event.key.KeyPressedEvent;
+import org.fenggui.event.key.KeyReleasedEvent;
+import org.fenggui.event.key.KeyTypedEvent;
 
-import com.jme.scene.Spatial;
-
-import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
-import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
-import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
-import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
-import edu.poly.bxmc.betaville.model.Design;
 
 /**
+ * A prompt for a user to input a password before allowing a shutdown to proceed.  Useful
+ * for when the application is being on kiosks or somewhere of a public nature.
  * @author Skye Book
  *
  */
-public class HierarchyEditorWindow extends Window implements IBetavilleWindow {
-	private static final Logger logger = Logger.getLogger(HierarchyEditorWindow.class);
-	
-	private int targetWidth=300;
-	private int targetHeight=300;
-	private SceneGraphView sg;
-	
-	private SpatialExplorer explorer;
-	
+public class ShutdownPasswordPrompt extends Window implements IBetavilleWindow {
+	private static final Logger logger = Logger.getLogger(ShutdownPasswordPrompt.class);
+
+	private int targetWidth = 200;
+	private int targetHeight = 125;
+
+	private Label passwordLabel;
+	private TextEditor passwordField;
+
 	/**
 	 * 
 	 */
-	public HierarchyEditorWindow(){
+	public ShutdownPasswordPrompt() {
 		super(true, true);
-		getContentContainer().setSize(targetWidth, getTitleBar().getHeight()-targetHeight);
-		sg = FengGUI.createWidget(SceneGraphView.class);
-		explorer = FengGUI.createWidget(SpatialExplorer.class);
-		explorer.finishSetup();
-		BetavilleNoCanvas.addCompletionListener(new IAppInitializationCompleteListener() {
-			public void applicationInitializationComplete() {
-				StaticLayout.center(explorer, GUIGameState.getInstance().getDisp());
-			}
-		});
-		
-		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
-			
-			public void selectionCleared(Design previousDesign) {
-				if(isInWidgetTree()) sg.clear();
-			}
-			
-			public void designSelected(Spatial spatial, Design design) {
-				if(isInWidgetTree()) sg.load(spatial);
-			}
-		});
-		
-		sg.addViewAction(new ISceneGraphViewAction() {
-			
-			public void selectionChanged(Spatial newSpatial, Spatial oldSpatial) {
-				logger.info(newSpatial.getName()+" selected from scene graph tree");
-				if(!explorer.isInWidgetTree()) GUIGameState.getInstance().getDisp().addWidget(explorer);
-			}
-		});
-		
-		StaticLayout.center(sg, getContentContainer());
-		getContentContainer().addWidget(sg);
-		layout();
-	}
 
+		passwordLabel = FengGUI.createWidget(Label.class);
+		passwordLabel.setText("Password:");
+
+		passwordField = FengGUI.createWidget(TextEditor.class);
+		passwordField.setPasswordField(true);
+		
+		passwordField.addKeyListener(new IKeyListener() {
+
+			public void keyTyped(Object sender, KeyTypedEvent keyTypedEvent) {
+			}
+
+			public void keyReleased(Object sender, KeyReleasedEvent keyReleasedEvent) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void keyPressed(Object sender, KeyPressedEvent keyPressedEvent) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+	}
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
+		setTitle("Password Required");
 		setSize(targetWidth, targetHeight);
-		setTitle("Hierarchy Editor");
 	}
+
 }
