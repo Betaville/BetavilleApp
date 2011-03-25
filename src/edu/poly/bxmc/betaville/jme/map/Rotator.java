@@ -1,5 +1,5 @@
 /**
- * Copyright 2008-2010 Brooklyn eXperimental Media Center
+ * Copyright 2008-2011 Brooklyn eXperimental Media Center
  * Betaville Project by Brooklyn eXperimental Media Center at NYU-Poly
  * http://bxmc.poly.edu
  */
@@ -13,6 +13,11 @@ import com.jme.math.Vector3f;
  * <code>Rotator</code> provides common Quaternions to perform
  * rotations as well as methods to find less popular Quaternion
  * calculations.
+ * 
+ * NOTES:<br/>
+ * Yaw = Rotations about Y
+ * Pitch = Rotations about Z
+ * Roll = Rotations about X
  * @author Skye Book
  *
  */
