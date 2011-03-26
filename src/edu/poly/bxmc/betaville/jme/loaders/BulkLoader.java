@@ -32,10 +32,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.jme.math.Vector3f;
+
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
@@ -120,7 +123,7 @@ public class BulkLoader {
 		String zOffsetString = fileString.substring(fileString.indexOf(zPrefix)+xPrefix.length(), fileString.lastIndexOf("."));
 		
 		// parse the model
-		ModeledDesign design = new ModeledDesign(file.getName(), origin.getUTM().clone(), "Not Supplied By Bulk Model", SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", file.toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
+		ModeledDesign design = new ModeledDesign(file.getName().substring(0, file.getName().indexOf("_x_")), origin.getUTM().clone(), "Not Supplied By Bulk Model", SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", file.toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
 		ModelLoader ml = new ModelLoader(design, false, null);
 		progress.modelParsed(currentCounter);
 		
@@ -151,12 +154,21 @@ public class BulkLoader {
 		// calculate the geographical offset
 		ILocation original = design.getCoordinate().clone();
 		logger.info("Original object cloned");
-		design.getCoordinate().move((int)Float.parseFloat(xOffsetString), (int)Float.parseFloat(zOffsetString), (int)Float.parseFloat(yOffsetString));
+		
+		float xNum=Float.parseFloat(xOffsetString);
+		float yNum=Float.parseFloat(yOffsetString);
+		float zNum=Float.parseFloat(zOffsetString);
+		
+		
+		design.getCoordinate().move((int)zNum, (int)xNum, (int)yNum);
 		logger.info("design coordinate transformed");
 		ILocation corrected = design.getCoordinate().clone();
 		logger.info("corrected object cloned");
 		
 		// move the model to 0,0,0 on its own axis
+		logger.info("Transforming internals");
+		//GeometryUtilities.adjustObject(ml.getModel(), new Vector3f(xNum*-1, yNum*-1, zNum*-1));
+		logger.info("Internals transformed");
 		SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
 		logger.info("model added to scene");
 		SceneScape.getCity().addDesign(design);

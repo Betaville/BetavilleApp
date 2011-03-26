@@ -125,6 +125,8 @@ public class ModelLoader {
 		importer.load(modelURL.openStream());
 		model = importer.getModel();
 		
+		GeometryUtilities.printInformation(logger, model, true, true, true, true);
+		
 		// up axis - kind of tough to do correctly without zeroed transforms (though apparently not all exporters are compliant in writing this out correctly)
 		if(importer.getUpAxis()!=null){
 			String up = importer.getUpAxis().toLowerCase();
@@ -147,6 +149,13 @@ public class ModelLoader {
 
 		model.setName(design.getName()+"$local");
 		model.setLocalScale(importer.getUnitMeter()/SceneScape.SceneScale);
+		if(importer.getTool().toLowerCase().contains("blender v:249 - illusoft collada exporter")){
+			logger.info("COLLADA document exported from Blender.  Scaling bug expected");
+			if(importer.getUnitName().contains("centimeter")&&importer.getUnitMeter()==.01f){
+				logger.info("Scaling bug found, using `1 meter = 1 unit`");
+				//model.setLocalScale(1f);
+			}
+		}
 		finishSetup(design);
 	}
 	

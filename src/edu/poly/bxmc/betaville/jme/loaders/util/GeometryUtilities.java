@@ -532,6 +532,35 @@ public class GeometryUtilities {
 	}
 	
 	/**
+	 * Configurable method to print information about an object.
+	 * @param toUse
+	 * @param s
+	 * @param recursive
+	 * @param translation
+	 * @param rotation
+	 * @param scale
+	 */
+	public static void printInformation(Logger toUse, Spatial s, boolean recursive,
+			boolean translation, boolean rotation, boolean scale){
+		if(translation) toUse.info(s.getName()+" Translation: " + s.getLocalTranslation().x+","+s.getLocalTranslation().y+","+s.getLocalTranslation().z);
+		if(rotation){
+			float[] angles = s.getLocalRotation().toAngles(null);
+			toUse.info(s.getName()+" Rotation: " + angles[0]+","+angles[1]+","+angles[2]);
+		}
+		if(scale) toUse.info(s.getName()+" Scale: " + s.getLocalScale().x+","+s.getLocalScale().y+","+s.getLocalScale().z);
+		
+		if(recursive){
+			if(s instanceof Node){
+				if(((Node)s).getQuantity()>0){
+					for(Spatial child : ((Node)s).getChildren()){
+						printInformation(toUse, child, recursive, translation, rotation, scale);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Nudges an entire object in the given direction through manipulation
 	 * of its vertices rather than position of the Spatial itself.
 	 * @param s The Spatial to move.
