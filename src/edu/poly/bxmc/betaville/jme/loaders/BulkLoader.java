@@ -25,6 +25,7 @@
 */
 package edu.poly.bxmc.betaville.jme.loaders;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -32,17 +33,21 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.jme.math.Vector3f;
+import com.jme.scene.Spatial;
+import com.jme.util.export.binary.BinaryExporter;
 
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.model.Design.Classification;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
+import edu.poly.bxmc.betaville.net.NetPool;
+import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
+import edu.poly.bxmc.betaville.updater.UpdaterPreferences;
 
 /**
  * Loads models into Betaville by the bulk..  as if the
@@ -81,6 +86,7 @@ public class BulkLoader {
 	 * @param files The files to load
 	 */
 	public void load(final List<File> files){
+		UpdaterPreferences.setBaseEnabled(false);
 		while(currentCounter<(files.size()-1)){
 			
 			try {
@@ -109,6 +115,7 @@ public class BulkLoader {
 		}
 		*/
 		logger.info("Bulk load completed!");
+		UpdaterPreferences.setBaseEnabled(true);
 	}
 	
 	private void loadModel(File file, int numberFiles) throws IOException, URISyntaxException{
@@ -161,6 +168,7 @@ public class BulkLoader {
 		
 		
 		design.getCoordinate().move((int)zNum, (int)xNum, (int)yNum);
+		design.setClassification(Classification.BASE);
 		logger.info("design coordinate transformed");
 		ILocation corrected = design.getCoordinate().clone();
 		logger.info("corrected object cloned");
@@ -183,6 +191,17 @@ public class BulkLoader {
 		logger.debug("Model Added");
 		
 		// do model upload
+		ByteArrayOutputStream bo = new ByteArrayOutputStream();
+		BinaryExporter.getInstance().save(SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()), bo);
+		int response = NetPool.getPool().getSecureConnection().addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), new PhysicalFileTransporter(bo.toByteArray()));
+		if(response>0){
+			// get handle on model
+			Spatial model = SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier());
+			// change the ID (now its not local)
+			design.setID(response);
+			// update the name of the model in the scene
+			model.setName(design.getFullIdentifier());
+		}
 		
 		incrementCompletionCounter();
 	}

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -40,5 +40,17 @@ public class UpdaterPreferences {
 	
 	public static boolean commentUpdatesOn(){
 		return Boolean.parseBoolean(System.getProperty("betaville.updater.comments"));
+	}
+	
+	public static void setBaseEnabled(boolean enabled){
+		System.setProperty("betaville.updater.base", Boolean.toString(enabled));
+	}
+	
+	public static void setUpdaterEnabled(boolean enabled){
+		System.setProperty("betaville.updater.enabled", Boolean.toString(enabled));
+	}
+	
+	public static void setCommentsEnabled(boolean enabled){
+		System.setProperty("betaville.updater.comments", Boolean.toString(enabled));
 	}
 }

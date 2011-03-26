@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slidedeck>
+	<properties>
+		<authors>
+			<author>Skye Book</author>
+		</authors>
+		<title>About Betaville</title>
+		<date>3-24-2011</date>
+		<default>
+			<font>verdana</font>
+			<size>8</size>
+			<color r="255" g="255" b="255" a="255"/>
+		</default>
+	</properties>
+	<slides>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
+			<title size="10" color="0 0 0 255">What's Betaville About?</title>
+			<bullets>
+				<bullet>Smart urban planning</bullet>
+				<bullet>Community involvement</bullet>
+				<bullet>New views on old problems</bullet>
+			</bullets>
+		</slide>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
+			<title size="10" color="0 0 0 255">Mirror World Editor</title>
+			<bullets>
+				<bullet>See the world</bullet>
+				<bullet>Have an idea</bullet>
+				<bullet>Change the world</bullet>
+			</bullets>
+		</slide>
+	</slides>
+</slidedeck>
