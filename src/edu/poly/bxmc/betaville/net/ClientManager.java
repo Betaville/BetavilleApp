@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -942,5 +943,21 @@ public abstract class ClientManager {
 		}
 		busy.getAndSet(false);
 		return wormholes;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Design> synchronizeData(HashMap<Integer, Integer> hashMap){
+		List<Design> designs = null;
+		busy.getAndSet(true);
+		try{
+			output.writeObject(new Object[]{"design", "synchronizedata", hashMap});
+			designs = (List<Design>)readResponse();
+		} catch (IOException e){
+			logger.error("Network issue detected", e);
+		} catch (UnexpectedServerResponse e){
+			logger.error("The server has returned an unexpected type!", e);
+		}
+		busy.getAndSet(false);
+		return designs;
 	}
 }
