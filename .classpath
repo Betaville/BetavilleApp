@@ -69,5 +69,6 @@
 			<attribute name="javadoc_location" value="http://developer.apple.com/library/mac/documentation/Java/Reference/JavaSE6_AppleExtensionsRef/api/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="inspector"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.loaders.util.LocalExporter;
-import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.NetPool;
 
@@ -50,8 +49,6 @@ public class ShutdownManager {
 		logger.info("Doing Safe Shutdown");
 		NetPool.getPool().getSecureConnection().endSession(SettingsPreferences.getSessionToken());
 		saveLocalDesigns();
-		logger.info("Flushing loggers");
-		LogManager.flushFileHandler();
 		logger.info("Shutting down network connections");
 		NetPool.getPool().cleanAll();
 		logger.info("Cleaning up Main Thread Pool");

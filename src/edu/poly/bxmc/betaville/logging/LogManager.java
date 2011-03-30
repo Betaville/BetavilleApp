@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.logging;
 
 import java.io.IOException;
 
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -59,11 +60,16 @@ public class LogManager{
 		//System.setProperty("jme.debug", "false");
 		//System.setProperty("jme.info", "false");
 	}
+	
+	public static void setupConsoleLogger(){
+		Logger.getRootLogger().addAppender(new ConsoleAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n")));
+		//PropertyConfigurator.configure(ResourceLoader.loadResource("/data/logging/config.properties"));
+	}
 
 	public static void setupLoggers(){
 		
-
-		PropertyConfigurator.configure(ResourceLoader.loadResource("/data/logging/config.properties"));
+		setupConsoleLogger();
+		
 		try {
 			Logger.getRootLogger().addAppender(new FileAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n"), DriveFinder.getHomeDir().getAbsolutePath()+"/.betaville/testlog.log"));
 			Logger.getRootLogger().setLevel(Level.INFO);
@@ -72,9 +78,6 @@ public class LogManager{
 			e.printStackTrace();
 		}
 		Logger.getLogger(LogManager.class).info("Logger Set Up");
-	}
-
-	public static void flushFileHandler(){
 	}
 
 	public static void enterLog(Level level, String msg, String classname){
