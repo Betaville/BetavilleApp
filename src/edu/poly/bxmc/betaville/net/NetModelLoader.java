@@ -28,6 +28,7 @@ package edu.poly.bxmc.betaville.net;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
@@ -38,6 +39,7 @@ import com.jme.util.GameTaskQueueManager;
 
 import edu.poly.bxmc.betaville.CacheManager;
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
 import edu.poly.bxmc.betaville.flags.FlagProducer;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -61,7 +63,24 @@ public class NetModelLoader{
 	/** Options for what kind of models to load from the network.
 	 * @author Skye Book
 	 */
-	public static enum LookupRoutine{ALL_IN_CITY, ALL_BY_USER, CUSTOM, IN_1KM_RADIUS};
+	public static enum LookupRoutine{
+		/**
+		 * Loads all designs in the set city
+		 */
+		ALL_IN_CITY,
+		/**
+		 * Loads all designs by the current user
+		 */
+		ALL_BY_USER,
+		/**
+		 * @deprecated - This has never found use
+		 */
+		CUSTOM,
+		/**
+		 * @deprecated - This has never found use, but the idea of loading restricted to
+		 * a general radius is still a possibility
+		 */
+		IN_1KM_RADIUS};
 
 	/**
 	 * Use this value for implying no limit on the
@@ -78,6 +97,15 @@ public class NetModelLoader{
 	public static void loadCurrentCity(LookupRoutine lookupRoutine){
 		load(lookupRoutine, NO_LIMIT, SceneScape.getCity().getCityID());
 	}
+	
+	/**
+	 * 
+	 * @param lookupRoutine The {@link LookupRoutine} to use when loading models.
+	 * @param limit The maximum number of models to be loaded
+	 */
+	public static void loadCurrentCity(LookupRoutine lookupRoutine, int limit){
+		load(lookupRoutine, limit, SceneScape.getCity().getCityID());
+	}
 
 	/**
 	 * 
@@ -89,14 +117,18 @@ public class NetModelLoader{
 	 */
 	public static void load(LookupRoutine lookupRoutine, int limit, int cityID){
 		logger.info("Loading City " + cityID);
-		Vector<Design> designs = null;
+		List<Design> designs = null;
 		ClientManager manager = NetPool.getPool().getConnection();
 		if(lookupRoutine.equals(LookupRoutine.ALL_IN_CITY)){
 			designs = manager.findBaseDesignsByCity(cityID);
 		}
 		else if(lookupRoutine.equals(LookupRoutine.ALL_BY_USER)){
-			designs = new Vector<Design>();
-			designs.add(manager.findDesignByID(45));
+			try{
+			designs = manager.findDesignsByUser(SettingsPreferences.getUser());
+			}catch(NullPointerException e){
+				logger.error("User was not set, not loading models");
+				return;
+			}
 		}
 
 		if(designs==null){
@@ -149,6 +181,8 @@ public class NetModelLoader{
 								
 								dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)design).getRotationX(),
 										((ModeledDesign)design).getRotationY(), ((ModeledDesign)design).getRotationZ()));
+								
+								
 								if(design.getName().contains("$TERRAIN")){
 									SceneGameState.getInstance().getTerrainNode().attachChild(dNode);
 								}else{
@@ -160,13 +194,14 @@ public class NetModelLoader{
 								dNode.updateRenderState();
 								
 								
-
+								/*
 								GameTaskQueueManager.getManager().update(new Callable<Object>() {
 									public Object call() throws Exception {
 										//dNode.lockMeshes();
 										return null;
 									}
 								});
+								*/
 							}
 							else if(design instanceof EmptyDesign){
 								SceneScape.getCity(cityID).addDesign(design);

@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -113,7 +114,8 @@ public abstract class ClientManager {
 	/**
 	 * Checks whether or not a user already exists with a certain name.
 	 * @param name The name to check the availability of.
-	 * @return Whether or not this name is available.
+	 * @return True if this name is <em>not</em> taken, false if it is
+	 * already registered
 	 */
 	public boolean checkNameAvailability(String name){
 		busy.getAndSet(true);
@@ -235,36 +237,24 @@ public abstract class ClientManager {
 
 	/**
 	 * Gets the designs based on when they were built.
-	 * @param date The date of when the designs being searched
-	 * for were created.
+	 * @param user The user who created the designs
 	 * @return A Vector of <code>Design</code> objects.
 	 * @see Design
 	 */
 	@SuppressWarnings("unchecked")
-	public Vector<Design> findDesignsByUser(String user){
+	public List<Design> findDesignsByUser(String user){
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs by \""+user+"\"");
-
 			output.writeObject(new Object[]{"design", "findbyuser", user});
 			Object response = readResponse();
-			if(response instanceof Vector<?>){
-				if(((Vector<?>)response).size()>0){
-					if(((Vector<?>)(response)).get(0) instanceof Design){
-						busy.getAndSet(false);
-						return (Vector<Design>)response;
-					}
-					else{
-						busy.getAndSet(false);
-						return null;
-					}
-				}
-				else{
-					busy.getAndSet(false);
-					return null;
-				}
+			if(response instanceof List<?>){
+				logger.info("returning");
+				busy.getAndSet(false);
+				return (List<Design>)response;
 			}
 			else{
+				logger.error("Not a list!");
 				busy.getAndSet(false);
 				return null;
 			}
@@ -287,24 +277,19 @@ public abstract class ClientManager {
 	 * @see Design
 	 */
 	@SuppressWarnings("unchecked")
-	public Vector<Design> findDesignsByDate(String date){
+	public List<Design> findDesignsByDate(Date date){
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs dates \""+date+"\"");
-
 			output.writeObject(new Object[]{"design", "findbydate", date});
 			Object response = readResponse();
-			if(response instanceof Vector<?>){
-				if(((Vector<?>)(response)).get(0) instanceof Design){
-					busy.getAndSet(false);
-					return (Vector<Design>)response;
-				}
-				else{
-					busy.getAndSet(false);
-					return null;
-				}
+			if(response instanceof List<?>){
+				logger.info("returning");
+				busy.getAndSet(false);
+				return (List<Design>)response;
 			}
 			else{
+				logger.error("Not a list!");
 				busy.getAndSet(false);
 				return null;
 			}

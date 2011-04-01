@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.jme.map;
 
+import org.apache.log4j.Logger;
+
 import com.ibm.util.CoordinateConversion;
 import com.jme.math.Vector3f;
 
@@ -48,6 +50,8 @@ import edu.poly.bxmc.betaville.SceneScape;
  * @author Skye Book
  */
 public class MapManager {
+	private static final Logger logger = Logger.getLogger(MapManager.class);
+	
 	/**
 	 * The four corners of a box plus the center.
 	 */
@@ -66,6 +70,27 @@ public class MapManager {
 
 	/** The Radius of the earth according to the WGS84 model.*/
 	private static int WGS84_equatorialRadius = 6378137;
+	
+	private static float xOffset=0;
+	private static float zOffset=0;
+	
+	/**
+	 * Re-calibrates Betaville's internal coordinate system to a new
+	 * center-point.  This does not update any objects in the scene,
+	 * they will need be re-positioned accordingly.
+	 * @param newZeroPoint
+	 */
+	public static void adjustOffsets(ILocation newZeroPoint){
+		Vector3f location = locationToBetaville(newZeroPoint);
+		
+		if(location.x<0) xOffset = location.x*-1;
+		else xOffset = location.x;
+		
+		if(location.z<0) xOffset = location.z*-1;
+		else zOffset = location.z;
+		
+		logger.info("New MapManager offset set to ("+xOffset+","+zOffset+")");
+	}
 
 	public static double findCircumferenceAtLatitude(double lat){
 		return (WGS84_equatorialRadius*2*StrictMath.PI)*(StrictMath.cos(lat));
@@ -189,7 +214,7 @@ public class MapManager {
 		double median = zoneWidth/2;
 		float easting=(float)(median+(utm.getEasting()-500000));
 
-		return new Vector3f((utm.getNorthing()-northingStart)/SceneScape.SceneScale, utm.getAltitude()/SceneScape.SceneScale, (easting/SceneScape.SceneScale)*1);
+		return new Vector3f(((utm.getNorthing()-northingStart)/SceneScape.SceneScale)-xOffset, utm.getAltitude()/SceneScape.SceneScale, ((easting/SceneScape.SceneScale)*1)-zOffset);
 	}
 
 	/**
@@ -199,7 +224,9 @@ public class MapManager {
 	 * @param Betaville world coordinate to be converted to UTM
 	 * @return UTM location of the coordinate supplied
 	 */
-	public static UTMCoordinate betavilleToUTM(Vector3f bv){
+	public static UTMCoordinate betavilleToUTM(Vector3f loc){
+		Vector3f bv = loc.clone();
+		bv.addLocal(xOffset, 0, zOffset);
 		float mNorthOfZoneStart = bv.getX()*SceneScape.SceneScale;
 		float mEastOfZoneStart = -1*bv.getZ()*SceneScape.SceneScale;
 

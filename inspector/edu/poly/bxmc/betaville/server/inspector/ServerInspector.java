@@ -28,12 +28,17 @@ package edu.poly.bxmc.betaville.server.inspector;
 import java.awt.HeadlessException;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import edu.poly.bxmc.betaville.logging.LogManager;
+import edu.poly.bxmc.betaville.net.NetPool;
+import edu.poly.bxmc.betaville.server.inspector.tabs.UserTab;
 
 /**
  * @author Skye Book
@@ -41,6 +46,8 @@ import edu.poly.bxmc.betaville.logging.LogManager;
  */
 public class ServerInspector extends JFrame {
 	private static final long serialVersionUID = 1L;
+	
+	private JTabbedPane tabs;
 
 	/**
 	 * @throws HeadlessException
@@ -49,7 +56,34 @@ public class ServerInspector extends JFrame {
 		super("Betaville Server Inspector");
 		setJMenuBar(new InspectorMenuBar());
 		setSize(840, 600);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		addWindowListener(new WindowListener() {
+			
+			public void windowOpened(WindowEvent e) {
+			}
+			
+			public void windowIconified(WindowEvent e) {
+			}
+			
+			public void windowDeiconified(WindowEvent e) {
+			}
+			
+			public void windowDeactivated(WindowEvent e) {
+			}
+			
+			public void windowClosing(WindowEvent e) {
+				System.out.println("Closing Network Connections");
+				NetPool.getPool().cleanAll();
+				System.exit(0);
+			}
+			
+			public void windowClosed(WindowEvent e) {
+			}
+			
+			public void windowActivated(WindowEvent e) {
+			}
+		});
 		
 		getContentPane().addHierarchyBoundsListener(new HierarchyBoundsListener() {
 			
@@ -59,6 +93,10 @@ public class ServerInspector extends JFrame {
 			
 			public void ancestorMoved(HierarchyEvent e) {}
 		});
+		
+		tabs = new JTabbedPane();
+		getContentPane().add(tabs);
+		tabs.add(new UserTab(), "Users");
 	}
 
 	/**
@@ -68,7 +106,7 @@ public class ServerInspector extends JFrame {
 		if (System.getProperty("os.name").startsWith("Mac")) {
 			System.setProperty(
 					"com.apple.mrj.application.apple.menu.about.name",
-			"Betaville");
+			"Betaville Server Inspector");
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 
 		}
