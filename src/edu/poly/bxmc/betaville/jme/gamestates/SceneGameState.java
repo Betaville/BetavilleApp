@@ -213,6 +213,8 @@ public class SceneGameState extends BasicGameState {
 			this.startingLocation=startingLocation;
 		}
 		
+		MapManager.adjustOffsets(this.startingLocation);
+		
 		modules = new ArrayList<Module>();
 
 		ExtraPluginManager.registerExtraPlugin("GOOGLEEARTH", new GoogleEarthPlugin());
@@ -455,7 +457,7 @@ public class SceneGameState extends BasicGameState {
 		directionalLight.setDirection(new Vector3f(.25f, -.85f, .75f)); //previously 1, -.85f, 0
 		directionalLight.setDiffuse(diffuseLightColor);
 		directionalLight.setAmbient(ambientLightColor);
-		directionalLight.setShadowCaster(true);
+		directionalLight.setShadowCaster(false);
 		directionalLight.setEnabled(true);
 
 		DirectionalLight directionalLight2 = new DirectionalLight();
@@ -578,7 +580,7 @@ public class SceneGameState extends BasicGameState {
 		//skybox.setCullHint(Spatial.CullHint.Dynamic);
 		skybox.setTextureCombineMode(TextureCombineMode.Replace);
 		skybox.updateRenderState();
-
+		
 		//skybox.lockBounds();
 		//skybox.lockMeshes();
 

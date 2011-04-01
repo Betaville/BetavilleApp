@@ -43,6 +43,7 @@ import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
 import edu.poly.bxmc.betaville.flags.FlagProducer;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
 import edu.poly.bxmc.betaville.jme.loaders.ModelLoader;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
@@ -137,7 +138,7 @@ public class NetModelLoader{
 		else{
 			Collections.sort(designs, Design.distanceComparator(MapManager.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
 			for(int i=0; i<designs.size(); i++){
-				if(limit==-1 || i<limit){
+				if(limit==NO_LIMIT || i<limit){
 					Design design = designs.get(i);
 //					if(design.getName().equals("Wormhole Paradox Garage")&&(duplicated < 10)){
 //						

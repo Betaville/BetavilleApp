@@ -54,7 +54,7 @@ import edu.poly.bxmc.betaville.model.Design;
  */
 public class SceneScape {
 	private static Logger logger = Logger.getLogger(SceneScape.class);
-	public static final float SceneScale = 100;
+	public static final float SceneScale = 100f;
 
 	private static int currentCity;
 	private static ArrayList<City> cities = new ArrayList<City>();

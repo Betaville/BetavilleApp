@@ -55,6 +55,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.tutorial.TutorialWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
@@ -139,7 +140,21 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		//addAction(new OnOffPanelAction("Bookmarks", "Manage your bookmarks", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, BookmarkWindow.class, false));
 		addAction(new OnOffPanelAction("Wormhole", "Wormholes", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, NetworkedWormholeWindow.class, false));
 		addAction(new PerformancePanelAction());
-		
+		addAction(new PanelAction("Toggle Shadows", "Shadows", new IButtonPressedListener() {
+			
+			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
+				ShadowPassState.getInstance().toggleMapPass();
+				//ShadowPassState.getInstance().getShadowPass().setRenderShadows(!ShadowPassState.getInstance().getShadowPass().getRenderShadows());
+			}
+		}));
+		/*
+		addAction(new PanelAction("Toggle Shadow Volumes", "Volumes", new IButtonPressedListener() {
+			
+			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
+				ShadowPassState.getInstance().getShadowPass().setRenderVolume(!ShadowPassState.getInstance().getShadowPass().getRenderVolume());
+			}
+		}));
+		*/
 		
 		mover = FengGUI.createWidget(AdminModelMover.class);
 		mover.finishSetup();

@@ -29,9 +29,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.renderer.pass.BasicPassManager;
+import com.jme.renderer.pass.DirectionalShadowMapPass;
 import com.jme.renderer.pass.RenderPass;
 import com.jme.renderer.pass.ShadowedRenderPass;
 import com.jme.system.DisplaySystem;
@@ -41,6 +43,7 @@ import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.LoadingGameState;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.jme.map.Scale;
 
 /**
  * <code>ShadowPassState</code> is responsible for rendering the different passes in the scene.
@@ -52,8 +55,11 @@ public class ShadowPassState extends GameState {
 	private BasicPassManager passManager = null;
 
 	private ShadowedRenderPass shadowPass = null;
+	private DirectionalShadowMapPass mapPass = null;
 	private RenderPass groundSelectPass = null;
 	private RenderPass flagPass = null;
+	
+	private SceneGameState sceneGameState;
 
 	public ShadowPassState(String name) {
 		setName(name);
@@ -65,6 +71,8 @@ public class ShadowPassState extends GameState {
 		Future<ShadowedRenderPass> future = GameTaskQueueManager.getManager().update(new Callable<ShadowedRenderPass>() {
 			public ShadowedRenderPass call() throws Exception {
 				shadowPass = new ShadowedRenderPass();
+				mapPass = new DirectionalShadowMapPass(new Vector3f(.25f, -.85f, .75f));
+				//mapPass = new DirectionalShadowMapPass(new Vector3f(-1, -2, -1));
 				return shadowPass;
 			}
 		});
@@ -78,14 +86,35 @@ public class ShadowPassState extends GameState {
 			e.printStackTrace();
 		}
 		
+		/*
 		shadowPass.addOccluder(SceneGameState.getInstance().getDesignNode());
 		shadowPass.add(SceneGameState.getInstance().getTerrainNode());
 		shadowPass.add(SceneGameState.getInstance().getDesignNode());
 		shadowPass.setShadowColor(new ColorRGBA(.1f,.15f,.35f,1f));
 		shadowPass.setLightingMethod(ShadowedRenderPass.LightingMethod.Modulative);
-		passManager.add(shadowPass);
-		shadowPass.setRenderShadows(SettingsPreferences.isShadowsOn());
+		//passManager.add(shadowPass);
+		//shadowPass.setRenderShadows(SettingsPreferences.isShadowsOn());
+		shadowPass.setRenderShadows(false);
+		*/
 		
+		
+		RenderPass scenePass = new RenderPass();
+        scenePass.add(SceneGameState.getInstance().getTerrainNode());
+        scenePass.add(SceneGameState.getInstance().getDesignNode());
+        passManager.add(scenePass);
+		
+		//mapPass = new DirectionalShadowMapPass(new Vector3f(-1, -2, -1));
+        //mapPass.setViewDistance(Scale.fromMeter(500));
+        //mapPass.setViewDistance(Scale.fromMeter(50000));
+        mapPass.setViewDistance(10);
+        mapPass.addOccluder(SceneGameState.getInstance().getDesignNode());
+        mapPass.add(SceneGameState.getInstance().getTerrainNode());
+        mapPass.add(SceneGameState.getInstance().getDesignNode());
+        mapPass.setEnabled(SettingsPreferences.isShadowsOn());
+        passManager.add(mapPass);
+        
+        
+        
 		// The ground select render pass renders the little red square
 		// that appears when you click on a ground location
 		groundSelectPass = new RenderPass();
@@ -97,6 +126,8 @@ public class ShadowPassState extends GameState {
 		flagPass.add(SceneGameState.getInstance().getFlagNode());
 		flagPass.add(SceneGameState.getInstance().getSearchNode());
 		passManager.add(flagPass);
+		
+		sceneGameState = SceneGameState.getInstance();
 	}
 
 	/* (non-Javadoc)
@@ -119,10 +150,15 @@ public class ShadowPassState extends GameState {
 	@Override
 	public void update(float tpf) {
 		passManager.updatePasses(tpf);
+		//mapPass.setViewTarget(sceneGameState.getCamera().getLocation());
 	}
 
 	public ShadowedRenderPass getShadowPass() {
 		return shadowPass;
+	}
+	
+	public void toggleMapPass(){
+		mapPass.setEnabled(!mapPass.isEnabled());
 	}
 	
 	public static ShadowPassState getInstance(){
