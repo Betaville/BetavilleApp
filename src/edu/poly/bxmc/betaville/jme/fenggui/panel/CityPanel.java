@@ -43,6 +43,7 @@ import com.jme.scene.Spatial;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
+import edu.poly.bxmc.betaville.jme.fenggui.LightAngleModifier;
 import edu.poly.bxmc.betaville.jme.fenggui.LightTweaker;
 import edu.poly.bxmc.betaville.jme.fenggui.ModelSwapWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.MyLocationWindow;
@@ -147,6 +148,8 @@ public class CityPanel extends Window implements IBetavilleWindow{
 				//ShadowPassState.getInstance().getShadowPass().setRenderShadows(!ShadowPassState.getInstance().getShadowPass().getRenderShadows());
 			}
 		}));
+		
+		addAction(new OnOffPanelAction("Light Angles", "Light Angle Modifier", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightAngleModifier.class, false));
 		/*
 		addAction(new PanelAction("Toggle Shadow Volumes", "Volumes", new IButtonPressedListener() {
 			

@@ -69,6 +69,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.WormholeWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BetavilleXMLTheme;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengJMEInputHandler;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.SavableBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.intersections.MousePicking;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
@@ -611,6 +612,31 @@ public class GUIGameState extends GameState {
 
 	public void removeModuleFromUpdateList(GUIModule module){
 		modules.remove(module);
+	}
+	
+	/**
+	 * Writes any available GUI preferences starting
+	 * with FengGUI's top-level {@link Display}
+	 * container.
+	 */
+	public void writeGUIPreferences(){
+		writeGUIPreferences(disp);
+	}
+	
+	/**
+	 * Searches for instances of {@link SavableBetavilleWindow}
+	 * for which to write out any available preferences
+	 * @param w
+	 */
+	public void writeGUIPreferences(IWidget w){
+		if(w instanceof SavableBetavilleWindow) ((SavableBetavilleWindow)w).writeOptions();
+		if(w instanceof Container){
+			if(((Container)w).hasChildWidgets()){
+				for(IWidget child : ((Container)w).getContent()){
+					writeGUIPreferences(child);
+				}
+			}
+		}
 	}
 
 	public static GUIGameState getInstance(){
