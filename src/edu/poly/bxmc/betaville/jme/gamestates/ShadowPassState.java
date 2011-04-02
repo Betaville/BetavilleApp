@@ -69,7 +69,7 @@ public class ShadowPassState extends GameState {
 		Future<ShadowedRenderPass> future = GameTaskQueueManager.getManager().update(new Callable<ShadowedRenderPass>() {
 			public ShadowedRenderPass call() throws Exception {
 				shadowPass = new ShadowedRenderPass();
-				mapPass = new ConfigurableDirectionalShadowMapPass(new Vector3f(.25f, -.85f, .75f));
+				mapPass = new ConfigurableDirectionalShadowMapPass(new Vector3f(.25f, -.85f, .75f), 4096);
 				//mapPass = new DirectionalShadowMapPass(new Vector3f(-1, -2, -1));
 				return shadowPass;
 			}
@@ -151,7 +151,7 @@ public class ShadowPassState extends GameState {
 	@Override
 	public void update(float tpf) {
 		passManager.updatePasses(tpf);
-		//mapPass.setViewTarget(sceneGameState.getCamera().getLocation());
+		mapPass.setViewTarget(sceneGameState.getCamera().getLocation());
 	}
 
 	public ShadowedRenderPass getShadowPass() {
@@ -160,6 +160,10 @@ public class ShadowPassState extends GameState {
 	
 	public void toggleMapPass(){
 		mapPass.setEnabled(!mapPass.isEnabled());
+	}
+	
+	public ConfigurableDirectionalShadowMapPass getMapPass(){
+		return mapPass;
 	}
 	
 	public static ShadowPassState getInstance(){

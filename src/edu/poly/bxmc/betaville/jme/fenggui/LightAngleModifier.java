@@ -47,6 +47,7 @@ import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.SavableBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
 
 /**
  * Tweaks the angle of the lights in the scene
@@ -96,7 +97,10 @@ public class LightAngleModifier extends SavableBetavilleWindow {
 		selector.addSelectionChangedListener(new ISelectionChangedListener() {
 			
 			public void selectionChanged(Object arg0, SelectionChangedEvent arg1) {
-				//TODO: update sliders
+				Vector3f direction = ((DirectionalLight)((LightItem)selector.getSelectedItem()).itemLight).getDirection();
+				x.setValue(valueToSlider(direction.x));
+				y.setValue(valueToSlider(direction.y));
+				z.setValue(valueToSlider(direction.z));
 			}
 		});
 	}
@@ -134,6 +138,7 @@ public class LightAngleModifier extends SavableBetavilleWindow {
 		if(l!=null){
 			if(l instanceof DirectionalLight){
 				((DirectionalLight)l).setDirection(new Vector3f(valueFromSlider(x), valueFromSlider(y), valueFromSlider(z)));
+				ShadowPassState.getInstance().getMapPass().setDirection(new Vector3f(valueFromSlider(x), valueFromSlider(y), valueFromSlider(z)));
 			}
 		}
 	}
@@ -144,6 +149,15 @@ public class LightAngleModifier extends SavableBetavilleWindow {
 		}
 		else{
 			return ((float)s.getValue()*-2f)-1f;
+		}
+	}
+	
+	private float valueToSlider(float vectorValue){
+		if(vectorValue>0){
+			return (vectorValue/2f)+.5f;
+		}
+		else{
+			return (vectorValue/-2f)+.5f;
 		}
 	}
 	

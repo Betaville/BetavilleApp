@@ -83,4 +83,17 @@ public class ConfigurableDirectionalShadowMapPass extends DirectionalShadowMapPa
 	public float getViewDistance(){
 		return dis;
 	}
+	
+	public Vector3f getDirection(){
+		return direction;
+	}
+	
+	public void setDirection(Vector3f direction){
+		this.direction=direction;
+	}
+	
+	protected void doUpdate(float tpf){
+		updateShadowCamera();
+		super.doUpdate(tpf);
+	}
 }
