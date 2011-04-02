@@ -133,13 +133,15 @@ public class SceneGameState extends BasicGameState {
 	private final static int MOVE_MODE_SPEED_JET_MAX = 2000;
 
 	private static double MOVE_ACCELERATION_TIME = 5000.0;
+	
+	public static final float NEAR_FRUSTUM = Scale.fromMeter(3);
+	public static final float FAR_FRUSTUM = (int) Scale.fromMeter(35000);
 
 
 	//stick to ground when below Drive altitude
 	private GroundMagnet groundMagnet;
 	//private AltitudeUpdater altitudeUpdater;
 
-	private int viewDistance = (int) Scale.fromMeter(35000);
 
 	private ColorRGBA ambientLightColor = new ColorRGBA(1f,.94f,.7f,1);
 	//private ColorRGBA diffuseLightColor = new ColorRGBA(0.85f, 0.85f, 0.85f, .85f);
@@ -185,8 +187,6 @@ public class SceneGameState extends BasicGameState {
 
 	private List<Module> modules;
 	private int lastSpeed = 0;	
-
-	String[][] locationList = new String[7][7];
 
 	private boolean inGroundMode = false;
 	//private boolean movingForward = false;
@@ -335,80 +335,9 @@ public class SceneGameState extends BasicGameState {
 			e.printStackTrace();
 		}
 
-		initializeWormholeData();
-
 		groundMagnet = new GroundMagnet("Ground Magnet", "Forces the camera to be glued to the ground");
 		//altitudeUpdater = new AltitudeUpdater("Altitude Updater", "Retrieves the altitude on every udpate");
 	}
-
-	private void initializeWormholeData(){
-
-		locationList[0][0] = 	"Bremen";
-		locationList[0][1] =	"Rembertiring";
-		locationList[0][2] =	"53.077535";
-		locationList[0][3] =	"8.818642";
-		locationList[0][4] =	"-0.5557895";
-		locationList[0][5] =	"3.2815707";
-		locationList[0][6] =	"-0.83132297";
-
-		locationList[1][0] = 	"Bremen";
-		locationList[1][1] =	"Kreuzstrasse";
-		locationList[1][2] =	"53.070535";
-		locationList[1][3] =	"8.818642";
-		locationList[1][4] =	"0.92842793";
-		locationList[1][5] =	"2.8590244";
-		locationList[1][6] =	"-0.37151253";
-
-		locationList[2][0] = 	"Bremen";
-		locationList[2][1] =	"Findorff, Kasseler Str 37";
-		locationList[2][2] =	"53.09537";
-		locationList[2][3] =	"8.81866";
-		locationList[2][4] =	"-0.5557895";
-		locationList[2][5] =	"3.2815707";
-		locationList[2][6] =	"-0.83132297";
-
-		locationList[3][0] = 	"New Jersey";
-		locationList[3][1] =	"Hudson Street";
-		locationList[3][2] =	"40.732189384171384";
-		locationList[3][3] =	"-74.05251676889239";
-		locationList[3][4] =	"-0.50888336";
-		locationList[3][5] =	"-0.12496697";
-		locationList[3][6] =	"0.85171646";
-
-		locationList[4][0] = 	"New York";
-		locationList[4][1] =	"Manhattan, South Street";
-		locationList[4][2] =	"40.70153160396347";
-		locationList[4][3] =	"-74.00833808888697";
-		locationList[4][4] =	"-1";
-		locationList[4][5] =	"-1";
-		locationList[4][6] =	"-1";
-
-		locationList[5][0] = 	"New York";
-		locationList[5][1] =	"Brooklyn, 6 Metrotech Center";
-		locationList[5][2] =	"40.69385441407358";
-		locationList[5][3] =	"-73.98634318141599";
-		locationList[5][4] =	"0.92110145";
-		locationList[5][5] =	"-0.050916255";
-		locationList[5][6] =	"0.38597915";
-
-
-
-		locationList[6][0] = 	"Wormhole Paradox";
-		locationList[6][1] =	"TOP SECRET";
-		locationList[6][2] =	"23.869596960035896";
-		locationList[6][3] =	"-46.341863419435285";
-		locationList[6][4] =	"-0.96574324";
-		locationList[6][5] =	"-0.2504552";
-		locationList[6][6] =	"-0.067913584";
-
-
-		//		locationList[6][0] = 	"x";
-		//		locationList[6][1] =	"Brooklyn";
-		//		locationList[6][2] =	"6 Metrotech Center";
-		//		locationList[6][3] =	"40.69385441407358";
-		//		locationList[6][4] =	"-73.98634318141599";
-	}
-
 
 
 	private void setupFlagNode(){
@@ -546,8 +475,8 @@ public class SceneGameState extends BasicGameState {
 	 * Method <buildSkybox> Builds the skybox for Betaville
 	 */
 	private void buildSkybox() {
-		skybox = new Skybox("skybox", viewDistance/2,
-				Scale.fromMeter(3000),viewDistance/2);
+		skybox = new Skybox("skybox", FAR_FRUSTUM/2,
+				Scale.fromMeter(3000),FAR_FRUSTUM/2);
 		// Create the texture
 		Texture texture = TextureManager.loadTexture(ResourceLoader.loadResource("/data/sky/sky.png"),
 				MinificationFilter.BilinearNearestMipMap,MagnificationFilter.Bilinear);
@@ -604,28 +533,6 @@ public class SceneGameState extends BasicGameState {
 		camera.update();
 	}
 
-	public String[][] getWormholeData(){
-		return locationList;
-	}
-
-	public void setWormholeData(String city, String street, String lat, String lon){
-		//		String[][] locationListx = new String[locationList.length][5];
-		//		for(int i = 0;i<locationListx.length;i++){
-		//			locationListx[i] = locationList[i];
-		//		}
-		//		locationList = new String[locationListx.length+1][5];
-		//		for(int i = 0;i<locationListx.length;i++){
-		//			locationList[i] = locationListx[i];
-		//		}
-		//		locationList[locationList.length-1][0] = city;
-		//		locationList[locationList.length-1][1] = borough;
-		//		locationList[locationList.length-1][2] = street;
-		//		locationList[locationList.length-1][3] = lat;
-		//		locationList[locationList.length-1][4] = lon;
-	}
-
-
-
 	/**
 	 * Method <cameraPerspectiveProjection> - Setup the camera for a perspective projection
 	 */
@@ -635,7 +542,7 @@ public class SceneGameState extends BasicGameState {
 		camera.getLocation().setY(Scale.fromMeter(200));
 		float aspect = (float) DisplaySystem.getDisplaySystem().getWidth() / DisplaySystem.getDisplaySystem().getHeight();
 		// Parameters of the frustum for perspective : field of view (angle of view in the Y direction), aspect, near, far
-		camera.setFrustumPerspective( 45.0f, aspect, Scale.fromMeter(3), viewDistance);
+		camera.setFrustumPerspective( 45.0f, aspect, NEAR_FRUSTUM, FAR_FRUSTUM);
 		Vector3f lookAt = camera.getLocation().clone().add(CardinalDirections.NE.clone().mult(Scale.fromMeter(100)));
 		camera.lookAt(lookAt, Vector3f.UNIT_Y);
 		//camera.setFrustumPerspective( 45.0f, aspect, Scale.fromMeter(SceneScape.getMinimumHeight()), viewDistance);

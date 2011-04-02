@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.jme.math.Vector3f;
-import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
 import com.jme.renderer.pass.BasicPassManager;
-import com.jme.renderer.pass.DirectionalShadowMapPass;
 import com.jme.renderer.pass.RenderPass;
 import com.jme.renderer.pass.ShadowedRenderPass;
 import com.jme.system.DisplaySystem;
@@ -43,7 +41,7 @@ import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.LoadingGameState;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
-import edu.poly.bxmc.betaville.jme.map.Scale;
+import edu.poly.bxmc.betaville.jme.pass.ConfigurableDirectionalShadowMapPass;
 
 /**
  * <code>ShadowPassState</code> is responsible for rendering the different passes in the scene.
@@ -55,7 +53,7 @@ public class ShadowPassState extends GameState {
 	private BasicPassManager passManager = null;
 
 	private ShadowedRenderPass shadowPass = null;
-	private DirectionalShadowMapPass mapPass = null;
+	private ConfigurableDirectionalShadowMapPass mapPass = null;
 	private RenderPass groundSelectPass = null;
 	private RenderPass flagPass = null;
 	
@@ -71,7 +69,7 @@ public class ShadowPassState extends GameState {
 		Future<ShadowedRenderPass> future = GameTaskQueueManager.getManager().update(new Callable<ShadowedRenderPass>() {
 			public ShadowedRenderPass call() throws Exception {
 				shadowPass = new ShadowedRenderPass();
-				mapPass = new DirectionalShadowMapPass(new Vector3f(.25f, -.85f, .75f));
+				mapPass = new ConfigurableDirectionalShadowMapPass(new Vector3f(.25f, -.85f, .75f));
 				//mapPass = new DirectionalShadowMapPass(new Vector3f(-1, -2, -1));
 				return shadowPass;
 			}
@@ -108,9 +106,12 @@ public class ShadowPassState extends GameState {
         //mapPass.setViewDistance(Scale.fromMeter(50000));
         mapPass.setViewDistance(10);
         mapPass.addOccluder(SceneGameState.getInstance().getDesignNode());
+        //mapPass.setShadowCameraFarPlane(mapPass.getViewDistance()*6f);
+        mapPass.setShadowCameraNearPlane(SceneGameState.NEAR_FRUSTUM);
         mapPass.add(SceneGameState.getInstance().getTerrainNode());
         mapPass.add(SceneGameState.getInstance().getDesignNode());
         mapPass.setEnabled(SettingsPreferences.isShadowsOn());
+        mapPass.setShadowMapScale(0.2f);
         passManager.add(mapPass);
         
         

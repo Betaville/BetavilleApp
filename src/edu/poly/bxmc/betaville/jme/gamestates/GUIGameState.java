@@ -65,7 +65,6 @@ import edu.poly.bxmc.betaville.jme.fenggui.NavContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.CommentWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.NewProposalWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.TopSelectionWindow;
-import edu.poly.bxmc.betaville.jme.fenggui.WormholeWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BetavilleXMLTheme;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengJMEInputHandler;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -151,7 +150,6 @@ public class GUIGameState extends GameState {
 
 	private List<Module> modules;
 
-	private WormholeWindow wormholeWindow;
 	private UTMCoordinate location;
 
 	// CONSTRUCTORS
@@ -564,31 +562,6 @@ public class GUIGameState extends GameState {
 			disp.addWidget(commentWindow);
 			addTextEditorsToList(commentWindow);
 			if(!SceneScape.isTargetSpatialEmpty() && !SceneScape.isTargetSpatialLocal()) commentWindow.setCurrentDesign(SceneScape.getPickedDesign().getID());
-		}
-	}
-
-	public void showWormholeWindow(String location){
-
-		if(wormholeWindow==null){
-			wormholeWindow = FengGUI.createWidget(WormholeWindow.class);
-			wormholeWindow.finishSetup();
-			wormholeWindow.addWindowClosedListener(new IWindowClosedListener() {
-				public void windowClosed(WindowClosedEvent windowClosedEvent) {
-					logger.debug("wormhole window closed");
-					removeTextEditorsFromList(wormholeWindow);
-				}
-			});
-			if(!wormholeWindow.isInWidgetTree()){
-				disp.addWidget(wormholeWindow);
-				addTextEditorsToList(wormholeWindow);
-				//				wormholeWindow.addLocationString(location);
-			}
-		}else{
-			if(!wormholeWindow.isInWidgetTree()){
-				disp.addWidget(wormholeWindow);
-				addTextEditorsToList(wormholeWindow);
-				//				wormholeWindow.addLocationString(location);
-			}
 		}
 	}
 
