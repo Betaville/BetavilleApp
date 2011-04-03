@@ -29,6 +29,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.apache.log4j.Logger;
+
 import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
 import com.jme.renderer.pass.BasicPassManager;
@@ -40,7 +42,9 @@ import com.jmex.game.state.GameState;
 import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.LoadingGameState;
 
+import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.pass.ConfigurableDirectionalShadowMapPass;
 
 /**
@@ -49,6 +53,8 @@ import edu.poly.bxmc.betaville.jme.pass.ConfigurableDirectionalShadowMapPass;
  *
  */
 public class ShadowPassState extends GameState {
+	private static final Logger logger = Logger.getLogger(ShadowPassState.class);
+	
 	private Renderer renderer = DisplaySystem.getDisplaySystem().getRenderer();
 	private BasicPassManager passManager = null;
 
@@ -58,6 +64,8 @@ public class ShadowPassState extends GameState {
 	private RenderPass flagPass = null;
 	
 	private SceneGameState sceneGameState;
+	
+	private boolean shadowMapCameraInitialized=false;
 
 	public ShadowPassState(String name) {
 		setName(name);
@@ -104,12 +112,15 @@ public class ShadowPassState extends GameState {
 		//mapPass = new DirectionalShadowMapPass(new Vector3f(-1, -2, -1));
         //mapPass.setViewDistance(Scale.fromMeter(500));
         //mapPass.setViewDistance(Scale.fromMeter(50000));
+        
+        
+        
         mapPass.setViewDistance(10);
         mapPass.addOccluder(SceneGameState.getInstance().getDesignNode());
         //mapPass.setShadowCameraFarPlane(mapPass.getViewDistance()*6f);
         mapPass.setShadowCameraNearPlane(SceneGameState.NEAR_FRUSTUM);
         mapPass.add(SceneGameState.getInstance().getTerrainNode());
-        mapPass.add(SceneGameState.getInstance().getDesignNode());
+        //mapPass.add(SceneGameState.getInstance().getDesignNode());
         mapPass.setEnabled(SettingsPreferences.isShadowsOn());
         mapPass.setShadowMapScale(0.2f);
         passManager.add(mapPass);
@@ -151,6 +162,9 @@ public class ShadowPassState extends GameState {
 	@Override
 	public void update(float tpf) {
 		passManager.updatePasses(tpf);
+	}
+	
+	public void updateMapTarget(){
 		mapPass.setViewTarget(sceneGameState.getCamera().getLocation());
 	}
 

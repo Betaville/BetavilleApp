@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import org.apache.log4j.Logger;
@@ -54,54 +54,71 @@ import edu.poly.bxmc.betaville.module.ModuleNameException;
  */
 public class MyLocationWindow extends Window implements IBetavilleWindow {
 	private static Logger logger = Logger.getLogger(MyLocationWindow.class);
-	
+
 	private int targetWidth = 300;
-	
-	private enum Mode {UTM, GPS};
+
+	private enum Mode {UTM, GPS, Vector3f};
 	private Mode displayMode = Mode.GPS;
-	
+
 	private FixedButton goGPS;
 	private FixedButton goUTM;
-	
+	private FixedButton goVec;
+
 	private Container gpsContainer;
 	private Label lat;
 	private Label lon;
-	
+
 	private Container utmContainer;
 	private Label zone;
 	private Label northing;
 	private Label easting;
-	
+
+	private Container vecContainer;
+	private Label x;
+	private Label y;
+	private Label z;
+
 	public MyLocationWindow(){
 		super(true, true);
 		getContentContainer().setLayoutManager(new RowExLayout(false));
-		
+
 		goGPS = FengGUI.createWidget(FixedButton.class);
 		goGPS.setText("GPS");
 		goGPS.setWidth(goGPS.getWidth()+10);
 		goGPS.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(displayMode.equals(Mode.UTM)){
-					switchModes();
+				if(!displayMode.equals(Mode.GPS)){
+					switchModes(Mode.GPS);
 				}
 			}
 		});
-		
+
 		goUTM = FengGUI.createWidget(FixedButton.class);
 		goUTM.setText("UTM");
 		goUTM.setWidth(goUTM.getWidth()+10);
 		goUTM.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(displayMode.equals(Mode.GPS)){
-					switchModes();
+				if(!displayMode.equals(Mode.UTM)){
+					switchModes(Mode.UTM);
 				}
 			}
 		});
-		
+
+		goVec = FengGUI.createWidget(FixedButton.class);
+		goVec.setText("Vector3f");
+		goVec.setWidth(goVec.getWidth()+10);
+		goVec.addButtonPressedListener(new IButtonPressedListener() {
+			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				if(!displayMode.equals(Mode.Vector3f)){
+					switchModes(Mode.Vector3f);
+				}
+			}
+		});
+
 		Container buttonContainer = FengGUI.createWidget(Container.class);
 		buttonContainer.setLayoutManager(new RowLayout(true));
-		buttonContainer.addWidget(goGPS, goUTM);
-		
+		buttonContainer.addWidget(goGPS, goUTM, goVec);
+
 		gpsContainer = FengGUI.createWidget(Container.class);
 		gpsContainer.setLayoutManager(new RowLayout(true));
 		lat = FengGUI.createWidget(Label.class);
@@ -111,7 +128,7 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 		lat.setWidth(targetWidth/2);
 		lon.setWidth(targetWidth/2);
 		gpsContainer.addWidget(lat, lon);
-		
+
 		utmContainer = FengGUI.createWidget(Container.class);
 		utmContainer.setLayoutManager(new RowLayout(true));
 		zone = FengGUI.createWidget(Label.class);
@@ -121,26 +138,41 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 		northing.setText("northing");
 		easting.setText("easting");
 		utmContainer.addWidget(zone, northing, easting);
-		
+
+		vecContainer = FengGUI.createWidget(Container.class);
+		vecContainer.setLayoutManager(new RowLayout(true));
+		x = FengGUI.createWidget(Label.class);
+		y = FengGUI.createWidget(Label.class);
+		z = FengGUI.createWidget(Label.class);
+		vecContainer.addWidget(x, y, z);
+
 		getContentContainer().addWidget(buttonContainer, gpsContainer);
-		
+
 		try {
 			SceneGameState.getInstance().addModuleToUpdateList(new UpdateModule("LocationWindowUpdater"));
 		} catch (ModuleNameException e1) {
 			e1.printStackTrace();
 		}
 	}
-	
-	private void switchModes(){
-		if(displayMode.equals(Mode.GPS)){
-			getContentContainer().removeWidget(gpsContainer);
-			getContentContainer().addWidget(utmContainer);
-			displayMode=Mode.UTM;
-		}
-		else{
+
+	private void switchModes(Mode newMode){
+		if(newMode.equals(Mode.GPS)){
+			getContentContainer().removeWidget(vecContainer);
 			getContentContainer().removeWidget(utmContainer);
 			getContentContainer().addWidget(gpsContainer);
 			displayMode=Mode.GPS;
+		}
+		else if(newMode.equals(Mode.UTM)){
+			getContentContainer().removeWidget(gpsContainer);
+			getContentContainer().removeWidget(vecContainer);
+			getContentContainer().addWidget(utmContainer);
+			displayMode=Mode.UTM;
+		}
+		else if(newMode.equals(Mode.Vector3f)){
+			getContentContainer().removeWidget(utmContainer);
+			getContentContainer().removeWidget(gpsContainer);
+			getContentContainer().addWidget(vecContainer);
+			displayMode=Mode.Vector3f;
 		}
 	}
 
@@ -151,7 +183,7 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 		setSize(targetWidth, getHeight()+35);
 		setTitle("My Location");
 	}
-	
+
 	private class UpdateModule extends Module implements LocalSceneModule{
 
 		public UpdateModule(String name){
@@ -162,20 +194,35 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 
 		public void onUpdate(Node scene, Vector3f cameraLocation, Vector3f cameraDirection){
 			if(!isInWidgetTree()) return;  // No need to update if the window isn't being shown..
+			
+			// update Vector3f
+			if(displayMode.equals(Mode.Vector3f)){
+				x.setText("x "+cameraLocation.x);
+				y.setText("y "+cameraLocation.y);
+				z.setText("z "+cameraLocation.z);
+				return; // no need to go further
+			}
+			
+			
 			UTMCoordinate utm = MapManager.betavilleToUTM(cameraLocation);
 			GPSCoordinate gps = utm.getGPS();
 			
+			// By only 
+
 			// update UTM
-			zone.setText(utm.getLonZone()+""+utm.getLatZone());
-			northing.setText(utm.getNorthing()+"N");
-			easting.setText(utm.getEasting()+"E");
-			
+			if(displayMode.equals(Mode.UTM)){
+				zone.setText(utm.getLonZone()+""+utm.getLatZone());
+				northing.setText(utm.getNorthing()+"N");
+				easting.setText(utm.getEasting()+"E");
+			}
 			// update GPS
-			lat.setText(Double.toString(gps.getLatitude()));
-			lon.setText(Double.toString(gps.getLongitude()));
+			else if(displayMode.equals(Mode.GPS)){
+				lat.setText(Double.toString(gps.getLatitude()));
+				lon.setText(Double.toString(gps.getLongitude()));
+			}
 		}
-		
+
 		public void deconstruct(){}
-		
+
 	}
 }

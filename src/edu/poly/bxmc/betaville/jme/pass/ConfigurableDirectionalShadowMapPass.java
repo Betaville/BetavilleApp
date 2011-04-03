@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.jme.pass;
 
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
+import com.jme.renderer.TextureRenderer;
 import com.jme.renderer.pass.DirectionalShadowMapPass;
 
 /**
@@ -92,8 +93,12 @@ public class ConfigurableDirectionalShadowMapPass extends DirectionalShadowMapPa
 		this.direction=direction;
 	}
 	
+	public TextureRenderer getShadowMapRenderer(){
+		return shadowMapRenderer;
+	}
+	
 	protected void doUpdate(float tpf){
-		updateShadowCamera();
+		//if(shadowMapRenderer!=null) updateShadowCamera();
 		super.doUpdate(tpf);
 	}
 }

@@ -42,9 +42,6 @@ import com.jme.light.DirectionalLight;
 import com.jme.light.Light;
 import com.jme.math.Vector3f;
 
-import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
-import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
-import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.SavableBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
@@ -139,6 +136,7 @@ public class LightAngleModifier extends SavableBetavilleWindow {
 			if(l instanceof DirectionalLight){
 				((DirectionalLight)l).setDirection(new Vector3f(valueFromSlider(x), valueFromSlider(y), valueFromSlider(z)));
 				ShadowPassState.getInstance().getMapPass().setDirection(new Vector3f(valueFromSlider(x), valueFromSlider(y), valueFromSlider(z)));
+				ShadowPassState.getInstance().updateMapTarget();
 			}
 		}
 	}
