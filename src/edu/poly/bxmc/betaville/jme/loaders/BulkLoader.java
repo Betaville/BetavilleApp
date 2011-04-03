@@ -87,7 +87,7 @@ public class BulkLoader {
 	 */
 	public void load(final List<File> files){
 		UpdaterPreferences.setBaseEnabled(false);
-		while(currentCounter<(files.size()-1)){
+		while(currentCounter<(files.size())){
 			
 			try {
 				loadModel(files.get(currentCounter), files.size());
