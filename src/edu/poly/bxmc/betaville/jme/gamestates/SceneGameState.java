@@ -135,7 +135,7 @@ public class SceneGameState extends BasicGameState {
 
 	private static double MOVE_ACCELERATION_TIME = 5000.0;
 	
-	public static final float NEAR_FRUSTUM = Scale.fromMeter(3);
+	public static final float NEAR_FRUSTUM = Scale.fromMeter(1f);
 	public static final float FAR_FRUSTUM = (int) Scale.fromMeter(35000);
 
 
