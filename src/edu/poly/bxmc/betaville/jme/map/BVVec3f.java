@@ -22,30 +22,30 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-package edu.poly.bxmc.betaville.flags;
-
-import java.util.ArrayList;
-
-import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
-import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
-import edu.poly.bxmc.betaville.model.Design;
+ */
+package edu.poly.bxmc.betaville.jme.map;
 
 /**
+ * Simple class for storing x,y,z sets of floating point
+ * values
  * @author Skye Book
  *
  */
-public abstract class AbstractFlagPositionStrategy{
+public class BVVec3f {
 	
-	public void placeFlag(UTMCoordinate location, int baseID, ArrayList<Design> proposals) {
-		SceneGameState.getInstance().addToFlagNode(JME2MapManager.instance.locationToBetaville(location), baseID, proposals.size());
-	}
+	public float x;
 	
+	public float y;
+	
+	public float z;
+
 	/**
-	 * Finds the appropriate height where a flag should be placed
-	 * @param base The object that this flag should be placed over
-	 * @return The height at which to place a flag
+	 * 
 	 */
-	public abstract int findHeight(Design base);
+	public BVVec3f(float x, float y, float z) {
+		this.x=x;
+		this.y=y;
+		this.z=z;
+	}
+
 }

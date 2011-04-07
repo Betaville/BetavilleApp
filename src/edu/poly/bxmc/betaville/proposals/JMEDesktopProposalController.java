@@ -33,7 +33,7 @@ import com.jme.scene.Node;
 import edu.poly.bxmc.betaville.CacheManager;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.ModelLoader;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
@@ -63,7 +63,7 @@ public class JMEDesktopProposalController implements SceneProposalController {
 					loader = new ModelLoader((ModeledDesign)versionToAdd, true, null);
 					final Node dNode = loader.getModel();
 					dNode.setName(versionToAdd.getFullIdentifier());
-					dNode.setLocalTranslation(MapManager.locationToBetaville(versionToAdd.getCoordinate()));
+					dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(versionToAdd.getCoordinate()));
 					dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)versionToAdd).getRotationX(),
 							((ModeledDesign)versionToAdd).getRotationY(), ((ModeledDesign)versionToAdd).getRotationZ()));
 

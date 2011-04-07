@@ -142,6 +142,7 @@ public class SecureClientManager extends ClientManager{
 			String sessionToken = (String)response[1];
 			busy.getAndSet(false);
 			if(sessionID>0){
+				logger.info("Logged in as "+ name +", Session ID: "+sessionID);
 				SettingsPreferences.setSessionID(sessionID);
 				SettingsPreferences.setSessionToken(sessionToken);
 				return true;
@@ -149,6 +150,7 @@ public class SecureClientManager extends ClientManager{
 			else{
 				if(sessionID==-3){
 					// authentication failed
+					logger.warn("Authentication Failed");
 				}
 				return false;
 			}

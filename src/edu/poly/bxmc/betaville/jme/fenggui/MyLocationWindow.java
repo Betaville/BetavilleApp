@@ -41,7 +41,7 @@ import com.jme.scene.Node;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.module.LocalSceneModule;
 import edu.poly.bxmc.betaville.module.Module;
@@ -204,7 +204,7 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 			}
 			
 			
-			UTMCoordinate utm = MapManager.betavilleToUTM(cameraLocation);
+			UTMCoordinate utm = JME2MapManager.instance.betavilleToUTM(cameraLocation);
 			GPSCoordinate gps = utm.getGPS();
 			
 			// By only 

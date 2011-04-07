@@ -70,7 +70,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.FengJMEInputHandler;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.SavableBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.intersections.MousePicking;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.Design;
@@ -309,13 +309,13 @@ public class GUIGameState extends GameState {
 			SceneGameState.getInstance().removeGroundBox();
 		}
 
-		this.location = MapManager.betavilleToUTM(location);
+		this.location = JME2MapManager.instance.betavilleToUTM(location);
 		// Check if new proposal window is active
 		if(newProposalWindow.isInWidgetTree()){
 			// set the location if we are at step two and a model has not been loaded
 			if(newProposalWindow.getCurrentStep()==2 && !newProposalWindow.isModelLoaded() && !newProposalWindow.isMakeRoomWindowActive()){
-				newProposalWindow.setProposalLocation(MapManager.betavilleToUTM(location));
-				this.location = MapManager.betavilleToUTM(location);
+				newProposalWindow.setProposalLocation(JME2MapManager.instance.betavilleToUTM(location));
+				this.location = JME2MapManager.instance.betavilleToUTM(location);
 				return;
 			}
 		}

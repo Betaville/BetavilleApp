@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -32,9 +32,8 @@ import org.apache.log4j.Logger;
 import com.jme.math.Vector3f;
 
 import edu.poly.bxmc.betaville.jme.map.ILocation;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
-import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 
 /**
  * A <code>SoundTrigger</code> is a point in
@@ -99,7 +98,7 @@ public class SoundTrigger {
 		this.forceFades=forceFades;
 		setVolume(volume);
 		this.rolloffFactor=rolloffFactor;
-		center = MapManager.locationToBetaville(locationOfTrigger);
+		center = JME2MapManager.instance.locationToBetaville(locationOfTrigger);
 		nw = new Vector3f(center.getX()+Scale.fromMeter(northSouth/2), sizeY, center.getZ()-Scale.fromMeter(eastWest)/2);
 		ne = new Vector3f(center.getX()+Scale.fromMeter(northSouth/2), sizeY, center.getZ()+Scale.fromMeter(eastWest)/2);
 		se = new Vector3f(center.getX()-Scale.fromMeter(northSouth/2), sizeY, center.getZ()+Scale.fromMeter(eastWest)/2);

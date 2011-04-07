@@ -57,7 +57,7 @@ import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
 import edu.poly.bxmc.betaville.jme.gamestates.SoundGameState;
 import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.net.NetModelLoader;
@@ -69,6 +69,7 @@ import edu.poly.bxmc.betaville.terrain.TerrainLoader;
 import edu.poly.bxmc.betaville.updater.BaseUpdater;
 import edu.poly.bxmc.betaville.updater.BetavilleTask;
 import edu.poly.bxmc.betaville.updater.BetavilleUpdater;
+import edu.poly.bxmc.betaville.util.OS;
 import edu.poly.bxmc.betaville.xml.BXBReader;
 import edu.poly.bxmc.betaville.xml.PreferenceReader;
 import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
@@ -105,7 +106,7 @@ public class BetavilleNoCanvas {
 	 */
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws InterruptedException {
-		if (System.getProperty("os.name").startsWith("Mac")) {
+		if (OS.isMac()) {
 			System.setProperty(
 					"com.apple.mrj.application.apple.menu.about.name",
 			"Betaville");
@@ -318,7 +319,7 @@ public class BetavilleNoCanvas {
 		else {
 			SettingsPreferences.getThreadPool().submit(new Runnable() {
 				public void run() {
-					TerrainLoader t = new TerrainLoader(MapManager
+					TerrainLoader t = new TerrainLoader(JME2MapManager.instance
 							.betavilleToUTM(sceneGameState.getCamera()
 									.getLocation()), 5000, 16);
 					t.loadTerrain();

@@ -281,7 +281,7 @@ public abstract class ClientManager {
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs dates \""+date+"\"");
-			output.writeObject(new Object[]{"design", "findbydate", date});
+			output.writeObject(new Object[]{"design", "findbydate", date.getTime()});
 			Object response = readResponse();
 			if(response instanceof List<?>){
 				logger.info("returning");

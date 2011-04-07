@@ -52,7 +52,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
@@ -132,10 +132,10 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 				CityManager.swapCities(SceneScape.getCurrentCityID(), w.getCityID());
 
 				// finally we move the camera
-				SceneGameState.getInstance().getCamera().setLocation(MapManager.locationToBetaville(w.getLocation()));
+				SceneGameState.getInstance().getCamera().setLocation(JME2MapManager.instance.locationToBetaville(w.getLocation()));
 				ILocation lookAt = w.getLocation().clone();
 				lookAt.getUTM().move(300, 300, 0);
-				SceneGameState.getInstance().getCamera().lookAt(MapManager.locationToBetaville(lookAt), Vector3f.UNIT_Y);
+				SceneGameState.getInstance().getCamera().lookAt(JME2MapManager.instance.locationToBetaville(lookAt), Vector3f.UNIT_Y);
 			}
 		});
 
@@ -143,7 +143,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		createHere.setText("Create Here");
 		createHere.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				int response = NetPool.getPool().getSecureConnection().addWormhole(MapManager.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), "test", SceneScape.getCurrentCityID());
+				int response = NetPool.getPool().getSecureConnection().addWormhole(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), "test", SceneScape.getCurrentCityID());
 				logger.info("New Wormhole created (response: "+response+")");
 			}
 		});

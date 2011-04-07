@@ -48,9 +48,6 @@ import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.util.Color;
 
-import com.jme.math.Matrix3f;
-import com.jme.math.Vector3f;
-
 import edu.poly.bxmc.betaville.bookmarks.Bookmark;
 import edu.poly.bxmc.betaville.bookmarks.BookmarkManager;
 import edu.poly.bxmc.betaville.bookmarks.IBookmarkChangeListener;
@@ -59,7 +56,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 
 /**
  * @author Skye Book
@@ -127,7 +124,7 @@ public class BookmarkWindow extends Window implements IBetavilleWindow {
 	private void moveToSelectedBookmark(){
 		if(selectedBookmarkID==null) return;
 		final Bookmark b = BookmarkManager.get().getBookmark(selectedBookmarkID);
-		SceneGameState.getInstance().getCamera().setLocation(MapManager.locationToBetaville(b.getLocation()));
+		SceneGameState.getInstance().getCamera().setLocation(JME2MapManager.instance.locationToBetaville(b.getLocation()));
 		//SceneGameState.getInstance().getCamera().getDirection().setX(b.getDirectionX());
 		//SceneGameState.getInstance().getCamera().getDirection().setY(b.getDirectionY());
 		//SceneGameState.getInstance().getCamera().getDirection().setZ(b.getDirectionZ());

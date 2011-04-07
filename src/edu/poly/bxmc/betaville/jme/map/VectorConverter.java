@@ -22,30 +22,25 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-package edu.poly.bxmc.betaville.flags;
-
-import java.util.ArrayList;
-
-import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
-import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
-import edu.poly.bxmc.betaville.model.Design;
+ */
+package edu.poly.bxmc.betaville.jme.map;
 
 /**
  * @author Skye Book
  *
  */
-public abstract class AbstractFlagPositionStrategy{
-	
-	public void placeFlag(UTMCoordinate location, int baseID, ArrayList<Design> proposals) {
-		SceneGameState.getInstance().addToFlagNode(JME2MapManager.instance.locationToBetaville(location), baseID, proposals.size());
-	}
+public interface VectorConverter<T>{
+	/**
+	 * 
+	 * @param nativeVector
+	 * @return
+	 */
+	public BVVec3f convertToBetaville(T nativeVector);
 	
 	/**
-	 * Finds the appropriate height where a flag should be placed
-	 * @param base The object that this flag should be placed over
-	 * @return The height at which to place a flag
+	 * 
+	 * @param betavilleVector
+	 * @return
 	 */
-	public abstract int findHeight(Design base);
+	public T convertToNativeVector(BVVec3f betavilleVector);
 }

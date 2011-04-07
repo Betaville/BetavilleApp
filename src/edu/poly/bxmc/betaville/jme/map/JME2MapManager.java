@@ -22,30 +22,34 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-package edu.poly.bxmc.betaville.flags;
+ */
+package edu.poly.bxmc.betaville.jme.map;
 
-import java.util.ArrayList;
-
-import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
-import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
-import edu.poly.bxmc.betaville.model.Design;
+import com.jme.math.Vector3f;
 
 /**
  * @author Skye Book
  *
  */
-public abstract class AbstractFlagPositionStrategy{
+public class JME2MapManager extends MapManager<Vector3f> implements VectorConverter<Vector3f>{
 	
-	public void placeFlag(UTMCoordinate location, int baseID, ArrayList<Design> proposals) {
-		SceneGameState.getInstance().addToFlagNode(JME2MapManager.instance.locationToBetaville(location), baseID, proposals.size());
+	public static final JME2MapManager instance = new JME2MapManager();
+	
+	@Override
+	public Vector3f locationToBetaville(ILocation location) {
+		return convertToNativeVector(locationToBetavilleInternal(location));
 	}
-	
-	/**
-	 * Finds the appropriate height where a flag should be placed
-	 * @param base The object that this flag should be placed over
-	 * @return The height at which to place a flag
-	 */
-	public abstract int findHeight(Design base);
+
+	@Override
+	public UTMCoordinate betavilleToUTM(Vector3f vec) {
+		return betavilleToUTMInternal(convertToBetaville(vec));
+	}
+
+	public BVVec3f convertToBetaville(Vector3f nativeVector) {
+		return new BVVec3f(nativeVector.x, nativeVector.y, nativeVector.z);
+	}
+
+	public Vector3f convertToNativeVector(BVVec3f betavilleVector) {
+		return new Vector3f(betavilleVector.x, betavilleVector.y, betavilleVector.z);
+	}
 }

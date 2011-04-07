@@ -90,6 +90,7 @@ import edu.poly.bxmc.betaville.jme.loaders.ModelLoader;
 import edu.poly.bxmc.betaville.jme.map.CardinalDirections;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.jme.map.Scale;
@@ -538,7 +539,7 @@ public class SceneGameState extends BasicGameState {
 	 */
 	public void cameraPerspectiveProjection() {
 		camera.setParallelProjection(false);
-		camera.setLocation(MapManager.locationToBetaville(startingLocation));
+		camera.setLocation(JME2MapManager.instance.locationToBetaville(startingLocation));
 		camera.getLocation().setY(Scale.fromMeter(200));
 		float aspect = (float) DisplaySystem.getDisplaySystem().getWidth() / DisplaySystem.getDisplaySystem().getHeight();
 		// Parameters of the frustum for perspective : field of view (angle of view in the Y direction), aspect, near, far
@@ -670,7 +671,7 @@ public class SceneGameState extends BasicGameState {
 						loader = new ModelLoader((ModeledDesign)d, true, null);
 						final Node dNode = loader.getModel();
 						dNode.setName(d.getFullIdentifier());
-						dNode.setLocalTranslation(MapManager.locationToBetaville(d.getCoordinate()));
+						dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(d.getCoordinate()));
 						dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)d).getRotationX(),
 								((ModeledDesign)d).getRotationY(), ((ModeledDesign)d).getRotationZ()));
 
@@ -705,7 +706,7 @@ public class SceneGameState extends BasicGameState {
 			ModelLoader ml = new ModelLoader((ModeledDesign)design, false, currentFile);
 			designNode.getChild(design.getFullIdentifier()).removeFromParent();
 			designNode.attachChild(ml.getModel());
-			designNode.getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+			designNode.getChild(design.getFullIdentifier()).setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 			designNode.getChild(design.getFullIdentifier()).updateRenderState();
 
 			// create new filename and 
@@ -735,12 +736,12 @@ public class SceneGameState extends BasicGameState {
 		ModelLoader ml = new ModelLoader(design, false, null);
 		if(design.getName().equals("TERRAIN")){
 			terrainNode.attachChild(ml.getModel());
-			terrainNode.getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+			terrainNode.getChild(design.getFullIdentifier()).setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 			terrainNode.getChild(design.getFullIdentifier()).updateRenderState();
 		}
 		else{
 			designNode.attachChild(ml.getModel());
-			designNode.getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+			designNode.getChild(design.getFullIdentifier()).setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 			designNode.getChild(design.getFullIdentifier()).updateRenderState();
 			SceneScape.getCity().addDesign(design);
 			logger.debug("Model Added");
@@ -1131,7 +1132,7 @@ public class SceneGameState extends BasicGameState {
 	 */
 	public void addSearchResult(ILocation location, String identifier){
 		SharedMesh p = new SharedMesh(searchPyramid);
-		p.setLocalTranslation(MapManager.locationToBetaville(location));
+		p.setLocalTranslation(JME2MapManager.instance.locationToBetaville(location));
 		p.setLocalTranslation(p.getLocalTranslation().x, Scale.fromMeter(100), p.getLocalTranslation().z);
 		p.setLocalRotation(Rotator.ROLL180);
 		p.updateRenderState();

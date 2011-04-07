@@ -42,7 +42,7 @@ import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.model.Design.Classification;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
 import edu.poly.bxmc.betaville.net.NetPool;
@@ -181,7 +181,7 @@ public class BulkLoader {
 		logger.info("model added to scene");
 		SceneScape.getCity().addDesign(design);
 		logger.info("model design object added to city");
-		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 		logger.info("object moved to correct orientation");
 		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).updateRenderState();
 		progress.modelMovedToLocation(currentCounter, original, corrected);

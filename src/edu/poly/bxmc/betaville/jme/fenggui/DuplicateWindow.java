@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -40,35 +40,24 @@ import org.fenggui.event.Event;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.event.IGenericEventListener;
 import org.fenggui.event.ISliderMovedListener;
-import org.fenggui.event.ITextChangedListener;
 import org.fenggui.event.SliderMovedEvent;
-import org.fenggui.event.TextChangedEvent;
 import org.fenggui.event.mouse.MouseEvent;
 import org.fenggui.layout.RowExLayout;
-import org.fenggui.layout.StaticLayout;
 
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
-import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
-import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
-import edu.poly.bxmc.betaville.jme.map.Rotator;
-import edu.poly.bxmc.betaville.jme.map.Translator;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
 import edu.poly.bxmc.betaville.module.LocalSceneModule;
 import edu.poly.bxmc.betaville.module.Module;
 import edu.poly.bxmc.betaville.module.ModuleNameException;
-import edu.poly.bxmc.betaville.net.NetModelLoader;
-import edu.poly.bxmc.betaville.net.NetPool;
 
 /**
  * @author Skye Book

@@ -53,7 +53,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.jme.map.Translator;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
@@ -380,7 +380,7 @@ public class AdminModelMover extends Window {
 
 	private void revert(int idToRevertTo){
 		
-		SceneScape.getTargetSpatial().setLocalTranslation(MapManager.locationToBetaville(originalLocation));
+		SceneScape.getTargetSpatial().setLocalTranslation(JME2MapManager.instance.locationToBetaville(originalLocation));
 		SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleY(originalRotation));
 		getDesign().setCoordinate(originalLocation.clone());
 		getDesign().setRotationY(originalRotation);

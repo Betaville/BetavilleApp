@@ -47,7 +47,7 @@ import com.jmex.game.state.GameStateManager;
 import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.sound.SoundTrigger;
 import edu.poly.bxmc.betaville.sound.ExitAction;
@@ -221,7 +221,7 @@ public class SoundGameState extends BasicGameState {
 	 * play the sound from.
 	 */
 	public void playSound(SOUNDS soundSelection, UTMCoordinate designLocation){
-		playSound(soundSelection, MapManager.locationToBetaville(designLocation));
+		playSound(soundSelection, JME2MapManager.instance.locationToBetaville(designLocation));
 	}
 
 	/**

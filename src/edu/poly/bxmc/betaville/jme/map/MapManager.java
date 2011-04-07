@@ -28,7 +28,6 @@ package edu.poly.bxmc.betaville.jme.map;
 import org.apache.log4j.Logger;
 
 import com.ibm.util.CoordinateConversion;
-import com.jme.math.Vector3f;
 
 import edu.poly.bxmc.betaville.SceneScape;
 
@@ -48,8 +47,9 @@ import edu.poly.bxmc.betaville.SceneScape;
  * of spatiality within the engine.
  * 
  * @author Skye Book
+ * @param <T>
  */
-public class MapManager {
+public abstract class MapManager<T>{
 	private static final Logger logger = Logger.getLogger(MapManager.class);
 	
 	/**
@@ -81,7 +81,7 @@ public class MapManager {
 	 * @param newZeroPoint
 	 */
 	public static void adjustOffsets(ILocation newZeroPoint){
-		Vector3f location = locationToBetaville(newZeroPoint);
+		BVVec3f location = locationToBetavilleInternal(newZeroPoint);
 		
 		if(location.x<0) xOffset = location.x*-1;
 		else xOffset = location.x;
@@ -206,7 +206,20 @@ public class MapManager {
 	 * @return Vector3f that can be used as a location
 	 * within Betaville.
 	 */
-	public static Vector3f locationToBetaville(ILocation location){
+	public abstract T locationToBetaville(ILocation location);
+
+	/**
+	 * Translates UTM coordinate into one to be placed
+	 * within Betaville.  This method resolves the use
+	 * of false eastings so that objects from different
+	 * zones can mesh together correctly.  This should be
+	 * the <b>ONLY</b> method that goes from any sort of world
+	 * coordinates to Betaville.
+	 * @param utm Coordinate to translate
+	 * @return Vector3f that can be used as a location
+	 * within Betaville.
+	 */
+	protected static BVVec3f locationToBetavilleInternal(ILocation location){
 		UTMCoordinate utm = location.getUTM();
 		int northingStart = getNorthingStartOfZone(utm.getLatZone());
 
@@ -214,7 +227,7 @@ public class MapManager {
 		double median = zoneWidth/2;
 		float easting=(float)(median+(utm.getEasting()-500000));
 
-		return new Vector3f(((utm.getNorthing()-northingStart)/SceneScape.SceneScale)-xOffset, utm.getAltitude()/SceneScape.SceneScale, ((easting/SceneScape.SceneScale)*1)-zOffset);
+		return new BVVec3f(((utm.getNorthing()-northingStart)/SceneScape.SceneScale)-xOffset, utm.getAltitude()/SceneScape.SceneScale, ((easting/SceneScape.SceneScale)*1)-zOffset);
 	}
 
 	/**
@@ -224,11 +237,20 @@ public class MapManager {
 	 * @param Betaville world coordinate to be converted to UTM
 	 * @return UTM location of the coordinate supplied
 	 */
-	public static UTMCoordinate betavilleToUTM(Vector3f loc){
-		Vector3f bv = loc.clone();
-		bv.addLocal(xOffset, 0, zOffset);
-		float mNorthOfZoneStart = bv.getX()*SceneScape.SceneScale;
-		float mEastOfZoneStart = -1*bv.getZ()*SceneScape.SceneScale;
+	public abstract UTMCoordinate betavilleToUTM(T vec);
+
+	/**
+	 * Converts from a <code>Vector3f</code> Betaville world
+	 * coordinate to a <code>UTMCoordinate</code> which is used
+	 * in placing and locating designs.
+	 * @param Betaville world coordinate to be converted to UTM
+	 * @return UTM location of the coordinate supplied
+	 */
+	protected static UTMCoordinate betavilleToUTMInternal(BVVec3f vec){
+		vec.x+=xOffset;
+		vec.z+=zOffset;
+		float mNorthOfZoneStart = vec.x*SceneScape.SceneScale;
+		float mEastOfZoneStart = -1*vec.z*SceneScape.SceneScale;
 
 		double zoneWidth = findZoneWidth(SceneScape.getLonZone(), SceneScape.getLonZone()+1);
 		double median = zoneWidth/2;
@@ -236,7 +258,7 @@ public class MapManager {
 
 		int realNorthing = getNorthingStartOfZone(SceneScape.getLatZone())+(int)mNorthOfZoneStart;
 
-		int altitude = (int)(bv.getY()*SceneScape.SceneScale);
+		int altitude = (int)(vec.y*SceneScape.SceneScale);
 
 		return new UTMCoordinate(realEasting, realNorthing, SceneScape.getLonZone(), SceneScape.getLatZone(), altitude);
 	}
@@ -355,26 +377,11 @@ public class MapManager {
 	 * @return Angle of Azimuth in degrees
 	 */
 	public static double calculateAzimuth(GPSCoordinate gps1, GPSCoordinate gps2){
-		Vector3f loc1 = locationToBetaville(gps1);
-		Vector3f loc2 = locationToBetaville(gps2);
-		double toAtan = (loc2.getZ()-loc1.getZ())/(loc2.getX()-loc1.getX());
+		BVVec3f loc1 = locationToBetavilleInternal(gps1);
+		BVVec3f loc2 = locationToBetavilleInternal(gps2);
+		double toAtan = (loc2.z-loc1.z)/(loc2.x-loc1.x);
 		if(toAtan<0) toAtan*=-1; // make sure we're using the absolute value
 		double azimuth = StrictMath.atan(toAtan);
 		return StrictMath.toDegrees(azimuth);
-	}
-
-	/**
-	 * NOT COMPLETE
-	 * TODO
-	 * @param bearing
-	 * @return
-	 */
-	public static Vector3f bearingToVector(double bearing){
-		if(bearing<90){}
-		else if(bearing<180){}
-		else if(bearing<270){}
-		else if(bearing<360){}
-
-		return null;
 	}
 }

@@ -45,7 +45,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.City;
 
@@ -116,7 +116,7 @@ public class LocalWormholeWindow extends Window implements IBetavilleWindow{
 					for (int j = 0; j < buttons.size(); j++) {
 						if(source.equals(buttons.get(j))){
 							logger.info("Jumping to: "+locationListq[j][3]+" "+locationListq[j][4]);
-							camera.setLocation(MapManager.locationToBetaville(new GPSCoordinate(20.0, Double.parseDouble(locationListq[j][3]), Double.parseDouble(locationListq[j][4]))));
+							camera.setLocation(JME2MapManager.instance.locationToBetaville(new GPSCoordinate(20.0, Double.parseDouble(locationListq[j][3]), Double.parseDouble(locationListq[j][4]))));
 							
 							
 							GPSCoordinate gps = new GPSCoordinate(20.0, Double.parseDouble(locationListq[j][3]), Double.parseDouble(locationListq[j][4]));

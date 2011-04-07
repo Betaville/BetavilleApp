@@ -53,7 +53,7 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.loaders.util.OBJScaler;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
@@ -184,7 +184,7 @@ public class ModelLoader {
 				model = new Node("design");
 			}
 			model.setName(design.getName()+"$local");
-			model.setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+			model.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 			model.setLocalScale(OBJScaler.fixScale(modelURL)/SceneScape.SceneScale);
 			finishSetup(design);
 		}

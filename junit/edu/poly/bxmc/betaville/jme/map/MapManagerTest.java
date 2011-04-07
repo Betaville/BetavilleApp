@@ -52,8 +52,8 @@ public class MapManagerTest extends TestCase {
 	public void testUTMToBetaville(){
 		GPSCoordinate gps = new GPSCoordinate(0, 40, 42, 4.07, -74, 0, 31.28);
 		UTMCoordinate utm = gps.getUTM();
-		Vector3f bvLocation = MapManager.locationToBetaville(utm);
-		assertTrue(utmClose(utm, MapManager.betavilleToUTM(bvLocation)));
+		Vector3f bvLocation = JME2MapManager.instance.locationToBetaville(utm);
+		assertTrue(utmClose(utm, JME2MapManager.instance.betavilleToUTM(bvLocation)));
 	}
 	
 	private boolean utmClose(UTMCoordinate c1, UTMCoordinate c2){
@@ -73,10 +73,10 @@ public class MapManagerTest extends TestCase {
 		UTMCoordinate utm = gps.getUTM();;
 		System.out.println("UTM Generated From Lat/Lon: " + utm.toString());
 		
-		Vector3f bvLocation = MapManager.locationToBetaville(utm);
+		Vector3f bvLocation = JME2MapManager.instance.locationToBetaville(utm);
 		System.out.println("In terms of Vector3f: " + bvLocation.toString());
 		
-		UTMCoordinate utmReverse = MapManager.betavilleToUTM(bvLocation);
+		UTMCoordinate utmReverse = JME2MapManager.instance.betavilleToUTM(bvLocation);
 		System.out.println("UTM reversed from Vector3f: " + utmReverse.toString());
 		
 		GPSCoordinate gpsReverse = MapManager.utmToLatLon(utmReverse);

@@ -43,9 +43,8 @@ import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
 import edu.poly.bxmc.betaville.flags.FlagProducer;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
 import edu.poly.bxmc.betaville.jme.loaders.ModelLoader;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.model.Design;
@@ -136,7 +135,7 @@ public class NetModelLoader{
 			throw new NullPointerException("designs not received!");
 		}
 		else{
-			Collections.sort(designs, Design.distanceComparator(MapManager.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
+			Collections.sort(designs, Design.distanceComparator(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
 			for(int i=0; i<designs.size(); i++){
 				if(limit==NO_LIMIT || i<limit){
 					Design design = designs.get(i);
@@ -147,7 +146,7 @@ public class NetModelLoader{
 //						designs.add(design);
 //						logger.info("duplicated");
 //					}
-					if(SceneGameState.getInstance().getCamera().getLocation().distance(MapManager.locationToBetaville(design.getCoordinate())) < Scale.fromMeter(50000)){
+					if(SceneGameState.getInstance().getCamera().getLocation().distance(JME2MapManager.instance.locationToBetaville(design.getCoordinate())) < Scale.fromMeter(50000)){
 						//logger.info("adding: " + design.getName() + " | ID: " + design.getID());
 						
 
@@ -177,7 +176,7 @@ public class NetModelLoader{
 								//dNode.setLocalScale(1/SceneScape.SceneScale);
 								dNode.setName(design.getFullIdentifier());
 								
-								dNode.setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+								dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 								
 								
 								dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)design).getRotationX(),
@@ -217,7 +216,7 @@ public class NetModelLoader{
 			
 		}
 
-		FlagProducer testFlagger = new FlagProducer(MapManager.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
+		FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
 		testFlagger.getProposals(5000);
 		testFlagger.placeFlags();
 	}
@@ -263,7 +262,7 @@ public class NetModelLoader{
 						}
 						Node dNode = loader.getModel();
 						dNode.setName(design.getFullIdentifier());
-						dNode.setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
+						dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 						dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)design).getRotationX(),
 								((ModeledDesign)design).getRotationY(), ((ModeledDesign)design).getRotationZ()));
 						if(design.getName().contains("$TERRAIN")){

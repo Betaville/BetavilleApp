@@ -41,6 +41,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 
 /**
@@ -82,7 +83,7 @@ public class BookmarkPopup extends Window implements IBetavilleWindow{
 				// create the bookmark and add it to the bookmark manager
 				Vector3f direction = SceneGameState.getInstance().getCamera().getDirection().clone();
 				BookmarkManager.get().addBookmark(new Bookmark(FengUtils.getText(name), FengUtils.getText(description),
-						MapManager.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()),
+						JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()),
 						direction.getX(),
 						direction.getY(),
 						direction.getZ())
