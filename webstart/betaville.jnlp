@@ -8,7 +8,6 @@
     <vendor>BxmC</vendor>
     <homepage href="http://bxmc.poly.edu"/>
     <description>Every living city is in Beta.</description>
-    <description kind="short">Participatory Urban Planning</description>
     <icon kind="splash" href="http://bxmc.poly.edu/sites/default/files/inline_images/BetavilleLogoColor.gif"/> 
     <icon href="http://betaville.net/webstart/BetavilleAppIcon.gif"/> 
     <association extensions="bxb" mime-type="text/plain"/>

@@ -8,7 +8,6 @@
     <vendor>BxmC</vendor>
     <homepage href="http://bxmc.poly.edu"/>
     <description>Every living city is in Beta. (Builds at midnight EST)</description>
-    <description kind="short">Participatory Urban Planning</description>
     <icon kind="splash" href="http://bxmc.poly.edu/sites/default/files/inline_images/BetavilleLogoColor.gif"/> 
     <!-- Moon image taken from http://commons.wikimedia.org/wiki/User:Ozgurmulazimoglu -->
     <icon href="http://betaville.net/nightly/nightly_logo.png"/> 
