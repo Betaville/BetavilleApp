@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -201,6 +201,10 @@ public class SettingsPreferences {
 	
 	public static boolean useGeneratedTerrainEnabled(){
 		return readTrueFalseValue("betaville.display.terrain.usegenerated");
+	}
+	
+	public static boolean useSSL(){
+		return readTrueFalseValue("betaville.net.usessl");
 	}
 	
 	private static boolean readTrueFalseValue(String property){

@@ -22,32 +22,20 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.net;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.List;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
-import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
@@ -68,54 +56,30 @@ public class SecureClientManager extends ClientManager{
 	/**
 	 * Constant <PORT_SERVER> - Port of the server
 	 */
-	private final int PORT_SERVER = 14501;
-	
-	private char[] keyStorePass = "123456".toCharArray();
-	private char[] trustStorePass = keyStorePass;
-	             
+	private final int PORT_SERVER = 14500;
+
+
+
 	/**
 	 * Constructor - Creation of the client manager
 	 */
-	public SecureClientManager(List<Module> modules){
-		try{
-			KeyStore keyStore = KeyStore.getInstance("JKS");
-			KeyStore trustStore = KeyStore.getInstance("JKS");
-			
-			keyStore.load(ResourceLoader.loadResource("/data/certs/client.keystore").openStream(), keyStorePass);
-			trustStore.load(ResourceLoader.loadResource("/data/certs/client.truststore").openStream(), trustStorePass);
-			
-			KeyManagerFactory keyManager = KeyManagerFactory.getInstance("SunX509");
-			keyManager.init(keyStore, keyStorePass);
-			TrustManagerFactory trustManager = TrustManagerFactory.getInstance("SunX509");
-			trustManager.init(trustStore);
-			
-			SSLContext context = SSLContext.getInstance("TLS");
-			context.init(keyManager.getKeyManagers(), trustManager.getTrustManagers(), null);
-			
-			SSLSocketFactory sslFactory = context.getSocketFactory();
-			clientSocket = (SSLSocket)sslFactory.createSocket();
-			
-			clientSocket.connect(new InetSocketAddress(SettingsPreferences.getServerIP(), PORT_SERVER));
+	public SecureClientManager(List<Module> modules, boolean createSocketHere){
+		
+		if(!createSocketHere) return;
+		
+		try {
+			clientSocket = new Socket(SettingsPreferences.getServerIP(), PORT_SERVER);
+			logger.info("Client application : "+ clientSocket.toString());
 			output = new ObjectOutputStream(clientSocket.getOutputStream());
 			input = new ObjectInputStream(clientSocket.getInputStream());
-		}catch(KeyStoreException e){
-			logger.fatal("Java KeyStore Issue", e);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (UnknownHostException e) {
 			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
 			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
-		} catch (UnrecoverableKeyException e) {
-			e.printStackTrace();
-		} catch (KeyManagementException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean authenticateUser(String name, String pass){
 		busy.getAndSet(true);
 		try {
@@ -131,7 +95,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	public boolean startSession(String name, String pass){
 		busy.getAndSet(true);
 		try {
@@ -162,7 +126,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	public boolean endSession(String sessionToken){
 		busy.getAndSet(true);
 		try {
@@ -173,7 +137,7 @@ public class SecureClientManager extends ClientManager{
 			if(response==0){
 				SettingsPreferences.setSessionToken("");
 				return true;
-				}
+			}
 			else return false;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -212,7 +176,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	/**
 	 * Changes the password for a user.
 	 * @param name The user proposing the change.
@@ -259,7 +223,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	/**
 	 * Adds a design to the server.
 	 * @param design The <code>Design</code> object describing the new entity.
@@ -291,7 +255,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return -3;
 	}
-	
+
 	/**
 	 * Adds an EmptyDesign to the server.
 	 * @param design The <code>Design</code> object describing the new entity.
@@ -322,7 +286,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return -3;
 	}
-	
+
 	/**
 	 * Adds a design to the server.
 	 * @param design The <code>Design</code> object describing the new entity.
@@ -353,7 +317,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return -3;
 	}
-	
+
 	/**
 	 * Adds a version of the proposal to the server.
 	 * @param design The <code>Design</code> object describing the new entity.
@@ -385,7 +349,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return -3;
 	}
-	
+
 	/**
 	 * Adds a design to the server.
 	 * @param design The <code>Design</code> object describing the new entity.
@@ -466,7 +430,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	public boolean changeDesignFile(int designID, String user, String pass, PhysicalFileTransporter pft, boolean textureOnOff){
 		busy.getAndSet(true);
 		try {
@@ -507,7 +471,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	/**
 	 * Changes the stored address of a <code>Design</code>
 	 * @param designID The ID of the <code>Design</code> to change the address for.
@@ -531,7 +495,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	/**
 	 * Changes the stored url of a <code>Design</code>
 	 * @param designID The ID of the <code>Design</code> to change the address for.
@@ -581,7 +545,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	/**
 	 * Favorites a design on the server on behalf of the user
 	 * @param user
@@ -651,7 +615,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return false;
 	}
-	
+
 	/**
 	 * Adds a new wormhole on the server.
 	 * @param location The location for this wormhole
@@ -677,7 +641,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return response;
 	}
-	
+
 	public int deleteWormhole(int wormholeID){
 		Integer response = null;
 		busy.getAndSet(true);
@@ -696,7 +660,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return response;
 	}
-	
+
 	public int editWormholeName(int wormholeID, String newName){
 		Integer response = null;
 		busy.getAndSet(true);
@@ -715,7 +679,7 @@ public class SecureClientManager extends ClientManager{
 		busy.getAndSet(false);
 		return response;
 	}
-	
+
 	public int editWormholeLocation(int wormholeID, UTMCoordinate newLocation){
 		Integer response = null;
 		busy.getAndSet(true);

@@ -32,6 +32,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.module.Module;
 import edu.poly.bxmc.betaville.module.ModuleNameException;
 import edu.poly.bxmc.betaville.updater.AbstractUpdater;
@@ -91,7 +92,9 @@ public class NetPool extends AbstractUpdater{
 		// If there are no managers, create one and return it
 		if(managers.isEmpty()){
 			logger.debug("No " + SecureClientManager.class.getName() + " was found.. creating one");
-			SecureClientManager scm = new SecureClientManager(modules);
+			SecureClientManager scm;
+			if(SettingsPreferences.useSSL()) scm = new SSLClientManager(modules);
+			else scm = new SecureClientManager(modules, true);
 			managers.add(scm);
 			return scm;
 		}
@@ -105,7 +108,7 @@ public class NetPool extends AbstractUpdater{
 		
 		// If no idle managers were found, then we add a new manager to the pool and return that
 		logger.debug("No idle " + SecureClientManager.class.getName() + " was found.. creating one");
-		SecureClientManager scm = new SecureClientManager(modules);
+		SecureClientManager scm = new SecureClientManager(modules, true);
 		managers.add(scm);
 		return scm;
 	}
