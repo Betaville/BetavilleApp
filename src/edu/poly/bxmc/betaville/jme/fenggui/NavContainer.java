@@ -210,7 +210,7 @@ public class NavContainer extends Container {
 					// If we're in kiosk mode, the user is not allowed to put up a proposal!
 					if(SettingsPreferences.isInKioskMode()){
 						logger.info("New proposals cannot be created in kiosk mode - Showing dialog instead");
-						FengUtils.createDismissableWindow("Betaville", "New proposals cannot be created in kiosk mode", "OK", true);
+						GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Betaville", "New proposals cannot be created in kiosk mode", "OK", true));
 						return;
 					}
 

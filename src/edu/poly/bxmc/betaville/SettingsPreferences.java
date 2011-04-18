@@ -208,7 +208,7 @@ public class SettingsPreferences {
 	}
 	
 	public static boolean isInKioskMode(){
-		return readTrueFalseValue("betaville.net.kiosk.enabled");
+		return readTrueFalseValue("betaville.kiosk.enabled");
 	}
 	
 	/**
