@@ -52,6 +52,7 @@ import com.jme.math.FastMath;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ReportBugListener;
 import edu.poly.bxmc.betaville.jme.fenggui.panel.CityPanel;
@@ -86,8 +87,6 @@ public class TopSelectionWindow extends Window{
 	 */
 	private int compassPixFor2PI;
 
-	//	private CommentWindow commentWindow;
-
 	// identifier for what this container does
 	private Label selectionLabel;
 
@@ -99,7 +98,7 @@ public class TopSelectionWindow extends Window{
 
 	// A clickable link to the URL included in the design data
 	private Label urlLabel;
-	private String urlToLaunch = "http://bxmc.poly.edu";
+	private String urlToLaunch = null;
 
 	// displays the amount of users who like this item
 	private FixedButton faveButton;
@@ -131,7 +130,12 @@ public class TopSelectionWindow extends Window{
 			logger.error("Unable to load textures for top panel", e);
 		}
 		setPositioning();
-		getContentContainer().addWidget(logoLabel, nameBGContainer, /*compassLabel,*/ urlLabel, bugButton);
+		
+		// only show the Logo and Bug buttons if we are not in kiosk mode
+		if(!SettingsPreferences.isInKioskMode()){
+			getContentContainer().addWidget(logoLabel,  bugButton);
+		}
+		getContentContainer().addWidget(nameBGContainer, /*compassLabel,*/ urlLabel);
 	}
 
 	private void initLabels(){
@@ -160,7 +164,11 @@ public class TopSelectionWindow extends Window{
 		panelButton = FengGUI.createWidget(FixedButton.class);
 		panelButton.setText("City Panel");
 		panelButton.setWidth(panelButton.getWidth()+10);
-		panelButton.setXY(bugButton.getX()-5-panelButton.getWidth(), -1);
+		
+		// nudge the cuty panel over if we are not in Kiosk mode
+		if(!SettingsPreferences.isInKioskMode()) panelButton.setXY(bugButton.getX()-5-panelButton.getWidth(), -1);
+		else panelButton.setXY(Binding.getInstance().getCanvasWidth()-bugButton.getWidth(), -1);
+		
 		panelButton.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(!cityPanel.isInWidgetTree()){
@@ -231,7 +239,7 @@ public class TopSelectionWindow extends Window{
 		urlLabel.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 			public void processEvent(Object source, Event event) {
 				if(event instanceof MouseReleasedEvent){
-					BareBonesBrowserLaunch.openURL(urlToLaunch);
+					if(urlToLaunch!=null) BareBonesBrowserLaunch.openURL(urlToLaunch);
 				}
 			}
 		});
@@ -288,7 +296,8 @@ public class TopSelectionWindow extends Window{
 		logoLabel.setXY(-5, -5);
 		compassLabel.setXY(Binding.getInstance().getCanvasWidth() - (compassLabel.getWidth()/3)-panelButton.getWidth()-bugButton.getWidth()-15, -5);
 		// the selection label sits directly to the right of the logo label
-		selectionLabel.setXY(logoLabel.getWidth()-11, -5);
+		if(!SettingsPreferences.isInKioskMode()) selectionLabel.setXY(logoLabel.getWidth()-11, -5);
+		else selectionLabel.setXY(0, -5);
 
 		// the name label is to the right of the selection label (with some padding)
 		nameLabel.setXY(5, 3);
