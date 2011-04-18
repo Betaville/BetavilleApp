@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -108,7 +108,9 @@ public class NetPool extends AbstractUpdater{
 		
 		// If no idle managers were found, then we add a new manager to the pool and return that
 		logger.debug("No idle " + SecureClientManager.class.getName() + " was found.. creating one");
-		SecureClientManager scm = new SecureClientManager(modules, true);
+		SecureClientManager scm;
+		if(SettingsPreferences.useSSL()) scm = new SSLClientManager(modules);
+		else scm = new SecureClientManager(modules, true);
 		managers.add(scm);
 		return scm;
 	}
