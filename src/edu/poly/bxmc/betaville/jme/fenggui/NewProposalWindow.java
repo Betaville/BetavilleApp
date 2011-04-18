@@ -164,19 +164,19 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	private FixedButton newProposal;
 	private FixedButton newBase;
 	private TextEditor proposalTitle;
-	private String proposalTitleDefaultContent="PROPOSAL TITLE";
+	private final String proposalTitleDefaultContent="PROPOSAL TITLE";
 	private TextEditor proposalDescription;
-	private String proposalDescriptionDefaultContent="PROPOSAL DESCRIPTION";
+	private final String proposalDescriptionDefaultContent="PROPOSAL DESCRIPTION";
 	private TextEditor proposalAddress;
-	private String proposalAddressDefaultContent="ADDRESS (optional)";
+	private final String proposalAddressDefaultContent="ADDRESS (optional)";
 	private TextEditor proposalURL;
-	private String proposalURLDefaultContent="WEBSITE URL (optional)";
+	private final String proposalURLDefaultContent="WEBSITE URL (optional)";
 	private FixedButton newVersion;
-	private String newVersionText = "new version of existing proposal";
+	private final String newVersionText = "new version of existing proposal";
 	private Label versionAdvisor;
 	private Label versionNoGo;
 	private TextEditor versionDescription;
-	private String versionDescriptionDefault = "VERSION DESCRIPTION";
+	private final String versionDescriptionDefault = "VERSION DESCRIPTION";
 
 	private boolean titleChanged = false;
 	private boolean descriptionChanged = false;
@@ -888,7 +888,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					title = "VersionOf";
 				}
 
-				if(!descriptionChanged){
+				if(!descriptionChanged || FengUtils.getText(proposalDescription).equals(proposalDescriptionDefaultContent)){
 					description="None";
 				}
 				else description=FengUtils.getText(proposalDescription);
