@@ -207,6 +207,15 @@ public class SettingsPreferences {
 		return readTrueFalseValue("betaville.net.usessl");
 	}
 	
+	public static boolean isInKioskMode(){
+		return readTrueFalseValue("betaville.net.kiosk.enabled");
+	}
+	
+	/**
+	 * 
+	 * @param property The System property to read the true/false value from
+	 * @return The true/false value, or true if there is no value found
+	 */
 	private static boolean readTrueFalseValue(String property){
 		String value = System.getProperty(property);
 		if(value!=null) return Boolean.parseBoolean(value);

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@ import edu.poly.bxmc.betaville.jme.gamestates.SoundGameState.SOUNDS;
 
 /**
  * @author Skye Book
- *
+ * @deprecated - This menu context has been superceded
  */
 public class EditContainer extends Container {
 	private ITexture move;

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
@@ -61,6 +62,8 @@ import edu.poly.bxmc.betaville.net.NetPool;
  *
  */
 public class NavContainer extends Container {
+	private static final Logger logger = Logger.getLogger(NavContainer.class);
+	
 	private ITexture post;
 	private ITexture postOver;
 	private ITexture info;
@@ -203,7 +206,14 @@ public class NavContainer extends Container {
 					GUIGameState.getInstance().removeNavMenu();
 					GUIGameState.getInstance().setContextOn(false);
 					//GUIGameState.getInstance().turnOnEditContainer();
-					
+
+					// If we're in kiosk mode, the user is not allowed to put up a proposal!
+					if(SettingsPreferences.isInKioskMode()){
+						logger.info("New proposals cannot be created in kiosk mode - Showing dialog instead");
+						FengUtils.createDismissableWindow("Betaville", "New proposals cannot be created in kiosk mode", "OK", true);
+						return;
+					}
+
 					// If the window is already on, stop here
 					if(GUIGameState.getInstance().isProposalWindowOn()) 
 						return;
