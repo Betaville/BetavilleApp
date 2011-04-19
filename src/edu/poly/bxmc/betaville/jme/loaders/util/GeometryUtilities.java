@@ -236,6 +236,21 @@ public class GeometryUtilities {
 		return false;
 	}
 
+	public static int countAllChildren(Spatial s){
+		// by virtue of getting an object we have at least one!
+		if(s!=null){
+			int count=1;
+			if(s instanceof Node){
+				count+=((Node) s).getQuantity();
+				for(int i=0; i<((Node)s).getQuantity(); i++){
+					count+=countAllChildren(((Node)s).getChild(i));
+				}
+			}
+			return count;
+		}
+		else return 0;
+	}
+	
 	public static void optimize(Spatial s){
 		if(s instanceof TriMesh){
 			GeometryTool.minimizeVerts((TriMesh)s, 0);
@@ -391,6 +406,15 @@ public class GeometryUtilities {
 		return currentMaxHeight;
 	}
 	
+	/**
+	 * Packages a geometry into a {@link PhysicalFileTransporter} that can be written to
+	 * the disk or sent out over the network.
+	 * @param identifier The name of the file to retrieve
+	 * @return The packaged object
+	 * @throws URISyntaxException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public static PhysicalFileTransporter getPFT(String identifier) throws URISyntaxException, FileNotFoundException, IOException{
 		// Get the local file
 		File localFile = new File(new URL(SettingsPreferences.getDataFolder()+"local/"+identifier.replaceAll(" ", "")+".jme").toURI());
