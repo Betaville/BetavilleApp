@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -640,30 +641,65 @@ public class GeometryUtilities {
 	 * that any {@link RenderState} information associated with nodes attached
 	 * to the input Node will be lost.  For simplicity's sake, this method will
 	 * accept any {@link Spatial} but will only ever do anything for a Node.
-	 * @param toCollapse The top-level object that all children will be collapsed to
+	 * @param topLevel The top-level object that all children will be collapsed to
 	 */
-	public static void collapseToSingleLevel(Spatial toCollapse){
-		if(toCollapse instanceof Node){
-			if(((Node)toCollapse).getQuantity()>0){
-				for(Spatial child : ((Node)toCollapse).getChildren()){
-					collapseToSingleLevelImpl((Node)toCollapse, child);
+	public static void collapseToSingleLevel(Spatial topLevel){
+		logger.info("Optimizing " + topLevel.getName());
+		
+		ArrayList<Spatial> childList = new ArrayList<Spatial>();
+		ArrayList<Spatial> nodesToKill = new ArrayList<Spatial>();
+		
+		if(topLevel instanceof Node){
+			if(((Node)topLevel).getQuantity()>0){
+				for(Spatial child : ((Node)topLevel).getChildren()){
+					collapseToSingleLevelImpl((Node)topLevel, child, childList, nodesToKill);
 				}
 			}
-		}
-		else logger.warn("Collapse to single level requires a Node");
-	}
-	
-	private static void collapseToSingleLevelImpl(Node toCollapse, Spatial child){
-		if(child instanceof Node){
-			if(((Node)child).getQuantity()>0){
-				for(Spatial subChild : ((Node)child).getChildren()){
-					collapseToSingleLevelImpl(toCollapse, subChild);
-				}
+			
+			logger.info("childList contains " + childList.size() + " objects");
+			for(int i=0; i<childList.size(); i++){
+				((Node)topLevel).attachChild(childList.get(i));
+			}
+			
+			// we need to go in reverse so that the objects are still accessible to be removed (they were added in descending order)
+			logger.info("nodesToKill contains " + nodesToKill.size() + " objects");
+			for(int i=nodesToKill.size()-1; i>-1; i--){
+				nodesToKill.get(i).removeFromParent();
 			}
 		}
 		else{
-			logger.info("Collapsing object to top level "+toCollapse.getName()+": " + child.getName());
-			toCollapse.attachChild(child);
+			logger.warn("Collapse to single level requires a Node");
+		}
+		
+		logger.info("Optimization Complete");
+	}
+	
+	private static void collapseToSingleLevelImpl(Node parentBeingCollapsedTo, Spatial child, ArrayList<Spatial> childList, ArrayList<Spatial> nodesToKill){
+		logger.info("Examining\t"+parentBeingCollapsedTo.getName()+":"+child.getName());
+		if(child instanceof Node){
+			if(((Node)child).getQuantity()>0){
+				nodesToKill.add(child);
+				for(Spatial subChild : ((Node)child).getChildren()){
+					logger.info("Submitting\t"+parentBeingCollapsedTo.getName()+":"+subChild.getName());
+					collapseToSingleLevelImpl(parentBeingCollapsedTo, subChild, childList, nodesToKill);
+				}
+			}
+			// now that we've removed everything from the child, take it out of the scene
+			//child.removeFromParent();
+		}
+		else{
+			// if the object is not a spatial then we move it up to the top level
+			//logger.info("Collapsing object to top level "+parentBeingCollapsedTo.getName()+": " + child.getName());
+			
+			childList.add(child);
+			logger.info("Object Added To Templist");
+			
+			/*
+			if(child.removeFromParent()){
+				parentBeingCollapsedTo.attachChild(child);
+				logger.info("spatial moved");
+			}
+			*/
 		}
 	}
 	

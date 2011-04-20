@@ -172,6 +172,18 @@ public class NetModelLoader{
 								}
 								
 								Node dNode = loader.getModel();
+								
+								
+								
+								// optimize the hierarchy
+								/*
+								int originalSpatialCount = GeometryUtilities.countAllChildren(dNode);
+								GeometryUtilities.collapseToSingleLevel(dNode);
+								int newSpatialCount = GeometryUtilities.countAllChildren(dNode);
+								
+								// let's see the difference
+								logger.info(dNode.getName()+"\tOLD COUNT:\t" + originalSpatialCount +"\tNEW COUNT:\t"+newSpatialCount);
+								*/
 							
 								//dNode = ClodSetup.setupClod(dNode);
 								//dNode.setLocalScale(1/SceneScape.SceneScale);
