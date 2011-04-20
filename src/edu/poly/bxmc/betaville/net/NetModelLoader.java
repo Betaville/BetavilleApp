@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.net;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -35,6 +36,7 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 
 import com.jme.scene.Node;
+import com.jme.scene.Spatial;
 import com.jme.util.GameTaskQueueManager;
 
 import edu.poly.bxmc.betaville.CacheManager;
@@ -176,14 +178,14 @@ public class NetModelLoader{
 								
 								
 								// optimize the hierarchy
-								/*
+								
 								int originalSpatialCount = GeometryUtilities.countAllChildren(dNode);
-								GeometryUtilities.collapseToSingleLevel(dNode);
+								//GeometryUtilities.collapseToSingleLevel(dNode, new ArrayList<Spatial>(), new ArrayList<Spatial>());
 								int newSpatialCount = GeometryUtilities.countAllChildren(dNode);
 								
 								// let's see the difference
-								logger.info(dNode.getName()+"\tOLD COUNT:\t" + originalSpatialCount +"\tNEW COUNT:\t"+newSpatialCount);
-								*/
+								//logger.info(dNode.getName()+"\tOLD COUNT:\t" + originalSpatialCount +"\tNEW COUNT:\t"+newSpatialCount);
+								
 							
 								//dNode = ClodSetup.setupClod(dNode);
 								//dNode.setLocalScale(1/SceneScape.SceneScale);
