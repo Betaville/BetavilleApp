@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.controllers;
 
 import static com.jme.input.KeyInput.KEY_ESCAPE;
@@ -30,6 +30,7 @@ import static com.jme.input.KeyInput.KEY_ESCAPE;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
+import org.fenggui.FengGUI;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
@@ -44,8 +45,11 @@ import com.jme.renderer.Camera;
 import com.jme.scene.Controller;
 import com.jme.system.DisplaySystem;
 
+import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.ShutdownManager;
+import edu.poly.bxmc.betaville.jme.fenggui.KioskQuitPrompt;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.Scale;
@@ -86,11 +90,11 @@ public class SceneController extends Controller {
 	 * Attribute <firstPersonHandler> - Controller the movement of the camera
 	 */
 	private FirstPersonHandler firstPersonHandler;
-	
+
 	private MouseZoomAction mouseZoom;
-	
+
 	private MouseMoveAction mouseMove;
-	
+
 	/**
 	 * Attribute <manager> - Game Control's manager
 	 */
@@ -99,7 +103,7 @@ public class SceneController extends Controller {
 	private Window closeWindow;
 
 	private Camera camera = DisplaySystem.getDisplaySystem().getRenderer()
-			.getCamera();
+	.getCamera();
 	private float cameraDirX = 42;
 
 	double h = 0;
@@ -118,15 +122,15 @@ public class SceneController extends Controller {
 				turnSpeed);
 		firstPersonHandler.setButtonPressRequired(true);
 		firstPersonHandler.getMouseLookHandler().getMouseLook()
-				.setMouseButtonForRequired(2);
+		.setMouseButtonForRequired(2);
 		firstPersonHandler.getMouseLookHandler().getMouseLook().setSpeed(.5f);
-		
+
 		mouseZoom = new MouseZoomAction(camera, moveSpeed);
 		mouseMove = new MouseMoveAction(camera, moveSpeed, true, true);
 		mouseMove.setSensitivity(0.005f);
 		firstPersonHandler.addAction(mouseZoom);
 		firstPersonHandler.addAction(mouseMove);
-		
+
 		adjustPerLocale();
 		camera.getDirection();
 
@@ -142,7 +146,7 @@ public class SceneController extends Controller {
 
 	private void adjustPerLocale() {
 		KeyBindingManager keyBindingManager = KeyBindingManager
-				.getKeyBindingManager();
+		.getKeyBindingManager();
 		Locale locale = Locale.getDefault();
 		if (locale.equals(Locale.FRANCE) || locale.equals(Locale.FRENCH)) {
 			keyBindingManager.set("forward", KeyInput.KEY_Z);
@@ -164,28 +168,23 @@ public class SceneController extends Controller {
 		}
 	}
 
-	
+
 	private void exitAction() {
 		logger.info("Exit Action");
 		if (closeWindow == null) {
 			logger.info("Creating exit window");
-
-			/*closeWindow = FengUtils.createTwoOptionWindow("Betaville",
-					"Are you sure you want to exit?", "yes", "no",
-					new IButtonPressedListener() {
-						public void buttonPressed(Object source,
-								ButtonPressedEvent e) {
-							logger.info("Exit comment confirmed");
-							SafeShutdown.doSafeShutdown();
-						}
-					}, null, true, true);
-					*/
-			closeWindow = FengUtils.createTwoOptionWindow("Betaville", "Are you sure you want to exit?", "Yes", "No", new IButtonPressedListener() {
-				public void buttonPressed(Object source, ButtonPressedEvent e) {
-					logger.info("Exit comment confirmed");
-					ShutdownManager.doSafeShutdown();
-				}
-			}, null, true, true);
+			if(KioskMode.kioskPasswordIsSetAndEnabled()){
+				closeWindow = FengGUI.createWidget(KioskQuitPrompt.class);
+				((IBetavilleWindow)closeWindow).finishSetup();
+			}
+			else{
+				closeWindow = FengUtils.createTwoOptionWindow("Betaville", "Are you sure you want to exit?", "Yes", "No", new IButtonPressedListener() {
+					public void buttonPressed(Object source, ButtonPressedEvent e) {
+						logger.info("Exit comment confirmed");
+						ShutdownManager.doSafeShutdown();
+					}
+				}, null, true, true);
+			}
 		}
 
 		if (!closeWindow.isInWidgetTree())
@@ -219,18 +218,18 @@ public class SceneController extends Controller {
 		// Check if camera turned since last update
 		if (cameraDirX != camera.getDirection().x) {
 			GUIGameState
-					.getInstance()
-					.getTopSelectionWindow()
-					.updateCompass(
-							FastMath.atan2(camera.getDirection().z,
-									camera.getDirection().x));
+			.getInstance()
+			.getTopSelectionWindow()
+			.updateCompass(
+					FastMath.atan2(camera.getDirection().z,
+							camera.getDirection().x));
 		}
 
 		cameraDirX = camera.getDirection().x;
 
 		return controlManager.getControl(action.name()).getValue();
 	}
-	
+
 	/**
 	 * @return true if elevate key pressed
 	 */
@@ -244,9 +243,9 @@ public class SceneController extends Controller {
 	/** 
 	 * @return true if any key for forward, backward, up and down is pressed
 	 */
-	
+
 	public boolean getMoveKey(){
-				
+
 		if(KeyInput.get().isKeyDown(KeyInput.KEY_W)) {
 			return true;
 		}else if (KeyInput.get().isKeyDown(KeyInput.KEY_Q)) {
@@ -258,11 +257,11 @@ public class SceneController extends Controller {
 		}else if (KeyInput.get().isKeyDown(KeyInput.KEY_S)) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
-	
+
 	/**
 	 * @return the moveSpeed
 	 */
@@ -293,7 +292,7 @@ public class SceneController extends Controller {
 	public void setTurnSpeed(float turnSpeed) {
 		this.turnSpeed = turnSpeed;
 	}
-	
+
 	public MouseZoomAction getMouseZoom() {
 		return mouseZoom;
 	}

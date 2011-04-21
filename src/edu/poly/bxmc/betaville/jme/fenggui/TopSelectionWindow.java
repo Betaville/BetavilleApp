@@ -51,8 +51,8 @@ import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.jme.math.FastMath;
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ReportBugListener;
 import edu.poly.bxmc.betaville.jme.fenggui.panel.CityPanel;
@@ -132,7 +132,7 @@ public class TopSelectionWindow extends Window{
 		setPositioning();
 		
 		// only show the Logo and Bug buttons if we are not in kiosk mode
-		if(!SettingsPreferences.isInKioskMode()){
+		if(!KioskMode.isInKioskMode()){
 			getContentContainer().addWidget(logoLabel,  bugButton);
 		}
 		getContentContainer().addWidget(nameBGContainer, /*compassLabel,*/ urlLabel);
@@ -166,7 +166,7 @@ public class TopSelectionWindow extends Window{
 		panelButton.setWidth(panelButton.getWidth()+10);
 		
 		// nudge the cuty panel over if we are not in Kiosk mode
-		if(!SettingsPreferences.isInKioskMode()) panelButton.setXY(bugButton.getX()-5-panelButton.getWidth(), -1);
+		if(!KioskMode.isInKioskMode()) panelButton.setXY(bugButton.getX()-5-panelButton.getWidth(), -1);
 		else panelButton.setXY(Binding.getInstance().getCanvasWidth()-bugButton.getWidth(), -1);
 		
 		panelButton.addButtonPressedListener(new IButtonPressedListener() {
@@ -296,7 +296,7 @@ public class TopSelectionWindow extends Window{
 		logoLabel.setXY(-5, -5);
 		compassLabel.setXY(Binding.getInstance().getCanvasWidth() - (compassLabel.getWidth()/3)-panelButton.getWidth()-bugButton.getWidth()-15, -5);
 		// the selection label sits directly to the right of the logo label
-		if(!SettingsPreferences.isInKioskMode()) selectionLabel.setXY(logoLabel.getWidth()-11, -5);
+		if(!KioskMode.isInKioskMode()) selectionLabel.setXY(logoLabel.getWidth()-11, -5);
 		else selectionLabel.setXY(0, -5);
 
 		// the name label is to the right of the selection label (with some padding)

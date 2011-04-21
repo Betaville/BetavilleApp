@@ -49,6 +49,7 @@ import org.fenggui.layout.StaticLayout;
 
 import com.jme.system.DisplaySystem;
 
+import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -208,7 +209,7 @@ public class NavContainer extends Container {
 					//GUIGameState.getInstance().turnOnEditContainer();
 
 					// If we're in kiosk mode, the user is not allowed to put up a proposal!
-					if(SettingsPreferences.isInKioskMode()){
+					if(KioskMode.isInKioskMode()){
 						logger.info("New proposals cannot be created in kiosk mode - Showing dialog instead");
 						GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Betaville", "New proposals cannot be created in kiosk mode", "OK", true));
 						return;

@@ -34,6 +34,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
+import org.fenggui.FengGUI;
 import org.jdom.JDOMException;
 
 import com.apple.eawt.Application;
@@ -46,11 +47,13 @@ import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.LoadingGameState;
 
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
+import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.AboutWindow;
 import edu.poly.bxmc.betaville.gui.BetavilleSettingsPanel;
 import edu.poly.bxmc.betaville.gui.SwingLoginWindow;
+import edu.poly.bxmc.betaville.jme.fenggui.CreateKioskPasswordPrompt;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
@@ -250,6 +253,23 @@ public class BetavilleNoCanvas {
 				logger.error("Preferences file could not be written", e1);
 			}
 		}
+		
+		// Check for Kiosk Mode
+		addCompletionListener(new IAppInitializationCompleteListener() {
+			
+			public void applicationInitializationComplete() {
+				if(KioskMode.isInKioskMode() && KioskMode.isExitPasswordRequired() &&
+						(KioskMode.getKioskPasswordHash()==null || KioskMode.getKioskPasswordHash().length()!=40)){
+					logger.info("Application is in Kiosk Mode and requires a password, but none was set at startup");
+					CreateKioskPasswordPrompt prompt = FengGUI.createWidget(CreateKioskPasswordPrompt.class);
+					prompt.finishSetup();
+					GUIGameState.getInstance().getDisp().addWidget(prompt);
+				}
+				else{
+					logger.info("Application is in Kiosk Mode and requires a password");
+				}
+			}
+		});
 
 		// If there's a bad resolution value, or its set to always show, show
 		// the options prompt
