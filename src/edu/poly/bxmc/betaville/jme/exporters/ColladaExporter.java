@@ -528,35 +528,35 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 	}
 
 	private String arrayFromInts(IntBuffer buffer){
-		String array="";
+		StringBuilder array=new StringBuilder();
 		buffer.rewind();
 
 		while(buffer.hasRemaining()){
-			array+=(buffer.get()+" ");
+			array.append(buffer.get()+" ");
 		}
-		return array;
+		return array.toString();
 	}
 
 	private String arrayFromFloats(FloatBuffer buffer){
-		String array="";
+		StringBuilder array=new StringBuilder();
 		buffer.rewind();
 		while(buffer.hasRemaining()){
-			array+=(buffer.get()+" ");
+			array.append(buffer.get()+" ");
 		}
-		return array;
+		return array.toString();
 	}
 
 	private String arrayFromVector3f(Vector3f[] vectors){
-		String array="";
+		StringBuilder array = new StringBuilder();
 		int counter = 0;
 		for(Vector3f vector : vectors){
-			array+=(vector.x+" ");
-			array+=(vector.y+" ");
-			array+=(vector.z+" ");
+			array.append(vector.x+" ");
+			array.append(vector.y+" ");
+			array.append(vector.z+" ");
 			counter+=3;
 		}
 		System.out.println(counter + " written from " + (vectors.length*3));
-		return array;
+		return array.toString();
 	}
 
 	private Element createFloatArray(String name, int size){

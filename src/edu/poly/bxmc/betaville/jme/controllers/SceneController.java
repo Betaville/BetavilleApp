@@ -41,6 +41,7 @@ import com.jme.input.KeyInput;
 import com.jme.input.controls.GameControlManager;
 import com.jme.input.controls.binding.KeyboardBinding;
 import com.jme.math.FastMath;
+import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.scene.Controller;
 import com.jme.system.DisplaySystem;
@@ -105,9 +106,13 @@ public class SceneController extends Controller {
 	private Camera camera = DisplaySystem.getDisplaySystem().getRenderer()
 	.getCamera();
 	private float cameraDirX = 42;
+	
+	private Vector3f previousFrameCameraLocation=new Vector3f();
 
 	double h = 0;
 	double t = 1;
+	
+	private long cameraLastMoved=-1;
 
 	// private Compass compass = new Compass();
 
@@ -142,6 +147,8 @@ public class SceneController extends Controller {
 
 		// bind keyboard commands
 		bindKey(StandardAction.EXIT, KEY_ESCAPE);
+		
+		cameraLastMoved=System.currentTimeMillis();
 	}
 
 	private void adjustPerLocale() {
@@ -300,11 +307,22 @@ public class SceneController extends Controller {
 	public MouseMoveAction getMouseMove() {
 		return mouseMove;
 	}
+	
+	public long getCameraLastMoved(){
+		return cameraLastMoved;
+	}
 
 	@Override
 	public void update(float time) {
 		// firstPersonHandler.getKeyboardLookHandler().setMoveSpeed(DisplaySystem.getDisplaySystem().getRenderer().getCamera().getLocation().getY());
 		firstPersonHandler.update(time);
+		
+		if(!camera.getLocation().equals(previousFrameCameraLocation)){
+			cameraLastMoved=System.currentTimeMillis();
+			previousFrameCameraLocation = camera.getLocation().clone();
+		}
+		
+		
 		if (DisplaySystem.getDisplaySystem().isClosing()
 				|| value(StandardAction.EXIT) > 0) {
 			exitAction();

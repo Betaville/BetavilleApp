@@ -86,7 +86,7 @@ public class SettingsPreferences {
 	
 	private static URL DATA_FOLDER = null;
 	
-	public static URL getDataFolder(){
+	public synchronized static URL getDataFolder(){
 		if(DATA_FOLDER==null){
 			try {
 				DATA_FOLDER = new URL(System.getProperty("betaville.cache.location")+"/");

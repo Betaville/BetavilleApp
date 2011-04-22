@@ -34,6 +34,7 @@ public class KioskMode {
 	
 	public static final String KIOSK_PASSWORD_HASH = "betaville.kiosk.password";
 	public static final String KIOSK_PASSWORD_REQUIRED = "betaville.kiosk.requirepass";
+	public static final String KIOSK_REFRESH_RATE = "betaville.kiosk.refresh";
 	public static final String KIOSK_MODE_ENABLED = "betaville.kiosk.enabled";
 	
 	public static boolean kioskPasswordIsSetAndEnabled(){
@@ -51,6 +52,14 @@ public class KioskMode {
 
 	public static boolean isInKioskMode(){
 		return SettingsPreferences.readTrueFalseValue(KIOSK_MODE_ENABLED);
+	}
+	
+	public static int getRefreshRate(){
+		Integer rate = Integer.parseInt(System.getProperty(KIOSK_REFRESH_RATE));
+		if(rate==null){
+			return 0;
+		}
+		else return rate;
 	}
 
 }

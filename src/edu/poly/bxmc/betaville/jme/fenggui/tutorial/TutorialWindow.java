@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -32,17 +32,21 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
+import org.fenggui.Label;
+import org.fenggui.ScrollContainer;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.event.IWidgetListChangedListener;
 import org.fenggui.event.WidgetListChangedEvent;
 import org.fenggui.layout.RowExLayout;
+import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
 import org.jdom.JDOMException;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
 
+import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -62,6 +66,10 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 	private Container splash;
 
 	private Container bottomNavigation;
+	
+	private ScrollContainer introScrollContainer;
+	private Label intro;
+	
 	private FixedButton moreInfo;
 	private FixedButton backButton;
 	private FixedButton nextButton;
@@ -78,7 +86,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		//removeWidget(getTitleBar());
 		getContentContainer().setSize(width, height-titleBar.getHeight());
 		getContentContainer().setLayoutManager(new RowExLayout(false, 20));
-
+		
 		// control the appearance of the back and next buttons
 		getContentContainer().addWidgetListChangedListener(new IWidgetListChangedListener() {
 			public void widgetRemoved(Object sender,
@@ -117,7 +125,35 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		}
 
 		createSplash();
+		if(KioskMode.isInKioskMode()){
+			createKioskWelcome();
+			content.addWidget(intro);
+		}
 		content.addWidget(splash, bottomNavigation);
+	}
+	
+	private void createKioskWelcome(){
+		introScrollContainer = FengGUI.createWidget(ScrollContainer.class);
+		intro = FengGUI.createWidget(Label.class);
+		
+		intro.setMultiline(true);
+		intro.setWordWarping(true);
+		
+		intro.setText("Betaville is a massively participatory open-source platform for new ideas, discussion, and development " +
+				"for the public realm.  New works of outdoor art, buildings, open spaces, or entire districts can be uploaded " +
+				"from your favorite 3D modeling application.\n" +
+				"\n" +
+				"If you're seeing this in \"kiosk\" mode, you'll only be able to fly around, look at, and read information " +
+				"panels and proposal forums as a guest.  When you get home, go to betaville.net to register and get started " +
+				"as a full citizen of your world's next generation, or bxmc.poly.edu/betaville for in-depth information about " +
+				"the project.\n" +
+				"\n" +
+				"Every living city is in Beta. Let's play.");
+		
+		//intro.setSize(width-10, height-getTitleBar().getHeight()-bottomNavigation.getHeight()-splash.getHeight());
+		intro.setSize(width-10, 100);
+		//introScrollContainer.setHeight(70);
+		//introScrollContainer.setInnerWidget(intro);
 	}
 
 	private void createSplash(){
@@ -133,7 +169,6 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 					activateSlideDeck(slideDecks.indexOf(slideDeck));
 				}
 			});
-			logger.info("Tutorial Window splash entry created");
 			splash.addWidget(button);
 		}
 	}

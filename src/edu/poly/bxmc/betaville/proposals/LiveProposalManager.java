@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,7 @@ public class LiveProposalManager {
 		versionTurnedOffListeners = new Vector<IVersionTurnedOffListener>();
 	}
 	
-	public void turnVersionOn(Design design){
+	public synchronized void turnVersionOn(Design design){
 		//SceneGameState.getInstance().removeDesignFromDisplay(320);
 		
 		
@@ -143,6 +143,12 @@ public class LiveProposalManager {
 		}
 	}
 	
+	public synchronized void turnAllVersionsOff(){
+		for(Entry<Integer, Integer> proposal : proposals.entrySet()){
+			turnProposalOff(proposal.getValue());
+		}
+	}
+	
 	public void printProposals(){
 		if(proposals.entrySet().isEmpty()){
 			logger.debug("No Proposals Being Viewed");
@@ -153,7 +159,7 @@ public class LiveProposalManager {
 		}
 	}
 	
-	public void turnVersionOff(int versionID){
+	public synchronized void turnVersionOff(int versionID){
 		if(proposals.containsValue(versionID)){
 			Design remove = SceneScape.getCity().findDesignByID(versionID);
 			proposalController.removeDesignFromScene(remove);
@@ -166,7 +172,7 @@ public class LiveProposalManager {
 		}
 	}
 
-	public void turnProposalOff(int proposalID){
+	public synchronized void turnProposalOff(int proposalID){
 		if(proposals.containsKey(proposalID)){
 			Design remove = SceneScape.getCity().findDesignByID(proposals.get(proposalID));
 			proposalController.removeDesignFromScene(remove);
@@ -217,6 +223,10 @@ public class LiveProposalManager {
 	
 	public void removeVersionTurnedOffListener(IVersionTurnedOffListener listener){
 		versionTurnedOffListeners.remove(listener);
+	}
+	
+	public HashMap<Integer, Integer> getProposals(){
+		return proposals;
 	}
 	
 	public static LiveProposalManager getInstance(){

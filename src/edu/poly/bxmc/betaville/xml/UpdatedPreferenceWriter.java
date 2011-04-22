@@ -67,8 +67,9 @@ public class UpdatedPreferenceWriter {
 		if(System.getProperty("betaville.ui.pyramids.oncolor")==null) System.setProperty("betaville.ui.pyramids.oncolor", "RGB 0 255 0");
 		if(System.getProperty("betaville.net.usessl")==null) System.setProperty("betaville.net.usessl", "false");
 		if(System.getProperty("betaville.kiosk.enabled")==null) System.setProperty("betaville.kiosk.enabled", "false");
-		if(System.getProperty("betaville.kiosk.password")==null) System.setProperty("betaville.kiosk.password", ""); // There should be an md5 or sha1 hash here if the user wants to set a password
-		if(System.getProperty("betaville.kiosk.requirepass")==null) System.setProperty("betaville.kiosk.requirepass", "false"); // There should be an md5 or sha1 hash here if the user wants to set a password
+		if(System.getProperty("betaville.kiosk.password")==null) System.setProperty("betaville.kiosk.password", ""); // Uses an SHA1 hash
+		if(System.getProperty("betaville.kiosk.requirepass")==null) System.setProperty("betaville.kiosk.requirepass", "false");
+		if(System.getProperty("betaville.kiosk.refresh")==null) System.setProperty("betaville.kiosk.refresh", "0");
 		
 		PreferenceWriter pr = new PreferenceWriter();
 		pr.writeData();

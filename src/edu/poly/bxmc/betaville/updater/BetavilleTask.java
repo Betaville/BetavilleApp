@@ -47,6 +47,7 @@ public class BetavilleTask extends TimerTask {
 	@Override
 	public void run() {
 		if(updater.isUpdateRequired()){
+			updater.setLastUpdate(System.currentTimeMillis());
 			updater.doUpdate();
 		}
 	}

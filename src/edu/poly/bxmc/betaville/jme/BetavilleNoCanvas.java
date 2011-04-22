@@ -72,6 +72,7 @@ import edu.poly.bxmc.betaville.terrain.TerrainLoader;
 import edu.poly.bxmc.betaville.updater.BaseUpdater;
 import edu.poly.bxmc.betaville.updater.BetavilleTask;
 import edu.poly.bxmc.betaville.updater.BetavilleUpdater;
+import edu.poly.bxmc.betaville.updater.KioskUpdater;
 import edu.poly.bxmc.betaville.util.OS;
 import edu.poly.bxmc.betaville.xml.BXBReader;
 import edu.poly.bxmc.betaville.xml.PreferenceReader;
@@ -258,7 +259,11 @@ public class BetavilleNoCanvas {
 		addCompletionListener(new IAppInitializationCompleteListener() {
 			
 			public void applicationInitializationComplete() {
-				if(KioskMode.isInKioskMode() && KioskMode.isExitPasswordRequired() &&
+				
+				if(!KioskMode.isInKioskMode()) return;
+				
+				// setup kiosk password
+				if(KioskMode.isExitPasswordRequired() &&
 						(KioskMode.getKioskPasswordHash()==null || KioskMode.getKioskPasswordHash().length()!=40)){
 					logger.info("Application is in Kiosk Mode and requires a password, but none was set at startup");
 					CreateKioskPasswordPrompt prompt = FengGUI.createWidget(CreateKioskPasswordPrompt.class);
@@ -268,6 +273,13 @@ public class BetavilleNoCanvas {
 				else{
 					logger.info("Application is in Kiosk Mode and requires a password");
 				}
+				
+				
+				// setup kiosk refresher
+				if(KioskMode.getRefreshRate()>0){
+					betavilleUpdater.addTask(new BetavilleTask(new KioskUpdater(1000, KioskMode.getRefreshRate())));
+				}
+				
 			}
 		});
 
