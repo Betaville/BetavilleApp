@@ -40,7 +40,7 @@ import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.event.IWidgetListChangedListener;
 import org.fenggui.event.WidgetListChangedEvent;
 import org.fenggui.layout.RowExLayout;
-import org.fenggui.layout.RowLayout;
+import org.fenggui.layout.RowExLayoutData;
 import org.fenggui.layout.StaticLayout;
 import org.jdom.JDOMException;
 
@@ -86,6 +86,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		//removeWidget(getTitleBar());
 		getContentContainer().setSize(width, height-titleBar.getHeight());
 		getContentContainer().setLayoutManager(new RowExLayout(false, 20));
+		//getContentContainer().setLayoutManager(new StaticLayout());
 		
 		// control the appearance of the back and next buttons
 		getContentContainer().addWidgetListChangedListener(new IWidgetListChangedListener() {
@@ -125,14 +126,21 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		}
 
 		createSplash();
+		//bottomNavigation.setXY(5,5);
+		//splash.setXY(5, bottomNavigation.getHeight()+bottomNavigation.getY()+20);
 		if(KioskMode.isInKioskMode()){
 			createKioskWelcome();
-			content.addWidget(intro);
+			//introScrollContainer.setXY(5, splash.getY()+splash.getHeight()+20);
+			content.addWidget(introScrollContainer);
 		}
+		
+		
+		
 		content.addWidget(splash, bottomNavigation);
 	}
 	
 	private void createKioskWelcome(){
+		logger.info("Splash size: " + splash.getSize());
 		introScrollContainer = FengGUI.createWidget(ScrollContainer.class);
 		intro = FengGUI.createWidget(Label.class);
 		
@@ -150,10 +158,11 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 				"\n" +
 				"Every living city is in Beta. Let's play.");
 		
-		//intro.setSize(width-10, height-getTitleBar().getHeight()-bottomNavigation.getHeight()-splash.getHeight());
-		intro.setSize(width-10, 100);
+		//introScrollContainer.setSize(width-10, height-getTitleBar().getHeight()-bottomNavigation.getHeight()-splash.getHeight());
+		//intro.setSize(width-10, 100);
 		//introScrollContainer.setHeight(70);
-		//introScrollContainer.setInnerWidget(intro);
+		introScrollContainer.setLayoutData(new RowExLayoutData(true, true));
+		introScrollContainer.addWidget(intro);
 	}
 
 	private void createSplash(){
