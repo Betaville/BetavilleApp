@@ -28,11 +28,8 @@ package edu.poly.bxmc.betaville.updater;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
-import org.fenggui.FengGUI;
-import org.fenggui.layout.StaticLayout;
 
 import edu.poly.bxmc.betaville.jme.fenggui.panel.OnOffPanelAction;
-import edu.poly.bxmc.betaville.jme.fenggui.tutorial.TutorialWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 
