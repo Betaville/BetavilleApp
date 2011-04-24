@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,16 @@
  */
 package edu.poly.bxmc.betaville.updater;
 
-import java.util.ConcurrentModificationException;
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 import org.fenggui.FengGUI;
 import org.fenggui.layout.StaticLayout;
 
-import com.jme.util.GameTaskQueueManager;
-
+import edu.poly.bxmc.betaville.jme.fenggui.panel.OnOffPanelAction;
 import edu.poly.bxmc.betaville.jme.fenggui.tutorial.TutorialWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.proposals.LiveProposalManager;
 
 /**
  * @author Skye Book
@@ -124,14 +117,9 @@ public class KioskUpdater extends AbstractUpdater {
 
 			SceneGameState.getInstance().cameraPerspectiveProjection();
 
-
-			// replace welcome dialog (perhaps we should try to access the original one from CityPanel)
-			/*
-			TutorialWindow tw = FengGUI.createWidget(TutorialWindow.class);
-			tw.finishSetup();
-			StaticLayout.center(tw, GUIGameState.getInstance().getDisp());
-			GUIGameState.getInstance().getDisp().addWidget(tw);
-			 */
+			// replace the TutorialWindow
+			GUIGameState.getInstance().getDisp().addWidget(((OnOffPanelAction)GUIGameState.getInstance().getTopSelectionWindow().getCityPanel().getAction("Tutorials")).getWindow());
+			
 
 
 			//LiveProposalManager.getInstance().turnAllVersionsOff();

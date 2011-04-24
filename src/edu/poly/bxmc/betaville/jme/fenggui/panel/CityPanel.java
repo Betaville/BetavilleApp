@@ -312,6 +312,20 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		}
 	}
 	
+	/**
+	 * Retrieves a panel action
+	 * @param name The name of the panel action to retrieve
+	 * @return The requested {@link PanelAction} or null if it could
+	 * not be found.
+	 */
+	public PanelAction getAction(String name){
+		for(PanelAction action : panelActions){
+			if(action.getName().equals(name)) return action;
+		}
+		
+		return null;
+	}
+	
 	public void finishSetup(){
 		setTitle("City Panel");
 		setSize(targetWidth, targetHeight);

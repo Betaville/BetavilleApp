@@ -112,6 +112,10 @@ public class OnOffPanelAction extends PanelAction implements ICityPanelClosedLis
 		}
 	}
 	
+	public Window getWindow(){
+		return associatedWindow;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.panel.CityPanel.ICityPanelClosedListener#cityPanelClosed()
