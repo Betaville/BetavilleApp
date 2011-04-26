@@ -54,7 +54,7 @@ import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.StringVerifier;
 import edu.poly.bxmc.betaville.net.IAuthenticationListener;
 import edu.poly.bxmc.betaville.net.NetPool;
-import edu.poly.bxmc.betaville.net.SecureClientManager;
+import edu.poly.bxmc.betaville.net.ProtectedManager;
 
 /**
  * A slim version of {@link SwingLoginWindow} that doesn't start a session
@@ -68,7 +68,7 @@ public class LoginWindow extends JFrame {
 	private static Logger logger = Logger.getLogger(LoginWindow.class);
 	private boolean loggedIn = false;
 	private IAuthenticationListener authListener;
-	private SecureClientManager manager;
+	private ProtectedManager manager;
 	private JTextField userField;
 	private JPasswordField passField;
 	private JTextField serverField;

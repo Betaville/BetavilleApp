@@ -30,6 +30,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
@@ -51,6 +52,7 @@ import edu.poly.bxmc.betaville.model.VideoDesign;
  * @author Skye Book
  */
 public class DataExporter{
+	private static final Logger logger = Logger.getLogger(DataExporter.class);
 	
 	public static Element export(Bookmark b){
 		Element bookmark = new Element("bookmark");
@@ -96,16 +98,16 @@ public class DataExporter{
 	
 	public static Element export(Design design){
 		Element d = new Element(design.getClass().getName());
-		d.setAttribute("name", d.getName());
+		d.setAttribute("name", design.getName());
 		d.setAttribute("classification", design.getClassification().toString());
 		d.setAttribute("id", Integer.toString(design.getID()));
 		d.setAttribute("sourceID", Integer.toString(design.getSourceID()));
-		d.setAttribute("address", design.getAddress());
+		if(design.getAddress()!=null) d.setAttribute("address", design.getAddress());
 		d.setAttribute("cityID", Integer.toString(design.getCityID()));
 		d.setAttribute("user", design.getUser());
-		d.setAttribute("description", design.getDescription());
+		if(design.getDescription()!=null) d.setAttribute("description", design.getDescription());
 		d.setAttribute("filepath", design.getFilepath());
-		d.setAttribute("url", design.getURL());
+		if(design.getURL()!=null) d.setAttribute("url", design.getURL());
 		d.setAttribute("dateAdded", design.getDateAdded());
 		d.setAttribute("isPublic", Boolean.toString(design.isPublic()));
 		
@@ -123,7 +125,7 @@ public class DataExporter{
 		}
 		d.setAttribute("favedBy", favedBy.toString());
 		
-		d.setAttribute("proposalPermission", design.getProposalPermission().toString());
+		if(design.getProposalPermission()!=null) d.setAttribute("proposalPermission", design.getProposalPermission().toString());
 		
 		if(design instanceof ModeledDesign){
 			d.setAttribute("rotX", Integer.toString(((ModeledDesign)design).getRotationX()));
