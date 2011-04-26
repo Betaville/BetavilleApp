@@ -61,16 +61,10 @@ public class CityManager {
 		SettingsPreferences.getThreadPool().execute(new Runnable() {
 
 			public void run() {
-				constructCity(newCity);
-				newCityIsLoaded.set(true);
-			}
-		});
-
-		SettingsPreferences.getThreadPool().execute(new Runnable() {
-
-			public void run() {
 				deconstructCurrentCity(oldCity);
 				oldCityIsUnloaded.set(true);
+				constructCity(newCity);
+				newCityIsLoaded.set(true);
 			}
 		});
 
@@ -89,12 +83,7 @@ public class CityManager {
 	}
 
 	public static void deconstructCurrentCity(int cityID){
-		for(Design d : SceneScape.getCity().getDesigns()){
-			if(d.getCityID()==cityID){
-				SceneGameState.getInstance().removeDesignFromDisplay(d.getID());
-			}
-		}
-
+		SceneGameState.getInstance().getDesignNode().detachAllChildren();
 		SceneGameState.getInstance().getTerrainNode().detachAllChildren();
 	}
 
