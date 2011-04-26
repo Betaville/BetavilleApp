@@ -122,7 +122,7 @@ public class ShadowPassState extends GameState {
         mapPass.add(SceneGameState.getInstance().getTerrainNode());
         //mapPass.add(SceneGameState.getInstance().getDesignNode());
         mapPass.setEnabled(SettingsPreferences.isShadowsOn());
-        mapPass.setShadowMapScale(0.2f);
+        mapPass.setShadowMapScale(0.005f);
         passManager.add(mapPass);
         
         
