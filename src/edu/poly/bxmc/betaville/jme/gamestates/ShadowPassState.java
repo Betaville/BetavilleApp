@@ -120,7 +120,7 @@ public class ShadowPassState extends GameState {
         //mapPass.setShadowCameraFarPlane(mapPass.getViewDistance()*6f);
         mapPass.setShadowCameraNearPlane(SceneGameState.NEAR_FRUSTUM);
         mapPass.add(SceneGameState.getInstance().getTerrainNode());
-        //mapPass.add(SceneGameState.getInstance().getDesignNode());
+        mapPass.add(SceneGameState.getInstance().getDesignNode());
         mapPass.setEnabled(SettingsPreferences.isShadowsOn());
         mapPass.setShadowMapScale(0.005f);
         passManager.add(mapPass);
