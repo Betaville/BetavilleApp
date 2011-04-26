@@ -45,6 +45,7 @@ import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
 import com.jme.image.Texture.WrapMode;
 import com.jme.light.DirectionalLight;
+import com.jme.math.Triangle;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
@@ -1182,7 +1183,6 @@ public class SceneGameState extends BasicGameState {
 				
 				boolean isInScene=false;
 				
-				// remove buildings
 				if(designNode.getQuantity()==0) continue;
 				for(Spatial design : designNode.getChildren()){
 					if(design.getName().equals(d.getFullIdentifier())){
@@ -1191,6 +1191,7 @@ public class SceneGameState extends BasicGameState {
 					}
 				}
 				
+				/*
 				// add the object here
 				try {
 					if(!isInScene) addDesignToDisplay(d.getID());
@@ -1201,8 +1202,8 @@ public class SceneGameState extends BasicGameState {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				*/
 			}
-			logger.info("At good framerate: " + (1f/tpf));
 		}
 		else{
 			// REMOVE
@@ -1222,8 +1223,16 @@ public class SceneGameState extends BasicGameState {
 				}
 			}
 			
-			designNode.detachChild(farthestObject);
+			// get 22.5 degrees and -22.5 degrees from the camera's location
+			Triangle triangle = new Triangle(cameraLoc, cameraLoc.add(new Vector3f(0.75f, 0, 0.25f).mult(camera.getFrustumFar())), cameraLoc.add(new Vector3f(0.75f, 0, -0.25f).mult(camera.getFrustumFar())));
+			// is it in the triangle
 			
+			
+			Vector3f locationOfObject = farthestObject.getLocalTranslation();
+			
+			logger.info("Angle Between camera and object: " + (180f-Math.toDegrees(cameraLoc.normalize().angleBetween(locationOfObject.normalize()))));
+			
+			designNode.detachChild(farthestObject);
 		}
 	}
 	
