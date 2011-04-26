@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.gamestates;
 
 import java.util.concurrent.Callable;
@@ -42,9 +42,9 @@ import com.jmex.game.state.GameState;
 import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.LoadingGameState;
 
-import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.SettingsPreferences;
-import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
+import edu.poly.bxmc.betaville.jme.loaders.util.GPUQuery;
+import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.jme.pass.ConfigurableDirectionalShadowMapPass;
 
 /**
@@ -54,7 +54,7 @@ import edu.poly.bxmc.betaville.jme.pass.ConfigurableDirectionalShadowMapPass;
  */
 public class ShadowPassState extends GameState {
 	private static final Logger logger = Logger.getLogger(ShadowPassState.class);
-	
+
 	private Renderer renderer = DisplaySystem.getDisplaySystem().getRenderer();
 	private BasicPassManager passManager = null;
 
@@ -62,10 +62,12 @@ public class ShadowPassState extends GameState {
 	private ConfigurableDirectionalShadowMapPass mapPass = null;
 	private RenderPass groundSelectPass = null;
 	private RenderPass flagPass = null;
-	
+
 	private SceneGameState sceneGameState;
-	
+
 	private boolean shadowMapCameraInitialized=false;
+	
+	private float height;
 
 	public ShadowPassState(String name) {
 		setName(name);
@@ -78,6 +80,7 @@ public class ShadowPassState extends GameState {
 			public ShadowedRenderPass call() throws Exception {
 				shadowPass = new ShadowedRenderPass();
 				mapPass = new ConfigurableDirectionalShadowMapPass(new Vector3f(.25f, -.85f, .75f), 4096);
+				logger.info("MAX Texture Size: "+GPUQuery.getMaxTextureSize());
 				//mapPass = new DirectionalShadowMapPass(new Vector3f(-1, -2, -1));
 				return shadowPass;
 			}
@@ -91,7 +94,7 @@ public class ShadowPassState extends GameState {
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		
+
 		/*
 		shadowPass.addOccluder(SceneGameState.getInstance().getDesignNode());
 		shadowPass.add(SceneGameState.getInstance().getTerrainNode());
@@ -101,44 +104,44 @@ public class ShadowPassState extends GameState {
 		//passManager.add(shadowPass);
 		//shadowPass.setRenderShadows(SettingsPreferences.isShadowsOn());
 		shadowPass.setRenderShadows(false);
-		*/
-		
-		
+		 */
+
+
 		RenderPass scenePass = new RenderPass();
-        scenePass.add(SceneGameState.getInstance().getTerrainNode());
-        scenePass.add(SceneGameState.getInstance().getDesignNode());
-        passManager.add(scenePass);
-		
+		scenePass.add(SceneGameState.getInstance().getTerrainNode());
+		scenePass.add(SceneGameState.getInstance().getDesignNode());
+		passManager.add(scenePass);
+
 		//mapPass = new DirectionalShadowMapPass(new Vector3f(-1, -2, -1));
-        //mapPass.setViewDistance(Scale.fromMeter(500));
-        //mapPass.setViewDistance(Scale.fromMeter(50000));
-        
-        
-        
-        mapPass.setViewDistance(10);
-        mapPass.addOccluder(SceneGameState.getInstance().getDesignNode());
-        //mapPass.setShadowCameraFarPlane(mapPass.getViewDistance()*6f);
-        mapPass.setShadowCameraNearPlane(SceneGameState.NEAR_FRUSTUM);
-        mapPass.add(SceneGameState.getInstance().getTerrainNode());
-        mapPass.add(SceneGameState.getInstance().getDesignNode());
-        mapPass.setEnabled(SettingsPreferences.isShadowsOn());
-        mapPass.setShadowMapScale(0.005f);
-        passManager.add(mapPass);
-        
-        
-        
+		//mapPass.setViewDistance(Scale.fromMeter(500));
+		//mapPass.setViewDistance(Scale.fromMeter(50000));
+
+
+
+		mapPass.setViewDistance(10);
+		mapPass.addOccluder(SceneGameState.getInstance().getDesignNode());
+		//mapPass.setShadowCameraFarPlane(mapPass.getViewDistance()*6f);
+		mapPass.setShadowCameraNearPlane(SceneGameState.NEAR_FRUSTUM);
+		mapPass.add(SceneGameState.getInstance().getTerrainNode());
+		mapPass.add(SceneGameState.getInstance().getDesignNode());
+		mapPass.setEnabled(SettingsPreferences.isShadowsOn());
+		mapPass.setShadowMapScale(0.005f);
+		passManager.add(mapPass);
+
+
+
 		// The ground select render pass renders the little red square
 		// that appears when you click on a ground location
 		groundSelectPass = new RenderPass();
 		groundSelectPass.add(SceneGameState.getInstance().getGroundBoxNode());
 		passManager.add(groundSelectPass);
-		
+
 		// The flag pass renders the upside-down pyramid flags that indicateproposals
 		flagPass = new RenderPass();
 		flagPass.add(SceneGameState.getInstance().getFlagNode());
 		flagPass.add(SceneGameState.getInstance().getSearchNode());
 		passManager.add(flagPass);
-		
+
 		sceneGameState = SceneGameState.getInstance();
 	}
 
@@ -153,6 +156,24 @@ public class ShadowPassState extends GameState {
 	 */
 	@Override
 	public void render(float tpf) {
+		updateMapTarget();
+		
+		height = Scale.toMeter(sceneGameState.getCamera().getLocation().y);
+		
+		if(height<2000){
+			//logger.info("below 1k");
+			mapPass.setShadowMapScale(0.005f);
+		}
+		else if(height<5000){
+			//logger.info("below 5k");
+			mapPass.setShadowMapScale(0.010f);
+		}
+		else if(height<10000){
+			logger.info("below 10k");
+			mapPass.setShadowMapScale(0.035f);
+		}
+		
+		
 		passManager.renderPasses(renderer);
 	}
 
@@ -163,7 +184,7 @@ public class ShadowPassState extends GameState {
 	public void update(float tpf) {
 		passManager.updatePasses(tpf);
 	}
-	
+
 	public void updateMapTarget(){
 		mapPass.setViewTarget(sceneGameState.getCamera().getLocation());
 	}
@@ -171,15 +192,15 @@ public class ShadowPassState extends GameState {
 	public ShadowedRenderPass getShadowPass() {
 		return shadowPass;
 	}
-	
+
 	public void toggleMapPass(){
 		mapPass.setEnabled(!mapPass.isEnabled());
 	}
-	
+
 	public ConfigurableDirectionalShadowMapPass getMapPass(){
 		return mapPass;
 	}
-	
+
 	public static ShadowPassState getInstance(){
 		return (ShadowPassState)GameStateManager.getInstance().getChild("shadowPassState");
 	}
