@@ -38,9 +38,9 @@ import org.apache.log4j.Logger;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.Design;
-import edu.poly.bxmc.betaville.net.ClientManager;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
+import edu.poly.bxmc.betaville.net.UnprotectedManager;
 
 /**
  * Manages Betaville's cache directory.
@@ -159,7 +159,7 @@ public class CacheManager {
 		return name.substring(0, name.lastIndexOf("."));
 	}
 	
-	private boolean doRequestFile(int designID, String filename, ClientManager manager, boolean keepAlive){
+	private boolean doRequestFile(int designID, String filename, UnprotectedManager manager, boolean keepAlive){
 		if(!findFile(filename)){
 			PhysicalFileTransporter pft = manager.requestFile(designID);
 			if(!keepAlive){
@@ -190,7 +190,7 @@ public class CacheManager {
 	 * @param manager
 	 * @return
 	 */
-	public boolean requestFile(int designID, String filename, ClientManager manager){
+	public boolean requestFile(int designID, String filename, UnprotectedManager manager){
 		if(findFile(filename)) return true;
 		else return doRequestFile(designID, filename, manager, true);
 	}

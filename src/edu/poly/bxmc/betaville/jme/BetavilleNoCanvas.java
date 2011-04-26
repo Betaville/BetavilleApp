@@ -419,6 +419,10 @@ public class BetavilleNoCanvas {
 				public void run() {
 					long startTime = System.currentTimeMillis();
 					NetModelLoader.loadCurrentCity(LookupRoutine.ALL_IN_CITY);
+					
+					// enable framerate optimization
+					//sceneGameState.setFramerateOptimizationEnabled(true);
+					
 					betavilleUpdater.addTask(new BetavilleTask(new BaseUpdater(
 							30000)));
 					logger.info("Done loading models, took: "

@@ -63,7 +63,7 @@ import edu.poly.bxmc.betaville.model.StringVerifier;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.net.IAuthenticationListener;
 import edu.poly.bxmc.betaville.net.NetPool;
-import edu.poly.bxmc.betaville.net.SecureClientManager;
+import edu.poly.bxmc.betaville.net.ProtectedManager;
 import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
 
 /**
@@ -75,7 +75,7 @@ public class SwingLoginWindow extends JFrame{
 	private static Logger logger = Logger.getLogger(SwingLoginWindow.class);
 	private boolean loggedIn = false;
 	private IAuthenticationListener authListener;
-	private SecureClientManager manager;
+	private ProtectedManager manager;
 	private JTextField userField;
 	private JPasswordField passField;
 	private JCheckBox checkBox;

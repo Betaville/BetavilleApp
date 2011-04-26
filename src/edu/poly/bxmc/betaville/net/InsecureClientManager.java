@@ -59,8 +59,12 @@ public class InsecureClientManager extends ClientManager{
 	 * Constructor - Creation of the client manager
 	 */
 	public InsecureClientManager(List<Module> modules){
+		this(modules, SettingsPreferences.getServerIP());
+	}
+	
+	public InsecureClientManager(List<Module> modules, String serverIP){
 		try {
-			clientSocket = new Socket(SettingsPreferences.getServerIP(), PORT_SERVER);
+			clientSocket = new Socket(serverIP, PORT_SERVER);
 			logger.info("Client application : "+ clientSocket.toString());
 			output = new ObjectOutputStream(clientSocket.getOutputStream());
 			input = new ObjectInputStream(clientSocket.getInputStream());

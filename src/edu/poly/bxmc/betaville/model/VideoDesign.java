@@ -117,6 +117,10 @@ public class VideoDesign extends Design {
 	public void setFormat(Format format){
 		this.format=format;
 	}
+	
+	public void setLength(int length){
+		this.length=length;
+	}
 
 	@Override
 	public int hashCode() {

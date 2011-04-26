@@ -99,6 +99,7 @@ import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
 import edu.poly.bxmc.betaville.model.SketchedDesign;
 import edu.poly.bxmc.betaville.model.VideoDesign;
+import edu.poly.bxmc.betaville.model.Design.Classification;
 import edu.poly.bxmc.betaville.module.FrameSyncModule;
 import edu.poly.bxmc.betaville.module.GlobalSceneModule;
 import edu.poly.bxmc.betaville.module.LocalSceneModule;
@@ -198,6 +199,8 @@ public class SceneGameState extends BasicGameState {
 	private float lastAltitude = 100;
 	private int lastAltitudeSpeedLevel = MOVE_MODE_ALTITUDE_BIRD_MAX;
 	private boolean constantSpeed = false;
+	
+	private boolean framerateOptimizationEnabled = false;
 
 	/*
 	 * (non-Javadoc)
@@ -580,6 +583,8 @@ public class SceneGameState extends BasicGameState {
 		fogState.setDensity(.012f);
 		fogState.setEnabled(true);
 		fogState.setColor(new ColorRGBA(.6f,.75f,1,1f));
+		//fogState.setStart(Scale.fromMeter(30000/4));
+		//fogState.setEnd(Scale.fromMeter(30000/2));
 		fogState.setStart(Scale.fromMeter(30000/4));
 		fogState.setEnd(Scale.fromMeter(30000/2));
 		fogState.setDensityFunction(FogState.DensityFunction.Exponential);
@@ -904,6 +909,9 @@ public class SceneGameState extends BasicGameState {
 	}
 	public void update(float tpf) {
 		super.update(tpf);
+		
+		if(framerateOptimizationEnabled) optimizeFramerate(tpf);
+		
 		//logger.info(SceneGameState.getInstance().getDesignNode().getChild("$1357"));
 
 		//dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)d).getRotationX(), ((ModeledDesign)d).getRotationY(), ((ModeledDesign)d).getRotationZ()));
@@ -1162,6 +1170,65 @@ public class SceneGameState extends BasicGameState {
 			s.setRenderState(singledSearchColor);
 			s.updateRenderState();
 		}
+	}
+	
+	private void optimizeFramerate(float tpf){
+		float target = 20f; // fps
+		
+		if(1f/tpf > target){
+			// ADD
+			for(Design d : SceneScape.getCity().getDesigns()){
+				if(!d.equals(Classification.BASE)) continue;
+				
+				boolean isInScene=false;
+				
+				// remove buildings
+				if(designNode.getQuantity()==0) continue;
+				for(Spatial design : designNode.getChildren()){
+					if(design.getName().equals(d.getFullIdentifier())){
+						isInScene=true;
+						break;
+					}
+				}
+				
+				// add the object here
+				try {
+					if(!isInScene) addDesignToDisplay(d.getID());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			logger.info("At good framerate: " + (1f/tpf));
+		}
+		else{
+			// REMOVE
+			if(designNode.getQuantity()==0) return;
+			
+			Vector3f cameraLoc = camera.getLocation();
+			Spatial farthestObject=null;
+			float distance=0;
+			float tempDistance;
+			
+			// remove buildings
+			for(Spatial design : designNode.getChildren()){
+				tempDistance = cameraLoc.distance(design.getLocalTranslation());
+				if(tempDistance>distance){
+					farthestObject = design;
+					distance=tempDistance;
+				}
+			}
+			
+			designNode.detachChild(farthestObject);
+			
+		}
+	}
+	
+	public void setFramerateOptimizationEnabled(boolean enabled){
+		framerateOptimizationEnabled=enabled;
 	}
 
 	/**

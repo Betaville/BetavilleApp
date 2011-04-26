@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.flags;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -45,8 +46,8 @@ public class FlagProducer {
 	private AbstractFlagPositionStrategy flagPositionStrategy;
 	
 	// all of the proposals found in an area
-	private ArrayList<Design>proposalDesigns = null;
-	private ArrayList<Design>proposalDesignsBremen = null;
+	private List<Design>proposalDesigns = null;
+	private List<Design>proposalDesignsBremen = null;
 	
 	
 	ArrayList<Integer> bases = new ArrayList<Integer>();

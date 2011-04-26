@@ -50,7 +50,7 @@ import edu.poly.bxmc.betaville.module.Module;
  * @author Skye Book
  *
  */
-public class SecureClientManager extends ClientManager{
+public class SecureClientManager extends ClientManager implements ProtectedManager{
 	private static Logger logger = Logger.getLogger(SecureClientManager.class);
 
 	/**
@@ -64,11 +64,18 @@ public class SecureClientManager extends ClientManager{
 	 * Constructor - Creation of the client manager
 	 */
 	public SecureClientManager(List<Module> modules, boolean createSocketHere){
+		this(modules, createSocketHere, SettingsPreferences.getServerIP());
+	}
+	
+	/**
+	 * Constructor - Creation of the client manager
+	 */
+	public SecureClientManager(List<Module> modules, boolean createSocketHere, String serverIP){
 		
 		if(!createSocketHere) return;
 		
 		try {
-			clientSocket = new Socket(SettingsPreferences.getServerIP(), PORT_SERVER);
+			clientSocket = new Socket(serverIP, PORT_SERVER);
 			logger.info("Client application : "+ clientSocket.toString());
 			output = new ObjectOutputStream(clientSocket.getOutputStream());
 			input = new ObjectInputStream(clientSocket.getInputStream());
@@ -80,6 +87,9 @@ public class SecureClientManager extends ClientManager{
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#authenticateUser(java.lang.String, java.lang.String)
+	 */
 	public boolean authenticateUser(String name, String pass){
 		busy.getAndSet(true);
 		try {
@@ -96,6 +106,9 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#startSession(java.lang.String, java.lang.String)
+	 */
 	public boolean startSession(String name, String pass){
 		busy.getAndSet(true);
 		try {
@@ -127,6 +140,9 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#endSession(java.lang.String)
+	 */
 	public boolean endSession(String sessionToken){
 		busy.getAndSet(true);
 		try {
@@ -148,14 +164,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Adds a user to the server.
-	 * @param name The username of the new user.
-	 * @param pass The password for the new user.
-	 * @param email The email address as provided by the new user.
-	 * @param twitter The twitter account/name as provided by the new user.
-	 * @param bio The biography as provided by the new user.
-	 * @return Whether or not the operation succeeded.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean addUser(String name, String pass, String email, String twitter, String bio){
 		busy.getAndSet(true);
@@ -177,12 +187,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Changes the password for a user.
-	 * @param name The user proposing the change.
-	 * @param pass The password supplied by the user.
-	 * @param newPass The new password to be used.
-	 * @return Whether or not the operation succeeded.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changePassword(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean changePassword(String name, String pass, String newPass){
 		busy.getAndSet(true);
@@ -200,13 +206,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Changes the biographical information of a user.
-	 * @param name The user proposing the change (hopefully only
-	 * the biography's owner!)
-	 * @param pass The password supplied by the user.
-	 * @param newBio The new biographic information to be used.
-	 * @return Whether or not the operation succeeded.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeBio(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean changeBio(String name, String pass, String newBio){
 		busy.getAndSet(true);
@@ -224,18 +225,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Adds a design to the server.
-	 * @param design The <code>Design</code> object describing the new entity.
-	 * @param user The user proposing this new <code>Design</code>.
-	 * @param pass The password supplied by the user.
-	 * @param sourceID The ID of the design that this <code>Design</code>
-	 * is improving on.  Using the value 0 here signifies that this is not an
-	 * iteration on a previously existing <code>Design</code>.
-	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
-	 * @return The ID of the new <code>Design</code>.
-	 * @see Design
-	 * @see PhysicalFileTransporter
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addDesign(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
 	public int addDesign(Design design, String user, String pass, PhysicalFileTransporter pft){
 		busy.getAndSet(true);
@@ -256,18 +247,8 @@ public class SecureClientManager extends ClientManager{
 		return -3;
 	}
 
-	/**
-	 * Adds an EmptyDesign to the server.
-	 * @param design The <code>Design</code> object describing the new entity.
-	 * @param user The user proposing this new <code>Design</code>.
-	 * @param pass The password supplied by the user.
-	 * @param sourceID The ID of the design that this <code>Design</code>
-	 * is improving on.  Using the value 0 here signifies that this is not an
-	 * iteration on a previously existing <code>Design</code>.
-	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
-	 * @return The ID of the new <code>Design</code>.
-	 * @see Design
-	 * @see PhysicalFileTransporter
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addEmptyDesign(edu.poly.bxmc.betaville.model.EmptyDesign, java.lang.String, java.lang.String)
 	 */
 	public int addEmptyDesign(EmptyDesign design, String user, String pass){
 		busy.getAndSet(true);
@@ -287,18 +268,8 @@ public class SecureClientManager extends ClientManager{
 		return -3;
 	}
 
-	/**
-	 * Adds a design to the server.
-	 * @param design The <code>Design</code> object describing the new entity.
-	 * @param user The user proposing this new <code>Design</code>.
-	 * @param pass The password supplied by the user.
-	 * @param sourceID The ID of the design that this <code>Design</code>
-	 * is improving on.  Using the value 0 here signifies that this is not an
-	 * iteration on a previously existing <code>Design</code>.
-	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
-	 * @return The ID of the new <code>Design</code>.
-	 * @see Design
-	 * @see PhysicalFileTransporter
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addProposal(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.model.ProposalPermission)
 	 */
 	public int addProposal(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, ProposalPermission permission){
 		busy.getAndSet(true);
@@ -318,18 +289,8 @@ public class SecureClientManager extends ClientManager{
 		return -3;
 	}
 
-	/**
-	 * Adds a version of the proposal to the server.
-	 * @param design The <code>Design</code> object describing the new entity.
-	 * @param user The user proposing this new <code>Design</code>.
-	 * @param pass The password supplied by the user.
-	 * @param sourceID The ID of the design that this <code>Design</code>
-	 * is improving on.  Using the value 0 here signifies that this is not an
-	 * iteration on a previously existing <code>Design</code>.
-	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
-	 * @return The ID of the new <code>Design</code>.
-	 * @see Design
-	 * @see PhysicalFileTransporter
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addVersion(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
 	public int addVersion(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter){
 		busy.getAndSet(true);
@@ -350,18 +311,8 @@ public class SecureClientManager extends ClientManager{
 		return -3;
 	}
 
-	/**
-	 * Adds a design to the server.
-	 * @param design The <code>Design</code> object describing the new entity.
-	 * @param user The user proposing this new <code>Design</code>.
-	 * @param pass The password supplied by the user.
-	 * @param sourceID The ID of the design that this <code>Design</code>
-	 * is improving on.  Using the value 0 here signifies that this is not an
-	 * iteration on a previously existing <code>Design</code>.
-	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
-	 * @return The ID of the new <code>Design</code>.
-	 * @see Design
-	 * @see PhysicalFileTransporter
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addBase(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
 	public int addBase(Design design, String user, String pass, PhysicalFileTransporter pft){
 		busy.getAndSet(true);
@@ -381,13 +332,8 @@ public class SecureClientManager extends ClientManager{
 		return -3;
 	}
 
-	/**
-	 * Removes a <code>Design</code> from the database.  Must be performed by the user who
-	 * originally added the design.  
-	 * @param designID The ID of the <code>Design</code> to remove.
-	 * @param user The user proposing the removal.
-	 * @param pass The password supplied by the user.
-	 * @return 0 for success, -2 for networking error, -3 for failed authentication
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#removeDesign(int, java.lang.String, java.lang.String)
 	 */
 	public int removeDesign(int designID, String user, String pass){
 		busy.getAndSet(true);
@@ -407,13 +353,8 @@ public class SecureClientManager extends ClientManager{
 		return -2;
 	}
 
-	/**
-	 * Changes the stored name of a <code>Design</code>
-	 * @param designID The ID of the <code>Design</code> to change the name for.
-	 * @param user The user proposing the change.
-	 * @param pass The password of the user proposing the change.
-	 * @param newName The new name to be applied.
-	 * @return Whether or not the name change operation succeeded.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignName(int, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean changeDesignName(int designID, String user, String pass, String newName){
 		busy.getAndSet(true);
@@ -431,6 +372,9 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignFile(int, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, boolean)
+	 */
 	public boolean changeDesignFile(int designID, String user, String pass, PhysicalFileTransporter pft, boolean textureOnOff){
 		busy.getAndSet(true);
 		try {
@@ -448,13 +392,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Changes the stored description of a <code>Design</code>
-	 * @param designID The ID of the <code>Design</code> to change the description for.
-	 * @param user The user proposing the change.
-	 * @param pass The password of the user proposing the change.
-	 * @param newDescription The new description to be applied.
-	 * @return Whether or not the description change operation succeeded.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignDescription(int, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean changeDesignDescription(int designID, String user, String pass, String newDescription){
 		busy.getAndSet(true);
@@ -472,13 +411,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Changes the stored address of a <code>Design</code>
-	 * @param designID The ID of the <code>Design</code> to change the address for.
-	 * @param user The user proposing the change.
-	 * @param pass The password of the user proposing the change.
-	 * @param newAddress The new address to be applied.
-	 * @return Whether or not the address change operation succeeded.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignAddress(int, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean changeDesignAddress(int designID, String user, String pass, String newAddress){
 		busy.getAndSet(true);
@@ -496,13 +430,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Changes the stored url of a <code>Design</code>
-	 * @param designID The ID of the <code>Design</code> to change the address for.
-	 * @param user The user proposing the change.
-	 * @param pass The password of the user proposing the change.
-	 * @param url The new URL to be applied.
-	 * @return Whether or not the URL change operation succeeded.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignURL(int, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public boolean changeDesignURL(int designID, String user, String pass, String newURL){
 		busy.getAndSet(true);
@@ -520,15 +449,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Changes the location of a <code>ModeledDesign</code>
-	 * @param designID The ID of the <code>ModeledDesign</code> to change.
-	 * @param rotY The new rotation of the object about the Y-Xxis.
-	 * @param user The user proposing the change.
-	 * @param pass The password of the user.
-	 * @param newLocation The new location in the form of a <code>UTMCoordinate</code>
-	 * @return Whether or not the location was changed.
-	 * @see UTMCoordinate
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeModeledDesignLocation(int, int, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.jme.map.UTMCoordinate)
 	 */
 	public boolean changeModeledDesignLocation(int designID, int rotY, String user, String pass, UTMCoordinate newLocation){
 		busy.getAndSet(true);
@@ -546,12 +468,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Favorites a design on the server on behalf of the user
-	 * @param user
-	 * @param pass
-	 * @param designID
-	 * @return 0 for success, -1 for SQL error, -2 if its already faved, -3 for failed authentication, or -4 for a network error
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#faveDesign(int, java.lang.String, java.lang.String)
 	 */
 	public int faveDesign(int designID, String user, String pass){
 		busy.getAndSet(true);
@@ -567,12 +485,8 @@ public class SecureClientManager extends ClientManager{
 		return -4;
 	}
 
-	/**
-	 * Adds a comment in reference to a specific design.
-	 * @param comment The <code>Comment</code> to add.
-	 * @param pass The user's password.
-	 * @return Whether or not the comment was added.
-	 * @see Comment
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addComment(edu.poly.bxmc.betaville.model.Comment, java.lang.String)
 	 */
 	public boolean addComment(Comment comment, String pass){
 		busy.getAndSet(true);
@@ -592,13 +506,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Deletes a comment on the server.  This can only be done by the user who posted
-	 * the comment.  This needs to expand on the server-side to include moderator rights.
-	 * @param commentID The ID of the comment to delete.
-	 * @param user The user attempting to delete the comment.
-	 * @param pass The password supplied for deleting the comment.
-	 * @return Whether or not the comment was deleted.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#deleteComment(int, java.lang.String, java.lang.String)
 	 */
 	public boolean deleteComment(int commentID, String user, String pass){
 		busy.getAndSet(true);
@@ -616,12 +525,8 @@ public class SecureClientManager extends ClientManager{
 		return false;
 	}
 
-	/**
-	 * Adds a new wormhole on the server.
-	 * @param location The location for this wormhole
-	 * @param name The name of this wormhole
-	 * @param cityID The ID of the city in which this wormhole is located
-	 * @return The ID of the new wormhole or a server error code.
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addWormhole(edu.poly.bxmc.betaville.jme.map.ILocation, java.lang.String, int)
 	 */
 	public int addWormhole(ILocation location, String name, int cityID){
 		Integer response = null;
@@ -642,6 +547,9 @@ public class SecureClientManager extends ClientManager{
 		return response;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#deleteWormhole(int)
+	 */
 	public int deleteWormhole(int wormholeID){
 		Integer response = null;
 		busy.getAndSet(true);
@@ -661,6 +569,9 @@ public class SecureClientManager extends ClientManager{
 		return response;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#editWormholeName(int, java.lang.String)
+	 */
 	public int editWormholeName(int wormholeID, String newName){
 		Integer response = null;
 		busy.getAndSet(true);
@@ -680,6 +591,9 @@ public class SecureClientManager extends ClientManager{
 		return response;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#editWormholeLocation(int, edu.poly.bxmc.betaville.jme.map.UTMCoordinate)
+	 */
 	public int editWormholeLocation(int wormholeID, UTMCoordinate newLocation){
 		Integer response = null;
 		busy.getAndSet(true);

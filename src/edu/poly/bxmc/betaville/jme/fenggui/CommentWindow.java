@@ -28,7 +28,6 @@ package edu.poly.bxmc.betaville.jme.fenggui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
@@ -220,7 +219,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 		
 		// create new content
 		logger.info("getting comments for " + currentDesign);
-		Vector<Comment> comments = NetPool.getPool().getConnection().getComments(designID);
+		List<Comment> comments = NetPool.getPool().getConnection().getComments(designID);
 		if(designID==currentDesign) if(comments.size()==commentCount){
 			logger.info("Comments don't need updating");
 			return;

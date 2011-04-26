@@ -27,16 +27,13 @@ package edu.poly.bxmc.betaville.net;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 
 import com.jme.scene.Node;
-import com.jme.scene.Spatial;
 import com.jme.util.GameTaskQueueManager;
 
 import edu.poly.bxmc.betaville.CacheManager;
@@ -121,7 +118,7 @@ public class NetModelLoader{
 	public static void load(LookupRoutine lookupRoutine, int limit, int cityID){
 		logger.info("Loading City " + cityID);
 		List<Design> designs = null;
-		ClientManager manager = NetPool.getPool().getConnection();
+		UnprotectedManager manager = NetPool.getPool().getConnection();
 		if(lookupRoutine.equals(LookupRoutine.ALL_IN_CITY)){
 			designs = manager.findBaseDesignsByCity(cityID);
 		}
@@ -250,7 +247,7 @@ public class NetModelLoader{
 	 */
 	public static void loadCityTerrain(int cityID){
 		logger.info("Loading City Terrain " + cityID);
-		Vector<Design> designs = NetPool.getPool().getConnection().findTerrainByCity(cityID);
+		List<Design> designs = NetPool.getPool().getConnection().findTerrainByCity(cityID);
 		if(designs==null){
 			//throw new NullPointerException("designs not received!");
 			return;

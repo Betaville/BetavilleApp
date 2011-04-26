@@ -106,7 +106,7 @@ import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.model.ProposalPermission.Type;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
-import edu.poly.bxmc.betaville.net.SecureClientManager;
+import edu.poly.bxmc.betaville.net.ProtectedManager;
 
 /**
  * The window used to create new proposals, or versions of proposals.
@@ -1396,7 +1396,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							}
 
 							// open connection and send design
-							SecureClientManager manager = NetPool.getPool().getSecureConnection();
+							ProtectedManager manager = NetPool.getPool().getSecureConnection();
 							int response=-4;
 							if(stepOneSelection.equals(Classification.BASE)){
 								logger.info("+"+design.getID());

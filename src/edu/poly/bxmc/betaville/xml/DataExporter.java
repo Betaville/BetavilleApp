@@ -28,6 +28,7 @@ package edu.poly.bxmc.betaville.xml;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -38,10 +39,16 @@ import edu.poly.bxmc.betaville.bookmarks.Bookmark;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
+import edu.poly.bxmc.betaville.model.AudibleDesign;
+import edu.poly.bxmc.betaville.model.Comment;
+import edu.poly.bxmc.betaville.model.Design;
+import edu.poly.bxmc.betaville.model.EmptyDesign;
+import edu.poly.bxmc.betaville.model.ModeledDesign;
+import edu.poly.bxmc.betaville.model.VideoDesign;
 
 /**
+ * Writes objects to XML
  * @author Skye Book
- * needs work.
  */
 public class DataExporter{
 	
@@ -77,6 +84,95 @@ public class DataExporter{
 			coordinate.setAttribute("altitude", Double.toString(((GPSCoordinate)location).getAltitude()));
 		}
 		return coordinate;
+	}
+	
+	public static Element exportDesigns(List<Design> designs){
+		Element e = new Element("designs");
+		for(Design design : designs){
+			e.addContent(export(design));
+		}
+		return e;
+	}
+	
+	public static Element export(Design design){
+		Element d = new Element(design.getClass().getName());
+		d.setAttribute("name", d.getName());
+		d.setAttribute("classification", design.getClassification().toString());
+		d.setAttribute("id", Integer.toString(design.getID()));
+		d.setAttribute("sourceID", Integer.toString(design.getSourceID()));
+		d.setAttribute("address", design.getAddress());
+		d.setAttribute("cityID", Integer.toString(design.getCityID()));
+		d.setAttribute("user", design.getUser());
+		d.setAttribute("description", design.getDescription());
+		d.setAttribute("filepath", design.getFilepath());
+		d.setAttribute("url", design.getURL());
+		d.setAttribute("dateAdded", design.getDateAdded());
+		d.setAttribute("isPublic", Boolean.toString(design.isPublic()));
+		
+		// construct designs to remove string
+		StringBuilder dtr = new StringBuilder();
+		for(int toRemove : design.getDesignsToRemove()){
+			dtr.append(toRemove+";");
+		}
+		d.setAttribute("designsToRemove", dtr.toString());
+		
+		// construct user fave string
+		StringBuilder favedBy = new StringBuilder();
+		for(String userWhoFaved : design.getFavedBy()){
+			favedBy.append(userWhoFaved+";");
+		}
+		d.setAttribute("favedBy", favedBy.toString());
+		
+		d.setAttribute("proposalPermission", design.getProposalPermission().toString());
+		
+		if(design instanceof ModeledDesign){
+			d.setAttribute("rotX", Integer.toString(((ModeledDesign)design).getRotationX()));
+			d.setAttribute("rotY", Integer.toString(((ModeledDesign)design).getRotationY()));
+			d.setAttribute("rotZ", Integer.toString(((ModeledDesign)design).getRotationZ()));
+			d.setAttribute("textured", Boolean.toString(((ModeledDesign)design).isTextured()));
+		}
+		else if(design instanceof AudibleDesign){
+			d.setAttribute("directionX", Float.toString(((AudibleDesign)design).getDirectionX()));
+			d.setAttribute("directionY", Float.toString(((AudibleDesign)design).getDirectionY()));
+			d.setAttribute("directionZ", Float.toString(((AudibleDesign)design).getDirectionZ()));
+			d.setAttribute("volume", Integer.toString(((AudibleDesign)design).getVolume()));
+			// TODO: SoundStyle serialization
+		}
+		else if(design instanceof VideoDesign){
+			d.setAttribute("directionX", Float.toString(((VideoDesign)design).getDirectionX()));
+			d.setAttribute("directionY", Float.toString(((VideoDesign)design).getDirectionY()));
+			d.setAttribute("directionZ", Float.toString(((VideoDesign)design).getDirectionZ()));
+			d.setAttribute("volume", Integer.toString(((VideoDesign)design).getVolume()));
+			d.setAttribute("length", Integer.toString(((VideoDesign)design).getLength()));
+			d.setAttribute("format", ((VideoDesign)design).getFormat().toString());
+		}
+		else if(design instanceof EmptyDesign){
+			d.setAttribute("length", Integer.toString(((EmptyDesign)design).getLength()));
+			d.setAttribute("width", Integer.toString(((EmptyDesign)design).getWidth()));
+		}
+		
+		d.addContent(export(design.getCoordinate()));
+		
+		return d;
+	}
+	
+	public static Element exportComments(List<Comment> comments){
+		Element e = new Element("comments");
+		for(Comment comment : comments){
+			e.addContent(export(comment));
+		}
+		return e;
+	}
+	
+	public static Element export(Comment comment){
+		Element e = new Element(comment.getClass().getName());
+		e.setAttribute("id", Integer.toString(comment.getID()));
+		e.setText(comment.getComment());
+		e.setAttribute("user", comment.getUser());
+		e.setAttribute("designID", Integer.toString(comment.getDesignID()));
+		e.setAttribute("repliesToCommentID", Integer.toString(comment.repliesTo()));
+		e.setAttribute("date", comment.getDate());
+		return e;
 	}
 	
 	public static void write(Element element, File f) throws IOException{
