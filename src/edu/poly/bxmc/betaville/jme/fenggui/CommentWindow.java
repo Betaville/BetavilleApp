@@ -175,7 +175,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 			}
 		});
 		
-		getContentContainer().addWidget(newCommentEditor, postComment);
+		if(!SettingsPreferences.guestMode()) getContentContainer().addWidget(newCommentEditor, postComment);
 		//entryContainer.addWidget(postComment, newCommentEditor);
 		//getContentContainer().addWidget(entryContainer);
 	}

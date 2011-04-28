@@ -63,6 +63,7 @@ import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.City;
+import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.net.NetModelLoader;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.NetModelLoader.LookupRoutine;
@@ -300,7 +301,8 @@ public class BetavilleNoCanvas {
 			game.getSettings().setHeight(Integer.parseInt(widthHeight[1]));
 		}
 
-		SwingLoginWindow.prompt();
+		if(!SettingsPreferences.guestMode()) SwingLoginWindow.prompt();
+		else SettingsPreferences.setUserType(UserType.GUEST);
 
 		if(game.getSettings().isFullscreen()){
 			// setup for undecorated window
@@ -308,18 +310,6 @@ public class BetavilleNoCanvas {
 			//System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
 		}
 		game.start();
-
-		SettingsPreferences.getThreadPool().submit(new Runnable() {
-			public void run() {
-				/*
-				 * I'm taking this out for now since it seems to cause issues
-				 * where it is called prematurely! - Skye
-				 * if(!Display.isCloseRequested()){
-				 * SafeShutdown.doSafeShutdown(); game.finish(); }
-				 * logger.info("Game Finished");
-				 */
-			}
-		});
 
 		MouseInput.get().setCursorVisible(true);
 
