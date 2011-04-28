@@ -70,6 +70,7 @@ public class UpdatedPreferenceWriter {
 		if(System.getProperty("betaville.kiosk.password")==null) System.setProperty("betaville.kiosk.password", ""); // Uses an SHA1 hash
 		if(System.getProperty("betaville.kiosk.requirepass")==null) System.setProperty("betaville.kiosk.requirepass", "false");
 		if(System.getProperty("betaville.kiosk.refresh")==null) System.setProperty("betaville.kiosk.refresh", "0");
+		if(System.getProperty("betaville.guestmode.enabled")==null) System.setProperty("betaville.guestmode.enabled", "false");
 		
 		PreferenceWriter pr = new PreferenceWriter();
 		pr.writeData();

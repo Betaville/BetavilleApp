@@ -37,7 +37,7 @@ import edu.poly.bxmc.betaville.model.IUser.UserType;
 
 /**
  * Singleton class for keeping track of user preferences as well as
- * for interfacing with the stored file: <i>home</i>/.betaville/startup.xml
+ * for interfacing with the stored file: <i>home</i>/.betaville/preferences.xml
  * @author Skye Book
  *
  */
@@ -59,6 +59,10 @@ public class SettingsPreferences {
 	
 	public static String getSessionToken(){
 		return sessionToken;
+	}
+	
+	public static boolean guestMode(){
+		return readTrueFalseValue("betaville.guestmode.enabled");
 	}
 	
 	

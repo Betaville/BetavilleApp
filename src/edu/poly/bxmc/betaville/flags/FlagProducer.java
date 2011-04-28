@@ -47,7 +47,6 @@ public class FlagProducer {
 	
 	// all of the proposals found in an area
 	private List<Design>proposalDesigns = null;
-	private List<Design>proposalDesignsBremen = null;
 	
 	
 	ArrayList<Integer> bases = new ArrayList<Integer>();
@@ -63,12 +62,8 @@ public class FlagProducer {
 	
 	public void getProposals(int meterRadius){
 
-		proposalDesignsBremen = NetPool.getPool().getConnection().findAllProposalsNearLocation(new UTMCoordinate(487849,5880911,32,'U',10), meterRadius);
 		proposalDesigns = NetPool.getPool().getConnection().findAllProposalsNearLocation(currentLocation, meterRadius);
-		
-		for (int i = 0; i < proposalDesignsBremen.size(); i++) {
-			proposalDesigns.add(proposalDesignsBremen.get(i));
-		}
+		logger.info(proposalDesigns.size() + " proposals retrieved");
 		
 		Iterator<Integer> it;
 		Iterator<Design> designIt = proposalDesigns.iterator();

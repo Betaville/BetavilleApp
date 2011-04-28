@@ -64,7 +64,7 @@ public class NetPool extends AbstractUpdater{
 		modules = new ArrayList<Module>();
 	}
 
-	public UnprotectedManager getConnection(){
+	public InsecureClientManager getConnection(){
 
 		// If there are no managers, create one and return it
 		if(managers.isEmpty()){
@@ -75,9 +75,9 @@ public class NetPool extends AbstractUpdater{
 		}
 		
 		// Where there is a list of managers, find an idle manager and return it
-		for(UnprotectedManager m : managers){
+		for(ClientManager m : managers){
 			if(!m.isBusy() && m instanceof InsecureClientManager){
-				return m;
+				return (InsecureClientManager)m;
 			}
 		}
 		
