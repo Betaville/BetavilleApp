@@ -224,12 +224,11 @@ public class SceneController extends Controller {
 	private float value(StandardAction action) {
 		// Check if camera turned since last update
 		if (cameraDirX != camera.getDirection().x) {
-			GUIGameState
-			.getInstance()
-			.getTopSelectionWindow()
-			.updateCompass(
+			/*
+			GUIGameState.getInstance().getTopSelectionWindow().updateCompass(
 					FastMath.atan2(camera.getDirection().z,
 							camera.getDirection().x));
+							*/
 		}
 
 		cameraDirX = camera.getDirection().x;
