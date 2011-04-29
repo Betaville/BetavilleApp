@@ -29,8 +29,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 import org.apache.log4j.Logger;
+import org.jdom.JDOMException;
 
 import edu.poly.bxmc.betaville.CacheManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
@@ -40,6 +42,8 @@ import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.ProposalPermission;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.model.Wormhole;
+import edu.poly.bxmc.betaville.util.StringZipper;
+import edu.poly.bxmc.betaville.xml.DataReader;
 
 /**
  * @author Skye Book
@@ -277,6 +281,33 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		} catch (UnexpectedServerResponse e) {
 			e.printStackTrace();
 			busy.getAndSet(false);
+			return null;
+		}
+	}
+	
+	public List<Design> findModelDesignsByCityLimit(int cityID, boolean onlyBase, int limit){
+		busy.getAndSet(true);
+		try {
+			logger.info("Finding designs from city " + cityID);
+			output.writeObject(new Object[]{"design", "findbymodellimitedcity", cityID, onlyBase, limit});
+			byte[] response = (byte[])readResponse();
+			busy.set(false);
+			return DataReader.readDesigns(StringZipper.uncompress(response));
+		} catch (IOException e) {
+			logger.error("Network issue detected", e);
+			busy.getAndSet(false);
+			return null;
+		} catch (UnexpectedServerResponse e) {
+			e.printStackTrace();
+			busy.getAndSet(false);
+			return null;
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (DataFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return null;
 		}
 	}

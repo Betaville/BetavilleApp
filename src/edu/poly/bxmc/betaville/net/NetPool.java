@@ -64,7 +64,7 @@ public class NetPool extends AbstractUpdater{
 		modules = new ArrayList<Module>();
 	}
 
-	public InsecureClientManager getConnection(){
+	public ClientManager getConnection(){
 
 		// If there are no managers, create one and return it
 		if(managers.isEmpty()){
