@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -102,6 +102,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		
 		nameEditor = FengGUI.createWidget(TextEditor.class);
 		nameEditor.setSize(targetWidth-10, normalEditorHeight);
+		nameEditor.setReadonly(SettingsPreferences.guestMode());
 		nameEditor.setMultiline(true);
 		nameEditor.setWordWarping(true);
 		nameEditor.setMaxCharacters(100);
@@ -112,6 +113,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		
 		addressEditor = FengGUI.createWidget(TextEditor.class);
 		addressEditor.setSize(targetWidth-10, normalEditorHeight);
+		addressEditor.setReadonly(SettingsPreferences.guestMode());
 		addressEditor.setMultiline(true);
 		addressEditor.setWordWarping(true);
 		addressEditor.setMaxCharacters(100);
@@ -122,6 +124,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		
 		descriptionEditor = FengGUI.createWidget(TextEditor.class);
 		descriptionEditor.setSize(targetWidth-10, normalEditorHeight*3);
+		descriptionEditor.setReadonly(SettingsPreferences.guestMode());
 		descriptionEditor.setMultiline(true);
 		descriptionEditor.setWordWarping(true);
 		descriptionEditor.setMaxLines(3);
@@ -131,6 +134,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		
 		urlEditor = FengGUI.createWidget(TextEditor.class);
 		urlEditor.setSize(targetWidth-10, normalEditorHeight);
+		urlEditor.setReadonly(SettingsPreferences.guestMode());
 		urlEditor.setMultiline(true);
 		urlEditor.setWordWarping(true);
 		urlEditor.setMaxCharacters(100);

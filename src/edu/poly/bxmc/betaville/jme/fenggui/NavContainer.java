@@ -171,6 +171,12 @@ public class NavContainer extends Container {
 					SoundGameState.getInstance().playSound(SOUNDS.TOGGLE, DisplaySystem.getDisplaySystem().getRenderer().getCamera().getLocation());
 					GUIGameState.getInstance().removeNavMenu();
 					GUIGameState.getInstance().setContextOn(false);
+					
+					if(SettingsPreferences.guestMode()){
+						GUIGameState.getInstance().getDisp().addWidget(
+								FengUtils.createDismissableWindow("Betaville", "You cannot fave an object in guest mode!", "ok", true));
+					}
+					
 					if(!SceneScape.getTargetSpatial().getName().endsWith("$empty")){
 						int response = NetPool.getPool().getSecureConnection().faveDesign(SceneScape.getPickedDesign().getID(),
 								SettingsPreferences.getUser(), SettingsPreferences.getPass());

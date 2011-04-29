@@ -25,6 +25,7 @@
  */
 package edu.poly.bxmc.betaville.proposals;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -32,11 +33,13 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.Design;
+import edu.poly.bxmc.betaville.model.Design.Classification;
 
 /**
  * Functions as a central location to add and remove versions
@@ -50,12 +53,12 @@ public class LiveProposalManager {
 	private static Logger logger = Logger.getLogger(LiveProposalManager.class);
 	private static LiveProposalManager lpm;
 	private SceneProposalController proposalController;
-	
+
 	/**
 	 * Listeners that get triggered when a proposal is changed.
 	 */
 	private List<ILiveProposalChangedListener> proposalChangedListeners;
-	
+
 	private List<IVersionTurnedOnListener> versionTurnedOnListeners;
 	private List<IVersionTurnedOffListener> versionTurnedOffListeners;
 
@@ -74,22 +77,22 @@ public class LiveProposalManager {
 		versionTurnedOnListeners = new Vector<IVersionTurnedOnListener>();
 		versionTurnedOffListeners = new Vector<IVersionTurnedOffListener>();
 	}
-	
+
 	public synchronized void turnVersionOn(Design design){
 		//SceneGameState.getInstance().removeDesignFromDisplay(320);
-		
-		
+
+
 		// if this version is already on, leave the function
 		if(proposals.containsValue(design.getID())){
 			return;
 		}
-		
+
 		logger.debug("Turning on a " + design.getClassification() + " named " + design.getName());
-		
+
 		int whatToRemove=0;
-		
+
 		printProposals();
-		
+
 		// If there is a version from this proposal already on, we will remove it
 		if(design.isVersion() && proposals.containsKey(design.getSourceID())){
 			logger.info("A "+design.getClassification()+" is already open");
@@ -101,29 +104,29 @@ public class LiveProposalManager {
 			whatToRemove=proposals.get(design.getID());
 			logger.info("A proposal is already open: " + whatToRemove);
 		}
-		
+
 		// last attempt here
-		
+
 		// If we need to remove anything, do it here
 		if(whatToRemove!=0){
 			logger.debug("Turning off " + whatToRemove);
 			turnVersionOff(whatToRemove);
 		}
-		
-		
+
+
 		// Now that the scene is cleaned up a bit, turn on the version
 		if(proposalController.addDesignToScene(design)){
-			
+
 			for(ILiveProposalChangedListener listener : proposalChangedListeners){
 				listener.isChanged(design.getSourceID());
 			}
-			
-			
+
+
 			for(IVersionTurnedOnListener onListener : versionTurnedOnListeners){
 				onListener.versionTurnedOn(design);
 			}
-			
-			
+
+
 			// Add the design to SceneScape and then set the target spatial
 			SceneScape.getCity().addDesign(design);
 			Spatial s = SceneGameState.getInstance().getSpecificDesign(design.getID());
@@ -139,16 +142,39 @@ public class LiveProposalManager {
 			else{
 				logger.error("Could not find spatial in scene");
 			}
-			
+
 		}
 	}
-	
+
 	public synchronized void turnAllVersionsOff(){
+		/*
 		for(Entry<Integer, Integer> proposal : proposals.entrySet()){
-			turnProposalOff(proposal.getValue());
+			turnProposalOff(proposal.getValue(), false);
 		}
+		*/
+		
+		ArrayList<Spatial> removeList = new ArrayList<Spatial>();
+		Node designNode = SceneGameState.getInstance().getDesignNode();
+		for(int i=0; i<designNode.getQuantity(); i++){
+			Spatial s = designNode.getChild(i);
+			Design d = SceneScape.getCity().findDesignByFullIdentifier(s.getName());
+			if(d!=null){
+				if(!d.isClassification(Classification.BASE)){
+					logger.info("Removing " + d.getName());
+					removeList.add(s);
+				}
+			}
+		}
+		
+		for(Spatial remove : removeList){
+			designNode.detachChild(remove);
+		}
+		
+		removeList.clear();
+		
+		proposals.clear();
 	}
-	
+
 	public void printProposals(){
 		if(proposals.entrySet().isEmpty()){
 			logger.debug("No Proposals Being Viewed");
@@ -158,14 +184,14 @@ public class LiveProposalManager {
 			logger.debug("Proposal: " + e.getKey() + " | Version: " + e.getValue());
 		}
 	}
-	
+
 	public synchronized void turnVersionOff(int versionID){
 		if(proposals.containsValue(versionID)){
 			Design remove = SceneScape.getCity().findDesignByID(versionID);
 			proposalController.removeDesignFromScene(remove);
 			proposals.remove(versionID);
 			SceneScape.clearTargetSpatial();
-			
+
 			for(IVersionTurnedOffListener offListener : versionTurnedOffListeners){
 				offListener.versionTurnedOff(remove);
 			}
@@ -173,18 +199,22 @@ public class LiveProposalManager {
 	}
 
 	public synchronized void turnProposalOff(int proposalID){
+		turnProposalOff(proposalID, true);
+	}
+
+	public synchronized void turnProposalOff(int proposalID, boolean removeFromMapNow){
 		if(proposals.containsKey(proposalID)){
 			Design remove = SceneScape.getCity().findDesignByID(proposals.get(proposalID));
 			proposalController.removeDesignFromScene(remove);
-			proposals.remove(proposalID);
+			if(removeFromMapNow) proposals.remove(proposalID);
 			SceneScape.clearTargetSpatial();
-			
+
 			for(IVersionTurnedOffListener offListener : versionTurnedOffListeners){
 				offListener.versionTurnedOff(remove);
 			}
 		}
 	}
-	
+
 	public boolean isVersionOn(int versionID){
 		return proposals.containsValue(versionID);
 	}
@@ -192,43 +222,43 @@ public class LiveProposalManager {
 	public void registerProposalController(SceneProposalController controller){
 		proposalController = controller;
 	}
-	
+
 	public SceneProposalController getProposalController(){
 		return proposalController;
 	}
-	
+
 	public void addProposalChangedListener(ILiveProposalChangedListener listener){
 		proposalChangedListeners.add(listener);
 	}
-	
+
 	public void removeProposalChangedListener(ILiveProposalChangedListener listener){
 		proposalChangedListeners.remove(listener);
 	}
-	
+
 	public void removeAllProposalChangedListeners(){
 		proposalChangedListeners.clear();
 	}
-	
+
 	public void addVersionTurnedOnListener(IVersionTurnedOnListener listener){
 		versionTurnedOnListeners.add(listener);
 	}
-	
+
 	public void removeVersionTurnedOnListener(IVersionTurnedOnListener listener){
 		versionTurnedOnListeners.remove(listener);
 	}
-	
+
 	public void addVersionTurnedOffListener(IVersionTurnedOffListener listener){
 		versionTurnedOffListeners.add(listener);
 	}
-	
+
 	public void removeVersionTurnedOffListener(IVersionTurnedOffListener listener){
 		versionTurnedOffListeners.remove(listener);
 	}
-	
+
 	public HashMap<Integer, Integer> getProposals(){
 		return proposals;
 	}
-	
+
 	public static LiveProposalManager getInstance(){
 		if(lpm==null) lpm = new LiveProposalManager();
 		return lpm;

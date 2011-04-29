@@ -326,6 +326,14 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		return null;
 	}
 	
+	public Window getWindow(Class<?> windowClass){
+		for(PanelAction action : panelActions){
+			if(!(action instanceof OnOffPanelAction)) continue;
+			if(((OnOffPanelAction)action).getWindow().getClass().equals(windowClass)) return ((OnOffPanelAction)action).getWindow();
+		}
+		return null;
+	}
+	
 	public void finishSetup(){
 		setTitle("City Panel");
 		setSize(targetWidth, targetHeight);

@@ -25,13 +25,21 @@
  */
 package edu.poly.bxmc.betaville.updater;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
+import com.jme.util.GameTaskQueueManager;
+
+import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.panel.OnOffPanelAction;
+import edu.poly.bxmc.betaville.jme.fenggui.tutorial.TutorialWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.proposals.LiveProposalManager;
 
 /**
  * @author Skye Book
@@ -70,7 +78,7 @@ public class KioskUpdater extends AbstractUpdater {
 		if(!movedSinceLastUpdate){
 			if(SceneGameState.getInstance().getSceneController().getCameraLastMoved()>getLastUpdate()) movedSinceLastUpdate=true;
 			logger.info("last update:\t" + getLastUpdate());
-			logger.info("last movem:\t " + SceneGameState.getInstance().getSceneController().getCameraLastMoved());
+			logger.info("last move:\t " + SceneGameState.getInstance().getSceneController().getCameraLastMoved());
 		}
 		
 		if(movedSinceLastUpdate){
@@ -91,17 +99,25 @@ public class KioskUpdater extends AbstractUpdater {
 		if(!updating.get()){
 			updating.set(true);
 			logger.info("Refreshing Scene");
+			
+			// move the camera back to its starting point
+			SceneGameState.getInstance().cameraPerspectiveProjection();
 
-			// move camera back to initialization
-			/*
+			// replace the TutorialWindow
+			//GUIGameState.getInstance().getDisp().addWidget(((OnOffPanelAction)GUIGameState.getInstance().getTopSelectionWindow().getCityPanel().getAction("Tutorials")).getWindow());
+			GUIGameState.getInstance().getDisp().addWidget(GUIGameState.getInstance().getTopSelectionWindow().getCityPanel().getWindow(TutorialWindow.class));
+			
+			SceneScape.clearTargetSpatial();
+			
 			try {
-				GameTaskQueueManager.getManager().update(new Callable<Future>() {
+				GameTaskQueueManager.getManager().update(new Callable<Future<Object>>() {
 
-					public Future call() throws Exception {
-						// I think this needs to be done in the OpenGL thread
-						SceneGameState.getInstance().cameraPerspectiveProjection();
+					public Future<Object> call() throws Exception {
+						logger.info("Turning off versions");
+						LiveProposalManager.getInstance().turnAllVersionsOff();
 						return null;
 					}
+					
 				}).get();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -110,16 +126,6 @@ public class KioskUpdater extends AbstractUpdater {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			 */
-
-			SceneGameState.getInstance().cameraPerspectiveProjection();
-
-			// replace the TutorialWindow
-			GUIGameState.getInstance().getDisp().addWidget(((OnOffPanelAction)GUIGameState.getInstance().getTopSelectionWindow().getCityPanel().getAction("Tutorials")).getWindow());
-			
-
-
-			//LiveProposalManager.getInstance().turnAllVersionsOff();
 
 			movedSinceLastUpdate=false;
 			updating.set(false);
