@@ -7,7 +7,7 @@ import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.model.ProposalPermission;
 
-public interface ProtectedManager {
+public interface ProtectedManager extends UnprotectedManager{
 
 	public abstract boolean authenticateUser(String name, String pass);
 

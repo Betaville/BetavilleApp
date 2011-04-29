@@ -64,7 +64,7 @@ public class NetPool extends AbstractUpdater{
 		modules = new ArrayList<Module>();
 	}
 
-	public ClientManager getConnection(){
+	public UnprotectedManager getConnection(){
 
 		// If there are no managers, create one and return it
 		if(managers.isEmpty()){
@@ -88,7 +88,7 @@ public class NetPool extends AbstractUpdater{
 		return icm;
 	}
 	
-	public SecureClientManager getSecureConnection(){
+	public ProtectedManager getSecureConnection(){
 		// If there are no managers, create one and return it
 		if(managers.isEmpty()){
 			logger.debug("No " + SecureClientManager.class.getName() + " was found.. creating one");
