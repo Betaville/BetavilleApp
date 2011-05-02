@@ -49,7 +49,6 @@ import edu.poly.bxmc.betaville.jme.fenggui.ModelSwapWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.MyLocationWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.NetworkedWormholeWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.TerrainLoader;
-import edu.poly.bxmc.betaville.jme.fenggui.experimental.ButtonToy;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -81,13 +80,11 @@ public class CityPanel extends Window implements IBetavilleWindow{
 	private FixedButton delete;
 	private FixedButton terrain;
 	private FixedButton swap;
-	private FixedButton button;
 	private FixedButton lockToTerrain;
 	
 	private AdminModelMover mover;
 	private TerrainLoader terrainWindow;
 	private ModelSwapWindow modelSwapper;
-	private ButtonToy buttonToy;
 	
 	private List<PanelAction> panelActions;
 	
@@ -231,23 +228,6 @@ public class CityPanel extends Window implements IBetavilleWindow{
 			}
 		});
 		
-		button = FengGUI.createWidget(FixedButton.class);
-		button.setText("Button Toy");
-		button.setWidth(button.getWidth()+10);
-		button.addButtonPressedListener(new IButtonPressedListener() {
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(buttonToy == null){
-					buttonToy = FengGUI.createWidget(ButtonToy.class);
-					buttonToy.finishSetup();
-				}
-				if(!buttonToy.isInWidgetTree()){
-					GUIGameState.getInstance().getDisp().addWidget(buttonToy);
-					buttonToy.setXY(FengUtils.midWidth(GUIGameState.getInstance().getDisp(), buttonToy),
-							FengUtils.midHeight(GUIGameState.getInstance().getDisp(), buttonToy));
-				}
-			}
-		});
-		
 		lockToTerrain = FengGUI.createWidget(FixedButton.class);
 		lockToTerrain.setText("Lock to Terrain");
 		lockToTerrain.setEnabled(false);
@@ -328,8 +308,12 @@ public class CityPanel extends Window implements IBetavilleWindow{
 	
 	public Window getWindow(Class<?> windowClass){
 		for(PanelAction action : panelActions){
+			logger.info("action: "+action.getClass().getName());
 			if(!(action instanceof OnOffPanelAction)) continue;
-			if(((OnOffPanelAction)action).getWindow().getClass().equals(windowClass)) return ((OnOffPanelAction)action).getWindow();
+			logger.info("OnOffAction found: " + action.getName());
+			if(((OnOffPanelAction)action).getWindow().getClass().equals(windowClass)){
+				return ((OnOffPanelAction)action).getWindow();
+			}
 		}
 		return null;
 	}
