@@ -63,7 +63,7 @@ public class SoundGameState extends BasicGameState {
 	private AudioSystem audioSystem;
 
 	private ArrayList<SoundTrigger> soundTriggers = null;
-	
+
 	private boolean fadeInProgress = false;
 
 	// TEMPORARY
@@ -81,7 +81,7 @@ public class SoundGameState extends BasicGameState {
 
 		soundSystemSetup();
 	}
-	
+
 	private void soundSystemSetup() {
 		soundTriggers = new ArrayList<SoundTrigger>();
 
@@ -120,6 +120,7 @@ public class SoundGameState extends BasicGameState {
 
 		//FX Joe Sounds
 
+		/*
 		addSoundTrigger(new SoundTrigger("Bus.Broadway&Chambers", ResourceLoader.loadResource("/data/Sounds/busBrake.ogg"),
 				new UTMCoordinate(583902, 4507547, 18, 'T', 0), 100, 100, 100, ExitAction.STOP, false, true));
 
@@ -161,15 +162,6 @@ public class SoundGameState extends BasicGameState {
 		addSoundTrigger(new SoundTrigger("IdleBus.Jay&Myrtle", ResourceLoader.loadResource("/data/Sounds/Idle002loop.ogg"),
 				new GPSCoordinate(0, 40, 41, 40.03062f, -73, 59, 12.464515f), 50, 50, 50, ExitAction.STOP, true, true));
 
-		/*addSoundTrigger(new SoundTrigger("IdleBus.", ResourceLoader.loadResource("/data/Sounds/Idle003.ogg"),
-				new UTMCoordinate(new GPSCoordinate(0, 40, 43, 2.626864f, -73, 59, 52.812355f)), 100, 100, 100, ExitAction.STOP, false, true));
-
-		addSoundTrigger(new SoundTrigger("IdleBus.", ResourceLoader.loadResource("/data/Sounds/Idle004.ogg"),
-				new UTMCoordinate(new GPSCoordinate(0, 40, 43, 2.626864f, -73, 59, 52.812355f)), 100, 100, 100, ExitAction.STOP, false, true));*/
-
-
-
-
 		//ANDRES Proposal 001
 
 		addSoundTrigger(new SoundTrigger("Andres.Firhouse.Liberty&Greenwich", ResourceLoader.loadResource("/data/Sounds/firestationalarmLadder10..ogg"),
@@ -204,16 +196,21 @@ public class SoundGameState extends BasicGameState {
 
 		addSoundTrigger(new SoundTrigger("Andres.policechickadee.Albany&Greenwich", ResourceLoader.loadResource("/data/Sounds/policehornsqueaktoblackcappedchickadee.ogg"),
 				new UTMCoordinate(583327, 4506962, 18, 'T', 0), 150, 150, 150, ExitAction.STOP, false, true));
+		 */
 		
+		addSoundTrigger(new SoundTrigger("New Babylon", ResourceLoader.loadResource("/data/Sounds/quality_5.ogg"),
+				new GPSCoordinate(0, 40.701134, -74.008696), 1000, 150, 1000, ExitAction.STOP, true, true));
+
+
 		Vector3f loc = DisplaySystem.getDisplaySystem().getRenderer().getCamera().getLocation();
 		soundSystem.newSource(true, "$background", "Hum.wav", true, loc.getX(), loc.getY(), loc.getZ(), SoundSystemConfig.ATTENUATION_ROLLOFF, .5f);
 		soundSystem.setVolume("$background", .2f);
-	/* soundSystem.newStreamingSource(true, "$background", ResourceLoader.loadResource("/data/Sounds/Hum.ogg"), "bg.ogg", true,
+		/* soundSystem.newStreamingSource(true, "$background", ResourceLoader.loadResource("/data/Sounds/Hum.ogg"), "bg.ogg", true,
 				loc.getX(), loc.getY(), loc.getZ(),
 				SoundSystemConfig.ATTENUATION_ROLLOFF, .5f); */
 		soundSystem.play("$background");
 	}
-	
+
 	/**
 	 * Triggers a sound to be played in the sound system.
 	 * @param soundSelection - The sound to be played.
@@ -256,7 +253,7 @@ public class SoundGameState extends BasicGameState {
 	private void playToggle(Vector3f designPosition){
 		soundSystem.quickPlay(true, "toggleSwitch.wav", false, designPosition.getX(), designPosition.getY(), designPosition.getZ(), SoundSystemConfig.ATTENUATION_ROLLOFF, SoundSystemConfig.getDefaultRolloff());
 	}
-	
+
 	public void playTriggeredSound(URL soundURL, Vector3f location){
 		//soundSystem.quickStream(true, soundURL, "toilet.wav", false, location.getX(), location.getY(), location.getZ(), SoundSystemConfig.ATTENUATION_ROLLOFF, SoundSystemConfig.getDefaultRolloff());
 	}
@@ -275,13 +272,13 @@ public class SoundGameState extends BasicGameState {
 				return false;
 			}
 		}
-		/*
+
 		soundSystem.newStreamingSource(true, newTrigger.getName(), newTrigger.getURL(), newTrigger.getURLFileName(), newTrigger.isLooped(),
 				newTrigger.getCenter().getX(), newTrigger.getCenter().getY(), newTrigger.getCenter().getZ(),
 				SoundSystemConfig.ATTENUATION_ROLLOFF, newTrigger.getRolloffFactor());
 		soundSystem.setVolume(newTrigger.getName(), newTrigger.getVolume());
 		soundTriggers.add(newTrigger);
-		*/
+
 		return true;
 	}
 
@@ -303,7 +300,7 @@ public class SoundGameState extends BasicGameState {
 	public void render(float tpf){
 		// no drawing to be done in this GameState
 	}
-	
+
 	private void soundSystemUpdate(){
 		Vector3f cameraPosition = SceneGameState.getInstance().getCamera().getLocation();
 
@@ -390,7 +387,6 @@ public class SoundGameState extends BasicGameState {
 
 	public void update(float tpf){
 		soundSystemUpdate();
-//		audioSystem.update();
 	}
 
 	private void turnOnSound(SoundTrigger trigger){
@@ -485,7 +481,7 @@ public class SoundGameState extends BasicGameState {
 			audioSystem.cleanup();
 		}
 	}
-	
+
 	public void setVolume(float volume){
 		soundSystem.setMasterVolume(volume);
 	}
