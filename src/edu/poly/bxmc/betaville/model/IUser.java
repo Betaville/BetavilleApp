@@ -88,6 +88,8 @@ public interface IUser{
 		
 		private Integer getLevel(UserType type){
 			switch (type) {
+			case GUEST:
+				return 0;
 			case MEMBER:
 				return 1;
 			case BASE_COMMITTER:
