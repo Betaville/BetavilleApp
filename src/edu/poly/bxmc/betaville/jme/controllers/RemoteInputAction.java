@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 
 import com.jme.input.action.InputAction;
 import com.jme.input.action.InputActionEvent;
+import com.jme.math.Matrix3f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 
@@ -41,15 +42,18 @@ import com.jme.renderer.Camera;
  */
 public class RemoteInputAction extends InputAction {
 	private static final Logger logger = Logger.getLogger(RemoteInputAction.class);
-	
+
 	private Vector3f tempVa = new Vector3f();
-	
+
 	private float forwardTemp = 0;
 	private float leftTemp = 0;
+	private float rotateTemp = 0;
 	private Camera camera;
-	
+
+	private Matrix3f incr = new Matrix3f();
+
 	private boolean enabled = false;
-	
+
 	/**
 	 * @throws IOException 
 	 * @throws CharacterCodingException 
@@ -66,7 +70,7 @@ public class RemoteInputAction extends InputAction {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	/**
 	 * @return enabled true if the action is turned on, false if it is turned off
 	 */
@@ -84,36 +88,55 @@ public class RemoteInputAction extends InputAction {
 	public void update(float time){
 		// don't do anything if this action is not enabled
 		if(!enabled) return;
-		
+
 		camera.getLocation().addLocal(camera.getDirection().mult(forwardTemp, tempVa));
 		camera.getLocation().addLocal(camera.getLeft().mult(leftTemp, tempVa));
-		
+
+		if(rotateTemp!=0){
+			incr.fromAngleNormalAxis(speed * rotateTemp, camera.getUp());
+			incr.mult(camera.getUp(), camera.getUp());
+			incr.mult(camera.getLeft(), camera.getLeft());
+			incr.mult(camera.getDirection(), camera.getDirection());
+			camera.normalize();
+		}
+
 		clearTemporaries();
 		camera.update();
 	}
-	
+
 	private void clearTemporaries(){
 		forwardTemp=0;
 		leftTemp=0;
+		rotateTemp=0;
 	}
-	
+
 	public void moveForward(float distance){
 		if(!enabled) return;
 		forwardTemp+=distance;
 	}
-	
+
 	public void moveBackward(float distance){
 		if(!enabled) return;
 		forwardTemp-=distance;
 	}
-	
+
 	public void strafeLeft(float distance){
 		if(!enabled) return;
 		leftTemp+=distance;
 	}
-	
+
 	public void strafeRight(float distance){
 		if(!enabled) return;
 		leftTemp-=distance;
+	}
+
+	public void rotateLeft(float distance){
+		if(!enabled) return;
+		rotateTemp+=distance;
+	}
+
+	public void rotateRight(float distance){
+		if(!enabled) return;
+		rotateTemp-=distance;
 	}
 }
