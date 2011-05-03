@@ -27,6 +27,8 @@ package edu.poly.bxmc.betaville.jme.controllers;
 
 import static com.jme.input.KeyInput.KEY_ESCAPE;
 
+import java.io.IOException;
+import java.nio.charset.CharacterCodingException;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
@@ -47,6 +49,7 @@ import com.jme.scene.Controller;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.KioskMode;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.jme.fenggui.KioskQuitPrompt;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -54,6 +57,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.Scale;
+import edu.poly.bxmc.betaville.net.RemoteControlServer;
 
 /**
  * The controller used to modify SceneGameState through user interaction and
@@ -96,6 +100,8 @@ public class SceneController extends Controller {
 
 	private MouseMoveAction mouseMove;
 
+	private RemoteInputAction remoteInputAction;
+	
 	/**
 	 * Attribute <manager> - Game Control's manager
 	 */
@@ -106,12 +112,12 @@ public class SceneController extends Controller {
 	private Camera camera = DisplaySystem.getDisplaySystem().getRenderer()
 	.getCamera();
 	private float cameraDirX = 42;
-	
+
 	private Vector3f previousFrameCameraLocation=new Vector3f();
 
 	double h = 0;
 	double t = 1;
-	
+
 	private long cameraLastMoved=-1;
 
 	// private Compass compass = new Compass();
@@ -129,7 +135,26 @@ public class SceneController extends Controller {
 		firstPersonHandler.getMouseLookHandler().getMouseLook()
 		.setMouseButtonForRequired(2);
 		firstPersonHandler.getMouseLookHandler().getMouseLook().setSpeed(.5f);
-
+		
+		remoteInputAction = new RemoteInputAction(DisplaySystem
+				.getDisplaySystem().getRenderer().getCamera());
+		
+		// remote server setup
+		SettingsPreferences.getThreadPool().submit(new Runnable() {
+			public void run() {
+				try {
+					logger.info("Setting up remote server");
+					RemoteControlServer rcs = new RemoteControlServer(remoteInputAction);
+					rcs.run();
+					logger.info(rcs.getClass().getName()+" now running");
+				} catch (CharacterCodingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					logger.error("RemoteClientServer could not be created", e);
+				}
+			}
+		});
+		
 		mouseZoom = new MouseZoomAction(camera, moveSpeed);
 		mouseMove = new MouseMoveAction(camera, moveSpeed, true, true);
 		mouseMove.setSensitivity(0.005f);
@@ -147,7 +172,7 @@ public class SceneController extends Controller {
 
 		// bind keyboard commands
 		bindKey(StandardAction.EXIT, KEY_ESCAPE);
-		
+
 		cameraLastMoved=System.currentTimeMillis();
 	}
 
@@ -228,7 +253,7 @@ public class SceneController extends Controller {
 			GUIGameState.getInstance().getTopSelectionWindow().updateCompass(
 					FastMath.atan2(camera.getDirection().z,
 							camera.getDirection().x));
-							*/
+			 */
 		}
 
 		cameraDirX = camera.getDirection().x;
@@ -306,9 +331,13 @@ public class SceneController extends Controller {
 	public MouseMoveAction getMouseMove() {
 		return mouseMove;
 	}
-	
+
 	public long getCameraLastMoved(){
 		return cameraLastMoved;
+	}
+
+	private void setRemoteInputEnabled(boolean enabled){
+		remoteInputAction.setEnabled(enabled);
 	}
 
 	@Override
@@ -316,12 +345,14 @@ public class SceneController extends Controller {
 		// firstPersonHandler.getKeyboardLookHandler().setMoveSpeed(DisplaySystem.getDisplaySystem().getRenderer().getCamera().getLocation().getY());
 		firstPersonHandler.update(time);
 		
+		if(remoteInputAction.isEnabled()) remoteInputAction.update(time);
+
 		if(!camera.getLocation().equals(previousFrameCameraLocation)){
 			cameraLastMoved=System.currentTimeMillis();
 			previousFrameCameraLocation = camera.getLocation().clone();
 		}
-		
-		
+
+
 		if (DisplaySystem.getDisplaySystem().isClosing()
 				|| value(StandardAction.EXIT) > 0) {
 			exitAction();

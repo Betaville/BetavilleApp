@@ -27,7 +27,6 @@ package edu.poly.bxmc.betaville.net;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -39,31 +38,56 @@ import java.nio.charset.CharsetEncoder;
 import java.util.Iterator;
 import java.util.Set;
 
+import edu.poly.bxmc.betaville.jme.controllers.RemoteInputAction;
+
 /**
  * @author Skye Book
  *
  */
 public class RemoteControlServer {
 
+	private boolean isReady = false;
+
+	private Charset charset;
+	private CharsetEncoder encoder;
+	private CharsetDecoder decoder;
+	private ByteBuffer buffer;
+	private Selector selector;
+	private ServerSocketChannel server;
+	private SelectionKey serverKey;
+	
+	private RemoteInputAction input;
+
 	/**
 	 * @throws IOException 
 	 * @throws CharacterCodingException 
 	 * 
 	 */
-	public RemoteControlServer() throws CharacterCodingException, IOException {
-		Charset charset = Charset.forName("ISO-8859-1");
-		CharsetEncoder encoder = charset.newEncoder();
-		CharsetDecoder decoder = charset.newDecoder();
+	public RemoteControlServer(RemoteInputAction input) throws CharacterCodingException, IOException {
+		this.input=input;
+		// turn direct camera control off by false
+		this.input.setEnabled(false);
+		charset = Charset.forName("ISO-8859-1");
+		encoder = charset.newEncoder();
+		decoder = charset.newDecoder();
 
-		ByteBuffer buffer = ByteBuffer.allocate(512);
+		buffer = ByteBuffer.allocate(512);
 
-		Selector selector = Selector.open();
+		selector = Selector.open();
 
-		ServerSocketChannel server = ServerSocketChannel.open();
-		server.socket().bind(new java.net.InetSocketAddress(8000));
+		server = ServerSocketChannel.open();
+		server.socket().bind(new java.net.InetSocketAddress(52488));
 		server.configureBlocking(false);
-		SelectionKey serverkey = server.register(selector, SelectionKey.OP_ACCEPT);
+		serverKey = server.register(selector, SelectionKey.OP_ACCEPT);
 
+		isReady=true;
+
+
+
+		server.socket().getLocalPort();
+	}
+
+	public void run() throws IOException{
 		for (;;) {
 			selector.select();
 			Set<SelectionKey> keys = selector.selectedKeys();
@@ -71,8 +95,10 @@ public class RemoteControlServer {
 			for (Iterator<SelectionKey> i = keys.iterator(); i.hasNext();) {
 				SelectionKey key = (SelectionKey) i.next();
 				i.remove();
+				
+				//System.out.println("key is here");
 
-				if (key == serverkey) {
+				if (key == serverKey) {
 					if (key.isAcceptable()) {
 						SocketChannel client = server.accept();
 						client.configureBlocking(false);
@@ -90,18 +116,28 @@ public class RemoteControlServer {
 						continue;
 					}
 					buffer.flip();
-					
+
 					// read the command code and move forward
 					byte commandCode = buffer.get();
-					
+
 					// do whatever needs to be done
 					if(commandCode==RemoteCodes.FORWARD){
+						float in = buffer.getFloat();
+						System.out.println("Received " + in + " from FORWARD");
+						input.moveForward(in);
 					}
 					else if(commandCode==RemoteCodes.BACKWARD){
+						float in = buffer.getFloat();
+						System.out.println("Received " + in + " from BACKWARD");
+						input.moveBackward(in);
 					}
 					else if(commandCode==RemoteCodes.STRAFE_LEFT){
+						float in = buffer.getFloat();
+						System.out.println("Received " + in + " from LEFT");
+						input.strafeLeft(in);
 					}
 					else if(commandCode==RemoteCodes.STRAFE_RIGHT){
+						input.strafeRight(buffer.getFloat());
 					}
 					else if(commandCode==RemoteCodes.ROTATE_UP){
 					}
@@ -126,14 +162,19 @@ public class RemoteControlServer {
 					else if(commandCode==RemoteCodes.VOLUME_DOWN){
 					}
 					else if(commandCode==RemoteCodes.REQUEST_CONTROL){
+						input.setEnabled(true);
 					}
 					else if(commandCode==RemoteCodes.ABDICATE_CONTROL){
+						input.setEnabled(false);
 					}
 					
+					buffer.clear();
+
+					/*
 					String request = decoder.decode(buffer).toString();
 					buffer.clear();
-					
-					
+
+
 					if (request.trim().equals("quit")) {
 						client.write(encoder.encode(CharBuffer.wrap("Bye.")));
 						key.cancel();
@@ -144,8 +185,13 @@ public class RemoteControlServer {
 						client.write(encoder.encode(CharBuffer.wrap(response)));
 						key.attach(new Integer(num + 1));
 					}
+					*/
 				}
 			}
 		}
+	}
+
+	public boolean isReady(){
+		return isReady;
 	}
 }

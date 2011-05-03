@@ -111,13 +111,13 @@ public class MouseMoveAction extends MouseInputAction {
 		xDelta = MouseInput.get().getXDelta();
 		yDelta = MouseInput.get().getYDelta();
 		if(xDelta==0 && yDelta==0) return;
-		
+
 		Vector3f loc = camera.getLocation();
-		
-		 loc.addLocal(camera.getLeft().mult(speed *(xDelta*(invert ? 1 : -1))*sensitivity, tempVa));
-		 loc.addLocal(camera.getUp().mult(speed *(yDelta*(invert ? -1 : 1))*sensitivity, tempVa));
-		
-        camera.update();
+
+		loc.addLocal(camera.getLeft().mult(speed *(xDelta*(invert ? 1 : -1))*sensitivity, tempVa));
+		loc.addLocal(camera.getUp().mult(speed *(yDelta*(invert ? -1 : 1))*sensitivity, tempVa));
+
+		camera.update();
 	}
 
 	/**
