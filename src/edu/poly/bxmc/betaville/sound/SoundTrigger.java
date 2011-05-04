@@ -136,8 +136,8 @@ public class SoundTrigger {
 	public boolean isViolated(Vector3f pointToTest){
 		if(pointToTest.getX() <= ne.getX()  &&
 				pointToTest.getX() >= se.getX() &&
-				pointToTest.getY() <= nw.getY() &&
-				pointToTest.getY() >= 0 &&
+				//pointToTest.getY() <= nw.getY() &&
+				//pointToTest.getY() >= 0 &&
 				pointToTest.getZ() <= ne.getZ() &&
 				pointToTest.getZ() >= nw.getZ()){
 			return true;

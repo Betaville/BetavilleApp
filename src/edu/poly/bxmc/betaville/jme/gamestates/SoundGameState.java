@@ -198,8 +198,15 @@ public class SoundGameState extends BasicGameState {
 				new UTMCoordinate(583327, 4506962, 18, 'T', 0), 150, 150, 150, ExitAction.STOP, false, true));
 		 */
 		
-		addSoundTrigger(new SoundTrigger("New Babylon", ResourceLoader.loadResource("/data/Sounds/quality_5.ogg"),
-				new GPSCoordinate(0, 40.701134, -74.008696), 1000, 150, 1000, ExitAction.STOP, true, true));
+		addSoundTrigger(new SoundTrigger("sq1", ResourceLoader.loadResource("/data/Sounds/sq1.ogg"),
+				new GPSCoordinate(0, 40.700282, -73.998248), 250, 150, 250, ExitAction.STOP, true, false));
+		
+		addSoundTrigger(new SoundTrigger("sq2", ResourceLoader.loadResource("/data/Sounds/sq2.ogg"),
+				new GPSCoordinate(0, 40.693007, -73.995623), 500, 150, 500, ExitAction.STOP, true, false));
+		
+		/*
+		addSoundTrigger(new SoundTrigger("sq3", ResourceLoader.loadResource("/data/Sounds/sq3.ogg"),
+				new GPSCoordinate(0, 40.712431, -73.997876), 500, 150, 500, ExitAction.STOP, true, false));*/
 
 
 		Vector3f loc = DisplaySystem.getDisplaySystem().getRenderer().getCamera().getLocation();
@@ -208,7 +215,7 @@ public class SoundGameState extends BasicGameState {
 		/* soundSystem.newStreamingSource(true, "$background", ResourceLoader.loadResource("/data/Sounds/Hum.ogg"), "bg.ogg", true,
 				loc.getX(), loc.getY(), loc.getZ(),
 				SoundSystemConfig.ATTENUATION_ROLLOFF, .5f); */
-		soundSystem.play("$background");
+		//soundSystem.play("$background");
 	}
 
 	/**
