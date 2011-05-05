@@ -31,6 +31,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JOptionPane;
 
@@ -57,6 +59,8 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	 * Constant <PORT_SERVER> - Port of the server
 	 */
 	private final int PORT_SERVER = 14500;
+	
+	private Timer doSomethingTimer;
 
 
 
@@ -79,6 +83,15 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Client application : "+ clientSocket.toString());
 			output = new ObjectOutputStream(clientSocket.getOutputStream());
 			input = new ObjectInputStream(clientSocket.getInputStream());
+			doSomethingTimer = new Timer();
+			doSomethingTimer.scheduleAtFixedRate(new TimerTask() {
+				
+				@Override
+				public void run() {
+					// do this to keep the application level communications link open
+					long designVersion = getDesignVersion();
+				}
+			}, 60000, 60000);
 		} catch (UnknownHostException e) {
 			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
 			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
