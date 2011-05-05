@@ -50,6 +50,7 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
+import com.jme.renderer.Camera.FrustumIntersect;
 import com.jme.scene.Node;
 import com.jme.scene.SharedMesh;
 import com.jme.scene.Skybox;
@@ -775,6 +776,14 @@ public class SceneGameState extends BasicGameState {
 	public Node getDesignNode() {
 		return designNode;
 	}
+	
+	/**
+	 * @legacy
+	 * @return
+	 */
+	public Spatial getDesignNodeChild(String identifier){
+		return designNode.getChild(identifier);
+	}
 
 	/**
 	 * @return the terrainNode
@@ -1209,30 +1218,33 @@ public class SceneGameState extends BasicGameState {
 			// REMOVE
 			if(designNode.getQuantity()==0) return;
 			
-			Vector3f cameraLoc = camera.getLocation();
-			Spatial farthestObject=null;
-			float distance=0;
-			float tempDistance;
-			
-			// remove buildings
-			for(Spatial design : designNode.getChildren()){
-				tempDistance = cameraLoc.distance(design.getLocalTranslation());
-				if(tempDistance>distance){
-					farthestObject = design;
-					distance=tempDistance;
+			SettingsPreferences.getThreadPool().submit(new Runnable() {
+				
+				public void run() {
+					Vector3f cameraLoc = camera.getLocation();
+					Spatial farthestObject=null;
+					float distance=0;
+					float tempDistance;
+					
+					logger.info("designNode has " + designNode.getQuantity() + " children");
+					// remove buildings
+					for(Spatial design : designNode.getChildren()){
+						tempDistance = cameraLoc.distance(design.getLocalTranslation());
+						if(tempDistance>distance){
+							farthestObject = design;
+							distance=tempDistance;
+						}
+					}
+					
+					Vector3f locationOfObject = farthestObject.getLocalTranslation();
+					if(camera.contains(farthestObject.getWorldBound()).equals(FrustumIntersect.Inside)){
+						logger.info("is inside");
+						designNode.detachChild(farthestObject);
+					}
+					
+					//logger.info("Angle Between camera and object: " + (180f-Math.toDegrees(cameraLoc.normalize().angleBetween(locationOfObject.normalize()))));
 				}
-			}
-			
-			// get 22.5 degrees and -22.5 degrees from the camera's location
-			Triangle triangle = new Triangle(cameraLoc, cameraLoc.add(new Vector3f(0.75f, 0, 0.25f).mult(camera.getFrustumFar())), cameraLoc.add(new Vector3f(0.75f, 0, -0.25f).mult(camera.getFrustumFar())));
-			// is it in the triangle
-			
-			
-			Vector3f locationOfObject = farthestObject.getLocalTranslation();
-			
-			logger.info("Angle Between camera and object: " + (180f-Math.toDegrees(cameraLoc.normalize().angleBetween(locationOfObject.normalize()))));
-			
-			designNode.detachChild(farthestObject);
+			});
 		}
 	}
 	
@@ -1270,7 +1282,13 @@ public class SceneGameState extends BasicGameState {
 
 		public void deconstruct() {}
 	}
+	
+	private class FramerateOptimizer implements Runnable{
 
-
+		public void run() {
+			// TODO Auto-generated method stub
+			
+		}
+	}
 
 }
