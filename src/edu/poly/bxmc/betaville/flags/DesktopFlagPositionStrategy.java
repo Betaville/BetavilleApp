@@ -60,7 +60,7 @@ public class DesktopFlagPositionStrategy extends AbstractFlagPositionStrategy {
 			return 50;
 		}
 		
-		Spatial s = SceneGameState.getInstance().getDesignNode().getChild(base.getFullIdentifier());
+		Spatial s = SceneGameState.getInstance().getDesignNodeChild(base.getFullIdentifier());
 		logger.info("Finding height of " + s.getName());
 		long start = System.currentTimeMillis();
 		currentMaxHeight=0;

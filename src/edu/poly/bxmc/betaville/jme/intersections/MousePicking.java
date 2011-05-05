@@ -131,7 +131,7 @@ public class MousePicking {
 	public Spatial getDesignFromFlag(){
 		for(int i=0; i<flagResults.getNumber(); i++){
 			if(flagResults.getPickData(i).getTargetMesh() instanceof SharedMesh){
-				return SceneGameState.getInstance().getDesignNode().getChild(flagResults.getPickData(i).getTargetMesh().getName());
+				return SceneGameState.getInstance().getDesignNodeChild(flagResults.getPickData(i).getTargetMesh().getName());
 			}
 		}
 		return null;
