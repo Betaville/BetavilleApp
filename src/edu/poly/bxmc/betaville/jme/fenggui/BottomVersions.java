@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,6 @@ import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.CacheManager;
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.IFlagSelectionListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ISlideScrollSpreadChangeListener;

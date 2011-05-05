@@ -197,7 +197,6 @@ public class SwingLoginWindow extends JFrame{
 	}
 
 	private boolean authenticate(){
-		loginInProgress.set(true);
 		String pass="";
 		for(int i=0; i<passField.getPassword().length; i++){
 			pass+=passField.getPassword()[i];
@@ -221,7 +220,6 @@ public class SwingLoginWindow extends JFrame{
 			passField.setText("");
 		}
 		pass = null;
-		loginInProgress.set(false);
 		return response;
 	}
 
@@ -250,7 +248,15 @@ public class SwingLoginWindow extends JFrame{
 		}
 	}
 
+	/**
+	 * 
+	 * @return 0 if this is acceptable
+	 * 1 if the client is newer than the server
+	 * -1 if the client is older than the server
+	 * -2 if a network connection couldn't be made
+	 */
 	private int checkVersion(){
+		try{
 		long serverVersion = NetPool.getPool().getSecureConnection().getDesignVersion();
 		logger.info("Server is version " + serverVersion);
 		if(Design.serialVersionUID==serverVersion) return 0;
@@ -260,6 +266,10 @@ public class SwingLoginWindow extends JFrame{
 			logger.error("server error");
 		}
 		return -1;
+		}catch (NullPointerException e) {
+			// can't connect? Throw a special error
+			return -2;
+		}
 	}
 
 	private void flashDialog(String message, boolean exitOnClose){
@@ -341,9 +351,9 @@ public class SwingLoginWindow extends JFrame{
 		login = new JButton("Login");
 		login.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				login.setEnabled(false);
+				//login.setEnabled(false);
 				doAuthAction();
-				login.setEnabled(true);
+				//login.setEnabled(true);
 			}
 		});
 
@@ -623,7 +633,15 @@ public class SwingLoginWindow extends JFrame{
 			logger.info("Login already in progress, please be patient!");
 			return;
 		}
+		else{
+			loginInProgress.set(true);
+		}
 		int versionCheck = checkVersion();
+		if(versionCheck==-2){
+			// can't connect
+			loginInProgress.set(false);
+			return;
+		}
 		if(versionCheck<0){
 			flashDialog("Update your Betaville Client!", true);
 			return;
@@ -642,6 +660,7 @@ public class SwingLoginWindow extends JFrame{
 					return;
 				}
 				authenticate();
+				loginInProgress.set(false);
 			}
 			else{
 				flashDialog("Please enter a username", false);

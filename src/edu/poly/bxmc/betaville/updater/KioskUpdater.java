@@ -35,7 +35,6 @@ import org.apache.log4j.Logger;
 import com.jme.util.GameTaskQueueManager;
 
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.jme.fenggui.panel.OnOffPanelAction;
 import edu.poly.bxmc.betaville.jme.fenggui.tutorial.TutorialWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -82,6 +81,7 @@ public class KioskUpdater extends AbstractUpdater {
 		}
 		
 		if(movedSinceLastUpdate){
+			setLastUpdate(System.currentTimeMillis());
 			return true;
 		}
 		else{
@@ -100,14 +100,19 @@ public class KioskUpdater extends AbstractUpdater {
 			updating.set(true);
 			logger.info("Refreshing Scene");
 			
+			GUIGameState guiGameState = GUIGameState.getInstance();
+			
 			// move the camera back to its starting point
 			SceneGameState.getInstance().cameraPerspectiveProjection();
 
 			// replace the TutorialWindow
 			//GUIGameState.getInstance().getDisp().addWidget(((OnOffPanelAction)GUIGameState.getInstance().getTopSelectionWindow().getCityPanel().getAction("Tutorials")).getWindow());
-			GUIGameState.getInstance().getDisp().addWidget(GUIGameState.getInstance().getTopSelectionWindow().getCityPanel().getWindow(TutorialWindow.class));
+			guiGameState.getDisp().addWidget(guiGameState.getTopSelectionWindow().getCityPanel().getWindow(TutorialWindow.class));
 			
 			SceneScape.clearTargetSpatial();
+			
+			guiGameState.getVersionsWindow().slideOutOfScene();
+			guiGameState.getProposalsWindow().slideOutOfScene();
 			
 			try {
 				GameTaskQueueManager.getManager().update(new Callable<Future<Object>>() {

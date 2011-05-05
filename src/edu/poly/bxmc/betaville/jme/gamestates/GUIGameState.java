@@ -572,6 +572,10 @@ public class GUIGameState extends GameState {
 	public BottomVersions getVersionsWindow(){
 		return bottomVersions;
 	}
+	
+	public BottomProposals getProposalsWindow(){
+		return bottomProposals;
+	}
 
 	public void forceFocus(IWidget w, boolean focusOn){
 		for(IWidget child : disp.getWidgets()){

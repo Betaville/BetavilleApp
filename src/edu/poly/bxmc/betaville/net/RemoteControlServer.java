@@ -140,12 +140,16 @@ public class RemoteControlServer {
 						input.strafeRight(buffer.getFloat());
 					}
 					else if(commandCode==RemoteCodes.ROTATE_UP){
+						input.rotateUp(buffer.getFloat());
 					}
 					else if(commandCode==RemoteCodes.ROTATE_DOWN){
+						input.rotateDown(buffer.getFloat());
 					}
 					else if(commandCode==RemoteCodes.ROTATE_LEFT){
+						input.rotateLeft(buffer.getFloat());
 					}
 					else if(commandCode==RemoteCodes.ROTATE_RIGHT){
+						input.rotateRight(buffer.getFloat());
 					}
 					else if(commandCode==RemoteCodes.ALTITUDE_UP){
 					}

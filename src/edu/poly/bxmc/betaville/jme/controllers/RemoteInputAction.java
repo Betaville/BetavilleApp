@@ -48,6 +48,7 @@ public class RemoteInputAction extends InputAction {
 	private float forwardTemp = 0;
 	private float leftTemp = 0;
 	private float rotateTemp = 0;
+	private float rotateUpDownTemp=0;
 	private Camera camera;
 
 	private Matrix3f incr = new Matrix3f();
@@ -93,10 +94,18 @@ public class RemoteInputAction extends InputAction {
 		camera.getLocation().addLocal(camera.getLeft().mult(leftTemp, tempVa));
 
 		if(rotateTemp!=0){
-			incr.fromAngleNormalAxis(speed * rotateTemp, camera.getUp());
+			incr.fromAngleNormalAxis(rotateTemp, camera.getUp());
 			incr.mult(camera.getUp(), camera.getUp());
 			incr.mult(camera.getLeft(), camera.getLeft());
 			incr.mult(camera.getDirection(), camera.getDirection());
+			camera.normalize();
+		}
+		
+		if(rotateUpDownTemp!=0){
+			incr.fromAngleNormalAxis(rotateUpDownTemp, camera.getLeft());
+	        incr.mult(camera.getLeft(), camera.getLeft());
+	        incr.mult(camera.getDirection(), camera.getDirection());
+	        incr.mult(camera.getUp(), camera.getUp());
 			camera.normalize();
 		}
 
@@ -108,6 +117,7 @@ public class RemoteInputAction extends InputAction {
 		forwardTemp=0;
 		leftTemp=0;
 		rotateTemp=0;
+		rotateUpDownTemp=0;
 	}
 
 	public void moveForward(float distance){
@@ -138,5 +148,15 @@ public class RemoteInputAction extends InputAction {
 	public void rotateRight(float distance){
 		if(!enabled) return;
 		rotateTemp-=distance;
+	}
+	
+	public void rotateUp(float distance){
+		if(!enabled) return;
+		rotateUpDownTemp+=distance;
+	}
+	
+	public void rotateDown(float distance){
+		if(!enabled) return;
+		rotateUpDownTemp-=distance;
 	}
 }
