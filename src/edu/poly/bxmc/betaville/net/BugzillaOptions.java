@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ package edu.poly.bxmc.betaville.net;
  */
 public class BugzillaOptions {
 	
-	public static final String baseURL = "http://128.238.56.115/bugzilla/";
+	public static final String baseURL = "http://bugzilla.betaville.net/";
 	public static final String enterBug = "enter_bug.cgi";
 	
 	public static final String component = "component";
