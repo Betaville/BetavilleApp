@@ -115,7 +115,7 @@ public class NetModelLoader{
 	 * otherwise, use the number of models desired.
 	 * @see NetModelLoader#NO_LIMIT
 	 */
-	public static void load(LookupRoutine lookupRoutine, int limit, int cityID){
+	public static void load(LookupRoutine lookupRoutine, int limit, final int cityID){
 		logger.info("Loading City " + cityID);
 		List<Design> designs = null;
 		UnprotectedManager manager = NetPool.getPool().getConnection();
@@ -138,14 +138,7 @@ public class NetModelLoader{
 			Collections.sort(designs, Design.distanceComparator(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
 			for(int i=0; i<designs.size(); i++){
 				if(limit==NO_LIMIT || i<limit){
-					Design design = designs.get(i);
-//					if(design.getName().equals("Wormhole Paradox Garage")&&(duplicated < 10)){
-//						
-//						
-//						
-//						designs.add(design);
-//						logger.info("duplicated");
-//					}
+					final Design design = designs.get(i);
 					if(SceneGameState.getInstance().getCamera().getLocation().distance(JME2MapManager.instance.locationToBetaville(design.getCoordinate())) < Scale.fromMeter(50000)){
 						//logger.info("adding: " + design.getName() + " | ID: " + design.getID());
 						
@@ -170,7 +163,7 @@ public class NetModelLoader{
 									e1.printStackTrace();
 								}
 								
-								Node dNode = loader.getModel();
+								final Node dNode = loader.getModel();
 								
 								
 								
@@ -188,12 +181,10 @@ public class NetModelLoader{
 								//dNode.setLocalScale(1/SceneScape.SceneScale);
 								dNode.setName(design.getFullIdentifier());
 								
-								dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
-								
-								
 								dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)design).getRotationX(),
 										((ModeledDesign)design).getRotationY(), ((ModeledDesign)design).getRotationZ()));
 								
+								dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 								
 								if(design.getName().contains("$TERRAIN")){
 									SceneGameState.getInstance().getTerrainNode().attachChild(dNode);
@@ -206,14 +197,25 @@ public class NetModelLoader{
 								dNode.updateRenderState();
 								
 								
-								/*
+								
 								GameTaskQueueManager.getManager().update(new Callable<Object>() {
 									public Object call() throws Exception {
 										//dNode.lockMeshes();
+										
+										if(design.getName().contains("$TERRAIN")){
+											SceneGameState.getInstance().getTerrainNode().attachChild(dNode);
+										}else{
+											SceneScape.getCity(cityID).addDesign(design);
+											SceneGameState.getInstance().getDesignNode().attachChild(dNode);
+										}
+										
+										
+										dNode.updateRenderState();
+										
 										return null;
 									}
 								});
-								*/
+								
 							}
 							else if(design instanceof EmptyDesign){
 								SceneScape.getCity(cityID).addDesign(design);

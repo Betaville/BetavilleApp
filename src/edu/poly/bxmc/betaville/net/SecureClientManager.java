@@ -31,8 +31,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JOptionPane;
 
@@ -60,10 +58,6 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	 */
 	private final int PORT_SERVER = 14500;
 	
-	private Timer doSomethingTimer;
-
-
-
 	/**
 	 * Constructor - Creation of the client manager
 	 */
@@ -83,15 +77,6 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Client application : "+ clientSocket.toString());
 			output = new ObjectOutputStream(clientSocket.getOutputStream());
 			input = new ObjectInputStream(clientSocket.getInputStream());
-			doSomethingTimer = new Timer();
-			doSomethingTimer.scheduleAtFixedRate(new TimerTask() {
-				
-				@Override
-				public void run() {
-					// do this to keep the application level communications link open
-					long designVersion = getDesignVersion();
-				}
-			}, 60000, 60000);
 		} catch (UnknownHostException e) {
 			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
 			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
@@ -109,6 +94,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Authenticating User");
 			output.writeObject(new Object[]{"user", "auth", name, pass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -131,6 +117,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			int sessionID = Integer.parseInt((String)response[0]);
 			String sessionToken = (String)response[1];
 			busy.getAndSet(false);
+			touchLastUsed();
 			if(sessionID>0){
 				logger.info("Logged in as "+ name +", Session ID: "+sessionID);
 				SettingsPreferences.setSessionID(sessionID);
@@ -163,6 +150,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			output.writeObject(new Object[]{"user", "endsession", sessionToken});
 			int response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
+			touchLastUsed();
 			if(response==0){
 				SettingsPreferences.setSessionToken("");
 				return true;
@@ -190,6 +178,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 				System.out.println("bool read correctly");
 			}
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean(response);
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -209,6 +198,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Changing user password");
 			output.writeObject(new Object[]{"user", "changepass", name, pass, newPass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -228,6 +218,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Changing user information");
 			output.writeObject(new Object[]{"user", "changebio", name, pass, newBio});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -248,6 +239,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft});
 			logger.info("Data transmission complete for design addition");
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -269,6 +261,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Adding an empty design");
 			output.writeObject(new Object[]{"design", "addempty", design, user, pass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -290,6 +283,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Adding a proposal");
 			output.writeObject(new Object[]{"design", "addproposal", design, user, pass, pft, removables, thumbTransporter, permission});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -312,6 +306,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			output.writeObject(new Object[]{"proposal", "addversion", design, user, pass, pft, removables, thumbTransporter});
 			logger.info("Data transmission complete for design addition");
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -333,6 +328,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Adding a base design");
 			output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -354,6 +350,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Removing a design");
 			output.writeObject(new Object[]{"design", "remove", designID, user, pass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -375,6 +372,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Changing name of design " + designID + " to \""+newName+"\"");
 			output.writeObject(new Object[]{"design", "changename", designID, newName, user, pass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -395,6 +393,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			output.writeObject(new Object[]{"design", "changefile", designID, user, pass, textureOnOff, pft});
 			logger.info("Data transmission complete for file change");
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -414,6 +413,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Changing description for design " + designID);
 			output.writeObject(new Object[]{"design", "changedescription", designID, newDescription, user, pass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -433,6 +433,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Changing the address of design " + designID);
 			output.writeObject(new Object[]{"design", "changeaddress", designID, newAddress, user, pass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -452,6 +453,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Changing the URL for design " + designID);
 			output.writeObject(new Object[]{"design", "changeurl", designID, newURL, user, pass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -470,8 +472,10 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		try {
 			logger.info("Changing the location for design " + designID);
 			output.writeObject(new Object[]{"design", "changemodellocation", designID, newLocation, rotY, user, pass});
+			String response = (String)readResponse();
 			busy.getAndSet(false);
-			return Boolean.parseBoolean((String)readResponse());
+			touchLastUsed();
+			return Boolean.parseBoolean(response);
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
@@ -488,7 +492,10 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"fave", "add", user, pass, designID});
-			return Integer.parseInt((String)readResponse());
+			String response = (String)readResponse();
+			busy.getAndSet(false);
+			touchLastUsed();
+			return Integer.parseInt(response);
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		} catch (UnexpectedServerResponse e) {
@@ -509,6 +516,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			boolean response = Boolean.parseBoolean((String)readResponse());
 			System.out.println("received net response");
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -528,6 +536,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Deleting comment " + commentID);
 			output.writeObject(new Object[]{"comment", "delete", commentID, user, pass});
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -548,6 +557,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			output.writeObject(new Object[]{"wormhole", "add", location.getUTM(), name, cityID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -570,6 +580,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			output.writeObject(new Object[]{"wormhole", "delete", wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -592,6 +603,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			output.writeObject(new Object[]{"wormhole", "editname", newName, wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -614,6 +626,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			output.writeObject(new Object[]{"wormhole", "editname", newLocation, wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);

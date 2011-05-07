@@ -54,7 +54,6 @@ public class InsecureClientManager extends ClientManager{
 	 */
 	private final int PORT_SERVER = 14500;
 	
-
 	/**
 	 * Constructor - Creation of the client manager
 	 */

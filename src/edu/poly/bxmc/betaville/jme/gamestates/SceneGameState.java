@@ -777,6 +777,11 @@ public class SceneGameState extends BasicGameState {
 		return designNode;
 	}
 	
+	public Node getBlockNodeFor(ILocation location){
+		
+		return designNode;
+	}
+	
 	/**
 	 * @legacy
 	 * @return

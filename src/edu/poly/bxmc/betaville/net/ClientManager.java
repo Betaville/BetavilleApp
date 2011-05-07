@@ -50,8 +50,24 @@ import edu.poly.bxmc.betaville.xml.DataReader;
  *
  */
 public abstract class ClientManager extends NetworkConnection implements UnprotectedManager {
-	static Logger logger = Logger.getLogger(ClientManager.class);
+	private static final Logger logger = Logger.getLogger(ClientManager.class);
 	
+	protected long lastUsed=-1;
+	
+	/**
+	 * Sets the <code>lastUsed</code> value to the current system time
+	 */
+	public void touchLastUsed(){
+		lastUsed=System.currentTimeMillis();
+	}
+	
+	/**
+	 * Gets the last time that this manager was used
+	 * @return The long time
+	 */
+	public long getLastUsed(){
+		return lastUsed;
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.UnprotectedManager#checkNameAvailability(java.lang.String)
@@ -63,12 +79,12 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"user", "available", name});
 			String response = (String)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return Boolean.parseBoolean(response);
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 			busy.getAndSet(false);
 		} catch (UnexpectedServerResponse e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			busy.getAndSet(false);
 		}
@@ -86,6 +102,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"user", "getmail", user});
 			String response = (String)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -112,10 +129,12 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 				CacheManager.getCacheManager().requestThumbnail(designID);
 				
 				busy.getAndSet(false);
+				touchLastUsed();
 				return (Design)response;
 			}
 			else{
 				busy.getAndSet(false);
+				touchLastUsed();
 				return null;
 			}
 		} catch (IOException e) {
@@ -142,15 +161,18 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			if(response instanceof List<?>){
 				if(((List<?>)(response)).get(0) instanceof Design){
 					busy.getAndSet(false);
+					touchLastUsed();
 					return (List<Design>)response;
 				}
 				else{
 					busy.getAndSet(false);
+					touchLastUsed();
 					return null;
 				}
 			}
 			else{
 				busy.getAndSet(false);
+				touchLastUsed();
 				return null;
 			}
 		} catch (IOException e) {
@@ -177,11 +199,13 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			if(response instanceof List<?>){
 				logger.info("returning");
 				busy.getAndSet(false);
+				touchLastUsed();
 				return (List<Design>)response;
 			}
 			else{
 				logger.error("Not a list!");
 				busy.getAndSet(false);
+				touchLastUsed();
 				return null;
 			}
 		} catch (IOException e) {
@@ -208,11 +232,13 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			if(response instanceof List<?>){
 				logger.info("returning");
 				busy.getAndSet(false);
+				touchLastUsed();
 				return (List<Design>)response;
 			}
 			else{
 				logger.error("Not a list!");
 				busy.getAndSet(false);
+				touchLastUsed();
 				return null;
 			}
 		} catch (IOException e) {
@@ -258,15 +284,18 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 				if(((List<?>)response).size()>0){
 					if(((List<?>)(response)).get(0) instanceof Design){
 						busy.getAndSet(false);
+						touchLastUsed();
 						return (List<Design>)response;
 					}
 					else{
 						busy.getAndSet(false);
+						touchLastUsed();
 						return null;
 					}
 				}
 				else{
 					busy.getAndSet(false);
+					touchLastUsed();
 					return null;
 				}
 			}
@@ -292,6 +321,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"design", "findbymodellimitedcity", cityID, onlyBase, limit});
 			byte[] response = (byte[])readResponse();
 			busy.set(false);
+			touchLastUsed();
 			return DataReader.readDesigns(StringZipper.uncompress(response));
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -302,12 +332,12 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			busy.getAndSet(false);
 			return null;
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			busy.getAndSet(false);
 			return null;
 		} catch (DataFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			busy.getAndSet(false);
 			return null;
 		}
 	}
@@ -326,20 +356,24 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 				if(((List<?>)response).size()>0){
 					if(((List<?>)(response)).get(0) instanceof Design){
 						busy.getAndSet(false);
+						touchLastUsed();
 						return (List<Design>)response;
 					}
 					else{
 						busy.getAndSet(false);
+						touchLastUsed();
 						return null;
 					}
 				}
 				else{
 					busy.getAndSet(false);
+					touchLastUsed();
 					return null;
 				}
 			}
 			else{
 				busy.getAndSet(false);
+				touchLastUsed();
 				return null;
 			}
 		} catch (IOException e) {
@@ -364,6 +398,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			if(response!=null){
 				if(response instanceof int[]){
 					busy.getAndSet(false);
+					touchLastUsed();
 					return (int[])response;
 				}
 			}
@@ -388,6 +423,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"proposal", "getpermissions", designID});
 			ProposalPermission response = (ProposalPermission) readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -411,6 +447,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"design", "allproposals", designID});
 			int[] response = (int[]) readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -436,6 +473,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			Object response = readResponse();
 			if(response instanceof List){
 				busy.getAndSet(false);
+				touchLastUsed();
 				return (List<Design>)response;
 			}
 		} catch (IOException e) {
@@ -458,6 +496,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"design", "requestthumb", designID});
 			PhysicalFileTransporter response = (PhysicalFileTransporter)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -488,6 +527,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"design", "requestfile", designID});
 			PhysicalFileTransporter response = (PhysicalFileTransporter)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -510,6 +550,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"city", "add", name, state, country});
 			int response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -533,6 +574,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new String[]{"city", "getall"});
 			List<City> response = (List<City>)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -556,6 +598,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"city", "findbyname", name});
 			List<Integer> response = (List<Integer>)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -579,6 +622,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"city", "findbystate", state});
 			List<Integer> response = (List<Integer>)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -602,6 +646,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"city", "findbycountry", country});
 			List<Integer> response = (List<Integer>)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -624,6 +669,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"city", "findbyid", cityID});
 			String[] response = (String[])readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -646,6 +692,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"city", "findbyall", name, state, country});
 			String[] response = (String[])readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -667,6 +714,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			logger.info("Reporting comment " + commentID + " as spam");
 			output.writeObject(new Object[]{"comment", "reportspam", commentID});
 			busy.getAndSet(false);
+			touchLastUsed();
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
 		}
@@ -684,6 +732,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"comment", "getforid", designID});
 			List<Comment> response = (List<Comment>)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -705,6 +754,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"user", "checklevel", user, userType});
 			int response =  Integer.parseInt((String) readResponse());
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -727,6 +777,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"softwareversion", "getdesign"});
 			long response =  Long.parseLong((String) readResponse());
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e) {
 			logger.error("Network issue detected", e);
@@ -749,6 +800,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			output.writeObject(new Object[]{"user", "getlevel", user});
 			UserType response = (UserType)readResponse();
 			busy.getAndSet(false);
+			touchLastUsed();
 			return response;
 		} catch (IOException e){
 			logger.error("Network issue detected", e);
@@ -777,6 +829,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			logger.error("The server has returned an unexpected type!", e);
 		}
 		busy.getAndSet(false);
+		touchLastUsed();
 		return wormholes;
 	}
 	
@@ -796,6 +849,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			logger.error("The server has returned an unexpected type!", e);
 		}
 		busy.getAndSet(false);
+		touchLastUsed();
 		return wormholes;
 	}
 	
@@ -816,6 +870,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			logger.error("The server has returned an unexpected type!", e);
 		}
 		busy.getAndSet(false);
+		touchLastUsed();
 		return wormholes;
 	}
 	
@@ -835,6 +890,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 			logger.error("The server has returned an unexpected type!", e);
 		}
 		busy.getAndSet(false);
+		touchLastUsed();
 		return designs;
 	}
 }

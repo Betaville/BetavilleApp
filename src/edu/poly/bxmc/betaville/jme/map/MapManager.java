@@ -53,6 +53,11 @@ public abstract class MapManager<T>{
 	private static final Logger logger = Logger.getLogger(MapManager.class);
 	
 	/**
+	 * The size of a block node in meters
+	 */
+	protected int blockSize=1000;
+	
+	/**
 	 * The four corners of a box plus the center.
 	 */
 	public static enum SquareCorner{
