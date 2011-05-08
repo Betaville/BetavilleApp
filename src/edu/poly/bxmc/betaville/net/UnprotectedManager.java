@@ -91,7 +91,6 @@ public interface UnprotectedManager {
 	 * @return A Vector of <code>Design</code> objects.
 	 * @see Design
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Design> findDesignsByName(String name);
 
 	/**
@@ -100,7 +99,6 @@ public interface UnprotectedManager {
 	 * @return A Vector of <code>Design</code> objects.
 	 * @see Design
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Design> findDesignsByUser(String user);
 
 	/**
@@ -110,7 +108,6 @@ public interface UnprotectedManager {
 	 * @return A Vector of <code>Design</code> objects.
 	 * @see Design
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Design> findDesignsByDate(Date date);
 
 	/**
@@ -137,7 +134,6 @@ public interface UnprotectedManager {
 	 * @return A Vector of <code>Design</code> objects.
 	 * @see Design
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Design> findTerrainByCity(int cityID);
 
 	public abstract int[] findVersionsOfProposal(int proposalDesignID);
@@ -158,7 +154,6 @@ public interface UnprotectedManager {
 	 * @param meterRadius
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Design> findAllProposalsNearLocation(
 			UTMCoordinate coordinate, int meterRadius);
 
@@ -193,7 +188,6 @@ public interface UnprotectedManager {
 	 */
 	public abstract int addCity(String name, String state, String country);
 
-	@SuppressWarnings("unchecked")
 	public abstract List<City> findAllCities();
 
 	/**
@@ -202,7 +196,6 @@ public interface UnprotectedManager {
 	 * @return A Vector of Integers which reference the ID's of the cities
 	 * that were found.
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Integer> findCitiesByName(String name);
 
 	/**
@@ -211,7 +204,6 @@ public interface UnprotectedManager {
 	 * @return A Vector of Integers which reference the ID's of the cities
 	 * that were found.
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Integer> findCitiesByState(String state);
 
 	/**
@@ -220,7 +212,6 @@ public interface UnprotectedManager {
 	 * @return A Vector of Integers which reference the ID's of the cities
 	 * that were found.
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Integer> findCitiesByCountry(String country);
 
 	/**
@@ -268,7 +259,6 @@ public interface UnprotectedManager {
 	 * @return A <code>Vector</code> of Comments
 	 * @see Comment
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Comment> getComments(int designID);
 
 	/**
@@ -293,7 +283,6 @@ public interface UnprotectedManager {
 	 */
 	public abstract UserType getUserLevel(String user);
 
-	@SuppressWarnings("unchecked")
 	public abstract List<Wormhole> getWormholesWithin(
 			UTMCoordinate location, int extentNorth, int extentEast);
 
@@ -301,7 +290,6 @@ public interface UnprotectedManager {
 	 * Retrieves <strong>all</strong> wormholes from the database
 	 * @return A list of {@link Wormhole} objects
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Wormhole> getAllWormholes();
 
 	/**
@@ -310,10 +298,8 @@ public interface UnprotectedManager {
 	 * @param cityID The ID of the city in which to search for wormholes
 	 * @return A list of {@link Wormhole} objects
 	 */
-	@SuppressWarnings("unchecked")
 	public abstract List<Wormhole> getAllWormholesInCity(int cityID);
 
-	@SuppressWarnings("unchecked")
 	public abstract List<Design> synchronizeData(
 			HashMap<Integer, Integer> hashMap);
 
