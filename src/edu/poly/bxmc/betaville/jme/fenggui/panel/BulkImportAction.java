@@ -60,7 +60,7 @@ public class BulkImportAction extends PanelAction {
 	 * @param listener
 	 */
 	public BulkImportAction() {
-		super("Bulk Impport", "Imports multiple 3D objects", "Bulk Impport", AvailabilityRule.NO_OBJECT_SELECTED, UserType.BASE_COMMITTER,
+		super("Bulk Import", "Imports multiple 3D objects", "Bulk Impport", AvailabilityRule.NO_OBJECT_SELECTED, UserType.BASE_COMMITTER,
 				new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
