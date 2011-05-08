@@ -120,6 +120,8 @@ public interface UnprotectedManager {
 	 * @see Design
 	 */
 	public abstract List<Design> findAllDesignsByCity(int cityID);
+	
+	public abstract List<Design> findDesignsByCitySetStartEnd(int cityID, boolean onlyBase, int start, int end);
 
 	/**
 	 * Gets only the base designs located in a city.

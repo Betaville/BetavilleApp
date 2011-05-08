@@ -314,6 +314,57 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		}
 	}
 	
+	/**
+	 * Gets the designs located in a city.
+	 * @param cityID The ID of the city that we are looking in.
+	 * @param onlyBase Whether to retrieve only the base designs
+	 * (true) or all of them (false).
+	 * @param start
+	 * @param end
+	 * @return A List of <code>Design</code> objects.
+	 * @see Design
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Design> findDesignsByCitySetStartEnd(int cityID, boolean onlyBase, int start, int end){
+		busy.getAndSet(true);
+		try {
+			logger.info("Finding designs from city " + cityID);
+			output.writeObject(new Object[]{"design", "findbycitysetstartend", cityID, onlyBase, start, end});
+			Object response = readResponse();
+			if(response instanceof List<?>){
+				if(((List<?>)response).size()>0){
+					if(((List<?>)(response)).get(0) instanceof Design){
+						busy.getAndSet(false);
+						touchLastUsed();
+						return (List<Design>)response;
+					}
+					else{
+						busy.getAndSet(false);
+						touchLastUsed();
+						return null;
+					}
+				}
+				else{
+					busy.getAndSet(false);
+					touchLastUsed();
+					return null;
+				}
+			}
+			else{
+				busy.getAndSet(false);
+				return null;
+			}
+		} catch (IOException e) {
+			logger.error("Network issue detected", e);
+			busy.getAndSet(false);
+			return null;
+		} catch (UnexpectedServerResponse e) {
+			e.printStackTrace();
+			busy.getAndSet(false);
+			return null;
+		}
+	}
+	
 	public List<Design> findModelDesignsByCityLimit(int cityID, boolean onlyBase, int limit){
 		busy.getAndSet(true);
 		try {

@@ -223,17 +223,15 @@ public class NetModelLoader{
 
 			}
 
-			logger.info("designNode has " + SceneGameState.getInstance().getDesignNode().getQuantity() + " objects (total: "+ GeometryUtilities.countAllChildren(SceneGameState.getInstance().getDesignNode())+")");
-
 			// wait for everything to load
 			while(itemsLoaded.get()<itemsToLoad.get()){
 				try {
 					Thread.sleep(25);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.info("Interrupted while waiting for models to finish loading");
 				}
 			}
+			logger.info("designNode has " + SceneGameState.getInstance().getDesignNode().getQuantity() + " objects (total: "+ GeometryUtilities.countAllChildren(SceneGameState.getInstance().getDesignNode())+")");
 			FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
 			testFlagger.getProposals(5000);
 			testFlagger.placeFlags();
