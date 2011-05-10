@@ -93,12 +93,14 @@ public class RemoteInputAction extends InputAction {
 		camera.getLocation().addLocal(camera.getDirection().mult(forwardTemp, tempVa));
 		camera.getLocation().addLocal(camera.getLeft().mult(leftTemp, tempVa));
 
+		/*
 		if(rotateTemp!=0){
 			incr.fromAngleNormalAxis(rotateTemp, camera.getUp());
 			incr.mult(camera.getUp(), camera.getUp());
 			incr.mult(camera.getLeft(), camera.getLeft());
 			incr.mult(camera.getDirection(), camera.getDirection());
 			camera.normalize();
+			camera.update();
 		}
 		
 		if(rotateUpDownTemp!=0){
@@ -107,10 +109,22 @@ public class RemoteInputAction extends InputAction {
 	        incr.mult(camera.getDirection(), camera.getDirection());
 	        incr.mult(camera.getUp(), camera.getUp());
 			camera.normalize();
+			camera.update();
+		}
+		*/
+		
+		if(rotateUpDownTemp!=0 || rotateTemp!=0){
+			incr.fromAngleNormalAxis(rotateUpDownTemp, camera.getLeft());
+			incr.fromAngleNormalAxis(rotateTemp, camera.getUp());
+			incr.mult(camera.getLeft(), camera.getLeft());
+			incr.mult(camera.getDirection(), camera.getDirection());
+			incr.mult(camera.getUp(), camera.getUp());
+			camera.normalize();
+			camera.update();
 		}
 
 		clearTemporaries();
-		camera.update();
+		
 	}
 
 	private void clearTemporaries(){
