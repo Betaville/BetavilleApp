@@ -34,12 +34,14 @@ import edu.poly.bxmc.betaville.net.wfs.WFSParams;
  *
  */
 public class WFSClient {
+	
+	private String server = "http://192.168.1.6:8080/geoserver/";
 
 	public WFSClient() throws IOException{
 		
 		
 		
-		String getCapabilities = "http://localhost:8080/geoserver/wfs?REQUEST=GetCapabilities";
+		String getCapabilities = server+"wfs?REQUEST=GetCapabilities";
 
 		Map<String, String> connectionParameters = new HashMap<String, String>();
 		connectionParameters.put(WFSParams.GET_CAPABILITIES_URL, getCapabilities);
@@ -47,37 +49,45 @@ public class WFSClient {
 		// Step 2 - connection
 		DataStore data = DataStoreFinder.getDataStore(connectionParameters);
 
-		// Step 3 - discouvery
+		// Step 3 - type discovery
 		String typeNames[] = data.getTypeNames();
+		if(typeNames.length>0){
+			for(String name : typeNames){
+				System.out.println("typeName " + name);
+			}
+		}
 		String typeName = typeNames[0];
-		SimpleFeatureTypeImpl schema = (SimpleFeatureTypeImpl) data.getSchema( typeName );
+		SimpleFeatureTypeImpl schema = (SimpleFeatureTypeImpl) data.getSchema(typeName);
 
 		// Step 4 - target
-		FeatureSource<SimpleFeatureType, SimpleFeature> source = data.getFeatureSource( typeName );
-		System.out.println( "Metadata Bounds:"+ source.getBounds() );
+		FeatureSource<SimpleFeatureType, SimpleFeature> source = data.getFeatureSource(typeName);
+		
+		
+		System.out.println("Metadata Bounds:"+ source.getBounds());
 
 		// Step 5 - query
 		String geomName = schema.getGeometryDescriptor().getLocalName();
-		Envelope bbox = new Envelope( -100.0, -70, 25, 40 );
+		Envelope bbox = new Envelope(-100.0, -70, 25, 40);
 
-		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2( GeoTools.getDefaultHints() );
-		Object polygon = JTS.toGeometry( bbox );
-		Intersects filter = ff.intersects( ff.property( geomName ), ff.literal( polygon ) );
+		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+		Object polygon = JTS.toGeometry(bbox);
+		Intersects filter = ff.intersects(ff.property(geomName), ff.literal(polygon));
 
-		Query query = new DefaultQuery( typeName, filter, new String[]{ geomName } );
-		FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures( query );
+		//Query query = new DefaultQuery(typeName, filter, new String[]{geomName});
+		Query query = new DefaultQuery(typeName);
+		FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures(query);
 
 		ReferencedEnvelope bounds = new ReferencedEnvelope();
 		Iterator<SimpleFeature> iterator = features.iterator();
 		try {
-			while( iterator.hasNext() ){
+			while(iterator.hasNext()){
 				Feature feature = (Feature) iterator.next();
-				bounds.include( feature.getBounds() );
+				bounds.include(feature.getBounds());
 			}
-			System.out.println( "Calculated Bounds:"+ bounds );
+			System.out.println("Calculated Bounds:"+ bounds);
 		}
 		finally {
-			features.close( iterator );
+			features.close(iterator);
 		}
 	}
 	
