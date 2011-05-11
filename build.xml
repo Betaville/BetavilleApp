@@ -16,6 +16,7 @@
     <path id="BetavilleApp.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/jdom/build/jdom.jar"/>
+    	<!-- jME2 -->
         <pathelement location="lib/jme/jme-audio.jar"/>
         <pathelement location="lib/jme/jme-awt.jar"/>
         <pathelement location="lib/jme/jme-collada.jar"/>
@@ -33,17 +34,18 @@
         <pathelement location="lib/jme/lib/jogl/jogl.jar"/>
         <pathelement location="lib/jme/lib/junit/junit-4.1.jar"/>
         <pathelement location="lib/jme/lib/jorbis/jorbis-0.0.17.jar"/>
-        <pathelement location="lib/rss_utils_1/rssutils.jar"/>
+    	<pathelement location="lib/jme/lib/lwjgl/jinput.jar"/>
+   		<pathelement location="lib/jme/lib/lwjgl/lwjgl_util.jar"/>
+    	<pathelement location="lib/jme/lib/lwjgl/lwjgl.jar"/>
+    	<pathelement location="lib/rss_utils_1/rssutils.jar"/>
         <pathelement location="lib/BareBonesBrowserLaunch.jar"/>
         <path refid="Persisted container [SWT_CONTAINER for project [BetavilleApp]].libraryclasspath"/>
+    	<!-- SoundSystem -->
         <pathelement location="lib/SoundSystem/CodecWav.jar"/>
         <pathelement location="lib/SoundSystem/CodecJOgg.jar"/>
         <pathelement location="lib/SoundSystem/LibraryJavaSound.jar"/>
         <pathelement location="lib/SoundSystem/LibraryLWJGLOpenAL.jar"/>
         <pathelement location="lib/SoundSystem/SoundSystem.jar"/>
-        <pathelement location="lib/jme/lib/lwjgl/jinput.jar"/>
-        <pathelement location="lib/jme/lib/lwjgl/lwjgl_util.jar"/>
-        <pathelement location="lib/jme/lib/lwjgl/lwjgl.jar"/>
         <pathelement location="lib/FengGUI/FengGUI.jar"/>
         <pathelement location="lib/FengGUI/FengGUI-Optional.jar"/>
         <pathelement location="lib/log4j/log4j-1.2.16.jar"/>
@@ -51,6 +53,43 @@
         <pathelement location="lib/timingframework/TimingFramework-1.0.jar"/>
         <pathelement location="lib/ogg-video-codec.jar"/>
         <pathelement location="lib/AppleJavaExtensions/AppleJavaExtensions.jar"/>
+    	<!-- GeoTools -->
+    	<pathelement location="lib/geotoos/common-2.2.1.jar"/>
+    	<pathelement location="lib/geotoos/commons-collections-3.1.jar"/>
+    	<pathelement location="lib/geotoos/commons-pool-1.5.4.jar"/>
+    	<pathelement location="lib/geotoos/ecore-2.2.2.jar"/>
+    	<pathelement location="lib/geotoos/gt-api-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotoos/gt-data-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotoos/gt-epsg-extension-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotoos/gt-epsg-hsql-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotoos/gt-epsg-wkt-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotoos/gt-main-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotoos/gt-metadata-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotoos/gt-opengis-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-referencing-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-wfs-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-core-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-fes-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-filter-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-gml2-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-gml3-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-kml-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-ows-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-sld-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-wcs-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-wfs-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-wms-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/gt-xsd-wps-2.7.0.1.jar"/>
+        <pathelement location="lib/geotoos/hsqldb-1.8.0.7.jar"/>
+        <pathelement location="lib/geotoos/jsr-275-1.0-beta-2.jar"/>
+    	<pathelement location="lib/geotoos/jts-1.11"/>
+    	<pathelement location="lib/geotoos/net.opengis.ows-2.7.0.1"/>
+    	<pathelement location="lib/geotoos/net.opengis.wfs-2.7.0.1"/>
+    	<pathelement location="lib/geotoos/picocontainer-1.2"/>
+    	<pathelement location="lib/geotoos/vecmath-1.3.2"/>
+        <pathelement location="lib/geotoos/xercesImpl-2.7.1.jar"/>
+        <pathelement location="lib/geotoos/xpp3-1.1.3.4.O.jar"/>
+        <pathelement location="lib/geotoos/xsd-2.2.2.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -171,5 +210,41 @@
 	    <signjar jar="webstart/windows-native.jar"						alias="betaville" storepass="${keypass}" />
 	    <signjar jar="webstart/mac-native.jar"							alias="betaville" storepass="${keypass}" />
 	    <signjar jar="webstart/linux-native.jar"						alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/common-2.2.1.jar"						alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/commons-collections-3.1.jar"			alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/commons-pool-1.5.4.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/ecore-2.2.2.jar"						alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-api-2.7.0.1.jar"					alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-data-2.7.0.1.jar"					alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-epsg-extension-2.7.0.1.jar"		alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-epsg-hsql-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-epsg-wkt-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-main-2.7.0.1.jar"					alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-metadata-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-opengis-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-referencing-2.7.0.1.jar"			alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-wfs-2.7.0.1.jar"					alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-core-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-fes-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-filter-2.7.0.1.jar"			alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-gml2-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-gml3-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-kml-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-ows-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-sld-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-wcs-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-wfs-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-wms-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/gt-xsd-wps-2.7.0.1.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/hsqldb-1.8.0.7.jar"					alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/jsr-275-1.0-beta-2.jar"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/jts-1.11"								alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/net.opengis.ows-2.7.0.1"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/net.opengis.wfs-2.7.0.1"				alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/picocontainer-1.2"					alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/vecmath-1.3.2"						alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/xercesImpl-2.7.1.jar"					alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/xpp3-1.1.3.4.O.jar"					alias="betaville" storepass="${keypass}" />
+		<signjar jar="lib/geotoos/xsd-2.2.2.jar"						alias="betaville" storepass="${keypass}" />
 	  </target>
 </project>
