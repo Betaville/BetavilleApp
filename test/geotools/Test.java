@@ -1,4 +1,4 @@
-package geotoos;
+package geotools;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;

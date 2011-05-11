@@ -1,7 +1,7 @@
 /**
  * 
  */
-package geotoos;
+package geotools;
 
 import java.io.IOException;
 import java.util.HashMap;
