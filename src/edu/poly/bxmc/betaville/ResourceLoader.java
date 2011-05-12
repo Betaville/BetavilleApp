@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,10 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 
 /**
+ * Enables the loading of resources from a Jar file
+ * when using Web Start or from a folder in the
+ * Betaville project when being run from an IDE
  * @author Skye Book
- *
  */
 public class ResourceLoader {
 	private static Logger logger = Logger.getLogger(ResourceLoader.class);

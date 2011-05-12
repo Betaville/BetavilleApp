@@ -35,8 +35,8 @@ import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.NetPool;
 
 /**
+ * Performs a shutdown of the Betaville application
  * @author Skye Book
- *
  */
 public class ShutdownManager {
 	private static final Logger logger = Logger.getLogger(ShutdownManager.class);

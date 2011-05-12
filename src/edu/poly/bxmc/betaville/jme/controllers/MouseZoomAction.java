@@ -50,6 +50,8 @@ public class MouseZoomAction extends MouseInputAction {
 
 	/**
 	 * 
+	 * @param camera
+	 * @param speedPerMouseWheelClick how far the camera will move with each mouse click
 	 */
 	public MouseZoomAction(Camera camera, float speedPerMouseWheelClick) {
 		this.camera=camera;
@@ -112,7 +114,7 @@ public class MouseZoomAction extends MouseInputAction {
 	}
 
 	public interface ZoomLock{
-		
+
 		/**
 		 * @return True if the zoom action should be allowed
 		 * to proceed, false if not

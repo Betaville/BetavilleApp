@@ -107,6 +107,11 @@ public class SettingsPreferences {
 		return DATA_FOLDER;
 	}
 	
+	/**
+	 * The last accessed location when using a file browser within
+	 * the application.  Initialized to the user's home folder on
+	 * startup.
+	 */
 	public static File BROWSER_LOCATION = DriveFinder.getHomeDir();
 	
 	public static File getLocalServerFolder(){

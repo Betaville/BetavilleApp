@@ -74,7 +74,7 @@ public class CacheManager {
 			if(cacheDir.isDirectory()){
 				File[] dirFiles = cacheDir.listFiles();
 				for(int i=0; i<dirFiles.length; i++){
-					doAddFile(dirFiles[i]);
+					doFileRegistration(dirFiles[i]);
 				}
 				LogManager.enterLog(Level.INFO, "Cache has " + dirFiles.length + " files at a size of " + (currentSize/1000 )+ "MB", CacheManager.class.getName());
 			}
@@ -118,17 +118,21 @@ public class CacheManager {
 		else return 0;
 	}
 	
-	public void addFile(String fileName){
+	/**
+	 * Adds a file to those currently tracked by the cache
+	 * @param fileName
+	 */
+	private void registerFileInCache(String fileName){
 		File file = new File(SettingsPreferences.getDataFolder()+fileName);
 		if(file.exists()){
-			doAddFile(file);
+			doFileRegistration(file);
 			if(maxSize<currentSize){
 				// Do something drastic
 			}
 		}
 	}
 	
-	private void doAddFile(File file){
+	private void doFileRegistration(File file){
 		if(file.isFile()){
 			files.put(removeExtension(file.getName()), file.length());
 			currentSize+=(file.length()/1000);
@@ -144,6 +148,12 @@ public class CacheManager {
 		}
 	}
 	
+	/**
+	 * Removes file from the cache that are not in the same
+	 * UTM zone as the given coordinate.
+	 * @param currentLocation The coordinate from which to
+	 * determine which UTM zone's files <em>not</em> to delete.
+	 */
 	public void maintain(UTMCoordinate currentLocation){
 		Iterator<Design> it = SceneScape.getCity().getDesigns().iterator();
 		while(it.hasNext()){
@@ -155,6 +165,11 @@ public class CacheManager {
 		}
 	}
 	
+	/**
+	 * Strips a filename, and the final dot, from a String
+	 * @param name The filename from which to remove the extension
+	 * @return The shortened filename
+	 */
 	private String removeExtension(String name){
 		return name.substring(0, name.lastIndexOf("."));
 	}
@@ -173,7 +188,7 @@ public class CacheManager {
 				} catch (URISyntaxException e) {
 					e.printStackTrace();
 				}
-				addFile(filename);
+				registerFileInCache(filename);
 				return true;
 			}
 			else return false;
@@ -184,7 +199,8 @@ public class CacheManager {
 	}
 	
 	/**
-	 * Request a file using an externally maintained client manager.
+	 * Request a file from the server using an externally
+	 * maintained client manager.
 	 * @param designID
 	 * @param filename
 	 * @param manager
@@ -247,6 +263,9 @@ public class CacheManager {
 		}
 	}
 	
+	/**
+	 * @return The static instance of the {@link CacheManager}
+	 */
 	public static CacheManager getCacheManager(){
 		if(cm!=null){
 			return cm;
