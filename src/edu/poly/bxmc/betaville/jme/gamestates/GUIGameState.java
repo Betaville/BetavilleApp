@@ -77,6 +77,7 @@ import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.module.GUIModule;
 import edu.poly.bxmc.betaville.module.Module;
+import edu.poly.bxmc.betaville.progress.ProgressContainer;
 
 /**
  * Class <GUIGameState> - Create and Manage the GUI
@@ -141,6 +142,7 @@ public class GUIGameState extends GameState {
 	private NewProposalWindow newProposalWindow;
 	private BottomProposals bottomProposals;
 	private BottomVersions bottomVersions;
+	private ProgressContainer progressContainer;
 	private boolean contextOn;
 	private boolean previousRightClick;
 	private boolean previousLeftClick;
@@ -242,6 +244,10 @@ public class GUIGameState extends GameState {
 					bottomVersions = new BottomVersions();
 					bottomVersions.setXY(bottomProposals.getWidth(), bottomVersions.getHeight()*-1);
 					disp.addWidget(bottomVersions);
+					
+					progressContainer = FengGUI.createWidget(ProgressContainer.class);
+					progressContainer.setXY(0, 0);
+					disp.addWidget(progressContainer);
 
 					logger.debug("FENGGUI VERSION: " + FengGUI.VERSION);
 
@@ -575,6 +581,10 @@ public class GUIGameState extends GameState {
 	
 	public BottomProposals getProposalsWindow(){
 		return bottomProposals;
+	}
+	
+	public ProgressContainer getProgressContainer(){
+		return progressContainer;
 	}
 
 	public void forceFocus(IWidget w, boolean focusOn){

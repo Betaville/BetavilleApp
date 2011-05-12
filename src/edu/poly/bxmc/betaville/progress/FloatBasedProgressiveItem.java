@@ -43,11 +43,21 @@ public class FloatBasedProgressiveItem extends ProgressiveItem {
 		this.maximum=maximum;
 	}
 	
-	public void update(int current){
+	public void update(float current){
 		this.current=current;
 		for(IProgressUpdateListener listener : listeners){
 			listener.progressUpdated(getPercentage(), getCurrentProgress());
 		}
+		
+		if(this.current==maximum){
+			for(IProgressUpdateListener listener : listeners){
+				listener.taskFinished();
+			}
+		}
+	}
+	
+	public void setMax(float max){
+		maximum=max;
 	}
 	
 	/* (non-Javadoc)

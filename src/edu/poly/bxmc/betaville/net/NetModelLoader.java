@@ -42,6 +42,7 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
 import edu.poly.bxmc.betaville.flags.FlagProducer;
+import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.ModelLoader;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
@@ -51,6 +52,7 @@ import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
+import edu.poly.bxmc.betaville.progress.IntegerBasedProgressiveItem;
 
 /**
  * Loads models from the network.  Different options for what is loaded
@@ -121,6 +123,10 @@ public class NetModelLoader{
 			List<Design> designs = null;
 			AtomicInteger itemsToLoad = new AtomicInteger(0);
 			final AtomicInteger itemsLoaded = new AtomicInteger(0);
+			// add progress listener
+			final IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Model Loading", itemsLoaded.get(), itemsToLoad.get());
+			GUIGameState.getInstance().getProgressContainer().addItem(item);
+			
 			UnprotectedManager manager = NetPool.getPool().getConnection();
 			if(lookupRoutine.equals(LookupRoutine.ALL_IN_CITY)){
 				designs = manager.findBaseDesignsByCity(cityID);
@@ -190,6 +196,7 @@ public class NetModelLoader{
 									dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 
 									itemsToLoad.incrementAndGet();
+									item.setMax(itemsToLoad.get());
 
 									GameTaskQueueManager.getManager().update(new Callable<Object>() {
 										public Object call() throws Exception {
@@ -205,6 +212,7 @@ public class NetModelLoader{
 
 											dNode.updateRenderState();
 											itemsLoaded.incrementAndGet();
+											item.update(itemsLoaded.get());
 											return null;
 										}
 									});
@@ -220,7 +228,6 @@ public class NetModelLoader{
 						}
 					}
 				}
-
 			}
 
 			// wait for everything to load

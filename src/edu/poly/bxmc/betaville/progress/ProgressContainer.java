@@ -25,54 +25,27 @@
  */
 package edu.poly.bxmc.betaville.progress;
 
+import org.fenggui.Container;
+import org.fenggui.layout.RowExLayout;
+import org.fenggui.layout.RowExLayoutData;
+
+
 /**
  * @author Skye Book
  *
  */
-public class IntegerBasedProgressiveItem extends ProgressiveItem {
+public class ProgressContainer extends Container{
 	
-	private int current;
-	private int maximum;
-
 	/**
-	 * @param name
+	 * 
 	 */
-	public IntegerBasedProgressiveItem(String name, int current, int maximum) {
-		super(name);
-		this.current=current;
-		this.maximum=maximum;
+	public ProgressContainer(){
+		setLayoutManager(new RowExLayout(false));
 	}
 	
-	public void update(int current){
-		this.current=current;
-		for(IProgressUpdateListener listener : listeners){
-			listener.progressUpdated(getPercentage(), getCurrentProgress());
-		}
-		
-		if(this.current==maximum){
-			for(IProgressUpdateListener listener : listeners){
-				listener.taskFinished();
-			}
-		}
-	}
-	
-	public void setMax(int max){
-		maximum=max;
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.progress.ProgressiveItem#getPercentage()
-	 */
-	@Override
-	public float getPercentage() {
-		return (float)current/(float)maximum;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.progress.ProgressiveItem#getCurrentProgress()
-	 */
-	@Override
-	public String getCurrentProgress() {
-		return current+"/"+maximum;
+	public void addItem(ProgressiveItem item){
+		ProgressContainerItem pci = new ProgressContainerItem(item);
+		pci.setLayoutData(new RowExLayoutData(true, true));
+		addWidget(pci);
 	}
 }

@@ -25,54 +25,47 @@
  */
 package edu.poly.bxmc.betaville.progress;
 
+import org.fenggui.Container;
+import org.fenggui.FengGUI;
+import org.fenggui.Label;
+import org.fenggui.decorator.background.PlainBackground;
+import org.fenggui.util.Color;
+
+
+
 /**
  * @author Skye Book
  *
  */
-public class IntegerBasedProgressiveItem extends ProgressiveItem {
-	
-	private int current;
-	private int maximum;
+public class ProgressContainerItem extends Container {
 
-	/**
-	 * @param name
-	 */
-	public IntegerBasedProgressiveItem(String name, int current, int maximum) {
-		super(name);
-		this.current=current;
-		this.maximum=maximum;
-	}
-	
-	public void update(int current){
-		this.current=current;
-		for(IProgressUpdateListener listener : listeners){
-			listener.progressUpdated(getPercentage(), getCurrentProgress());
-		}
-		
-		if(this.current==maximum){
-			for(IProgressUpdateListener listener : listeners){
-				listener.taskFinished();
+	private String progressTitle;
+	private Label statusLabel;
+
+	public ProgressContainerItem(ProgressiveItem item){
+		getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
+		progressTitle=item.getName();
+		statusLabel = FengGUI.createWidget(Label.class);
+		statusLabel.setText(progressTitle);
+		item.addProgressUpdateListener(new IProgressUpdateListener() {
+
+			public void taskFinished() {
+				remove();
 			}
-		}
-	}
-	
-	public void setMax(int max){
-		maximum=max;
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.progress.ProgressiveItem#getPercentage()
-	 */
-	@Override
-	public float getPercentage() {
-		return (float)current/(float)maximum;
-	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.progress.ProgressiveItem#getCurrentProgress()
-	 */
-	@Override
-	public String getCurrentProgress() {
-		return current+"/"+maximum;
+			public void statusMessageUpdated(String newStatusMessage) {
+				statusLabel.setText(progressTitle+": "+newStatusMessage);
+			}
+
+			public void progressUpdated(float percentage, String progressString) {
+				statusLabel.setText(progressTitle+": "+progressString);
+			}
+		});
+		
+		addWidget(statusLabel);
+	}
+	
+	private void remove(){
+		((Container)getParent()).removeWidget(this);
 	}
 }

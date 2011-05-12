@@ -88,6 +88,20 @@ public abstract class ProgressiveItem {
 	}
 	
 	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * 
 	 * @return A floating point number representing the current progress
 	 */
