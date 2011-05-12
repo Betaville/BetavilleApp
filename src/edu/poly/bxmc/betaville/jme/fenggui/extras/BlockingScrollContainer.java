@@ -38,6 +38,7 @@ import edu.poly.bxmc.betaville.jme.controllers.MouseZoomAction.ZoomLock;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 
 /**
+ * {@link ScrollContainer} that blocks input from the jME Scene when the mouse wheel is scrolled over it
  * @author Skye Book
  *
  */

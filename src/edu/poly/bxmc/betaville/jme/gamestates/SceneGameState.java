@@ -168,6 +168,7 @@ public class SceneGameState extends BasicGameState {
 	private Node groundBoxNode;
 	private Node flagNode;
 	private Node searchResultsNode;
+	private Node gisNode;
 	private Quad singleQuad;
 	/** Sky box object: simulates the sky.*/
 	private Skybox skybox;
@@ -230,10 +231,12 @@ public class SceneGameState extends BasicGameState {
 		terrainNode = new Node("terrainNode");
 		groundBoxNode = new Node("groundBoxNode");
 		searchResultsNode = new Node("searchResultsNode");
+		gisNode = new Node("gisNode");
 		flagNode = new Node("flagNode");
 		rootNode.attachChild(designNode);
 		rootNode.attachChild(terrainNode);
 		rootNode.attachChild(groundBoxNode);
+		rootNode.attachChild(gisNode);
 		rootNode.attachChild(flagNode);
 
 		defaultSearchColor = renderer.createMaterialState();
@@ -897,6 +900,10 @@ public class SceneGameState extends BasicGameState {
 			groundBoxNode.detachChild(singleQuad);
 		}
 	}
+	
+	public Node getGISNode() {
+		return gisNode;
+	}
 
 	public Vector3f getGroundSelectorLocation(){
 		return singleQuad.getLocalTranslation();
@@ -1295,5 +1302,4 @@ public class SceneGameState extends BasicGameState {
 			
 		}
 	}
-
 }

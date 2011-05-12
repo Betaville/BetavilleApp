@@ -65,6 +65,7 @@ public class GeoToolsCoordinate implements ILocation {
 	 * @see edu.poly.bxmc.betaville.jme.map.ILocation#getUTM()
 	 */
 	public UTMCoordinate getUTM() {
+		logger.info("converting " + getGPS().toString() + " to " + MapManager.latLonToUTM(getGPS()).toString());
 		return MapManager.latLonToUTM(getGPS());
 	}
 
@@ -75,7 +76,8 @@ public class GeoToolsCoordinate implements ILocation {
 		Coordinate gpsCoordinate;
 		try {
 			gpsCoordinate = JTS.transform(geoToolsCoordinate, null, gpsTransform);
-			return new GPSCoordinate(0, gpsCoordinate.z, gpsCoordinate.x);
+			//logger.info("gpsCoordinate: " + gpsCoordinate.x +", "+gpsCoordinate.y +", "+gpsCoordinate.z +", ");
+			return new GPSCoordinate(0, gpsCoordinate.x, gpsCoordinate.y);
 		} catch (TransformException e) {
 			logger.fatal("Could not transform coordinate to EPSG:4326", e);
 			return null;

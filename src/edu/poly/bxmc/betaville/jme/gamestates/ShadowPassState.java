@@ -140,6 +140,7 @@ public class ShadowPassState extends GameState {
 		flagPass = new RenderPass();
 		flagPass.add(SceneGameState.getInstance().getFlagNode());
 		flagPass.add(SceneGameState.getInstance().getSearchNode());
+		flagPass.add(SceneGameState.getInstance().getGISNode());
 		passManager.add(flagPass);
 
 		sceneGameState = SceneGameState.getInstance();
