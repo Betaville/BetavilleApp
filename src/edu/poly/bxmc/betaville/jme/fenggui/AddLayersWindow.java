@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
+import org.fenggui.IWidget;
 import org.fenggui.Label;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
@@ -39,6 +40,7 @@ import org.fenggui.layout.BorderLayout;
 import org.fenggui.layout.BorderLayoutData;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
+import org.fenggui.layout.StaticLayout;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
@@ -51,6 +53,7 @@ import com.jme.scene.shape.Box;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -77,6 +80,8 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 	private Container isc;
 
 	private Button wfsConnectButton;
+	
+	private CreatePrimitiveWindow primitiveWindow;
 
 	/**
 	 * 
@@ -88,7 +93,13 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 		setupScroller();
 		createConnectButton();
 		getContentContainer().addWidget(wfsConnectButton);
+		setupPrimitiveWindow();
 		//getContentContainer().addWidget(sc);
+	}
+	
+	private void setupPrimitiveWindow(){
+		primitiveWindow = FengGUI.createWidget(CreatePrimitiveWindow.class);
+		primitiveWindow.finishSetup();
 	}
 
 	private void setupScroller(){
@@ -110,24 +121,33 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				if(wfs!=null) return;
-
-				try {
-					wfs = new WFSConnection("http://localhost:8080/geoserver/");
-					for(String typeName : wfs.getAvailableLayers("")){
-						createLayerEntry(typeName);
+				
+				SettingsPreferences.getGUIThreadPool().submit(new Runnable() {
+					
+					public void run() {
+						wfsConnectButton.setEnabled(false);
+						
+						try {
+							wfs = new WFSConnection("http://192.168.1.6:8080/geoserver/");
+							for(String typeName : wfs.getAvailableLayers("")){
+								createLayerEntry(typeName);
+							}
+						} catch (IOException e) {
+							logger.error("Can't connect to your GeoServer because no one likes you. ", e);
+							GUIGameState.getInstance().getDisp().addWidget(
+									FengUtils.createDismissableWindow("Betaville", "Could not connect to GeoServer!", "OK", true));
+						}
+						
+						wfsConnectButton.setEnabled(true);
 					}
-				} catch (IOException e) {
-					logger.error("Can't connect to your GeoServer because no one likes you. ", e);
-					GUIGameState.getInstance().getDisp().addWidget(
-							FengUtils.createDismissableWindow("Betaville", "Could not connect to GeoServer!", "OK", true));
-				}
+				});
 			}
 		});
 	}
 
 	private void createLayerEntry(String layerName){
 		LayerContainer lc = FengGUI.createWidget(LayerContainer.class);
-		lc.registerLayerWindow(this);
+		lc.registerWindows(this, primitiveWindow);
 		lc.initialize(layerName);
 		isc.addWidget(lc);
 	}
@@ -140,8 +160,12 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 	 * Locks or unlocks all of the buttons in this {@link Window}
 	 * @param on
 	 */
-	public void setButtonLock(boolean on){
-
+	public void setButtonLock(boolean on, IWidget exception){
+		for(IWidget w : isc.getWidgets()){
+			if(w instanceof LayerContainer){
+				((LayerContainer)w).setButtonEnabled(on);
+			}
+		}
 	}
 
 	/* (non-Javadoc)
