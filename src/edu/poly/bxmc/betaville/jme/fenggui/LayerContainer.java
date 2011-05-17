@@ -33,7 +33,9 @@ import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
 import org.fenggui.event.ButtonPressedEvent;
+import org.fenggui.event.Event;
 import org.fenggui.event.IButtonPressedListener;
+import org.fenggui.event.IGenericEventListener;
 import org.fenggui.layout.BorderLayout;
 import org.fenggui.layout.BorderLayoutData;
 import org.fenggui.layout.RowExLayoutData;
@@ -82,6 +84,14 @@ public class LayerContainer extends Container{
 	TriMesh g;
 
 	public LayerContainer(){
+		
+		addEventListener(EVENT_MOUSE, new IGenericEventListener() {
+			
+			public void processEvent(Object arg0, Event arg1) {
+				// TODO Auto-generated method stub
+				getAppearance();
+			}
+		});
 
 		BetavilleNoCanvas.addCompletionListener(new IAppInitializationCompleteListener() {
 

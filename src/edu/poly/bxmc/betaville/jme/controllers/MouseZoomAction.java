@@ -103,6 +103,7 @@ public class MouseZoomAction extends MouseInputAction {
 
 	public void addZoomLock(ZoomLock zl){
 		zoomLocks.add(zl);
+		System.out.println("zoom lock added");
 	}
 
 	public void removeZoomLock(ZoomLock zl){

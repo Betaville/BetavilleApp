@@ -32,36 +32,19 @@ import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.IWidget;
-import org.fenggui.Label;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
-import org.fenggui.layout.BorderLayout;
-import org.fenggui.layout.BorderLayoutData;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
-import org.fenggui.layout.StaticLayout;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-
-import com.jme.scene.Node;
-import com.jme.scene.shape.Box;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+import org.fenggui.util.Color;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.RolloverColorChanger;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
-import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.map.GeoToolsCoordinate;
-import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
-import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.net.wfs.WFSConnection;
 
 /**
@@ -73,8 +56,8 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 
 	private WFSConnection wfs;
 
-	private int targetHeight=200;
-	private int targetWidth=300;
+	private int targetHeight=250;
+	private int targetWidth=400;
 
 	private BlockingScrollContainer sc;
 	private Container isc;
@@ -103,6 +86,7 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 	}
 
 	private void setupScroller(){
+		System.out.println("setting up the scroller");
 		sc = FengGUI.createWidget(BlockingScrollContainer.class);
 		sc.setSize(targetWidth, targetHeight-20);
 		getContentContainer().addWidget(sc);
@@ -132,6 +116,7 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 							for(String typeName : wfs.getAvailableLayers("")){
 								createLayerEntry(typeName);
 							}
+							sc.layout();
 						} catch (IOException e) {
 							logger.error("Can't connect to your GeoServer because no one likes you. ", e);
 							GUIGameState.getInstance().getDisp().addWidget(
@@ -149,6 +134,7 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 		LayerContainer lc = FengGUI.createWidget(LayerContainer.class);
 		lc.registerWindows(this, primitiveWindow);
 		lc.initialize(layerName);
+		lc.addEventListener(EVENT_MOUSE, new RolloverColorChanger(lc, Color.BLACK_HALF_TRANSPARENT));
 		isc.addWidget(lc);
 	}
 	
@@ -172,6 +158,7 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
+		sc.forceFinishSetup();
 		setTitle("GIS Layers");
 		setSize(targetWidth, targetHeight);
 	}

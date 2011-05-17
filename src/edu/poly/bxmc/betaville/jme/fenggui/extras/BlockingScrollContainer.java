@@ -43,32 +43,46 @@ import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
  *
  */
 public class BlockingScrollContainer extends ScrollContainer {
-	
-	private ScrollContainerZoomLock zl = new ScrollContainerZoomLock();
+
+	private ScrollContainerZoomLock zl;
 
 	/**
 	 * 
 	 */
 	public BlockingScrollContainer() {
-		super();
-		
+		super(false);
+
+		System.out.println("in constructor");
+
+		performSetup();
+	}
+
+	private void performSetup(){
+		zl = new ScrollContainerZoomLock();
+
 		addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 			public void processEvent(Object arg0, Event arg1) {
 				if(arg1 instanceof MouseEvent){
 					if(arg1 instanceof MouseEnteredEvent){
+						System.out.println("zoom off");
 						zl.isSafeToZoom=false;
 					}
 					else if(arg1 instanceof MouseExitedEvent){
+						System.out.println("zoom on");
 						zl.isSafeToZoom=true;
 					}
 				}
 			}
 		});
-		
+
+		System.out.println("deciding where to add zoom lock");
+
 		if(SceneGameState.getInstance()!=null){
+			System.out.println("SceneGameState is not null, adding here");
 			SceneGameState.getInstance().getSceneController().getMouseZoom().addZoomLock(zl);
 		}
 		else{
+			System.out.println("SceneGameState is null, wait");
 			// Wait until SceneGameState is accessible before getting the scene controller
 			BetavilleNoCanvas.addCompletionListener(new IAppInitializationCompleteListener() {
 
@@ -82,7 +96,13 @@ public class BlockingScrollContainer extends ScrollContainer {
 			});
 		}
 	}
-	
+
+	public void forceFinishSetup(){
+		if(zl==null){
+			performSetup();
+		}
+	}
+
 
 	private class ScrollContainerZoomLock implements ZoomLock{
 
