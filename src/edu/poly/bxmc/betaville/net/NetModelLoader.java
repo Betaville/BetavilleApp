@@ -29,7 +29,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
@@ -121,12 +123,19 @@ public class NetModelLoader{
 		public static void load(LookupRoutine lookupRoutine, int limit, final int cityID){
 			logger.info("Loading City " + cityID);
 			List<Design> designs = null;
-			AtomicInteger itemsToLoad = new AtomicInteger(0);
+			final AtomicInteger itemsToLoad = new AtomicInteger(0);
 			final AtomicInteger itemsLoaded = new AtomicInteger(0);
-			// add progress listener
-			final IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Model Loading", itemsLoaded.get(), itemsToLoad.get());
-			GUIGameState.getInstance().getProgressContainer().addItem(item);
 			
+			final AtomicBoolean allDesignsProcessed = new AtomicBoolean(false);
+
+			final AtomicBoolean listLock = new AtomicBoolean(false);
+			final Vector<Node> nodeList = new Vector<Node>();
+
+			// add progress listener
+			final IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Models Loading", itemsLoaded.get(), itemsToLoad.get());
+			item.setLockFromCompletion(true);
+			GUIGameState.getInstance().getProgressContainer().addItem(item);
+
 			UnprotectedManager manager = NetPool.getPool().getConnection();
 			if(lookupRoutine.equals(LookupRoutine.ALL_IN_CITY)){
 				designs = manager.findBaseDesignsByCity(cityID);
@@ -145,9 +154,59 @@ public class NetModelLoader{
 			}
 			else{
 				Collections.sort(designs, Design.distanceComparator(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
+
+				// setup the scene loader
+				SettingsPreferences.getThreadPool().submit(new Runnable() {
+
+					public void run() {
+
+						while(nodeList.size()==0){
+							try {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+
+						while(!allDesignsProcessed.get()){
+							if(nodeList.size()==0) continue;
+							GameTaskQueueManager.getManager().update(new Callable<Object>() {
+								public Object call() throws Exception {
+
+									if(listLock.get()) return null;
+									else{
+										listLock.set(true);
+
+										//logger.info("Adding " + nodeList.size() + " objects");
+
+										for(Node node : nodeList){
+
+											SceneGameState.getInstance().getDesignNode().attachChild(node);
+
+											node.updateRenderState();
+											itemsLoaded.incrementAndGet();
+											item.update(itemsLoaded.get());
+										}
+
+										nodeList.clear();
+										listLock.set(false);
+									}
+									return null;
+								}
+							});
+							
+							try {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				});
+
 				for(int i=0; i<designs.size(); i++){
 					if(limit==NO_LIMIT || i<limit){
-						final Design design = designs.get(i);
+						Design design = designs.get(i);
 						if(SceneGameState.getInstance().getCamera().getLocation().distance(JME2MapManager.instance.locationToBetaville(design.getCoordinate())) < Scale.fromMeter(50000)){
 							//logger.info("adding: " + design.getName() + " | ID: " + design.getID());
 
@@ -172,7 +231,7 @@ public class NetModelLoader{
 										e1.printStackTrace();
 									}
 
-									final Node dNode = loader.getModel();
+									Node dNode = loader.getModel();
 
 
 
@@ -195,27 +254,20 @@ public class NetModelLoader{
 
 									dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 
+									SceneScape.getCity(cityID).addDesign(design);
+
+									while(listLock.get()){
+										try {
+											Thread.sleep(25);
+										} catch (InterruptedException e) {
+											e.printStackTrace();
+										}
+									}
+
+									nodeList.add(dNode);
+
 									itemsToLoad.incrementAndGet();
 									item.setMax(itemsToLoad.get());
-
-									GameTaskQueueManager.getManager().update(new Callable<Object>() {
-										public Object call() throws Exception {
-											//dNode.lockMeshes();
-
-											if(design.getName().contains("$TERRAIN")){
-												SceneGameState.getInstance().getTerrainNode().attachChild(dNode);
-											}else{
-												SceneScape.getCity(cityID).addDesign(design);
-												SceneGameState.getInstance().getDesignNode().attachChild(dNode);
-											}
-
-
-											dNode.updateRenderState();
-											itemsLoaded.incrementAndGet();
-											item.update(itemsLoaded.get());
-											return null;
-										}
-									});
 
 								}
 								else if(design instanceof EmptyDesign){
@@ -228,6 +280,8 @@ public class NetModelLoader{
 						}
 					}
 				}
+				allDesignsProcessed.set(true);
+				item.setLockFromCompletion(false);
 			}
 
 			// wait for everything to load

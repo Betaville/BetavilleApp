@@ -50,6 +50,7 @@ public class IntegerBasedProgressiveItem extends ProgressiveItem {
 		}
 		
 		if(this.current==maximum){
+			if(lockFromCompletion) return;
 			for(IProgressUpdateListener listener : listeners){
 				listener.taskFinished();
 			}

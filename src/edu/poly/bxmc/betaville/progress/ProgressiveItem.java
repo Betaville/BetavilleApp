@@ -36,6 +36,7 @@ public abstract class ProgressiveItem {
 	protected String name;
 	protected String currentStatusMessage;
 	protected ArrayList<IProgressUpdateListener> listeners;
+	protected boolean lockFromCompletion=false;
 
 	/**
 	 * 
@@ -99,6 +100,21 @@ public abstract class ProgressiveItem {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * @return Whether this item is to be stopped from
+	 * firing its completion event
+	 */
+	public boolean isLockFromCompletion() {
+		return lockFromCompletion;
+	}
+
+	/**
+	 * @param lockFromCompletion
+	 */
+	public void setLockFromCompletion(boolean lockFromCompletion) {
+		this.lockFromCompletion = lockFromCompletion;
 	}
 
 	/**

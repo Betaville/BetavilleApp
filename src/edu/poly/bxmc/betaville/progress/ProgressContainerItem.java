@@ -66,6 +66,6 @@ public class ProgressContainerItem extends Container {
 	}
 	
 	private void remove(){
-		((Container)getParent()).removeWidget(this);
+		if(getParent()!=null)((Container)getParent()).removeWidget(this);
 	}
 }
