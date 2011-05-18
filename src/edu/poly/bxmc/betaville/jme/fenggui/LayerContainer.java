@@ -32,12 +32,14 @@ import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
+import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.Event;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.event.IGenericEventListener;
 import org.fenggui.layout.BorderLayout;
 import org.fenggui.layout.BorderLayoutData;
+import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
 import org.fenggui.layout.StaticLayout;
 import org.geotools.feature.FeatureCollection;
@@ -47,6 +49,13 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 
+import com.jme.input.MouseInput;
+import com.jme.intersection.PickResults;
+import com.jme.intersection.TrianglePickResults;
+import com.jme.math.Ray;
+import com.jme.math.Vector2f;
+import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.SharedMesh;
@@ -63,10 +72,13 @@ import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.GeoToolsCoordinate;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
+import edu.poly.bxmc.betaville.module.GUIModule;
 
 public class LayerContainer extends Container{
 	private static final Logger logger = Logger.getLogger(LayerContainer.class);
 	private String thisLayerName;
+	
+	private FeaturePopup featurePopup;
 
 	private AddLayersWindow addLayersWindow;
 
@@ -81,12 +93,12 @@ public class LayerContainer extends Container{
 
 	private CreatePrimitiveWindow primitiveWindow;
 
-	TriMesh g;
+	private TriMesh jmeGeometry;
 
 	public LayerContainer(){
 		
 		addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-			
+
 			public void processEvent(Object arg0, Event arg1) {
 				// TODO Auto-generated method stub
 				getAppearance();
@@ -124,6 +136,8 @@ public class LayerContainer extends Container{
 
 	public void initialize(String layerName){
 		thisLayerName=layerName;
+		featurePopup = new FeaturePopup();
+		
 		setLayoutData(new RowExLayoutData(true, true));
 		setLayoutManager(new BorderLayout());
 
@@ -139,6 +153,7 @@ public class LayerContainer extends Container{
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				if(on){
 					SceneGameState.getInstance().getGISNode().detachChildNamed(thisLayerName);
+					//GUIGameState.getInstance().removeModuleFromUpdateList(featurePopup);
 					flipStatus(false);
 				}
 				else{
@@ -148,14 +163,14 @@ public class LayerContainer extends Container{
 							try{
 								callButtonLock(true);
 								// create the geometry if the user hasn't set one up already
-								if(g==null){
+								if(jmeGeometry==null){
 									StaticLayout.center(primitiveWindow, GUIGameState.getInstance().getDisp());
 									GUIGameState.getInstance().getDisp().addWidget(primitiveWindow);
 									while(!primitiveWindow.isReady()){
 										Thread.sleep(25);
 									}
 									GUIGameState.getInstance().getDisp().removeWidget(primitiveWindow);
-									g = primitiveWindow.generateShape();
+									jmeGeometry = primitiveWindow.generateShape();
 									primitiveWindow.reset();
 								}
 								logger.info("Getting features");
@@ -181,14 +196,20 @@ public class LayerContainer extends Container{
 									//if(feature instanceof Geometry){
 									//logger.info("Feature is a point, putting a box at its location");
 
-									SharedMesh m = new SharedMesh(feature.getID(), g);
+									SharedMesh m = new SharedMesh(feature.getID(), jmeGeometry);
 									m.setLocalTranslation(JME2MapManager.instance.locationToBetaville(gtc));
-									logger.info("Feature put at: " + m.getLocalTranslation().toString());
+									//logger.info("Feature put at: " + m.getLocalTranslation().toString());
 									m.setLocalTranslation(m.getLocalTranslation().x, Scale.fromMeter(height), m.getLocalTranslation().z);
 									node.attachChild(m);
 									m.updateRenderState();
+									m.updateModelBound();
+									m.updateWorldBound();
+									m.updateGeometricState(0f, true);
+									
 									//}
 								}
+								logger.info("adding feature popup");
+								//GUIGameState.getInstance().addModuleToUpdateList(featurePopup);
 								flipStatus(true);
 								callButtonLock(false);
 							} catch (IOException e) {
@@ -218,5 +239,75 @@ public class LayerContainer extends Container{
 
 	private void callButtonLock(boolean status){
 		//addLayersWindow.setButtonLock(status, this);
+	}
+
+	public class FeaturePopup implements GUIModule{
+
+		private Window window;
+		private Label name;
+		private Label layer;
+
+		private PickResults gisResults = new TrianglePickResults();
+		private Ray rayToUse;
+		
+		public FeaturePopup(){
+			window = FengGUI.createWindow(true, true);
+			window.removeWidget(window.getTitleBar());
+			window.getContentContainer().setLayoutManager(new RowExLayout(false));
+
+			layer = FengGUI.createWidget(Label.class);
+			layer.setLayoutData(new RowExLayoutData(true, true));
+			layer.setText(thisLayerName);
+			name = FengGUI.createWidget(Label.class);
+			name.setLayoutData(new RowExLayoutData(true, true));
+			
+
+			window.getContentContainer().addWidget(layer, name);
+		}
+
+		public void deconstruct() {}
+
+		public void buildComponents() {}
+
+		public void layoutComponents() {}
+
+		public void addToScene() {}
+
+		public void removeFromScene() {}
+
+		public void update() {
+			//logger.info("updating feature popup");
+			Vector2f screenPosition = new Vector2f(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute());
+			Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
+			Camera camera = SceneGameState.getInstance().getCamera();
+			rayToUse = new Ray(camera.getLocation(), worldCoords.subtractLocal(camera.getLocation()));
+
+			rayToUse.getDirection().normalizeLocal();
+
+			gisResults.setCheckDistance(true);
+			gisResults.clear();
+			Node thisLayer = (Node)SceneGameState.getInstance().getGISNode().getChild(thisLayerName);
+			//Node thisLayer = SceneGameState.getInstance().getRootNode();
+			if(thisLayer==null) return;
+			//logger.info("testing " + thisLayer.getQuantity() + " children in " + thisLayer.getName());
+			thisLayer.findPick(rayToUse, gisResults);
+			
+			if(gisResults.getNumber()>0){
+				logger.info("Object Picked");
+				String id = gisResults.getPickData(0).getTargetMesh().getName();
+				
+				// if the window is already showing the right text then we can stop here
+				if(window.isInWidgetTree() && name.getText().equals(id)) return;
+				
+				name.setText(id);
+				if(!window.isInWidgetTree()) GUIGameState.getInstance().getDisp().addWidget(window);
+				window.setXY(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute());
+			}
+			else{
+				logger.info("nothing picked");
+				if(window.isInWidgetTree()) window.close();
+			}
+		}
+
 	}
 }

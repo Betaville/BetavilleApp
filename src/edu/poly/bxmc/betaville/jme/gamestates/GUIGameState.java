@@ -76,7 +76,6 @@ import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.module.GUIModule;
-import edu.poly.bxmc.betaville.module.Module;
 import edu.poly.bxmc.betaville.progress.ProgressContainer;
 
 /**
@@ -150,7 +149,7 @@ public class GUIGameState extends GameState {
 	private boolean textEntryMode = false;
 	private boolean flagIsSelected=false;
 
-	private List<Module> modules;
+	private List<GUIModule> modules;
 
 	private UTMCoordinate location;
 
@@ -162,7 +161,7 @@ public class GUIGameState extends GameState {
 
 		this.setName(name);
 
-		modules = new ArrayList<Module>();
+		modules = new ArrayList<GUIModule>();
 
 		Texture defTex = TextureState.getDefaultTexture().createSimpleClone();
 		defTex.setScale(new Vector3f(1, 1, 1));
@@ -449,8 +448,8 @@ public class GUIGameState extends GameState {
 			disp.bringToFront(disp.getPopupWidget());
 		}
 
-		for(Module module : modules){
-			((GUIModule)module).update();
+		for(GUIModule module : modules){
+			module.update();
 		}
 
 		if(MouseInput.get().isButtonDown(0) && withinClickBounds()  && !KeyInput.get().isKeyDown(KeyInput.KEY_LMENU)
@@ -593,7 +592,7 @@ public class GUIGameState extends GameState {
 		}
 	}
 
-	public void addModuleToUpdateList(Module module){
+	public void addModuleToUpdateList(GUIModule module){
 		modules.add(module);
 	}
 

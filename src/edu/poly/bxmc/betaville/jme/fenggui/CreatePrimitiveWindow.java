@@ -69,11 +69,16 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 	
 	private ComboBox shapeSelector;
 	
+	private Label sl;
 	private int sizeMultiplier = 5;
 	private Slider sizeSlider;
+	private Label al;
 	private int altitudeMultiplier = 5;
 	private Slider altitudeSlider;
 	
+	private Label rl;
+	private Label gl;
+	private Label bl;
 	private Slider r;
 	private Slider g;
 	private Slider b;
@@ -108,11 +113,11 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		altitudeContainer.setLayoutManager(new BorderLayout());
 		altitudeContainer.setLayoutData(new RowExLayoutData(true, true));
 		
-		Label sl = FengGUI.createWidget(Label.class);
+		sl = FengGUI.createWidget(Label.class);
 		sl.setText("Size");
 		sl.setLayoutData(BorderLayoutData.NORTH);
 		
-		Label al = FengGUI.createWidget(Label.class);
+		al = FengGUI.createWidget(Label.class);
 		al.setText("Altitude");
 		al.setLayoutData(BorderLayoutData.NORTH);
 		
@@ -122,6 +127,20 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		altitudeSlider = FengGUI.createSlider(true);
 		altitudeSlider.setLayoutData(BorderLayoutData.SOUTH);
 		altitudeSlider.setValue(.5d);
+		
+		sizeSlider.addSliderMovedListener(new ISliderMovedListener() {
+			
+			public void sliderMoved(SliderMovedEvent arg0) {
+				sl.setText("Size: " + ((float)sizeSlider.getValue()*sizeMultiplier));
+			}
+		});
+		
+		altitudeSlider.addSliderMovedListener(new ISliderMovedListener() {
+			
+			public void sliderMoved(SliderMovedEvent arg0) {
+				al.setText("Altitude: " + ((float)altitudeSlider.getValue()*altitudeMultiplier));
+			}
+		});
 		
 		altitudeContainer.addWidget(al, altitudeSlider);
 		sizeContainer.addWidget(sl, sizeSlider);
@@ -136,13 +155,13 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		gc.setLayoutManager(new BorderLayout());
 		gc.setLayoutData(new RowExLayoutData(true, true));
 		
-		Label rl = FengGUI.createWidget(Label.class);
+		rl = FengGUI.createWidget(Label.class);
 		rl.setText("Red");
 		rl.setLayoutData(BorderLayoutData.NORTH);
-		Label gl = FengGUI.createWidget(Label.class);
+		gl = FengGUI.createWidget(Label.class);
 		gl.setText("Green");
 		gl.setLayoutData(BorderLayoutData.NORTH);
-		Label bl = FengGUI.createWidget(Label.class);
+		bl = FengGUI.createWidget(Label.class);
 		bl.setText("Blue");
 		bl.setLayoutData(BorderLayoutData.NORTH);
 		
@@ -165,6 +184,9 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		
 		updateColorListener = new ISliderMovedListener() {
 			public void sliderMoved(SliderMovedEvent arg0) {
+				rl.setText("Red: " + (float)r.getValue());
+				gl.setText("Green: " + (float)g.getValue());
+				bl.setText("Blue: " + (float)b.getValue());
 				updateColor();
 			}
 		};
