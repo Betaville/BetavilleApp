@@ -32,9 +32,12 @@ import org.fenggui.Button;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.IWidget;
+import org.fenggui.TextEditor;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
+import org.fenggui.event.ITextChangedListener;
+import org.fenggui.event.TextChangedEvent;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
 import org.fenggui.util.Color;
@@ -65,6 +68,8 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 	private Button wfsConnectButton;
 	
 	private CreatePrimitiveWindow primitiveWindow;
+	
+	private TextEditor searchEditor;
 
 	/**
 	 * 
@@ -74,10 +79,37 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 		getContentContainer().setLayoutManager(new RowExLayout(false));
 		getContentContainer().setSize(targetWidth, targetHeight);
 		setupScroller();
+		setupSearch();
 		createConnectButton();
 		getContentContainer().addWidget(wfsConnectButton);
 		setupPrimitiveWindow();
-		//getContentContainer().addWidget(sc);
+	}
+	
+	private void setupSearch(){
+		searchEditor = FengGUI.createWidget(TextEditor.class);
+		searchEditor.setLayoutData(new RowExLayoutData(true, true));
+		searchEditor.setEmptyText("Enter Query Here");
+		searchEditor.setWidth(targetWidth);
+		//getContentContainer().addWidget(searchEditor);
+		searchEditor.addTextChangedListener(new ITextChangedListener() {
+			/*
+			 * (non-Javadoc)
+			 * @see org.fenggui.event.ITextChangedListener#textChanged(org.fenggui.event.TextChangedEvent)
+			 */
+			public void textChanged(TextChangedEvent arg0) {
+				for(IWidget w : isc.getWidgets()){
+					if(w instanceof LayerContainer){
+						if(!((LayerContainer)w).getThisLayerName().contains(FengUtils.getText(searchEditor))){
+							//isc.removeWidget(w);
+							w.setVisible(false);
+						}
+						else{
+							w.setVisible(true);
+						}
+					}
+				}
+			}
+		});
 	}
 	
 	private void setupPrimitiveWindow(){
@@ -88,7 +120,6 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 	private void setupScroller(){
 		System.out.println("setting up the scroller");
 		sc = FengGUI.createWidget(BlockingScrollContainer.class);
-		sc.setSize(targetWidth, targetHeight-20);
 		getContentContainer().addWidget(sc);
 		sc.setLayoutData(new RowExLayoutData(true, true));
 		sc.setShowScrollbars(true);
@@ -112,7 +143,8 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 						wfsConnectButton.setEnabled(false);
 						
 						try {
-							wfs = new WFSConnection("http://192.168.1.6:8080/geoserver/");
+							wfs = new WFSConnection("http://192.168.1.12:8080/geoserver/");
+							
 							for(String typeName : wfs.getAvailableLayers("")){
 								createLayerEntry(typeName);
 							}

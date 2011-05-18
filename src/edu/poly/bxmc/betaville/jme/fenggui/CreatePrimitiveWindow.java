@@ -73,7 +73,7 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 	private int sizeMultiplier = 5;
 	private Slider sizeSlider;
 	private Label al;
-	private int altitudeMultiplier = 5;
+	private int altitudeMultiplier = 100;
 	private Slider altitudeSlider;
 	
 	private Label rl;
