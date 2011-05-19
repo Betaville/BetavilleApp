@@ -129,6 +129,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		}));
 		*/
 		addAction(new SearchAction());
+		addAction(new ScreenshotPanelAction());
 		//addAction(new ExportAction());
 		//addAction(new TranslucentPanelAction());
 		addAction(new OnOffPanelAction("Lights", "Light tweaking functionality", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightTweaker.class, false));

@@ -143,7 +143,7 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 						wfsConnectButton.setEnabled(false);
 						
 						try {
-							wfs = new WFSConnection("http://192.168.1.12:8080/geoserver/");
+							wfs = new WFSConnection("http://localhost:8080/geoserver/");
 							
 							for(String typeName : wfs.getAvailableLayers("")){
 								createLayerEntry(typeName);

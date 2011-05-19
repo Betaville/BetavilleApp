@@ -170,7 +170,7 @@ public class ShadowPassState extends GameState {
 			mapPass.setShadowMapScale(0.010f);
 		}
 		else if(height<10000){
-			logger.info("below 10k");
+			//logger.info("below 10k");
 			mapPass.setShadowMapScale(0.035f);
 		}
 		
