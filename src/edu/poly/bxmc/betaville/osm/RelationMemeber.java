@@ -25,48 +25,36 @@
 */
 package edu.poly.bxmc.betaville.osm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * From the <a href="http://wiki.openstreetmap.org/wiki/Elements">OSM Wiki</a>:
- * 
- * <p>"A relation can group other elements together, nodes, ways,
- * and maybe even other relations. Elements are 'members' of the
- * relation, and each membership has a 'role'. As with other types
- * of elements, a relation may have an arbitrary number of tags.
- * You may also have duplicate nodes, ways or relations within a single relation.
- * 
- * <p>Typically you would expect the 'type' tag to be set, specifying
- * what type of relation it is. Relations can be used to represent
- * things like cycle routes, and turn restrictions. For documentation
- * of different relation types (and proposed new relation types) see
- * the <a href="http://wiki.openstreetmap.org/wiki/Relations">Relations</a> page.
- * 
- * <p>The ordering of elements within a relation is persistent. The members are
- * returned in the order specified at upload. Duplicate elements will retain
- * their specified order.
- * 
  * @author Skye Book
  *
  */
-public class Relation extends OSMObject{
+public class RelationMemeber {
 	
-	private List<RelationMemeber> members = new ArrayList<RelationMemeber>();
-	
+	private OSMObject objectReference;
+	String role;
+
 	/**
 	 * 
 	 */
-	public Relation() {
-		// TODO Auto-generated constructor stub
+	public RelationMemeber(OSMObject objectReference, String role) {
+		this.objectReference=objectReference;
+		this.role=role;;
+	}
+
+	/**
+	 * @return the objectReference
+	 */
+	public OSMObject getObjectReference() {
+		return objectReference;
+	}
+
+	/**
+	 * @return the role
+	 */
+	public String getRole() {
+		return role;
 	}
 	
-	public void addMemeber(RelationMemeber member){
-		members.add(member);
-	}
-	
-	public List<RelationMemeber> getMemebers(){
-		return members;
-	}
 
 }

@@ -35,6 +35,7 @@ import edu.poly.bxmc.betaville.osm.Node;
 import edu.poly.bxmc.betaville.osm.OSMObject;
 import edu.poly.bxmc.betaville.osm.OSMRegistry;
 import edu.poly.bxmc.betaville.osm.Relation;
+import edu.poly.bxmc.betaville.osm.RelationMemeber;
 import edu.poly.bxmc.betaville.osm.Way;
 import edu.poly.bxmc.betaville.osm.tag.AbstractTag;
 
@@ -60,25 +61,16 @@ public class OSMReader extends XMLReader {
 		List<?> nodes = rootElement.getChildren("node");
 		for(Object node : nodes){
 			Node nodeObject = createNode((Element)node);
-			
 			OSMRegistry.get().addNode(nodeObject);
 		}
 		List<?> ways = rootElement.getChildren("way");
 		for(Object way : ways){
 			Way wayObject = createWay((Element)way);
-			
-			// add node references
-			for(Object ndRef : ((Element)way).getChildren("nd")){
-				wayObject.addNodeReference(
-						OSMRegistry.get().getNode(Long.parseLong(((Element)ndRef).getAttributeValue("ref"))));
-			}
-			
 			OSMRegistry.get().addWay(wayObject);
 		}
 		List<?> relations = rootElement.getChildren("relation");
 		for(Object relation : relations){
 			Relation relationObject = createRelation((Element)relation);
-			
 			OSMRegistry.get().addRelation(relationObject);
 		}
 		
@@ -98,13 +90,37 @@ public class OSMReader extends XMLReader {
 	
 	private Way createWay(Element element) throws InstantiationException, IllegalAccessException{
 		Way way = new Way();
+		
 		// get node references
+		for(Object ndRef : element.getChildren("nd")){
+			way.addNodeReference(
+					OSMRegistry.get().getNode(Long.parseLong(((Element)ndRef).getAttributeValue("ref"))));
+		}
+		
 		processGenerics(way, element);
 		return way;
 	}
 	
 	private Relation createRelation(Element element) throws InstantiationException, IllegalAccessException{
 		Relation relation = new Relation();
+		
+		// get relation members
+		for(Object member : element.getChildren("member")){
+			String memberType = ((Element)member).getAttributeValue("type");
+			//System.out.println("reading element: "+((Element)member).getAttributes().toString());
+			long referenceID = Long.parseLong(((Element)member).getAttributeValue("ref"));
+			String role = ((Element)member).getAttributeValue("role");
+			if(memberType.equals("node")){
+				relation.addMemeber(new RelationMemeber(OSMRegistry.get().getNode(referenceID), role));
+			}
+			else if(memberType.equals("way")){
+				relation.addMemeber(new RelationMemeber(OSMRegistry.get().getWay(referenceID), role));
+			}
+			else if(memberType.equals("relation")){
+				relation.addMemeber(new RelationMemeber(OSMRegistry.get().getRelation(referenceID), role));
+			}
+		}
+		
 		processGenerics(relation, element);
 		return relation;
 	}
@@ -115,7 +131,7 @@ public class OSMReader extends XMLReader {
 		object.setTimestamp(element.getAttributeValue("timestamp"));
 		object.setUser(element.getAttributeValue("user"));
 		for(Object tag : element.getChildren("tag")){
-			System.out.println("reading element: "+((Element)tag).getAttributes().toString());
+			//System.out.println("reading element: "+((Element)tag).getAttributes().toString());
 			Class<? extends AbstractTag> tagClass = KeyMatcher.getKey(((Element)tag).getAttributeValue("k"));
 			if(tagClass==null){
 				System.out.println("A Tag Class could not be determined for " + ((Element)tag).getAttributeValue("k"));
