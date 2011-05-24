@@ -28,7 +28,7 @@ package edu.poly.bxmc.betaville.osm.builder;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.osm.OSMObject;
-import edu.poly.bxmc.betaville.osm.keys.Name;
+import edu.poly.bxmc.betaville.osm.tag.Name;
 
 /**
  * @author Skye Book

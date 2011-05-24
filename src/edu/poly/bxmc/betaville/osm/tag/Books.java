@@ -23,108 +23,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package edu.poly.bxmc.betaville.osm;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.poly.bxmc.betaville.osm.tag.AbstractTag;
+package edu.poly.bxmc.betaville.osm.tag;
 
 /**
+ * Should be similar to {@link Name}
  * @author Skye Book
  *
  */
-public class OSMObject {
-	
-	private long id;
-	private String user;
-	private String timestamp;
-	private long changeset;
-	protected List<AbstractTag> tags = new ArrayList<AbstractTag>();
-	
-	/**
-	 * 
-	 */
-	public OSMObject() {}
+public class Books extends AbstractTag {
 
 	/**
-	 * @return the id
 	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public String getUser() {
-		return user;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(String user) {
-		this.user = user;
-	}
-
-	/**
-	 * @param timestamp the timestamp to set
-	 */
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	/**
-	 * @param changeset the changeset to set
-	 */
-	public void setChangeset(long changeset) {
-		this.changeset = changeset;
-	}
-
-	/**
-	 * @return the timestamp
-	 */
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	/**
-	 * @return the changeset
-	 */
-	public long getChangeset() {
-		return changeset;
-	}
-
-	/**
-	 * @return the tags
-	 */
-	public List<AbstractTag> getTags() {
-		return tags;
+	public Books() {
+		super(keyName());
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void addTag(AbstractTag tag){
-		tags.add(tag);
+	public static String keyName(){
+		return "books";
 	}
-	
-	public String findTag(Class<? extends AbstractTag> keyClass){
-		for(AbstractTag tag : tags){
-			if(tag.getClass().equals(keyClass)){
-				return tag.getValue();
-			}
-		}
-		return null;
-	}
+
 }

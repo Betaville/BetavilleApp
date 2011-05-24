@@ -30,10 +30,12 @@ import java.util.List;
 
 import org.jdom.Element;
 
+import edu.poly.bxmc.betaville.osm.KeyMatcher;
 import edu.poly.bxmc.betaville.osm.Node;
 import edu.poly.bxmc.betaville.osm.OSMObject;
 import edu.poly.bxmc.betaville.osm.Relation;
 import edu.poly.bxmc.betaville.osm.Way;
+import edu.poly.bxmc.betaville.osm.tag.AbstractTag;
 
 /**
  * @author Skye Book
@@ -60,31 +62,33 @@ public class OSMReader extends XMLReader {
 		}
 	}
 	
-	private Node createNode(Element element){
+	private Node createNode(Element element) throws InstantiationException, IllegalAccessException{
 		Node node = new Node();
 		processGenerics(node, element);
 		return node;
 	}
 	
-	private Way createWay(Element element){
+	private Way createWay(Element element) throws InstantiationException, IllegalAccessException{
 		Way way = new Way();
 		processGenerics(way, element);
 		return way;
 	}
 	
-	private Relation createRelation(Element element){
+	private Relation createRelation(Element element) throws InstantiationException, IllegalAccessException{
 		Relation relation = new Relation();
 		processGenerics(relation, element);
 		return relation;
 	}
 	
-	private void processGenerics(OSMObject object, Element element){
+	private void processGenerics(OSMObject object, Element element) throws InstantiationException, IllegalAccessException{
 		object.setId(Long.parseLong(element.getAttributeValue("id")));
 		object.setChangeset(Long.parseLong(element.getAttributeValue("changeset")));
 		object.setTimestamp(element.getAttributeValue("timestamp"));
 		object.setUser(element.getAttributeValue("user"));
 		for(Object tag : element.getChildren("tag")){
-			//TODO: object.addTag(((Element)tag).getAttributeValue("k"), ((Element)tag).getAttributeValue("v"));
+			AbstractTag tagItem = KeyMatcher.getKey(((Element)tag).getAttributeValue("k")).newInstance();
+			tagItem.setValue(((Element)tag).getAttributeValue("v"));
+			object.addTag(tagItem);
 		}
 	}
 	

@@ -23,108 +23,58 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package edu.poly.bxmc.betaville.osm;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.poly.bxmc.betaville.osm.tag.AbstractTag;
+package edu.poly.bxmc.betaville.osm.tag;
 
 /**
+ * Documentation taken from the
+ * <a href="http://wiki.openstreetmap.org/wiki/Key:aeroway">OSM Wiki</a>
  * @author Skye Book
  *
  */
-public class OSMObject {
-	
-	private long id;
-	private String user;
-	private String timestamp;
-	private long changeset;
-	protected List<AbstractTag> tags = new ArrayList<AbstractTag>();
+public class AeroWay extends AbstractTag {
 	
 	/**
-	 * 
+	 * An Aerodrome (UK), Airport (US), see also {@link Military}=airfield
 	 */
-	public OSMObject() {}
+	public static final String AERODROME = "aerodrome";
+	/**
+	 * Airport passenger building
+	 */
+	public static final String TERMINAL = "terminal";
+	/**
+	 * Helicopter start/landing pad
+	 */
+	public static final String HELIPAD = "helipad";
+	/**
+	 * A strip of land kept clear and set aside for aeroplanes to take
+	 * off from and land on.
+	 */
+	public static final String RUNWAY = "runway";
+	/**
+	 * Where airplanes manouevre between runways and parking areas.
+	 */
+	public static final String TAXIWAY = "taxiway";
+	/**
+	 * A place where planes are parked.
+	 */
+	public static final String APRON = "apron";
+	/**
+	 * Used to mark the gate numbers at the airports.
+	 */
+	public static final String GATE = "gate";
+	/**
+	 * Used to mark the position of a windsock.
+	 */
+	public static final String WINDSOCK = "windsock";
 
 	/**
-	 * @return the id
 	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public String getUser() {
-		return user;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(String user) {
-		this.user = user;
-	}
-
-	/**
-	 * @param timestamp the timestamp to set
-	 */
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	/**
-	 * @param changeset the changeset to set
-	 */
-	public void setChangeset(long changeset) {
-		this.changeset = changeset;
-	}
-
-	/**
-	 * @return the timestamp
-	 */
-	public String getTimestamp() {
-		return timestamp;
-	}
-
-	/**
-	 * @return the changeset
-	 */
-	public long getChangeset() {
-		return changeset;
-	}
-
-	/**
-	 * @return the tags
-	 */
-	public List<AbstractTag> getTags() {
-		return tags;
+	public AeroWay() {
+		super(keyName());
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void addTag(AbstractTag tag){
-		tags.add(tag);
+	public static String keyName(){
+		return "aeroway";
 	}
-	
-	public String findTag(Class<? extends AbstractTag> keyClass){
-		for(AbstractTag tag : tags){
-			if(tag.getClass().equals(keyClass)){
-				return tag.getValue();
-			}
-		}
-		return null;
-	}
+
 }
