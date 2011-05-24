@@ -55,5 +55,9 @@ public class Way extends OSMObject{
 	 */
 	public Way() {
 	}
+	
+	public void addNodeReference(Node node){
+		nodes.add(node);
+	}
 
 }

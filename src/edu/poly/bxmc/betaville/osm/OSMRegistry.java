@@ -26,6 +26,7 @@
 package edu.poly.bxmc.betaville.osm;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Skye Book
@@ -35,9 +36,9 @@ public class OSMRegistry {
 	
 	private static final OSMRegistry registry = new OSMRegistry();
 	
-	private ArrayList<Node> nodes = new ArrayList<Node>();
-	private ArrayList<Way> ways = new ArrayList<Way>();
-	private ArrayList<Relation> relations = new ArrayList<Relation>();
+	private List<Node> nodes = new ArrayList<Node>();
+	private List<Way> ways = new ArrayList<Way>();
+	private List<Relation> relations = new ArrayList<Relation>();
 
 	/**
 	 * 
@@ -58,5 +59,38 @@ public class OSMRegistry {
 	
 	public void addRelation(Relation relation){
 		relations.add(relation);
+	}
+	
+	public List<Node> getNodes() {
+		return nodes;
+	}
+
+	public List<Way> getWays() {
+		return ways;
+	}
+
+	public List<Relation> getRelations() {
+		return relations;
+	}
+
+	public Node getNode(long nodeID){
+		for(Node node : nodes){
+			if(node.getId()==nodeID) return node;
+		}
+		return null;
+	}
+	
+	public Way getWay(long wayID){
+		for(Way way : ways){
+			if(way.getId()==wayID) return way;
+		}
+		return null;
+	}
+	
+	public Relation getRelation(long relationID){
+		for(Relation relation : relations){
+			if(relation.getId()==relationID) return relation;
+		}
+		return null;
 	}
 }
