@@ -100,7 +100,7 @@ public class NetModelLoader{
 		 * @param lookupRoutine
 		 */
 		public static void loadCurrentCity(LookupRoutine lookupRoutine){
-			load(lookupRoutine, NO_LIMIT, SceneScape.getCity().getCityID());
+			loadCity(lookupRoutine, NO_LIMIT, SceneScape.getCity().getCityID());
 		}
 
 		/**
@@ -109,7 +109,7 @@ public class NetModelLoader{
 		 * @param limit The maximum number of models to be loaded
 		 */
 		public static void loadCurrentCity(LookupRoutine lookupRoutine, int limit){
-			load(lookupRoutine, limit, SceneScape.getCity().getCityID());
+			loadCity(lookupRoutine, limit, SceneScape.getCity().getCityID());
 		}
 
 		/**
@@ -120,12 +120,12 @@ public class NetModelLoader{
 		 * otherwise, use the number of models desired.
 		 * @see NetModelLoader#NO_LIMIT
 		 */
-		public static void load(LookupRoutine lookupRoutine, int limit, final int cityID){
+		public static void loadCity(LookupRoutine lookupRoutine, int limit, final int cityID){
 			logger.info("Loading City " + cityID);
 			List<Design> designs = null;
 			final AtomicInteger itemsToLoad = new AtomicInteger(0);
 			final AtomicInteger itemsLoaded = new AtomicInteger(0);
-			
+
 			final AtomicBoolean allDesignsProcessed = new AtomicBoolean(false);
 
 			final AtomicBoolean listLock = new AtomicBoolean(false);
@@ -153,6 +153,8 @@ public class NetModelLoader{
 				throw new NullPointerException("designs not received!");
 			}
 			else{
+				itemsToLoad.set(designs.size());
+				item.setMax(itemsToLoad.get());
 				Collections.sort(designs, Design.distanceComparator(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
 
 				// setup the scene loader
@@ -160,9 +162,18 @@ public class NetModelLoader{
 
 					public void run() {
 
+						/*
+						 * There are two possibilities if nothing is waiting to
+						 * be attached to the scene:
+						 * 	- The loading is done
+						 * 	- A model is currently being processed
+						 */
 						while(nodeList.size()==0){
 							try {
-								Thread.sleep(50);
+								// first check if the loading is done, return if there is
+								if(itemsLoaded.get()==itemsToLoad.get()) return;
+								// if the loading is still in process, sleep and run again
+								else Thread.sleep(50);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -194,7 +205,7 @@ public class NetModelLoader{
 									return null;
 								}
 							});
-							
+
 							try {
 								Thread.sleep(50);
 							} catch (InterruptedException e) {
@@ -204,79 +215,84 @@ public class NetModelLoader{
 					}
 				});
 
+
+
 				for(int i=0; i<designs.size(); i++){
 					if(limit==NO_LIMIT || i<limit){
 						Design design = designs.get(i);
-						if(SceneGameState.getInstance().getCamera().getLocation().distance(JME2MapManager.instance.locationToBetaville(design.getCoordinate())) < Scale.fromMeter(50000)){
-							//logger.info("adding: " + design.getName() + " | ID: " + design.getID());
-
-
-
-							boolean fileResponse = false;
-							if(!(design instanceof EmptyDesign)){
-								fileResponse = CacheManager.getCacheManager().requestFile(design.getID(), design.getFilepath());
-							}
-
-							if(fileResponse || design instanceof EmptyDesign){
-								if(design instanceof ModeledDesign){
-									logger.debug("Loading design: "+design.getID());
-									ModelLoader loader = null;
-									try {
-										loader = new ModelLoader((ModeledDesign)design, true, null);
-									} catch (IOException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									} catch (URISyntaxException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-
-									Node dNode = loader.getModel();
-
-
-
-									// optimize the hierarchy
-
-									int originalSpatialCount = GeometryUtilities.countAllChildren(dNode);
-									//GeometryUtilities.collapseToSingleLevel(dNode, new ArrayList<Spatial>(), new ArrayList<Spatial>());
-									int newSpatialCount = GeometryUtilities.countAllChildren(dNode);
-
-									// let's see the difference
-									//logger.info(dNode.getName()+"\tOLD COUNT:\t" + originalSpatialCount +"\tNEW COUNT:\t"+newSpatialCount);
-
-
-									//dNode = ClodSetup.setupClod(dNode);
-									//dNode.setLocalScale(1/SceneScape.SceneScale);
-									dNode.setName(design.getFullIdentifier());
-
-									dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)design).getRotationX(),
-											((ModeledDesign)design).getRotationY(), ((ModeledDesign)design).getRotationZ()));
-
-									dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
-
-									SceneScape.getCity(cityID).addDesign(design);
-
-									while(listLock.get()){
-										try {
-											Thread.sleep(25);
-										} catch (InterruptedException e) {
-											e.printStackTrace();
-										}
-									}
-
-									nodeList.add(dNode);
-
-									itemsToLoad.incrementAndGet();
-									item.setMax(itemsToLoad.get());
-
-								}
-								else if(design instanceof EmptyDesign){
-									SceneScape.getCity(cityID).addDesign(design);
-								} 
-							}
+						if(SceneGameState.getInstance().getCamera().getLocation().distance(
+								JME2MapManager.instance.locationToBetaville(design.getCoordinate())) > Scale.fromMeter(50000)){
+							itemsToLoad.decrementAndGet();
+							item.setMax(itemsToLoad.get());
+							continue;
 						}
-						else{
-							//logger.debug("Not adding: " + design.getName() + " | Too far away ("+design.getCoordinate().toString()+")");
+						//logger.info("adding: " + design.getName() + " | ID: " + design.getID());
+
+
+
+						boolean fileResponse = false;
+						if(!(design instanceof EmptyDesign)){
+							fileResponse = CacheManager.getCacheManager().requestFile(design.getID(), design.getFilepath());
+						}
+
+						if(fileResponse || design instanceof EmptyDesign){
+							if(design instanceof ModeledDesign){
+								logger.debug("Loading design: "+design.getID());
+								ModelLoader loader = null;
+								try {
+									loader = new ModelLoader((ModeledDesign)design, true, null);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (URISyntaxException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+
+								Node dNode = loader.getModel();
+
+
+
+								// optimize the hierarchy
+
+								int originalSpatialCount = GeometryUtilities.countAllChildren(dNode);
+								//GeometryUtilities.collapseToSingleLevel(dNode, new ArrayList<Spatial>(), new ArrayList<Spatial>());
+								int newSpatialCount = GeometryUtilities.countAllChildren(dNode);
+
+								// let's see the difference
+								//logger.info(dNode.getName()+"\tOLD COUNT:\t" + originalSpatialCount +"\tNEW COUNT:\t"+newSpatialCount);
+
+
+								//dNode = ClodSetup.setupClod(dNode);
+								//dNode.setLocalScale(1/SceneScape.SceneScale);
+								dNode.setName(design.getFullIdentifier());
+
+								dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)design).getRotationX(),
+										((ModeledDesign)design).getRotationY(), ((ModeledDesign)design).getRotationZ()));
+
+								dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
+
+								SceneScape.getCity(cityID).addDesign(design);
+
+								while(listLock.get()){
+									try {
+										Thread.sleep(25);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+								}
+
+								nodeList.add(dNode);
+
+								//itemsToLoad.incrementAndGet();
+								//item.setMax(itemsToLoad.get());
+
+							}
+							else if(design instanceof EmptyDesign){
+								SceneScape.getCity(cityID).addDesign(design);
+								itemsLoaded.incrementAndGet();
+								item.update(itemsLoaded.get());
+							} 
 						}
 					}
 				}

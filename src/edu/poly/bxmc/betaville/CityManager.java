@@ -89,7 +89,7 @@ public class CityManager {
 
 	public static void constructCity(int cityID){
 		NetModelLoader.loadCityTerrain(cityID);
-		NetModelLoader.load(LookupRoutine.ALL_IN_CITY, NetModelLoader.NO_LIMIT, cityID);
+		NetModelLoader.loadCity(LookupRoutine.ALL_IN_CITY, NetModelLoader.NO_LIMIT, cityID);
 	}
 
 }
