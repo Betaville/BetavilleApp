@@ -53,22 +53,22 @@ public abstract class XMLReader{
 		builder = new SAXBuilder();
 	}
 	
-	protected void loadFile(File xmlFile) throws JDOMException, IOException{
+	public void loadFile(File xmlFile) throws JDOMException, IOException{
 		dom = builder.build(xmlFile);
 		rootElement = dom.getRootElement();
 	}
 	
-	protected void loadFile(URL xmlFile) throws JDOMException, IOException{
+	public void loadFile(URL xmlFile) throws JDOMException, IOException{
 		dom = builder.build(xmlFile);
 		rootElement = dom.getRootElement();
 	}
 	
-	protected void loadFile(InputStream xmlFile) throws JDOMException, IOException{
+	public void loadFile(InputStream xmlFile) throws JDOMException, IOException{
 		dom = builder.build(xmlFile);
 		rootElement = dom.getRootElement();
 	}
 	
-	protected void loadStream(InputStream is) throws JDOMException, IOException{
+	public void loadStream(InputStream is) throws JDOMException, IOException{
 		dom = builder.build(is);
 		rootElement = dom.getRootElement();
 	}

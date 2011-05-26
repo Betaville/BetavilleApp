@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.jdom.Element;
 
+import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.osm.KeyMatcher;
 import edu.poly.bxmc.betaville.osm.Node;
 import edu.poly.bxmc.betaville.osm.OSMObject;
@@ -73,17 +74,14 @@ public class OSMReader extends XMLReader {
 			Relation relationObject = createRelation((Element)relation);
 			OSMRegistry.get().addRelation(relationObject);
 		}
-		
-		
-		System.out.println("Parse complete\n--REPORT--");
-		System.out.println(OSMRegistry.get().getNodes().size()+" Nodes created");
-		System.out.println(OSMRegistry.get().getWays().size()+" Ways created");
-		System.out.println(OSMRegistry.get().getRelations().size()+" Relations created");
-		System.out.println("--END REPORT--");
 	}
 	
 	private Node createNode(Element element) throws InstantiationException, IllegalAccessException{
 		Node node = new Node();
+		
+		// read location
+		node.setLocation(new GPSCoordinate(0, Double.parseDouble(element.getAttributeValue("lat")),
+				Double.parseDouble(element.getAttributeValue("lon"))));
 		processGenerics(node, element);
 		return node;
 	}
@@ -151,6 +149,12 @@ public class OSMReader extends XMLReader {
 		OSMReader reader = new OSMReader();
 		reader.loadFile(new File(System.getProperty("user.home")+"/Downloads/map.osm"));
 		reader.parse();
+		
+		System.out.println("Parse complete\n--REPORT--");
+		System.out.println(OSMRegistry.get().getNodes().size()+" Nodes created");
+		System.out.println(OSMRegistry.get().getWays().size()+" Ways created");
+		System.out.println(OSMRegistry.get().getRelations().size()+" Relations created");
+		System.out.println("--END REPORT--");
 	}
 
 }

@@ -63,6 +63,7 @@ import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
 import edu.poly.bxmc.betaville.module.PanelAction.AvailabilityRule;
 import edu.poly.bxmc.betaville.net.NetPool;
+import edu.poly.bxmc.betaville.osm.builder.QuickBuilder;
 
 /**
  * A break-out point from which to perform activities delegated to a specific user-role
@@ -130,6 +131,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		*/
 		addAction(new SearchAction());
 		addAction(new ScreenshotPanelAction());
+		addAction(new QuickBuilder());
 		//addAction(new ExportAction());
 		//addAction(new TranslucentPanelAction());
 		addAction(new OnOffPanelAction("Lights", "Light tweaking functionality", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightTweaker.class, false));

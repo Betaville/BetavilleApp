@@ -26,6 +26,7 @@
 package edu.poly.bxmc.betaville.osm;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * From the <a href="http://wiki.openstreetmap.org/wiki/Elements">OSM Wiki</a>:
@@ -48,7 +49,7 @@ import java.util.ArrayList;
  */
 public class Way extends OSMObject{
 	
-	private ArrayList<Node> nodes = new ArrayList<Node>();
+	private List<Node> nodes = new ArrayList<Node>();
 
 	/**
 	 * 
@@ -58,6 +59,10 @@ public class Way extends OSMObject{
 	
 	public void addNodeReference(Node node){
 		nodes.add(node);
+	}
+	
+	public List<Node> getNodes(){
+		return nodes;
 	}
 
 }

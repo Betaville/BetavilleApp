@@ -220,7 +220,7 @@ public class SceneGameState extends BasicGameState {
 			this.startingLocation=startingLocation;
 		}
 		
-		MapManager.adjustOffsets(this.startingLocation);
+		JME2MapManager.instance.adjustOffsets(this.startingLocation);
 		
 		modules = new ArrayList<Module>();
 

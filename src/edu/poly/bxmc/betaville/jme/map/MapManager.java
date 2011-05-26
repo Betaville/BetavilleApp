@@ -76,8 +76,8 @@ public abstract class MapManager<T>{
 	/** The Radius of the earth according to the WGS84 model.*/
 	private static int WGS84_equatorialRadius = 6378137;
 	
-	private static float xOffset=0;
-	private static float zOffset=0;
+	private float xOffset=0;
+	private float zOffset=0;
 	
 	/**
 	 * Re-calibrates Betaville's internal coordinate system to a new
@@ -85,7 +85,7 @@ public abstract class MapManager<T>{
 	 * they will need be re-positioned accordingly.
 	 * @param newZeroPoint
 	 */
-	public static void adjustOffsets(ILocation newZeroPoint){
+	public void adjustOffsets(ILocation newZeroPoint){
 		BVVec3f location = locationToBetavilleInternal(newZeroPoint);
 		
 		if(location.x<0) xOffset = location.x*-1;
@@ -224,7 +224,7 @@ public abstract class MapManager<T>{
 	 * @return Vector3f that can be used as a location
 	 * within Betaville.
 	 */
-	protected static BVVec3f locationToBetavilleInternal(ILocation location){
+	protected BVVec3f locationToBetavilleInternal(ILocation location){
 		UTMCoordinate utm = location.getUTM();
 		int northingStart = getNorthingStartOfZone(utm.getLatZone());
 
@@ -251,7 +251,7 @@ public abstract class MapManager<T>{
 	 * @param Betaville world coordinate to be converted to UTM
 	 * @return UTM location of the coordinate supplied
 	 */
-	protected static UTMCoordinate betavilleToUTMInternal(BVVec3f vec){
+	protected UTMCoordinate betavilleToUTMInternal(BVVec3f vec){
 		vec.x+=xOffset;
 		vec.z+=zOffset;
 		float mNorthOfZoneStart = vec.x*SceneScape.SceneScale;
@@ -381,7 +381,7 @@ public abstract class MapManager<T>{
 	 * @param gps2 Destination coordinate
 	 * @return Angle of Azimuth in degrees
 	 */
-	public static double calculateAzimuth(GPSCoordinate gps1, GPSCoordinate gps2){
+	public double calculateAzimuth(GPSCoordinate gps1, GPSCoordinate gps2){
 		BVVec3f loc1 = locationToBetavilleInternal(gps1);
 		BVVec3f loc2 = locationToBetavilleInternal(gps2);
 		double toAtan = (loc2.z-loc1.z)/(loc2.x-loc1.x);
