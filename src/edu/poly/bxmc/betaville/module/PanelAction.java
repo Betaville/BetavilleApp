@@ -60,7 +60,26 @@ import edu.poly.bxmc.betaville.model.IUser.UserType;
 public class PanelAction extends Module {
 	private static Logger logger = Logger.getLogger(PanelAction.class);
 
-	public enum AvailabilityRule{ALWAYS, OBJECT_SELECTED, NO_OBJECT_SELECTED, IGNORE};
+	public enum AvailabilityRule{
+		/**
+		 * This action will always be available to be selected
+		 */
+		ALWAYS,
+		/**
+		 * This action will only be available for selection when an object
+		 * in the scene is selected
+		 */
+		OBJECT_SELECTED,
+		/**
+		 * This action will only be available for selection when no objects
+		 * are selected in the scene
+		 */
+		NO_OBJECT_SELECTED,
+		/**
+		 * The ability to select this button will not be maintained internally,
+		 * leaving it up to the developer's discretion
+		 */
+		IGNORE};
 	protected FixedButton button;
 	private Window tooltip;
 	private long lastRollover=-1;

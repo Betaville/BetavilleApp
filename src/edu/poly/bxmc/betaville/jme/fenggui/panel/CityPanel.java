@@ -130,6 +130,8 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		}));
 		*/
 		addAction(new SearchAction());
+		//addAction(new WhitewashAction());
+		addAction(new UnlockFromTerrain());
 		addAction(new ScreenshotPanelAction());
 		addAction(new QuickBuilder());
 		//addAction(new ExportAction());

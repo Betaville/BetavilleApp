@@ -115,6 +115,12 @@ public class GeometryUtilities {
 		}
 		else return null;
 	}
+	
+	public static void applyMaterial(Spatial spatial, MaterialState ms){
+		colorStripper(spatial);
+		spatial.setRenderState(ms);
+		spatial.updateRenderState();
+	}
 
 	private static void colorStripper(Spatial spatial){
 		MaterialState rs = (MaterialState)doRemoveRenderState(spatial, StateType.Material);
@@ -235,6 +241,13 @@ public class GeometryUtilities {
 			}
 		}
 		return false;
+	}
+	
+	public static boolean checkForRenderState(Spatial s, RenderState rs){
+		if(s.getRenderState(rs.getStateType())!=null){
+			return s.getRenderState(rs.getStateType()).equals(rs);
+		}
+		else return false;
 	}
 
 	public static int countAllChildren(Spatial s){

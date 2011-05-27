@@ -359,6 +359,7 @@ public class NetModelLoader{
 							dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)design).getRotationX(),
 									((ModeledDesign)design).getRotationY(), ((ModeledDesign)design).getRotationZ()));
 							if(design.getName().contains("$TERRAIN")){
+								SceneScape.getCity(cityID).addDesign(design);
 								SceneGameState.getInstance().getTerrainNode().attachChild(dNode);
 							}
 							else{
