@@ -34,6 +34,7 @@ import org.jdom.JDOMException;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
@@ -62,45 +63,51 @@ public class QuickBuilder extends PanelAction {
 		getButton().addButtonPressedListener(new IButtonPressedListener() {
 			
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-				
-				try {
+				SettingsPreferences.getThreadPool().submit(new Runnable() {
 					
-					UTMCoordinate[] box = JME2MapManager.createBox(5000, 5000, SquareCorner.CENTER,
-							JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()));
-					
-					GPSCoordinate bottomLeft = box[2].getGPS();
-					double left = bottomLeft.getLongitude();
-					double bottom = bottomLeft.getLatitude();
-					GPSCoordinate topRight = box[1].getGPS();
-					double right = topRight.getLongitude();
-					double top = topRight.getLatitude();
-					String request = "/api/0.6/map?bbox="+left+","+bottom+","+right+","+top;
-					System.out.println("REQUEST:\t" + request);
-					OSMReader reader = new OSMReader();
-					//eader.loadFile(new File(System.getProperty("user.home")+"/Downloads/map.osm"));
-					URL url = new URL("http://api.openstreetmap.org"+request);
-					reader.loadFile(url);
-					reader.parse();
-					
-					
-					
-					for(Way way : OSMRegistry.get().getWays()){
-						Spatial object = null;
-						RoadNodeBuilder rb = new RoadNodeBuilder(way);
-						object = rb.generateObject();
-						if(object!=null)SceneGameState.getInstance().getGISNode().attachChild(object);
+					public void run() {
+						try {
+							
+							UTMCoordinate[] box = JME2MapManager.createBox(5000, 5000, SquareCorner.CENTER,
+									JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()));
+							
+							GPSCoordinate bottomLeft = box[2].getGPS();
+							double left = bottomLeft.getLongitude();
+							double bottom = bottomLeft.getLatitude();
+							GPSCoordinate topRight = box[1].getGPS();
+							double right = topRight.getLongitude();
+							double top = topRight.getLatitude();
+							String request = "/api/0.6/map?bbox="+left+","+bottom+","+right+","+top;
+							System.out.println("REQUEST:\t" + request);
+							OSMReader reader = new OSMReader();
+							//eader.loadFile(new File(System.getProperty("user.home")+"/Downloads/map.osm"));
+							URL url = new URL("http://api.openstreetmap.org"+request);
+							reader.loadFile(url);
+							reader.parse();
+							
+							
+							
+							for(Way way : OSMRegistry.get().getWays()){
+								Spatial object = null;
+								//RoadNodeBuilder rb = new RoadNodeBuilder(way);
+								RoadBuilder rb = new RoadBuilder(way);
+								object = rb.generateObject();
+								//object.setRenderState(DisplaySystem.getDisplaySystem().getRenderer().createWireframeState());
+								//object.updateRenderState();
+								if(object!=null)SceneGameState.getInstance().getGISNode().attachChild(object);
+							}
+						} catch (JDOMException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-				} catch (JDOMException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+				});
 			}
 		});
 	}

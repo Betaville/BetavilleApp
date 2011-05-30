@@ -22,25 +22,22 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.osm.builder;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.List;
 
-import com.jme.math.Quaternion;
-import com.jme.math.Triangle;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
-import com.jme.scene.Node;
-import com.jme.scene.SharedMesh;
 import com.jme.scene.Spatial;
 import com.jme.scene.TriMesh;
-import com.jme.scene.shape.Box;
+import com.jme.scene.Spatial.NormalsMode;
 import com.jme.scene.state.MaterialState;
 import com.jme.system.DisplaySystem;
-import com.jme.util.geom.BufferUtils;
 
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
@@ -53,14 +50,16 @@ import edu.poly.bxmc.betaville.osm.tag.Highway;
  *
  */
 public class RoadBuilder extends ObjectBuilder {
-	
+
 	private JME2MapManager localTransformer;
-	
+
 	// The road's width in meters
-	private int roadWidth=5;
-	
+	private float width=Scale.fromMeter(5);
+
+	private float resolutionPerGLUnit = Scale.toMeter(1);
+
 	//private int resolution=30;
-	
+
 	/**
 	 * @param osmObject
 	 */
@@ -79,69 +78,162 @@ public class RoadBuilder extends ObjectBuilder {
 			System.out.println("This is not a road!");
 			return null;
 		}
-		
+
 		TriMesh sceneObject = null;
-		sceneObject.setLocalTranslation(JME2MapManager.instance.locationToBetaville(way.getNodes().get(0).getLocation()));
-		
+
 		System.out.println("Setting local Node's offset to " + way.getNodes().get(0).getLocation().toString());
 		localTransformer.adjustOffsets(way.getNodes().get(0).getLocation());
-		
+
 		System.out.println("Found name: " + searchForName());
-		
-		ArrayList<Vector3f> verts = new ArrayList<Vector3f>();
-		
-		Vector3f lastLocation=null;
+
+		// storage vectors
+		Vector3f tempDir = new Vector3f();
+		Vector3f tempLoc = new Vector3f();
+
+		ArrayList<Vector3f> vertices = new ArrayList<Vector3f>();
+
+
+		// the previous location
+		Vector3f start=null;
 		for(edu.poly.bxmc.betaville.osm.Node node : way.getNodes()){
-			Vector3f thisLocation = localTransformer.locationToBetaville(node.getLocation());
-			
+			Vector3f end = localTransformer.locationToBetaville(node.getLocation());
+
 			// if this is the first node, the approach is a bit simpler
-			if(lastLocation==null){
-				lastLocation=thisLocation;
+			if(start==null){
+				start=end.clone();;
 				continue;
 			}
 			else{
-				float xDistance = thisLocation.x-lastLocation.x;
-				float zDistance = thisLocation.z-lastLocation.z;
-				final float xDistanceHold = xDistance;
-				final float zDistanceHold = zDistance;
-				
-				float useX = xDistance/(roadWidth/2);
-				float useZ = zDistance/(roadWidth/2);
-				
-				Vector3f tracker = lastLocation.clone();
-				while(xDistance>useX && zDistance>useZ){
-					Vector3f vertex = tracker.add(useX, 0, useZ);
-					verts.add(vertex);
-					
-					xDistance-=useX;
-					zDistance-=useZ;
+				int numberOfPoints = (int)(end.distance(start)*resolutionPerGLUnit);
+				float increment = 1f/numberOfPoints;
+
+				// do left & right locations for start if this is the first piece
+				if(vertices.size()==0){
+					end.subtract(start, tempDir);
+					tempDir.normalizeLocal();
+					tempDir.crossLocal(Vector3f.UNIT_Y);
+					start.clone().add(tempDir.mult(-1*(width/2)), tempLoc);
+					vertices.add(tempLoc.clone());
+					start.clone().add(tempDir.mult(width/2), tempLoc);
+					vertices.add(tempLoc.clone());
 				}
 				
-				Vector3f remainingDistance = tracker.add(xDistance, 0, zDistance);
-				verts.add(remainingDistance);
+				// generate data for this points in between the start and end nodes
+				for(int i=1; i<numberOfPoints; i++){
+					Vector3f thisLocation = start.clone();
+					thisLocation.interpolate(end, increment*i);
+
+					vertices.add(thisLocation);
+
+					// find the perpendicular vector for the current location
+					end.subtract(thisLocation, tempDir);
+					tempDir.normalizeLocal();
+					tempDir.crossLocal(Vector3f.UNIT_Y);
+
+
+					// this is one side of the centerline
+					thisLocation.add(tempDir.mult(-1*(width/2)), tempLoc);
+					vertices.add(tempLoc.clone());
+
+					// this is the other side of the centerline
+					thisLocation.add(tempDir.mult(width/2), tempLoc);
+					vertices.add(tempLoc.clone());
+				}
 				
-				float radiansBetween = remainingDistance.normalize().angleBetween(lastLocation.normalize());
-				Quaternion q = new Quaternion();
-				q.fromAngleAxis(radiansBetween, Vector3f.UNIT_Y);
-				q.toRotationMatrix();
+				vertices.add(end);
+
+				// do left & right locations for end
+				end.subtract(end, tempDir);
+				tempDir.normalizeLocal();
+				tempDir.crossLocal(Vector3f.UNIT_Y);
+				end.clone().add(tempDir.mult(-1*(width/2)), tempLoc);
+				vertices.add(tempLoc.clone());
+				end.clone().add(tempDir.mult(width/2), tempLoc);
+				vertices.add(tempLoc.clone());
 				
-				lastLocation=thisLocation;
+				start=end.clone();;
 			}
 		}
-		
-		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer((Vector3f[])verts.toArray());
-		FloatBuffer normalBuffer = FloatBuffer.allocate(vertexBuffer.capacity());
-		normalBuffer.rewind();
-		for(int i=0; i<normalBuffer.capacity(); i+=2){
-			normalBuffer.put(0);
-			normalBuffer.put(1);
-		}
-		
-		//sceneObject = new TriMesh("", vertexBuffer, normalBuffer, null, coords, indices)
-		
+
 		MaterialState ms = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 		ms.setAmbient(ColorRGBA.yellow);
 		ms.setDiffuse(ColorRGBA.orange);
+		
+		// START
+		
+		// create the vertex buffer
+		//FloatBuffer vertexBuffer = FloatBuffer.allocate(vertices.size()*3);
+		FloatBuffer vertexBuffer = ByteBuffer.allocateDirect(4 * (vertices.size()*3)).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		vertexBuffer.rewind();
+		for(Vector3f v : vertices){
+			vertexBuffer.put(v.x);
+			vertexBuffer.put(v.y);
+			vertexBuffer.put(v.z);
+		}
+
+		// create the index buffer (form triangles)
+		//IntBuffer faces = IntBuffer.allocate(vertices.size()*4);
+		IntBuffer faces = ByteBuffer.allocateDirect(4 * (vertices.size()*4)).order(ByteOrder.nativeOrder()).asIntBuffer();
+		faces.rewind();
+		for(int i=0; i<vertices.size()/3; i++){
+			int middle = i*3;
+			int left = (i*3)+1;
+			int right = (i*3)+2;
+			int nextMiddle = middle+3;
+			int nextLeft = left+3;
+			int nextRight = right+3;
+
+			// left bottom triangle
+			faces.put(middle);
+			faces.put(left);
+			faces.put(nextMiddle);
+
+			// left top triangle
+			faces.put(left);
+			faces.put(nextMiddle);
+			faces.put(nextLeft);
+
+			// right bottom triangle
+			faces.put(middle);
+			faces.put(right);
+			faces.put(nextMiddle);
+
+			// right top triangle
+			faces.put(right);
+			faces.put(nextMiddle);
+			faces.put(nextRight);
+		}
+
+		//FloatBuffer coords;
+		//TexCoords tc = new TexCoords(null, 2);
+
+		//FloatBuffer normals = FloatBuffer.allocate(faces.capacity()/3);
+		FloatBuffer normals = ByteBuffer.allocateDirect(4 * (faces.capacity()*3)).order(ByteOrder.nativeOrder()).asFloatBuffer();
+		normals.rewind();
+		boolean flip = false;
+		for(int i=0; i<normals.capacity(); i+=3){
+			if(flip){
+				normals.put(0);
+				normals.put(1);
+				normals.put(0);
+			}
+			else{
+				normals.put(0);
+				normals.put(1);
+				normals.put(0);
+			}
+			flip=!flip;
+		}
+
+		sceneObject = new TriMesh("", vertexBuffer, normals, null, null, faces);
+		//ms.setMaterialFace(MaterialFace.FrontAndBack);
+		sceneObject.setNormalsMode(NormalsMode.Off);
+		sceneObject.setSolidColor(ColorRGBA.red);
+		sceneObject.updateRenderState();
+		sceneObject.setRenderState(ms);
+		sceneObject.updateRenderState();
+		sceneObject.setLocalTranslation(JME2MapManager.instance.locationToBetaville(way.getNodes().get(0).getLocation()));
+
 		return sceneObject;
 	}
 

@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.ProgressMonitorInputStream;
+
 import org.apache.log4j.Logger;
 
 public class NetworkConnection {
@@ -20,6 +22,10 @@ public class NetworkConnection {
 	 * Attribute <input> - input of the socket
 	 */
 	protected ObjectInputStream input;
+	/**
+	 * 
+	 */
+	protected ProgressMonitorInputStream progressMonitor;
 	/**
 	 * Attribute <output> - output of the socket
 	 */
@@ -61,4 +67,10 @@ public class NetworkConnection {
 		return clientSocket.isConnected();
 	}
 
+	/**
+	 * @return the progressMonitor
+	 */
+	public ProgressMonitorInputStream getProgressMonitor() {
+		return progressMonitor;
+	}
 }
