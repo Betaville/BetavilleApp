@@ -46,21 +46,12 @@ import edu.poly.bxmc.betaville.osm.Way;
 import edu.poly.bxmc.betaville.xml.OSMReader;
 
 /**
+ * Incorporates the OSM functionality into a city 
+ * panel operation
  * @author Skye Book
  *
  */
 public class QuickBuilder extends PanelAction {
-
-	/**
-	 * @param name
-	 * @param description
-	 * @param listener
-	 */
-	public QuickBuilder(String name, String description,
-			IButtonPressedListener listener) {
-		super(name, description, listener);
-		// TODO Auto-generated constructor stub
-	}
 
 	/**
 	 * 
@@ -95,7 +86,7 @@ public class QuickBuilder extends PanelAction {
 					
 					for(Way way : OSMRegistry.get().getWays()){
 						Spatial object = null;
-						RoadBuilder rb = new RoadBuilder(way);
+						RoadNodeBuilder rb = new RoadNodeBuilder(way);
 						object = rb.generateObject();
 						if(object!=null)SceneGameState.getInstance().getGISNode().attachChild(object);
 					}
