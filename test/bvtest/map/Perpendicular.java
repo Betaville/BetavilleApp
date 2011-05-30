@@ -60,17 +60,28 @@ public class Perpendicular extends SimpleGame {
 		rootNode.attachChild(endingBox);
 		rootNode.updateRenderState();
 		
+		Vector3f tempDir = new Vector3f();
+		Vector3f tempLoc = new Vector3f();
+		
+		int width=10;
+		
 		for(int i=1; i<10; i++){
 			Vector3f thisLocation = start.clone();
 			thisLocation.interpolate(end, .1f*i);
-			Vector3f sideLoc = thisLocation.clone().normalizeLocal();
-			sideLoc.add(-1f, 0, +1f);
-			sideLoc.normalizeLocal();
-			sideLoc.addLocal(thisLocation);
-			//Vector3f sideLoc = thisLocation.clone().cross(Vector3f.UNIT_XYZ);
+			
+			end.subtract(thisLocation, tempDir);
+			tempDir.normalizeLocal();
+			tempDir.crossLocal(Vector3f.UNIT_Y);
+			
+			
 			Box a = new Box(i+"a", new Vector3f(), .5f, .5f, .5f);
-			a.setLocalTranslation(sideLoc);
+			thisLocation.add(tempDir.mult(-1*(width/2)), tempLoc);
+			a.setLocalTranslation(tempLoc.clone());
+			Box c = new Box(i+"c", new Vector3f(), .5f, .5f, .5f);
+			thisLocation.add(tempDir.mult(width/2), tempLoc);
+			c.setLocalTranslation(tempLoc.clone());
 			rootNode.attachChild(a);
+			rootNode.attachChild(c);
 			System.out.println(thisLocation.toString());
 			Box b = new Box(i+"", new Vector3f(), 1, 1, 1);
 			b.setLocalTranslation(thisLocation);
