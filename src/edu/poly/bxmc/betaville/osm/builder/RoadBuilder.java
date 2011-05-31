@@ -225,7 +225,7 @@ public class RoadBuilder extends ObjectBuilder {
 			flip=!flip;
 		}
 
-		sceneObject = new TriMesh("", vertexBuffer, normals, null, null, faces);
+		sceneObject = new TriMesh(""+way.getId(), vertexBuffer, normals, null, null, faces);
 		//ms.setMaterialFace(MaterialFace.FrontAndBack);
 		sceneObject.setNormalsMode(NormalsMode.Off);
 		sceneObject.setSolidColor(ColorRGBA.red);

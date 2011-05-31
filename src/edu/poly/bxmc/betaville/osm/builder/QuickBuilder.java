@@ -92,8 +92,13 @@ public class QuickBuilder extends PanelAction {
 								//RoadNodeBuilder rb = new RoadNodeBuilder(way);
 								RoadBuilder rb = new RoadBuilder(way);
 								object = rb.generateObject();
+								
+								// render the object as a wireframe
 								//object.setRenderState(DisplaySystem.getDisplaySystem().getRenderer().createWireframeState());
 								//object.updateRenderState();
+								
+								// if the object is already there, remove it
+								SceneGameState.getInstance().getGISNode().detachChildNamed(""+way.getId());
 								if(object!=null)SceneGameState.getInstance().getGISNode().attachChild(object);
 							}
 						} catch (JDOMException e) {
