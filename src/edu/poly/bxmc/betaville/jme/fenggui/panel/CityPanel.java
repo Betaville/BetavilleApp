@@ -134,7 +134,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new UnlockFromTerrain());
 		addAction(new ScreenshotPanelAction());
 		addAction(new QuickBuilder());
-		//addAction(new ExportAction());
+		addAction(new ExportAction());
 		//addAction(new TranslucentPanelAction());
 		addAction(new OnOffPanelAction("Lights", "Light tweaking functionality", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightTweaker.class, false));
 		addAction(new OnOffPanelAction("Layers", "GIS Layers", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, AddLayersWindow.class, false));
