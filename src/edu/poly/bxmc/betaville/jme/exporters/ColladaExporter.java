@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -60,19 +60,20 @@ import edu.poly.bxmc.betaville.xml.XMLWriter;
 
 /**
  * Exporter for COLLADA files
+ * <p>
  * 
- * <COLLADA>
- * 	<asset/>
- * 	<library_cameras/> // not important
- * 	<library_lights/> // not important
- * 	<library_images/>
- * 	<library_effects/>
- * 	<library_materials/>
- * 	<library_geometries/>
- * 	<library_animations/>
- * 	<library_controllers/>
- * 	<library_visual_scenes/>
- * 	<scene/>
+ * {@code<COLLADA>}</br>
+ * 	{@code<asset/>}</br>
+ * 	{@code<library_cameras/> // not important}</br>
+ * 	{@code<library_lights/> // not important}</br>
+ * 	{@code<library_images/>}</br>
+ * 	{@code<library_effects/>}</br>
+ * 	{@code<library_materials/>}</br>
+ * 	{@code<library_geometries/>}</br>
+ * 	{@code<library_animations/>}</br>
+ * 	{@code<library_controllers/>}</br>
+ * 	{@code<library_visual_scenes/>}</br>
+ * 	{@code<scene/>}</br>
  * 
  * @author Skye Book
  * @experimental - incomplete
@@ -99,7 +100,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 	private Element library_controllers = new Element("library_controllers");
 	private Element library_visual_scenes = new Element("library_visual_scenes");
 	private Element scene = new Element("scene");
-	
+
 	private Namespace namespace;
 
 	/**
@@ -140,7 +141,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		createScene();
 		logger.info("scene element exported");
 	}
-	
+
 	public void writeData() throws IOException{
 		assignNamespaces(rootElement);
 		super.writeData();
@@ -169,7 +170,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	private void assignNamespaces(Element element){
 		element.setNamespace(namespace);
 		for(Object child : element.getChildren()){
@@ -288,7 +289,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		effect.addContent(extra);
 		return effect;
 	}
-	
+
 	private Element createMaterialEntry(String materialEffectName, String meshName){
 		Element material = new Element("material");
 		material.setAttribute(new Attribute("id", getMaterialName(meshName)));
@@ -433,7 +434,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		vertices.addContent(createInput("POSITION", positionsSource.getAttributeValue("id")));
 		mesh.addContent(vertices);
 
-		
+
 		Element triangles = new Element("triangles");
 		triangles.setAttribute(new Attribute("material", getMaterialName(trimesh.getName())));
 		triangles.setAttribute(new Attribute("count", ""+trimesh.getTriangleCount()));
@@ -452,9 +453,9 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 			triangles.addContent(createInput("COLOR", colorsSource.getAttributeValue("id"), offset));
 			offset++;
 		}
-		
+
 		Element primArray = new Element("p");
-		
+
 		primArray.addContent(arrayFromInts(trimesh.getIndexBuffer()));
 		triangles.addContent(primArray);
 		mesh.addContent(triangles);
@@ -462,23 +463,23 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		geometry.addContent(mesh);
 		return geometry;
 	}
-	
+
 	private String createPolyList(TriMesh t){
 		if (t.getMode().equals(Mode.Strip)) return createStripPolyList(t);
 		if (t.getMode().equals(Mode.Triangles)) return createTrianglesPolyList(t);
 		else return createFanPolyList(t);
 	}
-	
+
 	// creates as polylist based on GL_TRIANGLE_STRIP
 	private String createStripPolyList(TriMesh t){
 		return"";
 	}
-	
+
 	// creates as polylist based on GL_TRIANGLES
 	private String createTrianglesPolyList(TriMesh t){
 		return"";
 	}
-	
+
 	// creates as polylist based on GL_TRIANGLE_FAN
 	private String createFanPolyList(TriMesh t){
 		return"";
@@ -612,14 +613,14 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 			}
 		}
 	}
-	
+
 	private Element createTranslateElement(Vector3f translation){
 		Element element = new Element("translate");
 		//element.setAttribute(new Attribute("sid", "location"));
 		element.addContent(translation.x + " " + translation.y + " " + translation.z);
 		return element;
 	}
-	
+
 	private Element createScaleElement(Vector3f scale){
 		Element element = new Element("scale");
 		//element.setAttribute(new Attribute("sid", "scale"));
