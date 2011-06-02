@@ -34,7 +34,11 @@ import javax.swing.filechooser.FileFilter;
  * @author Skye Book
  *
  */
-public class EsriShapefileFilter extends FileFilter {
+public class EsriShapefileFilter extends FileExtensionFileFilter {
+	
+	public EsriShapefileFilter(){
+		super("shp");
+	}
 
 	/*
 	 * (non-Javadoc)

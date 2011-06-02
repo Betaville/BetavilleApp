@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ import java.io.IOException;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
 
 import org.apache.log4j.Logger;
 import org.fenggui.event.ButtonPressedEvent;
@@ -39,6 +38,9 @@ import org.fenggui.event.IButtonPressedListener;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
+import edu.poly.bxmc.betaville.gui.FileExtensionFileFilter;
+import edu.poly.bxmc.betaville.gui.WavefrontFileFilter;
 import edu.poly.bxmc.betaville.jme.exporters.ColladaExporter;
 import edu.poly.bxmc.betaville.jme.exporters.OBJExporter;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
@@ -51,29 +53,9 @@ import edu.poly.bxmc.betaville.module.PanelAction;
 public class ExportAction extends PanelAction {
 	private static final Logger logger = Logger.getLogger(ExportAction.class);
 	
-	private static FileFilter colladaFilter = new FileFilter() {
-		@Override
-		public String getDescription() {
-			return "COLLADA (.dae)";
-		}
-		
-		@Override
-		public boolean accept(File f) {
-			return f.toString().endsWith(".dae");
-		}
-	};
+	private static ColladaFileFilter colladaFilter = new ColladaFileFilter();
 	
-	private static FileFilter objFilter = new FileFilter() {
-		@Override
-		public String getDescription() {
-			return "Wavefront OBJ (.obj)";
-		}
-		
-		@Override
-		public boolean accept(File f) {
-			return f.toString().endsWith(".obj");
-		}
-	};
+	private static WavefrontFileFilter objFilter = new WavefrontFileFilter();
 
 	/**
 	 * @param name
@@ -89,16 +71,23 @@ public class ExportAction extends PanelAction {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				SettingsPreferences.getThreadPool().submit(new Runnable() {
+					
+					JFileChooser fileChooser;
+					File file;
 
 					public void run() {
 						JDialog dialog = new JDialog();
 						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
+						fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
 						fileChooser.addChoosableFileFilter(colladaFilter);
 						fileChooser.addChoosableFileFilter(objFilter);
 						if(fileChooser.showSaveDialog(dialog)==JFileChooser.APPROVE_OPTION){
 							logger.info("Save requested using " + fileChooser.getFileFilter().getDescription());
-							File file = fileChooser.getSelectedFile();
+							file = fileChooser.getSelectedFile();
+							
+							// adds an extension if one isn't there
+							takeCareOfFileExtension();
+							
 							logger.info("Selected File: " + file.toString());
 							SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
 							try {
@@ -115,6 +104,20 @@ public class ExportAction extends PanelAction {
 							} catch (IOException e) {
 								logger.error("Exception Occurred When Attempting To Write File", e);
 							}
+						}
+					}
+					
+					private void takeCareOfFileExtension(){
+						// check to see if one of the available extensions has already been used
+						boolean extensionSet = false;
+						for(String ext : ((FileExtensionFileFilter)fileChooser.getFileFilter()).getFileExtensions()){
+							if(file.toString().endsWith(ext)) extensionSet = true;
+						}
+						
+						// if an extension hasn't been set, use the first available extension
+						if(!extensionSet){
+							file = new File(file.toString()+"."+((FileExtensionFileFilter)fileChooser.getFileFilter()).getFileExtensions()[0]);
+							logger.info("An extension was not set, so one has been added to the filename: " + file.toString());
 						}
 					}
 				});

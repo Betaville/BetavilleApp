@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package edu.poly.bxmc.betaville.jme.fenggui.panel;
+package edu.poly.bxmc.betaville.jme.fenggui;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
@@ -49,7 +49,6 @@ import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
-import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
@@ -105,7 +104,7 @@ public class AdminModelMover extends Window {
 		addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 			public void processEvent(Object source, Event event) {
 				if(event instanceof MouseEvent){
-					//TODO: Detach sliders if mouse wanders out of the widget window
+					//TODO: Detach sliders if mouse wanders out of the widget `window
 				}
 			}
 		});

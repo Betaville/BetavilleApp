@@ -43,6 +43,7 @@ import com.jme.scene.Spatial;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.AddLayersWindow;
+import edu.poly.bxmc.betaville.jme.fenggui.AdminModelMover;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.LightAngleModifier;
 import edu.poly.bxmc.betaville.jme.fenggui.LightTweaker;

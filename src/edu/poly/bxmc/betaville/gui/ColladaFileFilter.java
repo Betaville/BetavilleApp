@@ -35,7 +35,11 @@ import javax.swing.filechooser.FileFilter;
  * @author Skye Book
  *
  */
-public class ColladaFileFilter extends FileFilter {
+public class ColladaFileFilter extends FileExtensionFileFilter {
+	
+	public ColladaFileFilter(){
+		super("dae", "dae.xml");
+	}
 
 	/*
 	 * (non-Javadoc)

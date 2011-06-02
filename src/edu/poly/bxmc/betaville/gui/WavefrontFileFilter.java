@@ -35,7 +35,11 @@ import javax.swing.filechooser.FileFilter;
  * @author Skye Book
  *
  */
-public class WavefrontFileFilter extends FileFilter {
+public class WavefrontFileFilter extends FileExtensionFileFilter {
+	
+	public WavefrontFileFilter(){
+		super("obj");
+	}
 
 	/*
 	 * (non-Javadoc)
