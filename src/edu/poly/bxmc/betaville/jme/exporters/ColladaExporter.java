@@ -364,69 +364,123 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		positionsSource.addContent(positionsArrayTechnique);
 		mesh.addContent(positionsSource);
 
+		logger.info("Positions array created");
+
 		// Normals
 
-		Element normalsSource = createSourceElement();
-		normalsSource.setAttribute(new Attribute("id", trimesh.getName()+"-normals"));
-		Element normalsArray = createFloatArray(normalsSource.getAttributeValue("id")+"-array", trimesh.getNormalBuffer().capacity());
-		normalsArray.addContent(arrayFromFloats(trimesh.getNormalBuffer()));
-		Element normalsArrayTechnique = createCommonTechnique();
-		Element nATAccessor = createAccessor(normalsArray.getAttributeValue("id"), trimesh.getVertexCount(), 3);
-		nATAccessor.addContent(createParam("X", "float"));
-		nATAccessor.addContent(createParam("Y", "float"));
-		nATAccessor.addContent(createParam("Z", "float"));
-		normalsArrayTechnique.addContent(nATAccessor);
+		if(trimesh.getNormalBuffer()!=null){
+			Element normalsSource = createSourceElement();
+			normalsSource.setAttribute(new Attribute("id", trimesh.getName()+"-normals"));
+			Element normalsArray = createFloatArray(normalsSource.getAttributeValue("id")+"-array", trimesh.getNormalBuffer().capacity());
+			normalsArray.addContent(arrayFromFloats(trimesh.getNormalBuffer()));
+			Element normalsArrayTechnique = createCommonTechnique();
+			Element nATAccessor = createAccessor(normalsArray.getAttributeValue("id"), trimesh.getVertexCount(), 3);
+			nATAccessor.addContent(createParam("X", "float"));
+			nATAccessor.addContent(createParam("Y", "float"));
+			nATAccessor.addContent(createParam("Z", "float"));
+			normalsArrayTechnique.addContent(nATAccessor);
 
-		normalsSource.addContent(normalsArray);
-		normalsSource.addContent(normalsArrayTechnique);
-		mesh.addContent(normalsSource);
+			normalsSource.addContent(normalsArray);
+			normalsSource.addContent(normalsArrayTechnique);
+			mesh.addContent(normalsSource);
+			logger.info("Normals array created");
+		}
+		else{
+			logger.info("Normals skipped");
+		}
 
 		// Texture Maps
 		ArrayList<Element> mapSources = new ArrayList<Element>();
-		ArrayList<TexCoords> texCoords = trimesh.getTextureCoords();
-		for(int i=0; i<texCoords.size(); i++){
-			TexCoords coord = texCoords.get(i);
-			Element map = createSourceElement();
-			map.setAttribute(new Attribute("id", trimesh.getName()+"-map-"+i));
-			Element mapArray = createFloatArray(map.getAttributeValue("id")+"-array", coord.coords.capacity());
-			mapArray.addContent(arrayFromFloats(coord.coords));
-			Element mapArrayTechnique = createCommonTechnique();
-			Element mATAccessor = createAccessor(mapArray.getAttributeValue("id"), (coord.coords.capacity()/coord.perVert), coord.perVert);
-			mATAccessor.addContent(createParam("S","float"));
-			mATAccessor.addContent(createParam("T","float"));
-			if(coord.perVert==3) mATAccessor.addContent(createParam("W", "float"));
-			mapArrayTechnique.addContent(mATAccessor);
-			map.addContent(mapArray);
-			map.addContent(mapArrayTechnique);
-			mapSources.add(map);
-		}
+		if(trimesh.getTextureCoords()!=null){
+			if(trimesh.getTextureCoords().size()>0){
+				ArrayList<TexCoords> texCoords = trimesh.getTextureCoords();
+				for(int i=0; i<texCoords.size(); i++){
+					TexCoords coord = texCoords.get(i);
+					if(coord==null){
+						logger.warn("There was no coordinate present, skipping");
+						continue;
+					}
+					if(coord.coords==null){
+						logger.warn("There was no coordinate buffer present, skipping");
+						continue;
+					}
+					logger.info("texCoord " + i +" of "+texCoords.size()+" gotten");
+					Element map = createSourceElement();
+					map.setAttribute(new Attribute("id", trimesh.getName()+"-map-"+i));
+					Element mapArray = createFloatArray(map.getAttributeValue("id")+"-array", coord.coords.capacity());
+					if(mapArray==null) logger.error("The attribute could not be retrieved");
+					mapArray.addContent(arrayFromFloats(coord.coords));
+					logger.info("coordinate array added");
+					Element mapArrayTechnique = createCommonTechnique();
+					Element mATAccessor = createAccessor(mapArray.getAttributeValue("id"), (coord.coords.capacity()/coord.perVert), coord.perVert);
+					mATAccessor.addContent(createParam("S","float"));
+					mATAccessor.addContent(createParam("T","float"));
+					logger.info("ST values added");
+					if(coord.perVert==3){
+						mATAccessor.addContent(createParam("W", "float"));
+						logger.info("W value added");
+					}
+					mapArrayTechnique.addContent(mATAccessor);
+					map.addContent(mapArray);
+					map.addContent(mapArrayTechnique);
+					mapSources.add(map);
+				}
 
-		// push any created maps to the source element
-		for(Element map : mapSources){
-			mesh.addContent(map);
+				// push any created maps to the source element
+				for(Element map : mapSources){
+					mesh.addContent(map);
+				}
+				logger.info("Texture maps created");
+			}
+			else{
+				logger.info("Texture maps skipped");
+			}
+		}
+		else{
+			logger.info("Texture maps skipped");
 		}
 
 		// Colors
-		Element colorsSource = createSourceElement();
+		Element colorsSource = null;
+		/*
+		logger.info("Creating color buffer");
 		if(trimesh.getColorBuffer()!=null){
+			logger.info("Creating color buffer - color buffer not null");
 			if(trimesh.getColorBuffer().capacity()>0){
+				logger.info("Creating color buffer - color buffer capactiy is "+trimesh.getColorBuffer().capacity());
 				colorsSource = createSourceElement();
 				colorsSource.setAttribute(new Attribute("id", trimesh.getName()+"-colors"));
-				Element colorArray = new Element(colorsSource.getAttributeValue("id")+"-array");
-				colorArray.setAttribute(new Attribute("count", ""+trimesh.getColorBuffer().capacity()));
-				colorArray.addContent(arrayFromFloats(trimesh.getColorBuffer()));
-				Element colorArrayTechnique = createCommonTechnique();
-				Element cATAccessor = createAccessor(colorArray.getAttributeValue("id"), trimesh.getColorBuffer().capacity(), 4);
-				cATAccessor.addContent(createParam("R", "float"));
-				cATAccessor.addContent(createParam("G", "float"));
-				cATAccessor.addContent(createParam("B", "float"));
-				cATAccessor.addContent(createParam("A", "float"));
-				colorArrayTechnique.addContent(cATAccessor);
-				colorsSource.addContent(colorArray);
-				colorsSource.addContent(colorArrayTechnique);
-				mesh.addContent(colorsSource);
+				logger.info("Creating color buffer - color source ID set");
+				if(colorsSource.getAttributeValue("id")==null){
+					logger.error("Could not retrieve element");
+				}
+				else{
+					logger.info("MAKING ELEMENT CALLED " + colorsSource.getAttributeValue("id")+"-array");
+					Element colorArray = new Element(colorsSource.getAttributeValue("id")+"-array");
+					logger.info("Creating color buffer - color source ID retrieved");
+					colorArray.setAttribute(new Attribute("count", ""+trimesh.getColorBuffer().capacity()));
+					logger.info("Creating color buffer - About to create array from color buffer");
+					colorArray.addContent(arrayFromFloats(trimesh.getColorBuffer()));
+					logger.info("Creating color buffer - Array created from color buffer");
+					Element colorArrayTechnique = createCommonTechnique();
+					Element cATAccessor = createAccessor(colorArray.getAttributeValue("id"), trimesh.getColorBuffer().capacity(), 4);
+					cATAccessor.addContent(createParam("R", "float"));
+					cATAccessor.addContent(createParam("G", "float"));
+					cATAccessor.addContent(createParam("B", "float"));
+					cATAccessor.addContent(createParam("A", "float"));
+					colorArrayTechnique.addContent(cATAccessor);
+					colorsSource.addContent(colorArray);
+					colorsSource.addContent(colorArrayTechnique);
+					mesh.addContent(colorsSource);
+					logger.info("Creating color buffer - Color array added to mesh");
+				}
 			}
+			logger.info("Colors array created");
 		}
+		else{
+			logger.info("Colors skipped");
+		}
+		*/
 
 		// Vertices
 		Element vertices = new Element("vertices");
@@ -449,7 +503,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 			}
 			offset++;
 		}
-		if(colorsSource.getParent()!=null){
+		if(colorsSource!=null){
 			triangles.addContent(createInput("COLOR", colorsSource.getAttributeValue("id"), offset));
 			offset++;
 		}

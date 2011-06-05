@@ -132,7 +132,7 @@ public class OSMReader extends XMLReader {
 			//System.out.println("reading element: "+((Element)tag).getAttributes().toString());
 			Class<? extends AbstractTag> tagClass = KeyMatcher.getKey(((Element)tag).getAttributeValue("k"));
 			if(tagClass==null){
-				System.out.println("A Tag Class could not be determined for " + ((Element)tag).getAttributeValue("k"));
+				//System.out.println("A Tag Class could not be determined for " + ((Element)tag).getAttributeValue("k"));
 				continue;
 			}
 			AbstractTag tagItem = tagClass.newInstance();

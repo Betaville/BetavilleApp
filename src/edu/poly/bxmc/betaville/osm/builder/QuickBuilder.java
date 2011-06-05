@@ -25,17 +25,22 @@
 */
 package edu.poly.bxmc.betaville.osm.builder;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.apache.log4j.Logger;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.jdom.JDOMException;
 
 import com.jme.scene.Spatial;
+import com.jme.util.export.xml.XMLExporter;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.jme.exporters.ColladaExporter;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
@@ -53,6 +58,7 @@ import edu.poly.bxmc.betaville.xml.OSMReader;
  *
  */
 public class QuickBuilder extends PanelAction {
+	private static final Logger logger = Logger.getLogger(QuickBuilder.class);
 
 	/**
 	 * 
@@ -85,7 +91,12 @@ public class QuickBuilder extends PanelAction {
 							reader.loadFile(url);
 							reader.parse();
 							
-							
+							// check that an OSM cache folder exists:
+							File osmCache = new File(DriveFinder.getBetavilleFolder().toString()+"/cache/osm/");
+							if(!osmCache.exists()){
+								logger.info("OSM geometry cache folder does not exist; Creating it.");
+								osmCache.mkdirs();
+							}
 							
 							for(Way way : OSMRegistry.get().getWays()){
 								Spatial object = null;
@@ -99,7 +110,11 @@ public class QuickBuilder extends PanelAction {
 								
 								// if the object is already there, remove it
 								SceneGameState.getInstance().getGISNode().detachChildNamed(""+way.getId());
-								if(object!=null)SceneGameState.getInstance().getGISNode().attachChild(object);
+								if(object!=null){
+									SceneGameState.getInstance().getGISNode().attachChild(object);
+									// export the object for later (this gets done on a separate thread so we can move on)
+									submitFileExport(object, osmCache);
+								}
 							}
 						} catch (JDOMException e) {
 							// TODO Auto-generated catch block
@@ -112,9 +127,26 @@ public class QuickBuilder extends PanelAction {
 							e.printStackTrace();
 						}
 					}
+					
+					private void submitFileExport(final Spatial object, final File osmCache){
+						SettingsPreferences.getThreadPool().submit(new Runnable() {
+							
+							public void run() {
+								try {
+									XMLExporter.getInstance().save(object, new File(osmCache.toString()+"/"+object.getName()+".jme.xml"));
+									ColladaExporter exporter = new ColladaExporter(new File(osmCache.toString()+"/"+object.getName()+".dae"), object, true);
+									exporter.writeData();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+						});
+						
+					}
 				});
 			}
 		});
+		
+		
 	}
-
 }

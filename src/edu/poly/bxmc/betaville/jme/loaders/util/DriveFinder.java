@@ -74,6 +74,11 @@ public class DriveFinder {
 		return homeDir;
 	}
 	
+	/**
+	 * Gets the Betaville folder located at ~/.betaville.
+	 * @return The file representing this folder, including
+	 * a slash at the end
+	 */
 	public static File getBetavilleFolder(){
 		return new File(getHomeDir().toString()+"/.betaville/");
 	}
