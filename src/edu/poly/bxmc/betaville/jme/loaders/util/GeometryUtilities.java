@@ -580,6 +580,7 @@ public class GeometryUtilities {
 	 */
 	public static void printInformation(Logger toUse, Spatial s, boolean recursive,
 			boolean translation, boolean rotation, boolean scale){
+		logger.info(s.getClass().getSimpleName()+": "+s.getName());
 		if(translation) toUse.info(s.getName()+" Translation: " + s.getLocalTranslation().x+","+s.getLocalTranslation().y+","+s.getLocalTranslation().z);
 		if(rotation){
 			float[] angles = s.getLocalRotation().toAngles(null);

@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
 import java.awt.Dialog.ModalityType;
@@ -33,16 +33,35 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
 import org.apache.log4j.Logger;
+import org.fenggui.Button;
+import org.fenggui.ComboBox;
+import org.fenggui.FengGUI;
+import org.fenggui.Label;
+import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
+import org.fenggui.event.ISelectionChangedListener;
+import org.fenggui.event.SelectionChangedEvent;
+import org.fenggui.layout.RowExLayout;
+import org.fenggui.layout.RowExLayoutData;
+
+import com.jme.scene.Spatial;
+import com.jme.util.export.binary.BinaryExporter;
+import com.jme.util.export.xml.XMLExporter;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
 import edu.poly.bxmc.betaville.gui.FileExtensionFileFilter;
+import edu.poly.bxmc.betaville.gui.JMEFileFilter;
+import edu.poly.bxmc.betaville.gui.JMEXMLFileFilter;
 import edu.poly.bxmc.betaville.gui.WavefrontFileFilter;
 import edu.poly.bxmc.betaville.jme.exporters.ColladaExporter;
 import edu.poly.bxmc.betaville.jme.exporters.OBJExporter;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
+import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
+import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
 
@@ -52,10 +71,22 @@ import edu.poly.bxmc.betaville.module.PanelAction;
  */
 public class ExportAction extends PanelAction {
 	private static final Logger logger = Logger.getLogger(ExportAction.class);
-	
-	private static ColladaFileFilter colladaFilter = new ColladaFileFilter();
-	
-	private static WavefrontFileFilter objFilter = new WavefrontFileFilter();
+
+	private static FileExtensionFileFilter[] filters;
+	static{
+		filters = new FileExtensionFileFilter[]{
+				new ColladaFileFilter(),
+				new WavefrontFileFilter(),
+				new JMEFileFilter(),
+				new JMEXMLFileFilter()
+		};
+	}
+
+	private Window window;
+	private ComboBox exportSelector;
+
+	private static final String OSM = "OpenStreetMap Geometry";
+	private static final String SELECTED = "Selected Object";
 
 	/**
 	 * @param name
@@ -66,63 +97,118 @@ public class ExportAction extends PanelAction {
 	 * @param listener
 	 */
 	public ExportAction() {
-		super("Export", "Exports a 3D object", "Export", AvailabilityRule.OBJECT_SELECTED, UserType.MODERATOR,
-				new IButtonPressedListener() {
+		super("Export", "Exports a 3D object", "Export", AvailabilityRule.OBJECT_SELECTED, UserType.MODERATOR, null);
+
+		getButton().addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				if(!window.isInWidgetTree()) GUIGameState.getInstance().getDisp().addWidget(window);
+			}
+		});
+
+
+		// create window
+		window = FengGUI.createWindow(true, true);
+		window.setTitle("Exporter");
+		window.setSize(125, 75);
+		window.getContentContainer().setLayoutManager(new RowExLayout(false));
+
+		exportSelector = FengGUI.createWidget(ComboBox.class);
+		exportSelector.addItem(OSM);
+		exportSelector.addItem(SELECTED);
+		exportSelector.setLayoutData(new RowExLayoutData(true, true));
+		exportSelector.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			public void selectionChanged(Object arg0, SelectionChangedEvent arg1) {
+				if(exportSelector.getSelectedValue().equals(SELECTED) && SceneScape.isTargetSpatialEmpty()){
+					GUIGameState.getInstance().getDisp().addWidget(
+							FengUtils.createDismissableWindow("Exporter", "An object must be selected to export", "ok", true)
+					);
+				}
+			}
+		});
+
+		Label l = FengGUI.createWidget(Label.class);
+		l.setText("Select what you would like to export");
+		l.setLayoutData(new RowExLayoutData(true, true));
+
+		Button go = FengGUI.createWidget(Button.class);
+		go.setText("export");
+		go.setLayoutData(new RowExLayoutData(true, true));
+		go.addButtonPressedListener(new IButtonPressedListener() {
+
+			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				SettingsPreferences.getThreadPool().submit(new Runnable() {
-					
+
 					JFileChooser fileChooser;
 					File file;
+					Spatial toUse;
 
 					public void run() {
 						JDialog dialog = new JDialog();
 						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 						fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
-						fileChooser.addChoosableFileFilter(colladaFilter);
-						fileChooser.addChoosableFileFilter(objFilter);
+						for(FileExtensionFileFilter filter : filters){
+							fileChooser.addChoosableFileFilter(filter);
+						}
 						if(fileChooser.showSaveDialog(dialog)==JFileChooser.APPROVE_OPTION){
 							logger.info("Save requested using " + fileChooser.getFileFilter().getDescription());
 							file = fileChooser.getSelectedFile();
-							
+
 							// adds an extension if one isn't there
 							takeCareOfFileExtension();
-							
+
+							if(exportSelector.getSelectedValue().equals(SELECTED)) toUse = SceneScape.getTargetSpatial();
+							else if(exportSelector.getSelectedValue().equals(OSM)) toUse = SceneGameState.getInstance().getGISNode();
+
+							logger.info("EXPORTING OBJECT WITH HIERARCHY:");
+							GeometryUtilities.printInformation(logger, toUse, true, false, false, false);
+
 							logger.info("Selected File: " + file.toString());
 							SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
 							try {
-								if(fileChooser.getFileFilter().equals(colladaFilter)){
+								if(fileChooser.getFileFilter().getClass().equals(ColladaFileFilter.class.getClass())){
 									// export COLLADA
-									ColladaExporter exporter = new ColladaExporter(file, SceneScape.getTargetSpatial(), true);
+									ColladaExporter exporter = new ColladaExporter(file, toUse, true);
 									exporter.writeData();
 									logger.info("COLLADA file written to " + file.toString());
 								}
-								else{
-									new OBJExporter(SceneScape.getTargetSpatial(), file);
+								else if(fileChooser.getFileFilter().getClass().equals(WavefrontFileFilter.class.getClass())){
+									new OBJExporter(toUse, file);
 									logger.info("OBJ file written to " + file.toString());
+								}
+								else if(fileChooser.getFileFilter().getClass().equals(JMEFileFilter.class.getClass())){
+									BinaryExporter.getInstance().save(toUse, file);
+									logger.info("JME file written to " + file.toString());
+								}
+								else if(fileChooser.getFileFilter().getClass().equals(JMEXMLFileFilter.class.getClass())){
+									XMLExporter.getInstance().save(toUse, file);
+									logger.info("JME-XML file written to " + file.toString());
 								}
 							} catch (IOException e) {
 								logger.error("Exception Occurred When Attempting To Write File", e);
 							}
 						}
 					}
-					
+
 					private void takeCareOfFileExtension(){
 						// check to see if one of the available extensions has already been used
 						boolean extensionSet = false;
 						for(String ext : ((FileExtensionFileFilter)fileChooser.getFileFilter()).getFileExtensions()){
 							if(file.toString().endsWith(ext)) extensionSet = true;
 						}
-						
+
 						// if an extension hasn't been set, use the first available extension
 						if(!extensionSet){
-							file = new File(file.toString()+"."+((FileExtensionFileFilter)fileChooser.getFileFilter()).getFileExtensions()[0]);
+							file = new File(file.toString()+"."+
+									((FileExtensionFileFilter)fileChooser.getFileFilter()).getFileExtensions()[0]);
 							logger.info("An extension was not set, so one has been added to the filename: " + file.toString());
 						}
 					}
 				});
 			}
 		});
+		window.getContentContainer().addWidget(l, exportSelector, go);
 	}
 
 }
