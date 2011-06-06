@@ -101,7 +101,9 @@ public class QuickBuilder extends PanelAction {
 							for(Way way : OSMRegistry.get().getWays()){
 								Spatial object = null;
 								//RoadNodeBuilder rb = new RoadNodeBuilder(way);
-								RoadBuilder rb = new RoadBuilder(way);
+								ObjectBuilder rb;
+								//rb = new RoadGLTrianglesBuilder(way);
+								rb = new RoadGLTriangleStripBuilder(way);
 								object = rb.generateObject();
 								
 								// render the object as a wireframe

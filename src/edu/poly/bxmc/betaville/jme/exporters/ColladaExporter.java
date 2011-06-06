@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;
@@ -55,6 +56,7 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.MaterialState.MaterialFace;
 import com.jme.scene.state.RenderState.StateType;
 
+import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.exporters.ColladaEnums.NodeType;
 import edu.poly.bxmc.betaville.xml.XMLWriter;
 
@@ -80,7 +82,11 @@ import edu.poly.bxmc.betaville.xml.XMLWriter;
  *
  */
 public class ColladaExporter extends XMLWriter implements MeshExporter {
-	private static Logger logger = Logger.getLogger(ColladaExporter.class);
+	private static final Logger logger = Logger.getLogger(ColladaExporter.class);
+	
+	static{
+		logger.setLevel(Level.DEBUG);
+	}
 
 	private Spatial exportTarget;
 	private boolean exportLocal;
@@ -189,7 +195,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		modified.addContent(date);
 		Element unit = new Element("unit");
 		unit.setAttribute(new Attribute("name", "meter"));
-		unit.setAttribute(new Attribute("meter", "1.0"));
+		unit.setAttribute(new Attribute("meter", Float.toString(1f/SceneScape.SceneScale)));
 		Element up = new Element("up_axis");
 		up.addContent("Y_UP");
 

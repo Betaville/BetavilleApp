@@ -49,7 +49,7 @@ import edu.poly.bxmc.betaville.osm.tag.Highway;
  * @author Skye Book
  *
  */
-public class RoadBuilder extends ObjectBuilder {
+public class RoadGLTrianglesBuilder extends ObjectBuilder {
 
 	private JME2MapManager localTransformer;
 
@@ -63,7 +63,7 @@ public class RoadBuilder extends ObjectBuilder {
 	/**
 	 * @param osmObject
 	 */
-	public RoadBuilder(Way osmObject) {
+	public RoadGLTrianglesBuilder(Way osmObject) {
 		super(osmObject);
 	}
 
@@ -100,7 +100,7 @@ public class RoadBuilder extends ObjectBuilder {
 
 			// if this is the first node, the approach is a bit simpler
 			if(start==null){
-				start=end.clone();;
+				start=end.clone();
 				continue;
 			}
 			else{
@@ -118,7 +118,7 @@ public class RoadBuilder extends ObjectBuilder {
 					vertices.add(tempLoc.clone());
 				}
 				
-				// generate data for this points in between the start and end nodes
+				// generate data for the points in between the start and end nodes
 				for(int i=1; i<numberOfPoints; i++){
 					Vector3f thisLocation = start.clone();
 					thisLocation.interpolate(end, increment*i);
