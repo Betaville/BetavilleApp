@@ -81,8 +81,9 @@ public class SceneController extends Controller {
 
 	/**
 	 * Constant <turnSpeed> - The turn's speed
+	 * Changed from 1.5f to .5f on 6 June 2011
 	 */
-	private float turnSpeed = 1.5f;
+	private float turnSpeed = .5f;
 
 	/**
 	 * Enum <StandardAction> - Enumeration of all standard actions
