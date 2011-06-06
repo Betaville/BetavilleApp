@@ -195,7 +195,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		modified.addContent(date);
 		Element unit = new Element("unit");
 		unit.setAttribute(new Attribute("name", "meter"));
-		unit.setAttribute(new Attribute("meter", Float.toString(1f/SceneScape.SceneScale)));
+		unit.setAttribute(new Attribute("meter", Float.toString(SceneScape.SceneScale)));
 		Element up = new Element("up_axis");
 		up.addContent("Y_UP");
 
