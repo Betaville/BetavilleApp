@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -28,26 +28,82 @@ package edu.poly.bxmc.betaville.jme.map;
 import com.jme.scene.Spatial;
 
 /**
+ * Provides utility methods for moving objects around the scene
  * @author Skye Book
  *
  */
 public class Translator {
 
-	public  static void moveX(Spatial toMove, int meters){
+	public  static void moveX(Spatial toMove, float meters){
 		toMove.setLocalTranslation(toMove.getLocalTranslation().getX()+(Scale.fromMeter(meters)),
 				toMove.getLocalTranslation().getY(),
 				toMove.getLocalTranslation().getZ());
 	}
 	
-	public  static void moveY(Spatial toMove, int meters){
+	public  static void moveY(Spatial toMove, float meters){
 		toMove.setLocalTranslation(toMove.getLocalTranslation().getX(),
 				toMove.getLocalTranslation().getY()+(Scale.fromMeter(meters)),
 				toMove.getLocalTranslation().getZ());
 	}
 	
-	public  static void moveZ(Spatial toMove, int meters){
+	public  static void moveZ(Spatial toMove, float meters){
 		toMove.setLocalTranslation(toMove.getLocalTranslation().getX(),
 				toMove.getLocalTranslation().getY(),
 				toMove.getLocalTranslation().getZ()+(Scale.fromMeter(meters)));
 	}
+	
+	/**
+	 * Moves an object north.  (Can also use {@link #moveX(Spatial, float)}_
+	 * @param toMove The object to move
+	 * @param meters The amount of meters to move the object in this direction
+	 */
+	public static void moveNorth(Spatial toMove, float meters){
+		moveX(toMove, meters);
+	}
+	
+	/**
+	 * Moves an object south.  (Can also use {@link #moveX(Spatial, float)}_
+	 * @param toMove The object to move
+	 * @param meters The amount of meters to move the object in this direction
+	 */
+	public static void moveSouth(Spatial toMove, float meters){
+		moveX(toMove, -meters);
+	}
+	
+	/**
+	 * Moves an object east.  (Can also use {@link #moveZ(Spatial, float)})
+	 * @param toMove The object to move
+	 * @param meters The amount of meters to move the object in this direction
+	 */
+	public static void moveEast(Spatial toMove, float meters){
+		moveZ(toMove, meters);
+	}
+	
+	/**
+	 * Moves an object west.  (Can also use {@link #moveZ(Spatial, float)})
+	 * @param toMove The object to move
+	 * @param meters The amount of meters to move the object in this direction
+	 */
+	public static void moveWest(Spatial toMove, float meters){
+		moveZ(toMove, --meters);
+	}
+	
+	/**
+	 * Increases an object's altitude.  (Can also use {@link #moveY(Spatial, float)})
+	 * @param toMove The object to move
+	 * @param meters The amount of meters to move the object in this direction
+	 */
+	public static void moveUp(Spatial toMove, float meters){
+		moveY(toMove, meters);
+	}
+	
+	/**
+	 * Decreases an object's altitude.  (Can also use {@link #moveY(Spatial, float)})
+	 * @param toMove The object to move
+	 * @param meters The amount of meters to move the object in this direction
+	 */
+	public static void moveDown(Spatial toMove, float meters){
+		moveY(toMove, --meters);
+	}
+	
 }
