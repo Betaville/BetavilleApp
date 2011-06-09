@@ -82,11 +82,11 @@
         <pathelement location="lib/geotools/gt-xsd-wps-2.7.0.1.jar"/>
         <pathelement location="lib/geotools/hsqldb-1.8.0.7.jar"/>
         <pathelement location="lib/geotools/jsr-275-1.0-beta-2.jar"/>
-    	<pathelement location="lib/geotools/jts-1.11"/>
-    	<pathelement location="lib/geotools/net.opengis.ows-2.7.0.1"/>
-    	<pathelement location="lib/geotools/net.opengis.wfs-2.7.0.1"/>
-    	<pathelement location="lib/geotools/picocontainer-1.2"/>
-    	<pathelement location="lib/geotools/vecmath-1.3.2"/>
+    	<pathelement location="lib/geotools/jts-1.11.jar"/>
+    	<pathelement location="lib/geotools/net.opengis.ows-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotools/net.opengis.wfs-2.7.0.1.jar"/>
+    	<pathelement location="lib/geotools/picocontainer-1.2.jar"/>
+    	<pathelement location="lib/geotools/vecmath-1.3.2.jar"/>
         <pathelement location="lib/geotools/xercesImpl-2.7.1.jar"/>
         <pathelement location="lib/geotools/xpp3-1.1.3.4.O.jar"/>
         <pathelement location="lib/geotools/xsd-2.2.2.jar"/>
