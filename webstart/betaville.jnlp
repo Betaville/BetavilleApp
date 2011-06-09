@@ -86,11 +86,11 @@
     <jar href="gt-xsd-wps-2.7.0.1.jar"/>
     <jar href="hsqldb-1.8.0.7.jar"/>
     <jar href="jsr-275-1.0-beta-2.jar"/>
-    <jar href="jts-1.11"/>
-    <jar href="net.opengis.ows-2.7.0.1"/>
-    <jar href="net.opengis.wfs-2.7.0.1"/>
-    <jar href="picocontainer-1.2"/>
-    <jar href="vecmath-1.3.2"/>
+    <jar href="jts-1.11.jar"/>
+    <jar href="net.opengis.ows-2.7.0.1.jar"/>
+    <jar href="net.opengis.wfs-2.7.0.1.jar"/>
+    <jar href="picocontainer-1.2.jar"/>
+    <jar href="vecmath-1.3.2.jar"/>
     <jar href="xercesImpl-2.7.1.jar"/>
     <jar href="xpp3-1.1.3.4.O.jar"/>
     <jar href="xsd-2.2.2.jar"/>
