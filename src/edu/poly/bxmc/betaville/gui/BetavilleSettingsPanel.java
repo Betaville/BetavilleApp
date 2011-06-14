@@ -377,7 +377,6 @@ public class BetavilleSettingsPanel extends JFrame{
 		public void actionPerformed(ActionEvent e){
 			int resolutionIndex = resolutionSelector.getSelectedIndex();
 			if(resolutions.get(resolutionIndex).getHeight() != Toolkit.getDefaultToolkit().getScreenSize().getHeight() || resolutions.get(resolutionIndex).getWidth() != (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()){
-				System.out.println((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() + " " + (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 				fullScreen.setSelectedIndex(1);
 			}
 		}
