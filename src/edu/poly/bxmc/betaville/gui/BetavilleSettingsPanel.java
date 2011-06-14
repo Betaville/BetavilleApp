@@ -248,6 +248,7 @@ public class BetavilleSettingsPanel extends JFrame{
 		resolutionSelector = new JComboBox();
 		resolutionSelector.setName("Resolution");
 		resolutionSelector.addKeyListener(enterButtonListener);
+		resolutionSelector.addActionListener(new resolutionChangedListener());
 		resolutions = new ArrayList<Dimension>();
 	}
 
@@ -367,6 +368,15 @@ public class BetavilleSettingsPanel extends JFrame{
 			}
 			}catch(NumberFormatException e){
 				resolutionSelector.setSelectedIndex(0);
+			}
+		}
+	}
+	
+	private class resolutionChangedListener implements ActionListener{
+		
+		public void actionPerformed(ActionEvent e){
+			if(resolutionSelector.getSelectedItem() != new Dimension((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(),(int)Toolkit.getDefaultToolkit().getScreenSize().getHeight())){
+				fullScreen.setSelectedIndex(1);
 			}
 		}
 	}
