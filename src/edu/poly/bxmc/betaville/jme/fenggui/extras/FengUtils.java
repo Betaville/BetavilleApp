@@ -377,4 +377,13 @@ public class FengUtils {
 	public static void setAppearanceTextStyleWhiteColor(Label lbl) {
 		lbl.getAppearance().getStyle("default").getTextStyleEntry("default").setColor(Color.WHITE);		
 	}
+	
+	/**
+	 * Set the appearance of of a label to a different color
+	 * @param lbl Label on which apply the new text style
+	 * @param color The color to apple
+	 */
+	public static void setAppearanceTextStyleWhiteColor(Label lbl, Color color) {
+		lbl.getAppearance().getStyle("default").getTextStyleEntry("default").setColor(color);		
+	}
 }
