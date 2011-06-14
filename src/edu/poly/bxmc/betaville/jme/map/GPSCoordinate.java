@@ -137,7 +137,7 @@ public class GPSCoordinate implements ILocation, Serializable{
 	}
 	
 	@Override
-	public GPSCoordinate clone() throws CloneNotSupportedException {
+	public GPSCoordinate clone(){
 		// TODO Auto-generated method stub
 		return new GPSCoordinate(altitude, latitude, longitude);
 	}

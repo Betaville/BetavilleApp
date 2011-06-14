@@ -44,4 +44,6 @@ public interface ILocation extends Serializable{
 	 * @return this coordinate
 	 */
 	public GPSCoordinate getGPS();
+	
+	public ILocation clone();
 }

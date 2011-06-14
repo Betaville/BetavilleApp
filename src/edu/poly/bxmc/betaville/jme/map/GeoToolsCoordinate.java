@@ -50,6 +50,9 @@ public class GeoToolsCoordinate implements ILocation {
 	
 	private MathTransform gpsTransform;
 	
+	// for internal use only
+	private GeoToolsCoordinate(){}
+	
 	/**
 	 * @throws FactoryException 
 	 * @throws NoSuchAuthorityCodeException Indicates that the GeoTools implementation
@@ -82,5 +85,18 @@ public class GeoToolsCoordinate implements ILocation {
 			logger.fatal("Could not transform coordinate to EPSG:4326", e);
 			return null;
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public GeoToolsCoordinate clone(){
+		// this is a shallow copy of the object, we should check in the GeoTools documentation
+		// to what it actually does
+		GeoToolsCoordinate gtc = new GeoToolsCoordinate();
+		gtc.geoToolsCoordinate = geoToolsCoordinate;
+		gtc.gpsTransform = this.gpsTransform;
+		return gtc;
 	}
 }

@@ -85,7 +85,7 @@ public class Translator {
 	 * @param meters The amount of meters to move the object in this direction
 	 */
 	public static void moveWest(Spatial toMove, float meters){
-		moveZ(toMove, --meters);
+		moveZ(toMove, -meters);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class Translator {
 	 * @param meters The amount of meters to move the object in this direction
 	 */
 	public static void moveDown(Spatial toMove, float meters){
-		moveY(toMove, --meters);
+		moveY(toMove, -meters);
 	}
 	
 }

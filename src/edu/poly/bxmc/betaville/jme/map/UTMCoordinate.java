@@ -27,6 +27,8 @@ package edu.poly.bxmc.betaville.jme.map;
 
 import java.io.Serializable;
 
+import edu.poly.bxmc.betaville.util.Math;
+
 
 /**
  * Provides a container for data using the
@@ -67,19 +69,16 @@ public class UTMCoordinate implements ILocation, Serializable{
 	}
 	
 	/**
-	 * @deprecated - Do not use me, I am broken!
-	 * @experimental - Do not use me (23 March 2011)
 	 * @param eastingDeltaMeters
 	 * @param northingDeltaMeters
 	 * @param altitudeDelta
 	 * @return
 	 */
 	public UTMCoordinate move(float eastingDeltaMeters, float northingDeltaMeters, float altitudeDelta){
-		System.out.println("eastMeters: "+ (int)(eastingDeltaMeters/1));
-		System.out.println("northMeters: "+ (int)(northingDeltaMeters/1));
-		System.out.println("eastCenti: "+(int)(((float)eastingDeltaMeters%1)*100));
-		System.out.println("northCenti: "+(int)(((float)northingDeltaMeters%1)*100));
-		return move((int)(eastingDeltaMeters/1), (int)(northingDeltaMeters/1), (int)(((float)eastingDeltaMeters%1)*100), (int)(((float)northingDeltaMeters%1)*100), (int)altitudeDelta);
+		int[] northing = Math.splitFraction(northingDeltaMeters);
+		int[] easting = Math.splitFraction(eastingDeltaMeters);
+		//int[] altitude = Math.splitFraction(altitudeDelta);
+		return move(easting[0], northing[0], easting[1], northing[1], (int)altitudeDelta);
 	}
 	
 	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, int altitudeDelta){
