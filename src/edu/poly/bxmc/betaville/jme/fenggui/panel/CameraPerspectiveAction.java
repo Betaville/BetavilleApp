@@ -50,7 +50,7 @@ public class CameraPerspectiveAction extends PanelAction {
 	 * @param listener
 	 */
 	public CameraPerspectiveAction() {
-		super("Camera Perspective", "Change the perspective of the camera", "Camera Perspeective", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER,
+		super("Camera Perspective", "Change the perspective of the camera", "Camera Perspective", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER,
 				new IButtonPressedListener() {
 					
 					public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
