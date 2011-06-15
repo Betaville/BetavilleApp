@@ -295,9 +295,14 @@ public class GUIGameState extends GameState {
 		 * 		- check for designNode pick
 		 */
 
+		if(!FengUtils.checkIfWithin(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute(), TopSelectionWindow.logoMenuWindow)){
+			TopSelectionWindow.removeLogoMenu();
+		}
+		
 		if(previousLeftClick){
 			return;
 		}
+		
 
 		// Ray casting from mouse
 		Vector2f screenPosition = new Vector2f(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute());
@@ -484,13 +489,6 @@ public class GUIGameState extends GameState {
 	private void checkEditorStatus(){
 		boolean currentState = false;
 
-		/*
-		 * Dear Caroline,
-		 * 		Since you are so silly and hate my code, I shall explain this to you.
-		 * 
-		 * -Love,
-		 * Skye
-		 */
 
 		// If any of the text editors are on, then 'currentState' is true
 		for(int i=0; i<textEditors.size(); i++){

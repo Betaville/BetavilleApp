@@ -94,7 +94,9 @@ public class TopSelectionWindow extends Window{
 	// nothing is selected
 	private Label nameLabel;
 	private String emptyText = "Nothing Selected";
+	public static LogoMenuWindow logoMenuWindow = FengGUI.createWidget(LogoMenuWindow.class);
 	private Container nameBGContainer;
+	//private Container menuContainer;
 
 	// A clickable link to the URL included in the design data
 	private Label urlLabel;
@@ -156,9 +158,10 @@ public class TopSelectionWindow extends Window{
 		bugButton.setText("Report Bug!");
 		bugButton.setWidth(bugButton.getWidth()+10);
 		bugButton.setXY(Binding.getInstance().getCanvasWidth()-bugButton.getWidth(), -1);
+		logoMenuWindow.finishSetup();
 		clearLabels(false);
 	}
-
+	
 	private void setupCityPanel(){
 		// Build admin panel if necessary
 		panelButton = FengGUI.createWidget(FixedButton.class);
@@ -224,7 +227,12 @@ public class TopSelectionWindow extends Window{
 					logoLabel.setPixmap(logoPlain);
 				}
 				else if(event instanceof MouseReleasedEvent){
-					BareBonesBrowserLaunch.openURL("http://bxmc.poly.edu/betaville");
+					//BareBonesBrowserLaunch.openURL("http://bxmc.poly.edu/betaville");
+					if (!logoMenuWindow.exists()){
+						setLogoMenu();
+					} else{
+						removeLogoMenu();
+					}
 				}
 			}
 		});
@@ -247,6 +255,29 @@ public class TopSelectionWindow extends Window{
 		bugButton.addButtonPressedListener(new ReportBugListener());
 	}
 
+	public static void setLogoMenu(){
+		if(!logoMenuWindow.exists()){
+			logoMenuWindow = FengGUI.createWidget(LogoMenuWindow.class);
+			logoMenuWindow.finishSetup();
+			GUIGameState.getInstance().getDisp().addWidget(logoMenuWindow);
+			FengUtils.tweenWidget(logoMenuWindow, logoMenuWindow.finalX, logoMenuWindow.finalY, 500, 10);
+			logoMenuWindow.setExists(true);
+		}else{
+			logoMenuWindow = FengGUI.createWidget(LogoMenuWindow.class);
+			logoMenuWindow.finishSetup();
+			FengUtils.tweenWidget(logoMenuWindow, logoMenuWindow.finalX, logoMenuWindow.finalY, 500, 10);
+		}
+	}
+	public static void removeLogoMenu(){
+		try{
+			FengUtils.tweenWidget(logoMenuWindow, logoMenuWindow.initX, logoMenuWindow.initY, 500, 10);
+			//GUIGameState.getInstance().getDisp().removeWidget(logoMenuWindow);
+			logoMenuWindow.setExists(false);
+		} catch(NullPointerException e){
+			logger.assertLog(true, "LogoMenuWindow removed but with NullPointerException");
+		}
+	}
+	
 	public void forceUpdate(){
 		if(!SceneScape.isTargetSpatialEmpty()){
 			setLabelText(SceneScape.getPickedDesign());

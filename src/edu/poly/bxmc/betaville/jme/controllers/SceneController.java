@@ -202,7 +202,7 @@ public class SceneController extends Controller {
 	}
 
 
-	private void exitAction() {
+	public void exitAction() {
 		logger.info("Exit Action");
 		if (closeWindow == null) {
 			logger.info("Creating exit window");

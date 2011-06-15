@@ -33,6 +33,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.IWidget;
 import org.fenggui.Label;
@@ -44,6 +45,8 @@ import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.event.IWindowClosedListener;
 import org.fenggui.event.WindowClosedEvent;
+import org.fenggui.layout.RowExLayout;
+import org.fenggui.layout.RowExLayoutData;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.util.Color;
 
@@ -236,6 +239,8 @@ public class FengUtils {
 	 */
 	public static Window createDismissableWindow(String name, String message, String buttonText, boolean forceFocus){
 		final Window w = FengGUI.createWindow(true, true);
+		w.getContentContainer().setLayoutManager(new RowExLayout(false)); 
+		w.setTitle(name);
 
 		if(forceFocus){
 			w.addWindowClosedListener(new IWindowClosedListener() {
@@ -248,7 +253,9 @@ public class FengUtils {
 		int width=100;
 		
 		Label msg = FengGUI.createWidget(Label.class);
+		msg.setMultiline(true);
 		msg.setText(message);
+		msg.setLayoutData(new RowExLayoutData(true, true));
 		
 		FixedButton b1 = FengGUI.createWidget(FixedButton.class);
 		b1.setText(buttonText);
@@ -258,7 +265,7 @@ public class FengUtils {
 				w.close();
 			}
 		});
-		
+		/*
 		if(msg.getWidth()>width){
 			String text = msg.getText();
 			String newText = "";
@@ -276,20 +283,37 @@ public class FengUtils {
 			msg.setText(newText);
 			msg.setHeight(oneLineHeight*numLines);
 			logger.debug("msg height set to " + msg.getHeight());
-		}
+		}*/
 		
-		w.getContentContainer().setSize((int)(width*.75f), b1.getHeight()+20+msg.getHeight());
-		w.setSize(width, b1.getHeight()+20+msg.getHeight()+w.getTitleBar().getHeight());
+		//w.getContentContainer().setSize((int)(width*.75f), b1.getHeight()+20+msg.getHeight());
+		//w.setSize(width, b1.getHeight()+20+msg.getHeight()+w.getTitleBar().getHeight());
 		
-		b1.setXY(5, 5);
+		//b1.setXY(5, 5);
 		
-		msg.setXY(5, b1.getY()+b1.getHeight()+10);
+		//msg.setXY(5, b1.getY()+b1.getHeight()+10);
 		
-		w.getContentContainer().setLayoutManager(new StaticLayout());
-		w.getContentContainer().addWidget(msg, b1);
+		//w.getContentContainer().setLayoutManager(new StaticLayout());
+		
+		Container c = FengGUI.createWidget(Container.class);
+		c.setLayoutManager(new StaticLayout());
+		c.setLayoutData(new RowExLayoutData(true, true));
+		c.addWidget(b1);
+		StaticLayout.center(b1, c);
+		
+		w.getContentContainer().addWidget(msg, c);
 		w.setXY((Binding.getInstance().getCanvasWidth()/2)-(w.getWidth()/2), (Binding.getInstance().getCanvasHeight()/2)-(w.getHeight()/2));
 		return w;
 	}
+	
+	public static boolean checkIfWithin(int x, int y, IWidget widget){
+		if (x >= widget.getX() && x <= widget.getSize().getWidth() + widget.getX() && y >= widget.getY() && y <= widget.getSize().getHeight() + widget.getY()){
+			return true;
+		} else{
+			return false;
+		}
+	}
+	
+	
 	
 	/**
 	 * 
@@ -306,12 +330,14 @@ public class FengUtils {
 	public static Window createTwoOptionWindow(String name, String message, String b1Name, String b2Name,
 			IButtonPressedListener b1Listener, IButtonPressedListener b2Listener, boolean closeOnB1Click, boolean closeOnB2Click){
 		final Window w = FengGUI.createWindow(true, true);
+		w.getContentContainer().setLayoutManager(new RowExLayout(false));
 		w.setTitle(name);
 		//w.getTitleBar().removeWidget(w.getCloseButton());
 		w.getContentContainer().setLayoutManager(new StaticLayout());
 		
 		Label msg = FengGUI.createWidget(Label.class);
 		msg.setText(message);
+		msg.setLayoutData(new RowExLayoutData(true, true));
 		
 		IButtonPressedListener clickCloseListener = new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -338,6 +364,7 @@ public class FengUtils {
 		else b1.setWidth(b2.getWidth());
 		
 		int buttonSetWidth = b1.getWidth()+20+b2.getWidth();
+		/*
 		if(msg.getWidth()>buttonSetWidth){
 			String text = msg.getText();
 			String newText = "";
@@ -355,7 +382,7 @@ public class FengUtils {
 			msg.setText(newText);
 			msg.setHeight(oneLineHeight*numLines);
 			logger.info("msg height set to " + msg.getHeight());
-		}
+		}*/
 		
 		w.getContentContainer().setSize(buttonSetWidth, b1.getHeight()+20+msg.getHeight());
 		w.setSize(buttonSetWidth, b1.getHeight()+20+msg.getHeight()+w.getTitleBar().getHeight());
@@ -383,7 +410,7 @@ public class FengUtils {
 	 * @param lbl Label on which apply the new text style
 	 * @param color The color to apple
 	 */
-	public static void setAppearanceTextStyleWhiteColor(Label lbl, Color color) {
+	public static void setAppearanceTextStyleColor(Label lbl, Color color) {
 		lbl.getAppearance().getStyle("default").getTextStyleEntry("default").setColor(color);		
 	}
 }
