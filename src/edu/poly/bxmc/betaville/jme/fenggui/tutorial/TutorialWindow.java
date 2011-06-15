@@ -209,7 +209,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		moreInfo.addButtonPressedListener(new IButtonPressedListener() {
 			
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				BareBonesBrowserLaunch.openURL("http://betaville.net/wiki");
+				BareBonesBrowserLaunch.openURL("http://wiki.betaville.net/");
 			}
 		});
 
