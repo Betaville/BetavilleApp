@@ -27,9 +27,9 @@ package edu.poly.bxmc.betaville.net;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -129,7 +129,7 @@ public class NetModelLoader{
 			final AtomicBoolean allDesignsProcessed = new AtomicBoolean(false);
 
 			final AtomicBoolean listLock = new AtomicBoolean(false);
-			final Vector<Node> nodeList = new Vector<Node>();
+			final ArrayList<Node> nodeList = new ArrayList<Node>();
 
 			// add progress listener
 			final IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Models Loading", itemsLoaded.get(), itemsToLoad.get());
