@@ -123,6 +123,12 @@ public class GeometryUtilities {
 	}
 
 	private static void colorStripper(Spatial spatial){
+		// exception for the nodes used for building edit function
+		if(spatial.getName().startsWith("$editorWidget")) {
+			//logger.info(spatial.getName() + " is a editor widget");
+			return ;
+		}
+		//logger.info(spatial.getName() + " is not editor widget");
 		MaterialState rs = (MaterialState)doRemoveRenderState(spatial, StateType.Material);
 		if(rs!=null){
 			materials.put(spatial.getName(), rs);

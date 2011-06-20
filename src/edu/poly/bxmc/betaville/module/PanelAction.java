@@ -114,6 +114,10 @@ public class PanelAction extends Module {
 		createButton(listener);
 		createToolTip();
 
+		if(rule.equals(AvailabilityRule.OBJECT_SELECTED)){
+			button.setEnabled(false);
+		}
+		
 		if(rule!=AvailabilityRule.IGNORE){
 			selectionListener = new ISpatialSelectionListener() {
 				public void selectionCleared(Design previousDesign) {
