@@ -61,7 +61,7 @@ public class ShadowPassState extends GameState {
 	private ShadowedRenderPass shadowPass = null;
 	private ConfigurableDirectionalShadowMapPass mapPass = null;
 	private RenderPass groundSelectPass = null;
-	private RenderPass flagPass = null;
+	private RenderPass nonActorPass = null;
 
 	private SceneGameState sceneGameState;
 
@@ -136,12 +136,14 @@ public class ShadowPassState extends GameState {
 		groundSelectPass.add(SceneGameState.getInstance().getGroundBoxNode());
 		passManager.add(groundSelectPass);
 
-		// The flag pass renders the upside-down pyramid flags that indicateproposals
-		flagPass = new RenderPass();
-		flagPass.add(SceneGameState.getInstance().getFlagNode());
-		flagPass.add(SceneGameState.getInstance().getSearchNode());
-		flagPass.add(SceneGameState.getInstance().getGISNode());
-		passManager.add(flagPass);
+		// The non-actor pass renders objects that don't need to be concerned with lighting or shadows
+		nonActorPass = new RenderPass();
+		nonActorPass.add(SceneGameState.getInstance().getFlagNode());
+		nonActorPass.add(SceneGameState.getInstance().getSearchNode());
+		nonActorPass.add(SceneGameState.getInstance().getGISNode());
+		nonActorPass.add(SceneGameState.getInstance().getEditorWidgetNode());
+		
+		passManager.add(nonActorPass);
 
 		sceneGameState = SceneGameState.getInstance();
 	}
