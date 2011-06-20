@@ -195,7 +195,13 @@ public class ShadowPassState extends GameState {
 	}
 
 	public void toggleMapPass(){
-		mapPass.setEnabled(!mapPass.isEnabled());
+		GameTaskQueueManager.getManager().update(new Callable<Object>() {
+
+			public Object call() throws Exception {
+				mapPass.setEnabled(!mapPass.isEnabled());
+				return null;
+			}
+		});
 	}
 
 	public ConfigurableDirectionalShadowMapPass getMapPass(){
