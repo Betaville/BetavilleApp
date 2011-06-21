@@ -30,9 +30,12 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import com.jme.bounding.BoundingBox;
+import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
+import com.jme.scene.shape.Box;
 import com.jme.scene.state.RenderState.StateType;
 import com.jme.system.DisplaySystem;
 
@@ -178,6 +181,9 @@ public class SceneScape {
 			// clear the orange glow
 			GeometryUtilities.replaceMaterials(targetSpatial);
 		}
+		else if(SettingsPreferences.SELECTION_VISUAL.equals(SelectionVisuals.BOUNDING)){
+			SceneGameState.getInstance().getDesignNode().detachChildNamed("selectionBounding");
+		}
 		
 		Design previousDesign = null;
 		if(!isTargetSpatialEmpty()) previousDesign = getPickedDesign();
@@ -198,6 +204,22 @@ public class SceneScape {
 					ColorValues.getSelectionDiffuseColorAsUnit()[1],
 					ColorValues.getSelectionDiffuseColorAsUnit()[2],
 					ColorValues.getSelectionDiffuseColorAsUnit()[3]));
+		}
+		else if(SettingsPreferences.SELECTION_VISUAL.equals(SelectionVisuals.BOUNDING)){
+			if(!targetSpatial.equals(emptySpatial)){
+				Box b = new Box("selectionBounding", new Vector3f(),
+						((BoundingBox)SceneScape.getTargetSpatial().getWorldBound()).xExtent,
+						((BoundingBox)SceneScape.getTargetSpatial().getWorldBound()).yExtent,
+						((BoundingBox)SceneScape.getTargetSpatial().getWorldBound()).zExtent);
+				//((BoundingBox)SceneScape.getTargetSpatial().getWorldBound()).getCenter()
+				b.setRenderState(DisplaySystem.getDisplaySystem().getRenderer().createWireframeState());
+				SceneGameState.getInstance().getDesignNode().attachChild(b);
+				b.setLocalTranslation(SceneScape.getTargetSpatial().getLocalTranslation().clone().addLocal(
+						((BoundingBox)SceneScape.getTargetSpatial().getWorldBound()).xExtent,
+						((BoundingBox)SceneScape.getTargetSpatial().getWorldBound()).yExtent,
+						((BoundingBox)SceneScape.getTargetSpatial().getWorldBound()).zExtent));
+				b.updateRenderState();
+			}
 		}
 		
 		targetSpatial.updateRenderState();

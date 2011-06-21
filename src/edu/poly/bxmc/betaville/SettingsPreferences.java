@@ -80,7 +80,7 @@ public class SettingsPreferences {
 	 * @author Skye Book
 	 *
 	 */
-	public enum SelectionVisuals{WIREFRAME, GLOW_ORANGE};
+	public enum SelectionVisuals{WIREFRAME, GLOW_ORANGE, BOUNDING};
 	public static SelectionVisuals SELECTION_VISUAL = SelectionVisuals.GLOW_ORANGE;
 	
 	private static String userName;
