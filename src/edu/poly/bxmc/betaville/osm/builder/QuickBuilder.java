@@ -49,6 +49,9 @@ import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
 import edu.poly.bxmc.betaville.osm.OSMRegistry;
 import edu.poly.bxmc.betaville.osm.Way;
+import edu.poly.bxmc.betaville.osm.tag.Highway;
+import edu.poly.bxmc.betaville.osm.tag.Name;
+import edu.poly.bxmc.betaville.osm.tag.Natural;
 import edu.poly.bxmc.betaville.xml.OSMReader;
 
 /**
@@ -98,24 +101,50 @@ public class QuickBuilder extends PanelAction {
 								osmCache.mkdirs();
 							}
 							
+							boolean skipRoads = true;
+							
 							for(Way way : OSMRegistry.get().getWays()){
 								Spatial object = null;
-								//RoadNodeBuilder rb = new RoadNodeBuilder(way);
 								ObjectBuilder rb;
-								//rb = new RoadGLTrianglesBuilder(way);
-								rb = new RoadGLTriangleStripBuilder(way);
-								object = rb.generateObject();
-								
-								// render the object as a wireframe
-								//object.setRenderState(DisplaySystem.getDisplaySystem().getRenderer().createWireframeState());
-								//object.updateRenderState();
-								
-								// if the object is already there, remove it
-								SceneGameState.getInstance().getGISNode().detachChildNamed(""+way.getId());
-								if(object!=null){
-									SceneGameState.getInstance().getGISNode().attachChild(object);
-									// export the object for later (this gets done on a separate thread so we can move on)
-									submitFileExport(object, osmCache);
+								if(way.findTag(Highway.class)!=null){
+									if(skipRoads) continue;
+									//RoadNodeBuilder rb = new RoadNodeBuilder(way);
+									
+									//rb = new RoadGLTrianglesBuilder(way);
+									rb = new RoadGLTriangleStripBuilder(way);
+									object = rb.generateObject();
+									
+									// render the object as a wireframe
+									//object.setRenderState(DisplaySystem.getDisplaySystem().getRenderer().createWireframeState());
+									//object.updateRenderState();
+									
+									// if the object is already there, remove it
+									SceneGameState.getInstance().getGISNode().detachChildNamed(""+way.getId());
+									if(object!=null){
+										SceneGameState.getInstance().getGISNode().attachChild(object);
+										// export the object for later (this gets done on a separate thread so we can move on)
+										submitFileExport(object, osmCache);
+									}
+								}
+								else if(way.findTag(Natural.class)!=null){
+									if(way.findTag(Natural.class).equals(Natural.BuiltIn.coastline.name())){
+										//RoadNodeBuilder rb = new RoadNodeBuilder(way);
+										//rb = new RoadGLTrianglesBuilder(way);
+										rb = new CoastlineGLFanBuilder(way);
+										object = rb.generateObject();
+										
+										// render the object as a wireframe
+										//object.setRenderState(DisplaySystem.getDisplaySystem().getRenderer().createWireframeState());
+										//object.updateRenderState();
+										
+										// if the object is already there, remove it
+										SceneGameState.getInstance().getGISNode().detachChildNamed(""+way.getId());
+										if(object!=null){
+											SceneGameState.getInstance().getGISNode().attachChild(object);
+											// export the object for later (this gets done on a separate thread so we can move on)
+											submitFileExport(object, osmCache);
+										}
+									}
 								}
 							}
 						} catch (JDOMException e) {
@@ -135,7 +164,7 @@ public class QuickBuilder extends PanelAction {
 							
 							public void run() {
 								try {
-									XMLExporter.getInstance().save(object, new File(osmCache.toString()+"/"+object.getName()+".jme.xml"));
+									//XMLExporter.getInstance().save(object, new File(osmCache.toString()+"/"+object.getName()+".jme.xml"));
 									ColladaExporter exporter = new ColladaExporter(new File(osmCache.toString()+"/"+object.getName()+".dae"), object, true);
 									exporter.writeData();
 								} catch (IOException e) {
