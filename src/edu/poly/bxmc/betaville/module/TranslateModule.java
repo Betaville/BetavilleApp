@@ -3,19 +3,23 @@
  */
 package edu.poly.bxmc.betaville.module;
 
+import org.apache.log4j.Logger;
+
 import com.jme.input.MouseInput;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.intersections.TranslatorMousePick;
 
 /**
  * @author skyebook
  *
  */
-public class TranslateModule extends Module implements LocalSceneModule {
+public class TranslateModule extends Module implements GlobalSceneModule {
 	private TranslatorMousePick pick;
+	private static Logger logger = Logger.getLogger(TranslateModule.class);
 	
 	private boolean wasClickedPreviously=false;
 	
@@ -33,7 +37,7 @@ public class TranslateModule extends Module implements LocalSceneModule {
 	/**
 	 * @param name
 	 */
-	public TranslateModule(String name) {
+	public TranslateModule() {
 		super("Translate Picker");
 		// TODO Auto-generated constructor stub
 	}
@@ -42,7 +46,7 @@ public class TranslateModule extends Module implements LocalSceneModule {
 	 * @see edu.poly.bxmc.betaville.module.SceneModule#initialize(com.jme.scene.Node)
 	 */
 	public void initialize(Node scene) {
-		pick = new TranslatorMousePick(scene);
+		pick = new TranslatorMousePick(SceneGameState.getInstance().getEditorWidgetNode());
 	}
 
 	/* (non-Javadoc)
@@ -51,12 +55,13 @@ public class TranslateModule extends Module implements LocalSceneModule {
 	public void onUpdate(Node scene, Vector3f cameraLocation,
 			Vector3f cameraDirection) {
 		
+		checkPick = pick.checkPick();
 		
-		
-		if(pick.checkPick() != -1){
-			checkPick = pick.checkPick();
-			if(MouseInput.get().isButtonDown(0)){
+		if(checkPick != -1){
+			
+			if(!MouseInput.get().isButtonDown(0)){
 				// do the drag
+				
 				
 				if(mouseXLastClick==-1 || mouseYLastClick==-1){
 					mouseXLastClick = MouseInput.get().getXAbsolute();
@@ -81,6 +86,8 @@ public class TranslateModule extends Module implements LocalSceneModule {
 							
 							SceneScape.getTargetSpatial().setLocalTranslation(target.x + targetNewPos, target.y, target.z);
 							
+							logger.info("xAxis picked. " + mouseNewX + " " + mouseNewY);
+							
 						}
 						
 						else if(checkPick == yAxisPicked) {
@@ -93,6 +100,8 @@ public class TranslateModule extends Module implements LocalSceneModule {
 							
 							SceneScape.getTargetSpatial().setLocalTranslation(target.x, target.y + targetNewPos, target.z);
 							
+							logger.info("yAxis picked. " + mouseNewX + " " + mouseNewY);
+							
 						}
 						
 						else if(checkPick == zAxisPicked) {
@@ -104,6 +113,8 @@ public class TranslateModule extends Module implements LocalSceneModule {
 							float targetNewPos = (float)(Math.sqrt(Math.pow(mouseNewX, 2) + Math.pow(mouseNewY, 2)));
 							
 							SceneScape.getTargetSpatial().setLocalTranslation(target.x, target.y, target.z + targetNewPos);
+
+							logger.info("zAxis picked. " + mouseNewX + " " + mouseNewY);
 							
 						}
 						

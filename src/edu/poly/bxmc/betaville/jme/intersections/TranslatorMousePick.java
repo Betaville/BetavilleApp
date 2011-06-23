@@ -70,6 +70,8 @@ public class TranslatorMousePick {
 	}
 	
 	public int checkPick(){
+		//logger.info("checkpick called");
+		
 		Vector2f screenPosition = new Vector2f(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute());
 		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
 		rayToUse = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
@@ -83,8 +85,11 @@ public class TranslatorMousePick {
 			
 			Geometry widget = widgetResults.getPickData(0).getTargetMesh();
 			if(widget instanceof Pyramid || widget instanceof Cylinder){
+				logger.info("pyramid/cylinder picked");
 				if(widget.getParent() instanceof Arrow){
+					logger.info("arrow picked");
 					if(widget.getParent().getParent() instanceof AxisRods){
+						logger.info("axis rod picked");
 						if(widget.getParent().getName().equals("xAxis")){
 							logger.info("Axis Rod - xAxis picked");
 							return xAxisPicked;

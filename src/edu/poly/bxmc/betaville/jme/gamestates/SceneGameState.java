@@ -922,7 +922,19 @@ public class SceneGameState extends BasicGameState {
 				throw new ModuleNameException("Module '" + module.getName() + "' requires a unique name");
 			}
 		}
+		if(module instanceof LocalSceneModule) {
+			((LocalSceneModule) module).initialize(designNode);
+			
+		}
+
+		else if(module instanceof GlobalSceneModule) {
+			((GlobalSceneModule) module).initialize(rootNode);
+			
+		}
+		
 		modules.add(module);
+		
+		
 	}
 
 	public void removeModuleFromUpdateList(Module module){

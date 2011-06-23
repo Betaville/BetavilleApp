@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
+import org.fenggui.binding.render.Binding;
 import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
@@ -25,19 +26,23 @@ import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.model.Design;
+import edu.poly.bxmc.betaville.module.ModuleNameException;
 import edu.poly.bxmc.betaville.module.PanelAction;
+import edu.poly.bxmc.betaville.module.TranslateModule;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 
+import com.jme.bounding.BoundingBox;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.AxisRods;
 import com.jme.scene.shape.Arrow;
-import com.jme.scene.shape.Box;
+import com.jme.scene.shape.Pyramid;
 import com.jme.scene.shape.Torus;
 import com.jme.scene.state.MaterialState;
 import com.jme.system.DisplaySystem;
+import com.jme.scene.shape.Tube;
 
 /**
  * @author Vivian(Hyun) Park
@@ -58,11 +63,14 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 	private FixedButton save;
 	
 	private AxisRods moveRod;
+	private AxisRods rotateAxis;
 	private Arrow upArrow;
 	private Arrow rightArrow;
 	private Arrow leftArrow;
-	private Torus verticalRotateTorus;
-	private Torus horizontalRotateTorus;
+	private Arrow forwardArrow;
+	private Arrow backwardArrow;
+	private Tube horizontalRotateTube;
+	private Tube verticalRotateTube;
 	
 	private List<PanelAction> panelActions;
 	
@@ -70,12 +78,20 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		super(true, true);
 		panelActions = new ArrayList<PanelAction>();
 		internalSetup();
+		try {
+			SceneGameState.getInstance().addModuleToUpdateList(new TranslateModule());
+		} catch (ModuleNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+	
 	
 	private void internalSetup(){
 		//editingContainer.setSize(width, height);
 	
 		editingContainer = FengGUI.createWidget(Container.class);
+		//editingContainer.setXY(10, 10);
 		editingContainer.setLayoutManager(new RowExLayout(false));
 		
 		translate = FengGUI.createWidget(FixedButton.class);
@@ -88,7 +104,17 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
 					SceneScape.getTargetSpatial().updateRenderState();
 				
-					moveRod = new AxisRods("$editorWidget-axis", true, Scale.fromMeter(5));
+
+					BoundingBox bb = ((BoundingBox)SceneScape.getTargetSpatial().getWorldBound());
+					
+					float distance = (float)(Math.sqrt(Math.pow(Math.sqrt(Math.pow(bb.xExtent, 2) + Math.pow(bb.yExtent, 2)), 2) + Math.pow(bb.zExtent, 2)));
+					
+					moveRod = new AxisRods("$editorWidget-axis", true, distance, distance*0.01f);
+					
+					MaterialState yellow = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
+					yellow.setAmbient(ColorRGBA.yellow);
+					yellow.setDiffuse(ColorRGBA.yellow);
+					
 					SceneGameState.getInstance().getEditorWidgetNode().attachChild(moveRod);
 					moveRod.setLocalTranslation(SceneScape.getTargetSpatial().getLocalTranslation());
 					
@@ -97,17 +123,51 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					red.setDiffuse(ColorRGBA.red);
 					moveRod.getxAxis().setRenderState(red);
 					
+					if(moveRod.getxAxis().getChild("tip") instanceof Pyramid) {
+						
+						float arrowLength = ((Arrow)moveRod.getxAxis()).getLength();
+						float arrowWidth = ((Arrow)moveRod.getxAxis()).getWidth();
+						
+						((Pyramid)moveRod.getxAxis().getChild("tip")).updateGeometry(8 * arrowWidth, arrowLength / 9f);
+						((Pyramid)moveRod.getxAxis().getChild("tip")).translatePoints(0, arrowLength * .5f, 0);
+						
+					}
+						
+					
 					MaterialState green = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 					green.setAmbient(ColorRGBA.green);
 					green.setDiffuse(ColorRGBA.green);
 					moveRod.getyAxis().setRenderState(green);
+					
+					if(moveRod.getyAxis().getChild("tip") instanceof Pyramid) {
+						
+						float arrowLength = ((Arrow)moveRod.getyAxis()).getLength();
+						float arrowWidth = ((Arrow)moveRod.getyAxis()).getWidth();
+						
+						((Pyramid)moveRod.getyAxis().getChild("tip")).updateGeometry(8 * arrowWidth, arrowLength / 9f);
+						((Pyramid)moveRod.getyAxis().getChild("tip")).translatePoints(0, arrowLength * .5f, 0);
+						
+					}
 					
 					MaterialState blue = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 					blue.setAmbient(ColorRGBA.blue);
 					blue.setDiffuse(ColorRGBA.blue);
 					moveRod.getyAxis().setRenderState(blue);
 					
+					if(moveRod.getzAxis().getChild("tip") instanceof Pyramid) {
+						
+						float arrowLength = ((Arrow)moveRod.getzAxis()).getLength();
+						float arrowWidth = ((Arrow)moveRod.getzAxis()).getWidth();
+						
+						((Pyramid)moveRod.getzAxis().getChild("tip")).updateGeometry(8 * arrowWidth, arrowLength / 9f);
+						((Pyramid)moveRod.getzAxis().getChild("tip")).translatePoints(0, arrowLength * .5f, 0);
+						
+					}
+					
 					moveRod.updateRenderState();
+					
+					System.out.println("length: " + moveRod.getLength());
+					System.out.println("distance: " + distance);
 					
 					logger.info("added rods");
 				
@@ -124,25 +184,60 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
 				SceneScape.getTargetSpatial().updateRenderState();
 				
-				Vector3f[] coordi = GeometryUtilities.findObjectExtents(SceneScape.getTargetSpatial());
-
-				float targetLength = Math.abs(coordi[1].x - coordi[0].x);
-				//float targetHeight = Math.abs(coordi[1].y - coordi[0].y);
-				//float targetWidth = Math.abs(coordi[1].z - coordi[0].z);
-				
-				System.out.println("*" + targetLength);
-				
-				verticalRotateTorus = new Torus("$editorWidget-verticalRotateTorus", 100, 100, targetLength, targetLength+5);
-				verticalRotateTorus.setLocalTranslation(SceneScape.getTargetSpatial().getLocalTranslation());
-				
-				MaterialState red = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
+/*				MaterialState red = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 				red.setAmbient(ColorRGBA.red);
 				red.setDiffuse(ColorRGBA.red);
-				verticalRotateTorus.setRenderState(red);
+				*/
 				
-				verticalRotateTorus.updateRenderState();
+			
+				MaterialState blue = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
+				blue.setAmbient(ColorRGBA.blue);
+				blue.setDiffuse(ColorRGBA.blue);
+
 				
-				logger.info("added torus");
+				BoundingBox bb = ((BoundingBox)SceneScape.getTargetSpatial().getWorldBound());
+				Vector3f center = bb.getCenter();
+				
+				float distance = (float)(Math.sqrt(Math.pow(Math.sqrt(Math.pow(bb.xExtent, 2) + Math.pow(bb.yExtent, 2)), 2) + Math.pow(bb.zExtent, 2)));
+				float height = bb.yExtent * 0.0715f;
+				
+				/*
+				rotateAxis = new AxisRods("$editorWidget-RotateAxis", true, distance, distance*0.01f);
+				
+				Vector3f xOrigin = ((Pyramid)rotateAxis.getxAxis().getChild("tip")).getLocalTranslation();
+				Vector3f yOrigin = ((Pyramid)rotateAxis.getyAxis().getChild("tip")).getLocalTranslation();
+				Vector3f zOrigin = ((Pyramid)rotateAxis.getzAxis().getChild("tip")).getLocalTranslation();
+				
+				((Pyramid)rotateAxis.getxAxis().getChild("tip")).removeFromParent();
+				((Pyramid)rotateAxis.getyAxis().getChild("tip")).removeFromParent();
+				((Pyramid)rotateAxis.getzAxis().getChild("tip")).removeFromParent();
+				
+				horizontalRotateTube = new Tube("$editorWidget-horizontalRotateTube", distance * 0.1f, distance * 0.05f, 0.01f);
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(horizontalRotateTube);
+				
+				horizontalRotateTube.setRenderState(blue);
+				horizontalRotateTube.updateRenderState();
+				horizontalRotateTube.setLocalTranslation(xOrigin);
+				*/
+				
+				
+				horizontalRotateTube = new Tube("$editorWidget-horizontalRotateTube", distance * 1.1f, distance * 1.05f, height);
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(horizontalRotateTube);
+				
+				horizontalRotateTube.setRenderState(blue);
+				horizontalRotateTube.updateRenderState();
+				horizontalRotateTube.setLocalTranslation(center);
+
+				verticalRotateTube = new Tube("$editorWidget-verticalRotateTube", distance * 1.1f, distance * 1.05f, height);
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(verticalRotateTube);
+				
+				verticalRotateTube.rotateUpTo(new Vector3f(0, 0, 90));
+				verticalRotateTube.setRenderState(blue);
+				verticalRotateTube.updateRenderState();
+				verticalRotateTube.setLocalTranslation(center);
+				
+				
+				logger.info("added tubes");
 			}
 		});
 		
@@ -160,78 +255,51 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				blue.setAmbient(ColorRGBA.blue);
 				blue.setDiffuse(ColorRGBA.blue);
 				
-				Vector3f[] coordi = GeometryUtilities.findObjectExtents(SceneScape.getTargetSpatial());
-
-				float targetLength = Math.abs(coordi[1].x - coordi[0].x);
-				float targetHeight = Math.abs(coordi[1].y - coordi[0].y);
-				float targetWidth = Math.abs(coordi[1].z - coordi[0].z);
+				BoundingBox bb = ((BoundingBox)SceneScape.getTargetSpatial().getWorldBound());
+				Vector3f center = bb.getCenter();
 				
-				System.out.println("**" + targetLength + " " + targetHeight + " " + targetWidth);
+				float distance = (float)(Math.sqrt(Math.pow(Math.sqrt(Math.pow(bb.xExtent, 2) + Math.pow(bb.yExtent, 2)), 2) + Math.pow(bb.zExtent, 2)));
+				float scale = distance/5;
+				System.out.println(distance + " " + Scale.fromMeter(1));
 				
-				coordi[0].interpolate(coordi[1], .5f);
-				
-				System.out.println(coordi[0]);
-				
-				upArrow = new Arrow("$editorWidget-upArrow", Scale.fromMeter(1), Scale.fromMeter(1)*0.25f);
+				upArrow = new Arrow("$editorWidget-upArrow", scale, scale*0.25f);
 				SceneGameState.getInstance().getEditorWidgetNode().attachChild(upArrow);
 				
 				upArrow.setRenderState(blue);
 				upArrow.updateRenderState();
+				upArrow.setLocalTranslation(center.x, center.y+bb.yExtent, center.z);
 				
-				Vector3f coordinateLocation = JME2MapManager.instance.locationToBetaville(SceneScape.getPickedDesign().getCoordinate());
+				leftArrow = new Arrow("$editorWidget-leftArrow", scale, scale*0.25f);
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(leftArrow);
 				
-				upArrow.setLocalTranslation(coordinateLocation.x - (targetLength/2), coordinateLocation.y + Scale.fromMeter(5), coordinateLocation.z);
-				//upArrow.setLocalTranslation(upArrow.getLocalTranslation().x + coordi[0].x, upArrow.getLocalTranslation().y + targetHeight, upArrow.getLocalTranslation().z);
+				leftArrow.setRenderState(blue);
+				leftArrow.updateRenderState();
+				leftArrow.rotateUpTo(new Vector3f(90,0,0));
+				leftArrow.setLocalTranslation(center.x+bb.xExtent, center.y, center.z);
 				
-				System.out.println(coordinateLocation.x - (targetLength/2) + " " + coordinateLocation.y + Scale.fromMeter(5) + " " + coordinateLocation.z);
+				rightArrow = new Arrow("$editorWidget-rightArrow", scale, scale*0.25f);
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(rightArrow);
 				
-				/*
-
-				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
-				SceneScape.getTargetSpatial().updateRenderState();		
-
-				Vector3f[] coordi = GeometryUtilities.findObjectExtents(SceneScape.getTargetSpatial());
-
-				float targetLength = Math.abs(coordi[1].x - coordi[0].x);
-				float targetHeight = Math.abs(coordi[1].y - coordi[0].y);
-				float targetWidth = Math.abs(coordi[1].z - coordi[0].z);
+				rightArrow.setRenderState(blue);
+				rightArrow.updateRenderState();
+				rightArrow.rotateUpTo(new Vector3f(-90,0,0));
+				rightArrow.setLocalTranslation(center.x-bb.xExtent, center.y, center.z);
 				
-				//Vector3f target = SceneScape.getTargetSpatial().getWorldTranslation();
+				forwardArrow = new Arrow("$editorWidget-forwardArrow", scale, scale*0.25f);
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(forwardArrow);
 				
-				//System.out.println("**" + length + " " + height + " " + width);
+				forwardArrow.setRenderState(blue);
+				forwardArrow.updateRenderState();
+				forwardArrow.rotateUpTo(new Vector3f(0, 0, 90));
+				forwardArrow.setLocalTranslation(center.x, center.y, center.z+bb.zExtent);
 				
-				MaterialState blue = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
-				blue.setAmbient(ColorRGBA.blue);
-				blue.setDiffuse(ColorRGBA.blue);
+				backwardArrow = new Arrow("$editorWidget-backwardArrow", scale, scale*0.25f);
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(backwardArrow);
 				
-				sizeArrow1 = new Arrow("$editorWidget-arrow1", Scale.fromMeter(5), Scale.fromMeter(5)*0.25f);
-				SceneGameState.getInstance().getEditorWidgetNode().attachChild(sizeArrow1);
-				sizeArrow1.setRenderState(blue);
-				sizeArrow1.updateRenderState();
-				sizeArrow1.setLocalTranslation(SceneScape.getTargetSpatial().getLocalTranslation());
-				Vector3f target = sizeArrow1.getLocalTranslation();
-				System.out.println(target);
-				sizeArrow1.setLocalTranslation(target.x + (targetLength/2), target.y + targetHeight+10, target.z + (targetWidth/2));
-				//sizeArrow1.setLocalTranslation(target.x + (targetLength/2), (target.y + targetHeight+10), target.z + (targetWidth/2));
-				
-				System.out.println("***" + target.x + (targetLength/2) + " " + (target.y + targetHeight+10) + " " + target.z + (targetWidth/2));
-				
-				sizeArrow2 = new Arrow("$editorWidget-arrow2", Scale.fromMeter(1), Scale.fromMeter(1)*0.25f);
-				SceneGameState.getInstance().getEditorWidgetNode().attachChild(sizeArrow2);
-				sizeArrow2.setRenderState(blue);
-				sizeArrow2.updateRenderState();
-				sizeArrow2.rotateUpTo(new Vector3f(90,0,0));
-				sizeArrow2.setLocalTranslation(coordi[1].x + 10, targetHeight/2, targetWidth/2);
-				
-				sizeArrow3 = new Arrow("$editorWidget-arrow3", Scale.fromMeter(1), Scale.fromMeter(1)*0.25f);
-				SceneGameState.getInstance().getEditorWidgetNode().attachChild(sizeArrow3);
-				sizeArrow3.setRenderState(blue);
-				sizeArrow3.updateRenderState();
-				sizeArrow3.rotateUpTo(new Vector3f(-90,0,0));
-				sizeArrow3.setLocalTranslation(coordi[0].x - 10, targetHeight/2, targetWidth/2);
-				
-				//Box box = new Box("$editorWidget-box", SceneScape.getTargetSpatial().get)
-				//((Node)SceneScape.getTargetSpatial()).attachChild(arg0);*/
+				backwardArrow.setRenderState(blue);
+				backwardArrow.updateRenderState();
+				backwardArrow.rotateUpTo(new Vector3f(0, 0, -90));
+				backwardArrow.setLocalTranslation(center.x, center.y, center.z-bb.zExtent);
 				
 				logger.info("added arrows");
 
@@ -352,6 +420,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 	public void finishSetup(){
 		setTitle("Edit Building");
 		setSize(width, height);
+		setXY(Binding.getInstance().getCanvasWidth() - this.width, 0);
 	}
 
 }
