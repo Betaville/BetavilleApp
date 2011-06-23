@@ -82,7 +82,7 @@ public class TranslatorMousePick {
 		
 		spatialToTest.findPick(rayToUse, widgetResults);
 		
-		logger.info("Results: " + widgetResults.getNumber());
+		//logger.info("Results: " + widgetResults.getNumber());
 		
 		if(widgetResults.getNumber()>0){
 			

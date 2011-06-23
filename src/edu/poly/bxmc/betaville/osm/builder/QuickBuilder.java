@@ -50,7 +50,6 @@ import edu.poly.bxmc.betaville.module.PanelAction;
 import edu.poly.bxmc.betaville.osm.OSMRegistry;
 import edu.poly.bxmc.betaville.osm.Way;
 import edu.poly.bxmc.betaville.osm.tag.Highway;
-import edu.poly.bxmc.betaville.osm.tag.Name;
 import edu.poly.bxmc.betaville.osm.tag.Natural;
 import edu.poly.bxmc.betaville.xml.OSMReader;
 
@@ -101,7 +100,8 @@ public class QuickBuilder extends PanelAction {
 								osmCache.mkdirs();
 							}
 							
-							boolean skipRoads = true;
+							boolean skipRoads = false;
+							boolean skipCoast = true;
 							
 							for(Way way : OSMRegistry.get().getWays()){
 								Spatial object = null;
@@ -128,6 +128,7 @@ public class QuickBuilder extends PanelAction {
 								}
 								else if(way.findTag(Natural.class)!=null){
 									if(way.findTag(Natural.class).equals(Natural.BuiltIn.coastline.name())){
+										if(skipCoast) continue;
 										//RoadNodeBuilder rb = new RoadNodeBuilder(way);
 										//rb = new RoadGLTrianglesBuilder(way);
 										rb = new CoastlineGLFanBuilder(way);
