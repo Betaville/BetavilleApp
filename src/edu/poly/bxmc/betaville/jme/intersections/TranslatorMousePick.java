@@ -85,25 +85,18 @@ public class TranslatorMousePick {
 		//logger.info("Results: " + widgetResults.getNumber());
 		
 		if(widgetResults.getNumber()>0){
-			
 			Geometry widget = widgetResults.getPickData(0).getTargetMesh();
 			if(widget instanceof Pyramid || widget instanceof Cylinder){
-				logger.info("pyramid/cylinder picked");
 				if(widget.getParent() instanceof Arrow){
-					logger.info("arrow picked");
 					if(widget.getParent().getParent() instanceof AxisRods){
-						logger.info("axis rod picked");
 						if(widget.getParent().getName().equals("xAxis")){
-							logger.info("Axis Rod - xAxis picked");
 							return xAxisPicked;
 						}
 							
 						else if(widget.getParent().getName().equals("yAxis")){
-							logger.info("Axis Rod - yAxis picked");
 							return yAxisPicked;
 						}
 						else if(widget.getParent().getName().equals("zAxis")){
-							logger.info("Axis Rod - zAxis picked");
 							return zAxisPicked;
 						}
 						// check each of the arrows to see which one is picked

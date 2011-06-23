@@ -6,8 +6,12 @@ package edu.poly.bxmc.betaville.module;
 import org.apache.log4j.Logger;
 
 import com.jme.input.MouseInput;
+import com.jme.math.Plane;
+import com.jme.math.Ray;
+import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -26,13 +30,23 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 	private int mouseXLastClick = -1;
 	private int mouseYLastClick = -1;
 	
-	private int mouseNewX = 0;
-	private int mouseNewY = 0;
-
 	private int checkPick = -1;
 	private final int xAxisPicked = 1;
 	private final int yAxisPicked = 2;
 	private final int zAxisPicked = 3;
+	
+	private static final Vector2f screenPosition = new Vector2f(0, 0);
+
+	private static final Plane groundPlane = new Plane(Vector3f.UNIT_Y, 0f);
+	private static Plane frontPlane;
+	
+	private static final Vector3f leftCollision = new Vector3f();
+	private static final Vector3f rightCollision = new Vector3f();
+	private static final Vector3f topCollision = new Vector3f();
+	private static final Vector3f bottomCollision = new Vector3f();
+	
+	
+	
 
 	/**
 	 * @param name
@@ -60,10 +74,10 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 		if(checkPick != -1){
 			
 			if(!MouseInput.get().isButtonDown(0)){
+				
 				// do the drag
 				
-				
-				if(mouseXLastClick==-1 || mouseYLastClick==-1){
+				if(mouseXLastClick==-1 || mouseYLastClick==-1) {
 					mouseXLastClick = MouseInput.get().getXAbsolute();
 					mouseYLastClick = MouseInput.get().getYAbsolute();
 					
@@ -72,70 +86,110 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 				}
 				else{
 					
+					
 					if(wasClickedPreviously = true) {
+
 						if(checkPick == xAxisPicked) {
 							
-							//make it so that the object can only move one way -- x-direction
-							
-							mouseNewX = mouseXLastClick - MouseInput.get().getXAbsolute();
-							mouseNewY = mouseYLastClick - MouseInput.get().getYAbsolute();
-							
-							Vector3f target = SceneScape.getTargetSpatial().getLocalTranslation();
-							
-							float targetNewPos = (float)(Math.sqrt(Math.pow(mouseNewX, 2) + Math.pow(mouseNewY, 2)));
-							
-							SceneScape.getTargetSpatial().setLocalTranslation(target.x + targetNewPos, target.y, target.z);
-							
-							logger.info("xAxis picked. " + mouseNewX + " " + mouseNewY);
-							
+							Vector3f diff = viewportWidthAtGround();
+							Vector3f originalPos = SceneScape.getTargetSpatial().getLocalTranslation();
+							SceneScape.getTargetSpatial().setLocalTranslation(originalPos.x+diff.x, originalPos.y, originalPos.z);
+						
 						}
 						
 						else if(checkPick == yAxisPicked) {
-							mouseNewX = mouseXLastClick - MouseInput.get().getXAbsolute();
-							mouseNewY = mouseYLastClick - MouseInput.get().getYAbsolute();
+
+							Vector3f diff = viewportHeightAtGround();
+							logger.info("1: yAxis picked. " + SceneScape.getTargetSpatial().getLocalTranslation());
+							logger.info("diff: " + diff);
+							Vector3f originalPos = SceneScape.getTargetSpatial().getLocalTranslation();
+							SceneScape.getTargetSpatial().setLocalTranslation(originalPos.x, originalPos.y+diff.y, originalPos.z);
 							
-							Vector3f target = SceneScape.getTargetSpatial().getLocalTranslation();
-							
-							float targetNewPos = (float)(Math.sqrt(Math.pow(mouseNewX, 2) + Math.pow(mouseNewY, 2)));
-							
-							SceneScape.getTargetSpatial().setLocalTranslation(target.x, target.y + targetNewPos, target.z);
-							
-							logger.info("yAxis picked. " + mouseNewX + " " + mouseNewY);
+							logger.info("2: yAxis picked. " + SceneScape.getTargetSpatial().getLocalTranslation());
 							
 						}
 						
 						else if(checkPick == zAxisPicked) {
-							mouseNewX = mouseXLastClick - MouseInput.get().getXAbsolute();
-							mouseNewY = mouseYLastClick - MouseInput.get().getYAbsolute();
-							
-							Vector3f target = SceneScape.getTargetSpatial().getLocalTranslation();
-							
-							float targetNewPos = (float)(Math.sqrt(Math.pow(mouseNewX, 2) + Math.pow(mouseNewY, 2)));
-							
-							SceneScape.getTargetSpatial().setLocalTranslation(target.x, target.y, target.z + targetNewPos);
-
-							logger.info("zAxis picked. " + mouseNewX + " " + mouseNewY);
+							Vector3f diff = viewportWidthAtGround();
+							Vector3f originalPos = SceneScape.getTargetSpatial().getLocalTranslation();
+							SceneScape.getTargetSpatial().setLocalTranslation(originalPos.x, originalPos.y, originalPos.z+diff.z);
 							
 						}
 						
 						wasClickedPreviously = false;
 					}
 					else {
-						mouseXLastClick = MouseInput.get().getXAbsolute();
-						mouseYLastClick = MouseInput.get().getYAbsolute();
-						
 						wasClickedPreviously = true;
 					}
+					
 				}
 				
-				//wasClickedPreviously = true;
 			}
 			}
 		else{
 			wasClickedPreviously = false;
 		}
+
+		mouseXLastClick = MouseInput.get().getXAbsolute();
+		mouseYLastClick = MouseInput.get().getYAbsolute();
 	}
 
+
+	private Vector3f viewportWidthAtGround(){
+		screenPosition.x=mouseXLastClick;
+		screenPosition.y=mouseYLastClick;
+		
+		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
+		Ray leftRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
+		leftRay.getDirection().normalizeLocal();
+		
+		leftRay.intersectsWherePlane(groundPlane, leftCollision);
+		
+		screenPosition.x=MouseInput.get().getXAbsolute();
+		screenPosition.y=MouseInput.get().getYAbsolute();
+		
+		worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
+		
+		Ray rightRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
+		rightRay.getDirection().normalizeLocal();
+		
+		rightRay.intersectsWherePlane(groundPlane, rightCollision);
+		
+		return rightCollision.subtract(leftCollision);
+	}
+	
+	private Vector3f viewportHeightAtGround(){
+		screenPosition.x=mouseXLastClick;
+		screenPosition.y=mouseYLastClick;
+		
+		System.out.println("Old Screen Position: " + screenPosition);
+		
+		// get the plane of the camera direction
+		frontPlane = new Plane(new Vector3f(DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().x, 0, DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().z), 0f);
+		
+		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
+		Ray topRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
+		topRay.getDirection().normalizeLocal();
+		
+		topRay.intersectsWherePlane(frontPlane, topCollision);
+		
+		screenPosition.x=MouseInput.get().getXAbsolute();
+		screenPosition.y=MouseInput.get().getYAbsolute();
+		
+		System.out.println("New Screen Position: " + screenPosition);
+		
+		worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
+		
+		Ray bottomRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
+		bottomRay.getDirection().normalizeLocal();
+		
+		bottomRay.intersectsWherePlane(frontPlane, bottomCollision);
+		
+		System.out.println("Top Collision: " + topCollision + "     Bottom Collision: " + bottomCollision);
+		return bottomCollision.subtract(topCollision);
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.module.IModule#deconstruct()
 	 */
