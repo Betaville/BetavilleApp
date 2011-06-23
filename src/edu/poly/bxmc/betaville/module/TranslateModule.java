@@ -56,7 +56,7 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 			Vector3f cameraDirection) {
 		
 		checkPick = pick.checkPick();
-		
+		logger.info("checkPick: "+checkPick);
 		if(checkPick != -1){
 			
 			if(!MouseInput.get().isButtonDown(0)){

@@ -110,6 +110,8 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					float distance = (float)(Math.sqrt(Math.pow(Math.sqrt(Math.pow(bb.xExtent, 2) + Math.pow(bb.yExtent, 2)), 2) + Math.pow(bb.zExtent, 2)));
 					
 					moveRod = new AxisRods("$editorWidget-axis", true, distance, distance*0.01f);
+					moveRod.setModelBound(new BoundingBox());
+					moveRod.updateModelBound();
 					
 					MaterialState yellow = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 					yellow.setAmbient(ColorRGBA.yellow);
@@ -170,7 +172,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					System.out.println("distance: " + distance);
 					
 					logger.info("added rods");
-				
+					
 			}
 		});
 		

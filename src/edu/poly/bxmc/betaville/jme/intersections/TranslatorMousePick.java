@@ -28,6 +28,7 @@ package edu.poly.bxmc.betaville.jme.intersections;
 import org.apache.log4j.Logger;
 
 import com.jme.input.MouseInput;
+import com.jme.intersection.BoundingPickResults;
 import com.jme.intersection.PickResults;
 import com.jme.intersection.TrianglePickResults;
 import com.jme.math.Ray;
@@ -65,7 +66,7 @@ public class TranslatorMousePick {
 	public TranslatorMousePick(Spatial spatialToTest){
 		this.spatialToTest=spatialToTest;
 		
-		widgetResults = new TrianglePickResults();
+		widgetResults = new BoundingPickResults();
 		widgetResults.setCheckDistance(true);
 	}
 	
@@ -80,6 +81,8 @@ public class TranslatorMousePick {
 		widgetResults.clear();
 		
 		spatialToTest.findPick(rayToUse, widgetResults);
+		
+		logger.info("Results: " + widgetResults.getNumber());
 		
 		if(widgetResults.getNumber()>0){
 			
