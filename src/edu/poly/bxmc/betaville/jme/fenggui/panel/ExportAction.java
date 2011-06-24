@@ -167,23 +167,26 @@ public class ExportAction extends PanelAction {
 							logger.info("Selected File: " + file.toString());
 							SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
 							try {
-								if(fileChooser.getFileFilter().getClass().equals(ColladaFileFilter.class.getClass())){
+								if(fileChooser.getFileFilter() instanceof ColladaFileFilter){
 									// export COLLADA
 									ColladaExporter exporter = new ColladaExporter(file, toUse, true);
 									exporter.writeData();
 									logger.info("COLLADA file written to " + file.toString());
 								}
-								else if(fileChooser.getFileFilter().getClass().equals(WavefrontFileFilter.class.getClass())){
-									new OBJExporter(toUse, file);
+								else if(fileChooser.getFileFilter() instanceof WavefrontFileFilter){
+									OBJExporter exporter = new OBJExporter(toUse, file);
 									logger.info("OBJ file written to " + file.toString());
 								}
-								else if(fileChooser.getFileFilter().getClass().equals(JMEFileFilter.class.getClass())){
+								else if(fileChooser.getFileFilter() instanceof JMEFileFilter){
 									BinaryExporter.getInstance().save(toUse, file);
 									logger.info("JME file written to " + file.toString());
 								}
-								else if(fileChooser.getFileFilter().getClass().equals(JMEXMLFileFilter.class.getClass())){
+								else if(fileChooser.getFileFilter() instanceof JMEXMLFileFilter){
 									XMLExporter.getInstance().save(toUse, file);
 									logger.info("JME-XML file written to " + file.toString());
+								}
+								else{
+									logger.error("NO FILE FILTER SELECTED!");
 								}
 							} catch (IOException e) {
 								logger.error("Exception Occurred When Attempting To Write File", e);
