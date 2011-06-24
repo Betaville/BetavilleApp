@@ -44,6 +44,7 @@ import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.gui.PNGFileFilter;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
 
@@ -97,6 +98,7 @@ public class ScreenshotPanelAction extends PanelAction {
 						JDialog dialog = new JDialog();
 						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
+						fileChooser.addChoosableFileFilter(new PNGFileFilter());
 						fileChooser.showSaveDialog(dialog);
 						File file = fileChooser.getSelectedFile();
 
