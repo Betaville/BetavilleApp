@@ -30,7 +30,7 @@ import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
 /**
- * {@link FileFilter} which shows only directories and Esri Shapefiles
+ * {@link FileFilter} which shows only directories and PNG images
  * @author Skye Book
  *
  */
