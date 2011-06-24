@@ -185,44 +185,49 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				
 				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
 				SceneScape.getTargetSpatial().updateRenderState();
-				
-/*				MaterialState red = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
-				red.setAmbient(ColorRGBA.red);
-				red.setDiffuse(ColorRGBA.red);
-				*/
-				
 			
 				MaterialState blue = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 				blue.setAmbient(ColorRGBA.blue);
 				blue.setDiffuse(ColorRGBA.blue);
 
-				
 				BoundingBox bb = ((BoundingBox)SceneScape.getTargetSpatial().getWorldBound());
 				Vector3f center = bb.getCenter();
 				
 				float distance = (float)(Math.sqrt(Math.pow(Math.sqrt(Math.pow(bb.xExtent, 2) + Math.pow(bb.yExtent, 2)), 2) + Math.pow(bb.zExtent, 2)));
 				float height = bb.yExtent * 0.0715f;
 				
-				/*
 				rotateAxis = new AxisRods("$editorWidget-RotateAxis", true, distance, distance*0.01f);
+				rotateAxis.setLocalTranslation(SceneScape.getTargetSpatial().getLocalTranslation());
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(rotateAxis);
 				
-				Vector3f xOrigin = ((Pyramid)rotateAxis.getxAxis().getChild("tip")).getLocalTranslation();
-				Vector3f yOrigin = ((Pyramid)rotateAxis.getyAxis().getChild("tip")).getLocalTranslation();
-				Vector3f zOrigin = ((Pyramid)rotateAxis.getzAxis().getChild("tip")).getLocalTranslation();
+				Vector3f yLoc = ((Pyramid)rotateAxis.getyAxis().getChild("tip")).getLocalTranslation();
+				Vector3f zLoc = ((Pyramid)rotateAxis.getzAxis().getChild("tip")).getLocalTranslation();
+				Vector3f xLoc = ((Pyramid)rotateAxis.getxAxis().getChild("tip")).getLocalTranslation();
+				
+				MaterialState red = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
+				red.setAmbient(ColorRGBA.red);
+				red.setDiffuse(ColorRGBA.red);
+				rotateAxis.getxAxis().setRenderState(red);
 				
 				((Pyramid)rotateAxis.getxAxis().getChild("tip")).removeFromParent();
-				((Pyramid)rotateAxis.getyAxis().getChild("tip")).removeFromParent();
-				((Pyramid)rotateAxis.getzAxis().getChild("tip")).removeFromParent();
 				
+				horizontalRotateTube = new Tube("$editorWidget-horizontalRotateTube", distance / 2f, distance / 1.5f, height);
+				SceneGameState.getInstance().getEditorWidgetNode().attachChild(horizontalRotateTube);
+				
+				horizontalRotateTube.setRenderState(blue);
+				
+				horizontalRotateTube.updateRenderState();
+				rotateAxis.updateRenderState();
+				
+				/*
 				horizontalRotateTube = new Tube("$editorWidget-horizontalRotateTube", distance * 0.1f, distance * 0.05f, 0.01f);
 				SceneGameState.getInstance().getEditorWidgetNode().attachChild(horizontalRotateTube);
 				
 				horizontalRotateTube.setRenderState(blue);
 				horizontalRotateTube.updateRenderState();
-				horizontalRotateTube.setLocalTranslation(xOrigin);
+				horizontalRotateTube.setLocalTranslation(xLoc);
 				*/
-				
-				
+				/*
 				horizontalRotateTube = new Tube("$editorWidget-horizontalRotateTube", distance * 1.1f, distance * 1.05f, height);
 				SceneGameState.getInstance().getEditorWidgetNode().attachChild(horizontalRotateTube);
 				
@@ -237,7 +242,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				verticalRotateTube.setRenderState(blue);
 				verticalRotateTube.updateRenderState();
 				verticalRotateTube.setLocalTranslation(center);
-				
+				*/
 				
 				logger.info("added tubes");
 			}
