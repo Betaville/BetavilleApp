@@ -31,21 +31,21 @@ package edu.poly.bxmc.betaville.osm;
  */
 public class RelationMemeber {
 	
-	private OSMObject objectReference;
+	private BaseOSMObject objectReference;
 	String role;
 
 	/**
 	 * 
 	 */
-	public RelationMemeber(OSMObject objectReference, String role) {
+	public RelationMemeber(BaseOSMObject objectReference, String role) {
 		this.objectReference=objectReference;
-		this.role=role;;
+		this.role=role;
 	}
 
 	/**
 	 * @return the objectReference
 	 */
-	public OSMObject getObjectReference() {
+	public BaseOSMObject getObjectReference() {
 		return objectReference;
 	}
 

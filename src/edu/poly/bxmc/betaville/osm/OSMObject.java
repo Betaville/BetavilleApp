@@ -34,9 +34,8 @@ import edu.poly.bxmc.betaville.osm.tag.AbstractTag;
  * @author Skye Book
  *
  */
-public class OSMObject {
+public class OSMObject extends BaseOSMObject {
 	
-	private long id;
 	private String user;
 	private String timestamp;
 	private long changeset;
@@ -48,24 +47,10 @@ public class OSMObject {
 	public OSMObject() {}
 
 	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
 	 * @return the user
 	 */
 	public String getUser() {
 		return user;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	/**
