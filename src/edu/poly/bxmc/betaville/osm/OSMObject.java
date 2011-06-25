@@ -25,10 +25,7 @@
 */
 package edu.poly.bxmc.betaville.osm;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import edu.poly.bxmc.betaville.osm.tag.AbstractTag;
 
 /**
  * @author Skye Book
@@ -39,8 +36,6 @@ public class OSMObject extends BaseOSMObject {
 	private String user;
 	private String timestamp;
 	private long changeset;
-	protected List<AbstractTag> tags = new ArrayList<AbstractTag>();
-	
 	/**
 	 * 
 	 */
@@ -86,30 +81,5 @@ public class OSMObject extends BaseOSMObject {
 	 */
 	public long getChangeset() {
 		return changeset;
-	}
-
-	/**
-	 * @return the tags
-	 */
-	public List<AbstractTag> getTags() {
-		return tags;
-	}
-	
-	/**
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void addTag(AbstractTag tag){
-		tags.add(tag);
-	}
-	
-	public String findTag(Class<? extends AbstractTag> keyClass){
-		for(AbstractTag tag : tags){
-			if(tag.getClass().equals(keyClass)){
-				return tag.getValue();
-			}
-		}
-		return null;
 	}
 }

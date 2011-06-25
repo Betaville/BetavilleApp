@@ -27,7 +27,7 @@ package edu.poly.bxmc.betaville.osm.builder;
 
 import com.jme.scene.Spatial;
 
-import edu.poly.bxmc.betaville.osm.OSMObject;
+import edu.poly.bxmc.betaville.osm.BaseOSMObject;
 import edu.poly.bxmc.betaville.osm.tag.Name;
 
 /**
@@ -36,12 +36,12 @@ import edu.poly.bxmc.betaville.osm.tag.Name;
  */
 public abstract class ObjectBuilder {
 	
-	protected OSMObject osmObject;
+	protected BaseOSMObject osmObject;
 
 	/**
 	 * 
 	 */
-	public ObjectBuilder(OSMObject osmObject){
+	public ObjectBuilder(BaseOSMObject osmObject){
 		this.osmObject=osmObject;
 	}
 	
