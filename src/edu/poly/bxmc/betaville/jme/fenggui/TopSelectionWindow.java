@@ -83,7 +83,7 @@ public class TopSelectionWindow extends Window{
 	 */
 	private Dimension compassLabelSize;
 	/**
-	 * Pixels necessary to display the whole compass ‡ 360¡ or 2PI 
+	 * Pixels necessary to display the whole compass 360 degrees or 2PI 
 	 */
 	private int compassPixFor2PI;
 
