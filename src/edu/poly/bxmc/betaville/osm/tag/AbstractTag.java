@@ -33,6 +33,8 @@ public class AbstractTag {
 	
 	protected String key;
 	protected String value;
+	
+	public AbstractTag(){}
 
 	/**
 	 * 
@@ -54,6 +56,20 @@ public class AbstractTag {
 	 */
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	/**
+	 * @return the key
+	 */
+	public String getKey() {
+		return key;
+	}
+
+	/**
+	 * @param key the key to set
+	 */
+	public void setKey(String key) {
+		this.key = key;
 	}
 	
 }
