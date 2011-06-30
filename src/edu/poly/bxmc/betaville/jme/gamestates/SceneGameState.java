@@ -1024,18 +1024,14 @@ public class SceneGameState extends BasicGameState {
 		int newSpeed = MOVE_MODE_SPEED_WALK_MIN;
 		if (currentAltitude <= MOVE_MODE_ALTITUDE_WALK_MAX) {
 			if (!inGroundMode) {
-				try {
-					SceneGameState.getInstance().addModuleToUpdateList(groundMagnet);
-					camera.setLocation(new Vector3f(camera.getLocation().getX(), Scale.fromMeter(SceneScape.getMinimumHeight()), camera.getLocation().getZ()));
-					System.out.println("add groundMagnet");
-				} catch (ModuleNameException e) {
-					logger.error("Unique module names are required!", e);
-				}
+				//SceneGameState.getInstance().addModuleToUpdateList(groundMagnet);
+				camera.setLocation(new Vector3f(camera.getLocation().getX(), Scale.fromMeter(SceneScape.getMinimumHeight()), camera.getLocation().getZ()));
+				System.out.println("add groundMagnet");
 				inGroundMode = true;
 			}
 		}
 		if (sceneController.getElevate() && inGroundMode) {
-			SceneGameState.getInstance().removeModuleFromUpdateList(groundMagnet);
+			//SceneGameState.getInstance().removeModuleFromUpdateList(groundMagnet);
 			camera.setLocation(new Vector3f(camera.getLocation().getX(), Scale.fromMeter(MOVE_MODE_ALTITUDE_WALK_MAX), camera.getLocation().getZ()));
 			inGroundMode = false;
 			// newSpeed = MOVE_MODE_SPEED_CHOPPER;
