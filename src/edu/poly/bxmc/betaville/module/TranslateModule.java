@@ -43,10 +43,8 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 	
 	private static final Vector3f leftCollision = new Vector3f();
 	private static final Vector3f rightCollision = new Vector3f();
-	private static final Vector3f topCollision = new Vector3f();
-	private static final Vector3f bottomCollision = new Vector3f();
-	
-	
+	//private static final Vector3f topCollision = new Vector3f();
+	//private static final Vector3f bottomCollision = new Vector3f();
 	
 
 	/**
@@ -74,7 +72,7 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 		//logger.info("checkPick: "+checkPick);
 		if(checkPick != -1){
 			
-			if(!MouseInput.get().isButtonDown(0)){
+			if(!MouseInput.get().isButtonDown(0)) {
 				
 				// do the drag
 				
@@ -86,7 +84,6 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 					
 				}
 				else{
-					
 					
 					if(wasClickedPreviously = true) {
 
@@ -102,12 +99,12 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 
 							Vector3f diff = viewportHeightAtGround();
 							float diffY = diff.y * -0.003f;
-							logger.info("1: yAxis picked. " + SceneScape.getTargetSpatial().getLocalTranslation());
-							logger.info("diff: " + diff);
+							//logger.info("1: yAxis picked. " + SceneScape.getTargetSpatial().getLocalTranslation());
+							//logger.info("diff: " + diff);
 							Vector3f originalPos = SceneScape.getTargetSpatial().getLocalTranslation();
 							SceneScape.getTargetSpatial().setLocalTranslation(originalPos.x, originalPos.y+diffY, originalPos.z);
 							
-							logger.info("2: yAxis picked. " + SceneScape.getTargetSpatial().getLocalTranslation());
+							//logger.info("2: yAxis picked. " + SceneScape.getTargetSpatial().getLocalTranslation());
 							
 						}
 						
@@ -127,8 +124,8 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 				}
 				
 			}
-			}
-		else{
+		}
+		else {
 			wasClickedPreviously = false;
 		}
 
@@ -164,12 +161,12 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 		screenPosition.x=mouseXLastClick;
 		screenPosition.y=mouseYLastClick;
 		
-		System.out.println("Old Screen Position: " + screenPosition);
+		//System.out.println("Old Screen Position: " + screenPosition);
 		
 		// get the plane of the camera direction
 		frontPlane = new Plane(new Vector3f(DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().x, 0, DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().z), 0f);
 
-		System.out.println("**" + DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().x + " " + DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().z);
+		//System.out.println("**" + DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().x + " " + DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().z);
 		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
 		
 		//Ray topRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
