@@ -565,16 +565,25 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				xScaleTextEditor.setText("" + (int)(bb.xExtent * 100));
 				xScaleTextEditor.addKeyListener(new IKeyListener() {
 					
+					/* 
+					 * We flip this value back and forth
+					 * so that only one of the fired events is used
+					 */
+					boolean locked=false;
+					
 					public void keyTyped(Object arg0, KeyTypedEvent arg1) {
 					}
 					
 					public void keyReleased(Object arg0, KeyReleasedEvent arg1) {
-						if(arg1.getKeyClass().equals(Key.ENTER)){
+						if(arg1.getKeyClass().equals(Key.ENTER) && !locked){
+							locked=true;
 							/*if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
 								logger.info("A fallback was not previously created for this object, creating one");
 								FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
 								changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
 							}*/
+							
+							logger.info("---------ENTER KEY PRESSED---------");
 							
 							// perform the rotate action
 							float newXScale = 0;
@@ -592,7 +601,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(newXScale, SceneScape.getTargetSpatial().getLocalScale().y, SceneScape.getTargetSpatial().getLocalScale().z));
 
 						}
-						
+						locked=false;
 					}
 					public void keyPressed(Object arg0, KeyPressedEvent arg1) {
 					}
