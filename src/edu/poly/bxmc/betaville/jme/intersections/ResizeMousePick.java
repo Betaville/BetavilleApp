@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.intersections;
 
 import org.apache.log4j.Logger;
@@ -37,10 +37,13 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Geometry;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.Arrow;
+import com.jme.scene.shape.AxisRods;
+import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Cylinder;
-import com.jme.scene.shape.Pyramid;
 import com.jme.system.DisplaySystem;
 
+import edu.poly.bxmc.betaville.jme.fenggui.panel.BArrow;
+import edu.poly.bxmc.betaville.jme.fenggui.panel.BAxisRods;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 
 /**
@@ -54,65 +57,56 @@ public class ResizeMousePick {
 	private Ray rayToUse;
 
 	private Spatial spatialToTest;
-	
-	private final int upArrowPicked = 1;
-	private final int rightArrowPicked = 2;
-	private final int leftArrowPicked = 3;
-	private final int forwardArrowPicked = 4;
-	private final int backwardArrowPicked = 5;
-	
+
+	private final int xBoxPicked = 1;
+	private final int yBoxPicked = 2;
+	private final int zBoxPicked = 3;
+	private final int boundingBoxPicked = 4;
+
+
 	public ResizeMousePick(Spatial spatialToTest){
 		this.spatialToTest=spatialToTest;
-		
+
 		widgetResults = new BoundingPickResults();
 		widgetResults.setCheckDistance(true);
 	}
-	
+
 	public int checkPick(){
-		//logger.info("checkpick called");
-		
+
 		Vector2f screenPosition = new Vector2f(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute());
 		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
 		rayToUse = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
 		rayToUse.getDirection().normalizeLocal();
-		
+
 		widgetResults.clear();
-		
+
 		spatialToTest.findPick(rayToUse, widgetResults);
-		
-		//logger.info("Results: " + widgetResults.getNumber());
-		
+
 		if(widgetResults.getNumber()>0){
-			//logger.info("here");
 			Geometry widget = widgetResults.getPickData(0).getTargetMesh();
-			if(widget instanceof Pyramid || widget instanceof Cylinder){
-				if(widget.getParent() instanceof Arrow){
-					//logger.info("picked arrow");
-					if(widget.getParent().getName().equals("$editorWidget-upArrow")){
-						//logger.info("Resize - upArrow picked");
-						return upArrowPicked;
-					}
+			if(widget instanceof Box || widget instanceof Cylinder) {
+				if(widget.getParent() instanceof BArrow){
+					if(widget.getParent().getParent() instanceof BAxisRods && widget.getParent().getParent().getName().equals("$editorWidget-scaleRod")){
+						if(widget.getParent().getName().equals("xAxis")){
+							return xBoxPicked;
+						}
 							
-					else if(widget.getParent().getName().equals("$editorWidget-leftArrow")){
-						//logger.info("Resize - leftArrow picked");
-						return rightArrowPicked;
-					}
-					else if(widget.getParent().getName().equals("$editorWidget-rightArrow")){
-						//logger.info("Resize - rightArrow picked");	
-						return leftArrowPicked;
-					}
-					else if(widget.getParent().getName().equals("$editorWidget-backwardArrow")){
-						//logger.info("Resize - backwardArrow picked");	
-						return backwardArrowPicked;
-					}
-					else if(widget.getParent().getName().equals("$editorWidget-forwardArrow")){
-						//logger.info("Resize - forwardArrow picked");	
-						return forwardArrowPicked;
+						else if(widget.getParent().getName().equals("yAxis")){
+							return yBoxPicked;
+						}
+						else if(widget.getParent().getName().equals("zAxis")){
+							return zBoxPicked;
+						}
+						else if(widget.getName().equals("$editorWidget-boundingBox")) {
+							return boundingBoxPicked;
+						}
 					}
 				}
+
 			}
-		
 		}
+
+
 		return -1;
 	}
 }

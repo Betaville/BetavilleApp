@@ -88,7 +88,7 @@ public class TranslatorMousePick {
 			Geometry widget = widgetResults.getPickData(0).getTargetMesh();
 			if(widget instanceof Pyramid || widget instanceof Cylinder){
 				if(widget.getParent() instanceof Arrow){
-					if(widget.getParent().getParent() instanceof AxisRods){
+					if(widget.getParent().getParent() instanceof AxisRods && widget.getParent().getParent().getName().equals("$editorWidget-axis")){
 						if(widget.getParent().getName().equals("xAxis")){
 							return xAxisPicked;
 						}

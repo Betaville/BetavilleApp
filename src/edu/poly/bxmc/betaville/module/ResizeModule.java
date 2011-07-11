@@ -42,11 +42,9 @@ public class ResizeModule extends Module implements LocalSceneModule {
 	private static final Vector3f rightCollision = new Vector3f();
 	
 	private int checkPick = -1;
-	private final int upArrowPicked = 1;
-	private final int rightArrowPicked = 2;
-	private final int leftArrowPicked = 3;
-	private final int forwardArrowPicked = 4;
-	private final int backwardArrowPicked = 5;
+	private final int xBoxPicked = 1;
+	private final int yBoxPicked = 2;
+	private final int zBoxPicked = 3;
 
 	/**
 	 * @param name
@@ -82,34 +80,28 @@ public class ResizeModule extends Module implements LocalSceneModule {
 				}
 				else {
 					if(wasClickedPreviously = true) {
-						if(checkPick == upArrowPicked) {
-							logger.info("up arrow picked");
-							// get the difference between the two and set scale?
+						if(checkPick == zBoxPicked) {
+							final float originalZ = SceneScape.getTargetSpatial().getLocalScale().z;
+							float ratio = (getLeftCollision().z / getRightCollision().z) * originalZ;
 							
-							//SceneScape.getTargetSpatial().setLocalScale(new Vector3f(mouseNewY - mouseYLastClick, 1f, 1f));
+							System.out.println("z: " + SceneScape.getTargetSpatial().getLocalScale().z);
+							System.out.println("ratio: " + ratio);
+							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().y, ratio));
+						}
+						else if(checkPick == xBoxPicked) {
+							
+							float ratio = 0;
+							final float originalX = SceneScape.getTargetSpatial().getLocalScale().x;
+							ratio = (getRightCollision().x / getLeftCollision().x) * originalX;
+							System.out.println("x: " + SceneScape.getTargetSpatial().getLocalScale().x);
+							System.out.println("ratio: " + ratio);
+							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(ratio, SceneScape.getTargetSpatial().getLocalScale().y, SceneScape.getTargetSpatial().getLocalScale().z));
+						
 							
 						}
-						else if(checkPick == rightArrowPicked) {
-							//if((getRightCollision().z < 0) && (getLeftCollision().z < 0)) {
-								final float originalZ = SceneScape.getTargetSpatial().getLocalScale().z;
-								float ratio = (getRightCollision().z / getLeftCollision().z) * originalZ;
-								System.out.println("test: " + ratio);
-								
-								SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().y, ratio));
-								//logger.info("right arrow picked");
-							//}
+						else if(checkPick == yBoxPicked) {
+							logger.info("y box picked");
 							
-						}
-						else if(checkPick == leftArrowPicked) {
-							logger.info("left arrow picked");
-							
-						}
-						else if(checkPick == forwardArrowPicked) {
-							logger.info("forward arrow picked");
-							
-						}
-						else if(checkPick == backwardArrowPicked) {
-							logger.info("backwards arrow picked");
 						}
 						
 						wasClickedPreviously = false;
@@ -134,6 +126,7 @@ public class ResizeModule extends Module implements LocalSceneModule {
 		
 		leftRay.intersectsWherePlane(groundPlane, leftCollision);
 		
+		System.out.println("left Collsion" + leftCollision);
 		return leftCollision;
 	}
 	
@@ -149,6 +142,7 @@ public class ResizeModule extends Module implements LocalSceneModule {
 		
 		rightRay.intersectsWherePlane(groundPlane, rightCollision);
 		
+		System.out.println("right Collision" + rightCollision);
 		return rightCollision;
 		
 	}
