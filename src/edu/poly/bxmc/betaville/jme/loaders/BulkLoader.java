@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.loaders;
 
 import java.io.ByteArrayOutputStream;
@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.jme.math.Vector3f;
 import com.jme.scene.Spatial;
 import com.jme.util.export.binary.BinaryExporter;
 
@@ -40,6 +41,7 @@ import com.jme.util.export.binary.BinaryExporter;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
@@ -57,21 +59,21 @@ import edu.poly.bxmc.betaville.updater.UpdaterPreferences;
  */
 public class BulkLoader {
 	private static final Logger logger = Logger.getLogger(BulkLoader.class);
-	
+
 	private ILocation origin;
 	private volatile int currentCounter=0;
 	private volatile int completionCounter=0;
-	
+
 	private String xPrefix;
 	private String yPrefix;
 	private String zPrefix;
-	
+
 	private IBulkLoadProgressListener progress;
 
 	public BulkLoader(ILocation commonOriginForFiles, IBulkLoadProgressListener progressListener){
 		this(commonOriginForFiles, progressListener, "x_", "y_", "z_");
 	}
-	
+
 	public BulkLoader(ILocation commonOriginForFiles, IBulkLoadProgressListener progressListener, String xPrefix, String yPrefix, String zPrefix){
 		origin = commonOriginForFiles;
 		progress = progressListener;
@@ -79,7 +81,7 @@ public class BulkLoader {
 		this.yPrefix=yPrefix;
 		this.zPrefix=zPrefix;
 	}
-	
+
 	/**
 	 * Loads the specified files into Betaville.  Uses Filenames as the model's
 	 * names
@@ -88,7 +90,7 @@ public class BulkLoader {
 	public void load(final List<File> files){
 		UpdaterPreferences.setBaseEnabled(false);
 		while(currentCounter<(files.size())){
-			
+
 			try {
 				loadModel(files.get(currentCounter), files.size());
 				incrementCurrentCounter();
@@ -100,10 +102,10 @@ public class BulkLoader {
 			/*
 			SettingsPreferences.getThreadPool().submit(new Runnable() {
 				public void run() {
-					
+
 				}
 			});
-			*/
+			 */
 		}
 		/*
 		while(completionCounter<files.size()){
@@ -113,27 +115,27 @@ public class BulkLoader {
 				e.printStackTrace();
 			}
 		}
-		*/
+		 */
 		logger.info("Bulk load completed!");
 		UpdaterPreferences.setBaseEnabled(true);
 	}
-	
+
 	private void loadModel(File file, int numberFiles) throws IOException, URISyntaxException{
 		// begin the loading
 		progress.modelLoadStarting(file.getName(), currentCounter+1, numberFiles);
-		
+
 		// Read the x/y/z offsets
 		String fileString = file.getName();
 		String xOffsetString = fileString.substring(fileString.indexOf(xPrefix)+xPrefix.length(), fileString.indexOf(yPrefix));
 		String yOffsetString = fileString.substring(fileString.indexOf(yPrefix)+xPrefix.length(), fileString.indexOf(zPrefix));
 		// this is somewhat of a guess...  if a file is named something like "object.mesh.xml" then we're screwed
 		String zOffsetString = fileString.substring(fileString.indexOf(zPrefix)+xPrefix.length(), fileString.lastIndexOf("."));
-		
+
 		// parse the model
 		ModeledDesign design = new ModeledDesign(file.getName().substring(0, file.getName().indexOf("_x_")), origin.getUTM().clone(), "Not Supplied By Bulk Model", SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", file.toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
 		ModelLoader ml = new ModelLoader(design, false, null);
 		progress.modelParsed(currentCounter);
-		
+
 		/*
 		 * This code no longer applies since we can't account for the proper transformations once
 		 * outside of the modeling application.  It is for this reason that we encourage any batch export
@@ -147,7 +149,7 @@ public class BulkLoader {
 		ILocation original = design.getCoordinate().clone();
 		design.getCoordinate().move((int)closestToOrigin.z*-1, (int)closestToOrigin.x*-1, 0);
 		ILocation corrected = design.getCoordinate().clone();
-		
+
 		// move the model to 0,0,0 on its own axis
 		GeometryUtilities.relocateObjectToOrigin(ml.getModel());
 		logger.info("Model Originally At: " + closestToOrigin.toString()+"\nNow At: "+ GeometryUtilities.findObjectExtents(ml.getModel())[0].toString());
@@ -156,27 +158,40 @@ public class BulkLoader {
 		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(MapManager.locationToBetaville(design.getCoordinate()));
 		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).updateRenderState();
 		progress.modelMovedToLocation(currentCounter, original, corrected);
-		*/
-		
+		 */
+
 		// calculate the geographical offset
 		ILocation original = design.getCoordinate().clone();
 		logger.info("Original object cloned");
-		
+
 		float xNum=Float.parseFloat(xOffsetString);
 		float yNum=Float.parseFloat(yOffsetString);
 		float zNum=Float.parseFloat(zOffsetString);
 		
-		
+		// if the have had their transformations frozen, we need to adjust the geometry internally
+		if(xNum==0 && yNum==0 && zNum ==0){
+			logger.warn("It would appear that the transformations have been frozen prior to being" +
+					"imported into Betaville.  Attempting to transform the internal geometry data");
+			Vector3f[] extents = GeometryUtilities.findObjectExtents(ml.getModel());
+			
+			// set the object's offsets correctly
+			xNum = extents[0].x;
+			yNum = extents[0].y;
+			zNum = extents[0].z;
+			
+			
+			logger.info("Object offsets calculated to be " + xNum+", "+yNum+", "+zNum);
+			logger.info("Continuing with internal geometry adjustment");
+			
+			GeometryUtilities.adjustObject(ml.getModel(), xNum*-1, yNum*-1, zNum*-1);
+		}
+
 		design.getCoordinate().move((int)zNum, (int)xNum, (int)yNum);
 		design.setClassification(Classification.BASE);
 		logger.info("design coordinate transformed");
 		ILocation corrected = design.getCoordinate().clone();
 		logger.info("corrected object cloned");
-		
-		// move the model to 0,0,0 on its own axis
-		logger.info("Transforming internals");
-		//GeometryUtilities.adjustObject(ml.getModel(), new Vector3f(xNum*-1, yNum*-1, zNum*-1));
-		logger.info("Internals transformed");
+
 		SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
 		logger.info("model added to scene");
 		SceneScape.getCity().addDesign(design);
@@ -185,11 +200,11 @@ public class BulkLoader {
 		logger.info("object moved to correct orientation");
 		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).updateRenderState();
 		progress.modelMovedToLocation(currentCounter, original, corrected);
-		
-		
+
+
 		//SceneScape.getCity().addDesign(design);
 		logger.debug("Model Added");
-		
+
 		// do model upload
 		ByteArrayOutputStream bo = new ByteArrayOutputStream();
 		BinaryExporter.getInstance().save(SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()), bo);
@@ -202,22 +217,22 @@ public class BulkLoader {
 			// update the name of the model in the scene
 			model.setName(design.getFullIdentifier());
 		}
-		
+
 		incrementCompletionCounter();
 	}
-	
+
 	private synchronized void incrementCurrentCounter(){
 		currentCounter++;
 	}
-	
+
 	private synchronized void incrementCompletionCounter(){
 		completionCounter++;
 	}
-	
+
 	public ILocation getOrigin(){
 		return origin;
 	}
-	
+
 	public interface IBulkLoadProgressListener{
 		/**
 		 * Provides notification the beginning of a model being loaded
@@ -226,26 +241,26 @@ public class BulkLoader {
 		 * @param totalNumberFiles The total number of files to be loaded
 		 */
 		public void modelLoadStarting(String filename, int currentFile, int totalNumberFiles);
-		
+
 		/**
 		 * Provides notification that a model has been parsed and loaded into the engine.
 		 * @param currentFile
 		 */
 		public void modelParsed(int currentFile);
-		
+
 		/**
 		 * Provides notification that a model's geographic location has been calculated and
 		 * the model has been relocated to the correct location.
 		 * @param currentFile The current file being loaded (i.e: first, second, third)
 		 */
 		public void modelMovedToLocation(int currentFile, ILocation originalLocation, ILocation correctedLocation);
-		
+
 		/**
 		 * Provides notification that a model is currently being uploaded
 		 * @param currentFile The current file being loaded (i.e: first, second, third)
 		 */
 		public void modelUploadStarted(int currentFile);
-		
+
 		/**
 		 * Provides notification that an upload operation has finished
 		 * @param currentFile The current file being loaded (i.e: first, second, third)
@@ -253,7 +268,7 @@ public class BulkLoader {
 		 */
 		public void modelUploadCompleted(int currentFile, boolean success);
 	}
-	
+
 	public static void main(String[] args){
 		String xPrefix="x_";
 		String yPrefix="y_";
@@ -263,13 +278,13 @@ public class BulkLoader {
 		String yOffsetString = fileString.substring(fileString.indexOf(yPrefix)+xPrefix.length(), fileString.indexOf(zPrefix));
 		// this is somewhat of a guess...  if a file is named something like "object.mesh.xml" then we're screwed
 		String zOffsetString = fileString.substring(fileString.indexOf(zPrefix)+xPrefix.length(), fileString.lastIndexOf("."));
-		
+
 		ILocation loc = new GPSCoordinate(0, 40, -74);
 		System.out.println(loc.getUTM().toString());
 		loc.getUTM().move(Float.parseFloat(zOffsetString), Float.parseFloat(xOffsetString), Float.parseFloat(yOffsetString));
 		System.out.println(loc.getUTM().toString());
-		
-		
+
+
 		System.out.println(Float.parseFloat(xOffsetString));
 		System.out.println(yOffsetString);
 		System.out.println(zOffsetString);

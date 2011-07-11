@@ -747,8 +747,8 @@ public class GeometryUtilities {
 	 * extent
 	 */
 	public static Vector3f[] findObjectExtents(Spatial s){
-		Vector3f min = new Vector3f(0, 0, 0);
-		Vector3f max = new Vector3f(0, 0, 0);
+		Vector3f min = new Vector3f(Float.NaN, Float.NaN, Float.NaN);
+		Vector3f max = new Vector3f(Float.NaN, Float.NaN, Float.NaN);
 		findObjectExtentsImpl(s, min, max);
 		return new Vector3f[]{min, max};
 	}
@@ -771,12 +771,30 @@ public class GeometryUtilities {
 				tempX=buffer.get(i*3);
 				tempY=buffer.get((i*3)+1);
 				tempZ=buffer.get((i*3)+2);
-				if(tempX<min.x)min.x=tempX;
-				if(tempY<min.y)min.y=tempY;
-				if(tempZ<min.z)min.z=tempZ;
-				if(tempX>max.x)max.x=tempX;
-				if(tempY>max.y)max.y=tempY;
-				if(tempZ>max.z)max.z=tempZ;
+				if(tempX<min.x || min.x==Float.NaN){
+					logger.info("Min X updated");
+					min.x=tempX;
+				}
+				if(tempY<min.y || min.y==Float.NaN){
+					logger.info("Min Y updated");
+					min.y=tempY;
+				}
+				if(tempZ<min.z || min.z==Float.NaN){
+					logger.info("Min Z updated");
+					min.z=tempZ;
+				}
+				if(tempX>max.x || max.x==Float.NaN){
+					logger.info("Max X updated");
+					max.x=tempX;
+				}
+				if(tempY>max.y || max.y==Float.NaN){
+					logger.info("Max Y updated");
+					max.y=tempY;
+				}
+				if(tempZ>max.z || max.z==Float.NaN){
+					logger.info("Max Z updated");
+					max.z=tempZ;
+				}
 			}
 		}
 	}
