@@ -164,7 +164,8 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 		Vector2f screenPosition = new Vector2f();
 		Vector3f worldCoords = new Vector3f();
 		
-		AxisRods axisRods = new AxisRods("PointerRods", true, Scale.fromMeter(2));
+		AxisRods axisRods = new AxisRods("PointerRods", true, Scale.fromMeter(5));
+		float rodScale=.05f;
 		
 		boolean wasShowingRods=false;
 		boolean forceOff;
@@ -191,6 +192,9 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 				float[] latDMS = DecimalDegreeConverter.ddToDMS(gps.getLatitude());
 				float[] lonDMS = DecimalDegreeConverter.ddToDMS(gps.getLongitude());
 				
+				// calculate size of rods
+				float distance = SceneGameState.getInstance().getCamera().getLocation().distance(location);
+				axisRods.updateGeometry(distance*rodScale, distance*rodScale*.125f, true);
 				axisRods.setLocalTranslation(location.clone());
 				
 				if(ddDMSOption.isSelected()){
@@ -211,6 +215,7 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 			if(wasShowingRods!=showAxisOption.isSelected()){
 				if(showAxisOption.isSelected() && !forceOff){
 					SceneGameState.getInstance().getGroundBoxNode().attachChild(axisRods);
+					axisRods.updateRenderState();
 				}
 				else{
 					SceneGameState.getInstance().getGroundBoxNode().detachChild(axisRods);
