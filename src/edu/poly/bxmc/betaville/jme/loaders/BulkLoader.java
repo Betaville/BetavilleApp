@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.jme.bounding.BoundingBox;
 import com.jme.math.Vector3f;
 import com.jme.scene.Spatial;
 import com.jme.util.export.binary.BinaryExporter;
@@ -172,12 +173,24 @@ public class BulkLoader {
 		if(xNum==0 && yNum==0 && zNum ==0){
 			logger.warn("It would appear that the transformations have been frozen prior to being" +
 					"imported into Betaville.  Attempting to transform the internal geometry data");
+			/*
 			Vector3f[] extents = GeometryUtilities.findObjectExtents(ml.getModel());
 			
 			// set the object's offsets correctly
 			xNum = extents[0].x;
 			yNum = extents[0].y;
 			zNum = extents[0].z;
+			*/
+			
+			/*
+			ml.getModel().setModelBound(new BoundingBox());
+			ml.getModel().updateModelBound();
+			Vector3f center = ml.getModel().getWorldBound().getCenter();
+			logger.info("bounding center " + center.toString());
+			xNum = center.x;
+			yNum = center.y;
+			zNum = center.z;
+			*/
 			
 			
 			logger.info("Object offsets calculated to be " + xNum+", "+yNum+", "+zNum);
@@ -269,24 +282,4 @@ public class BulkLoader {
 		public void modelUploadCompleted(int currentFile, boolean success);
 	}
 
-	public static void main(String[] args){
-		String xPrefix="x_";
-		String yPrefix="y_";
-		String zPrefix="z_";
-		String fileString = "posdmgpsidgx_-352.35y_3223.1z_34235.dae";
-		String xOffsetString = fileString.substring(fileString.indexOf(xPrefix)+xPrefix.length(), fileString.indexOf(yPrefix));
-		String yOffsetString = fileString.substring(fileString.indexOf(yPrefix)+xPrefix.length(), fileString.indexOf(zPrefix));
-		// this is somewhat of a guess...  if a file is named something like "object.mesh.xml" then we're screwed
-		String zOffsetString = fileString.substring(fileString.indexOf(zPrefix)+xPrefix.length(), fileString.lastIndexOf("."));
-
-		ILocation loc = new GPSCoordinate(0, 40, -74);
-		System.out.println(loc.getUTM().toString());
-		loc.getUTM().move(Float.parseFloat(zOffsetString), Float.parseFloat(xOffsetString), Float.parseFloat(yOffsetString));
-		System.out.println(loc.getUTM().toString());
-
-
-		System.out.println(Float.parseFloat(xOffsetString));
-		System.out.println(yOffsetString);
-		System.out.println(zOffsetString);
-	}
 }

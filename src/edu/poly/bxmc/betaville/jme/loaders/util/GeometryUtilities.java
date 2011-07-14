@@ -771,27 +771,27 @@ public class GeometryUtilities {
 				tempX=buffer.get(i*3);
 				tempY=buffer.get((i*3)+1);
 				tempZ=buffer.get((i*3)+2);
-				if(tempX<min.x || min.x==Float.NaN){
+				if(tempX<min.x || Float.isNaN(min.x)){
 					logger.info("Min X updated");
 					min.x=tempX;
 				}
-				if(tempY<min.y || min.y==Float.NaN){
+				if(tempY<min.y || Float.isNaN(min.y)){
 					logger.info("Min Y updated");
 					min.y=tempY;
 				}
-				if(tempZ<min.z || min.z==Float.NaN){
+				if(tempZ<min.z || Float.isNaN(min.z)){
 					logger.info("Min Z updated");
 					min.z=tempZ;
 				}
-				if(tempX>max.x || max.x==Float.NaN){
+				if(tempX>max.x || Float.isNaN(max.x)){
 					logger.info("Max X updated");
 					max.x=tempX;
 				}
-				if(tempY>max.y || max.y==Float.NaN){
+				if(tempY>max.y || Float.isNaN(max.y)){
 					logger.info("Max Y updated");
 					max.y=tempY;
 				}
-				if(tempZ>max.z || max.z==Float.NaN){
+				if(tempZ>max.z || Float.isNaN(max.z)){
 					logger.info("Max Z updated");
 					max.z=tempZ;
 				}
