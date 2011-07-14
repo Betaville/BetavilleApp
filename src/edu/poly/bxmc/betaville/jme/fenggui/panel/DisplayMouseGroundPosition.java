@@ -26,11 +26,14 @@
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
 import org.apache.log4j.Logger;
+import org.fenggui.CheckBox;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
 import org.fenggui.composite.Window;
+import org.fenggui.event.ISelectionChangedListener;
 import org.fenggui.event.IWindowClosedListener;
+import org.fenggui.event.SelectionChangedEvent;
 import org.fenggui.event.WindowClosedEvent;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
@@ -41,10 +44,12 @@ import com.jme.math.Ray;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.scene.shape.AxisRods;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
@@ -68,6 +73,9 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 	private Label lonLabel;
 	private Label latValue;
 	private Label lonValue;
+	
+	private CheckBox<Boolean> ddDMSOption;
+	private CheckBox<Boolean> showAxisOption;
 	
 	private PointerModule pointerModule = new PointerModule();
 	
@@ -109,7 +117,15 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 		latCon.addWidget(latLabel, latValue);
 		lonCon.addWidget(lonLabel, lonValue);
 		
-		gpsView.addWidget(latCon, lonCon);
+		ddDMSOption = FengGUI.createCheckBox();
+		ddDMSOption.setText("Display in Degrees/Minutes/Seconds");
+		ddDMSOption.setSelected(false);
+		
+		showAxisOption = FengGUI.createCheckBox();
+		showAxisOption.setText("Show Axis Rods");
+		showAxisOption.setSelected(false);
+		
+		gpsView.addWidget(latCon, lonCon, ddDMSOption, showAxisOption);
 		
 		addWindowClosedListener(new IWindowClosedListener() {
 			
@@ -147,6 +163,11 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 		Vector3f location = new Vector3f();
 		Vector2f screenPosition = new Vector2f();
 		Vector3f worldCoords = new Vector3f();
+		
+		AxisRods axisRods = new AxisRods("PointerRods", true, Scale.fromMeter(2));
+		
+		boolean wasShowingRods=false;
+		boolean forceOff;
 
 		public PointerModule() {
 			super("PointerLocationModule");
@@ -163,13 +184,43 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 			mouseRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(),
 					worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
 			if(mouseRay.intersectsWherePlane(new Plane(new Vector3f(0,1,0), 0), location)){
+				forceOff=false;
 				GPSCoordinate gps = JME2MapManager.instance.betavilleToUTM(location).getGPS();
-				latValue.setText(""+gps.getLatitude());
-				lonValue.setText(""+gps.getLongitude());
+				
+				// convert to from DD to DMS
+				float[] latDMS = DecimalDegreeConverter.ddToDMS(gps.getLatitude());
+				float[] lonDMS = DecimalDegreeConverter.ddToDMS(gps.getLongitude());
+				
+				axisRods.setLocalTranslation(location.clone());
+				
+				if(ddDMSOption.isSelected()){
+					latValue.setText(latDMS[0]+", "+latDMS[1]+", "+latDMS[2]);
+					lonValue.setText(lonDMS[0]+", "+lonDMS[1]+", "+lonDMS[2]);
+				}
+				else{
+					latValue.setText(""+gps.getLatitude());
+					lonValue.setText(""+gps.getLongitude());
+				}
 			}
 			else{
+				forceOff=true;
 				latValue.setText(groundNotTouchedString);
 				lonValue.setText(groundNotTouchedString);
+			}
+			
+			if(wasShowingRods!=showAxisOption.isSelected()){
+				if(showAxisOption.isSelected() && !forceOff){
+					SceneGameState.getInstance().getGroundBoxNode().attachChild(axisRods);
+				}
+				else{
+					SceneGameState.getInstance().getGroundBoxNode().detachChild(axisRods);
+				}
+				if(forceOff){
+					wasShowingRods=false;
+				}
+				else{
+					wasShowingRods=showAxisOption.isSelected();
+				}
 			}
 		}
 		
