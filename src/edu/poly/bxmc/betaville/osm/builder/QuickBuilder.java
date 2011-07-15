@@ -35,7 +35,6 @@ import org.fenggui.event.IButtonPressedListener;
 import org.jdom.JDOMException;
 
 import com.jme.scene.Spatial;
-import com.jme.util.export.xml.XMLExporter;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.exporters.ColladaExporter;
@@ -86,7 +85,7 @@ public class QuickBuilder extends PanelAction {
 							double right = topRight.getLongitude();
 							double top = topRight.getLatitude();
 							String request = "/api/0.6/map?bbox="+left+","+bottom+","+right+","+top;
-							System.out.println("REQUEST:\t" + request);
+							logger.info("REQUEST:\t" + request);
 							OSMReader reader = new OSMReader();
 							//eader.loadFile(new File(System.getProperty("user.home")+"/Downloads/map.osm"));
 							URL url = new URL("http://api.openstreetmap.org"+request);
