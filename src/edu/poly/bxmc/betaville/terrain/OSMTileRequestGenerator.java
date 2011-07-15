@@ -130,13 +130,16 @@ public class OSMTileRequestGenerator implements ITileRequestGenerator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ITileRequestGenerator gen = new OSMTileRequestGenerator(17);
-		System.out.println(gen.generateTileRequest(40.684154, -73.526611));
+		double lat = 40.684154;
+		double lon = -73.526611;
+		System.out.println("Generating request for " + lat +", " + lon);
+		ITileRequestGenerator gen = new OSMTileRequestGenerator(10);
+		System.out.println(gen.generateTileRequest(lat, lon));
 		BoundingBox bb = gen.getCurrentBoundingBox();
-		System.out.println(bb.getNw());
-		System.out.println(bb.getNe());
-		System.out.println(bb.getSw());
-		System.out.println(bb.getSe());
+		System.out.println("NW "+bb.getNw());
+		System.out.println("NE "+bb.getNe());
+		System.out.println("SW "+bb.getSw());
+		System.out.println("SE "+bb.getSe());
 	}
 
 }
