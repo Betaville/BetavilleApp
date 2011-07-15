@@ -188,16 +188,16 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 				forceOff=false;
 				GPSCoordinate gps = JME2MapManager.instance.betavilleToUTM(location).getGPS();
 				
-				// convert to from DD to DMS
-				float[] latDMS = DecimalDegreeConverter.ddToDMS(gps.getLatitude());
-				float[] lonDMS = DecimalDegreeConverter.ddToDMS(gps.getLongitude());
-				
 				// calculate size of rods
 				float distance = SceneGameState.getInstance().getCamera().getLocation().distance(location);
 				axisRods.updateGeometry(distance*rodScale, distance*rodScale*.125f, true);
 				axisRods.setLocalTranslation(location.clone());
 				
 				if(ddDMSOption.isSelected()){
+					// convert to from DD to DMS
+					float[] latDMS = DecimalDegreeConverter.ddToDMS(gps.getLatitude());
+					float[] lonDMS = DecimalDegreeConverter.ddToDMS(gps.getLongitude());
+					
 					latValue.setText(latDMS[0]+", "+latDMS[1]+", "+latDMS[2]);
 					lonValue.setText(lonDMS[0]+", "+lonDMS[1]+", "+lonDMS[2]);
 				}
