@@ -140,6 +140,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		//addAction(new TranslucentPanelAction());
 		addAction(new OnOffPanelAction("Move Object", "Moving objects in the scene", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ModelMover.class, false));
 		addAction(new OnOffPanelAction("Pointer Location", "Shows the mouse's position in the scene", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DisplayMouseGroundPosition.class, false));
+		addAction(new OnOffPanelAction("Measure Tool", "Measures the distance between two points", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, MeasureTool.class, false));
 		addAction(new OnOffPanelAction("Lights", "Light tweaking functionality", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightTweaker.class, false));
 		//addAction(new OnOffPanelAction("Details", "Details about the selected model", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DetailedInfoAction.class, false));
 		addAction(new OnOffPanelAction("Layers", "GIS Layers", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, AddLayersWindow.class, false));

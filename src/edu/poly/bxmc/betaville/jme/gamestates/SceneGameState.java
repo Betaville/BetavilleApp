@@ -885,10 +885,18 @@ public class SceneGameState extends BasicGameState {
 		return sceneController.getMoveSpeed();
 	}
 
-	private boolean isGroundSelectorAttached(){
+	/**
+	 * Checks if a position on the ground is selected
+	 * @return true if a position is selected; false if there is no position selected
+	 */
+	public boolean isGroundSelectorAttached(){
 		return groundBoxNode.hasChild(singleQuad);
 	}
 
+	/**
+	 * Places the ground selection marker on the scene
+	 * @param location The locationat which to place the marker
+	 */
 	public void placeGroundBoxSelector(Vector3f location){
 		if(!isGroundSelectorAttached()){
 			groundBoxNode.attachChild(singleQuad);
@@ -896,6 +904,9 @@ public class SceneGameState extends BasicGameState {
 		singleQuad.setLocalTranslation(location);
 	}
 
+	/**
+	 * Removes the ground selection marker from the scene
+	 */
 	public void removeGroundBox(){
 		if(isGroundSelectorAttached()){
 			groundBoxNode.detachChild(singleQuad);
