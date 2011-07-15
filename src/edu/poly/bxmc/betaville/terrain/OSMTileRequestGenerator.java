@@ -130,18 +130,13 @@ public class OSMTileRequestGenerator implements ITileRequestGenerator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ITileRequestGenerator gen = new OSMTileRequestGenerator(10);
-		System.out.println(gen.generateTileRequest(41, -74));
-		String path = gen.generateTileRequest(41, -74).substring(0, gen.generateTileRequest(41, -74).lastIndexOf("."));
-		path = path.substring(path.lastIndexOf(".")+1);
-		System.out.println(path);
-		path = path.substring(path.indexOf("/"));
-		System.out.println(path);
+		ITileRequestGenerator gen = new OSMTileRequestGenerator(17);
+		System.out.println(gen.generateTileRequest(40.684154, -73.526611));
 		BoundingBox bb = gen.getCurrentBoundingBox();
-		//System.out.println(bb.getNw());
-		//System.out.println(bb.getNe());
-		//System.out.println(bb.getSw());
-		//System.out.println(bb.getSe());
+		System.out.println(bb.getNw());
+		System.out.println(bb.getNe());
+		System.out.println(bb.getSw());
+		System.out.println(bb.getSe());
 	}
 
 }
