@@ -34,19 +34,16 @@ import org.fenggui.composite.Window;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.layout.RowExLayout;
+import org.fenggui.layout.RowExLayoutData;
 
-import com.jme.math.Ray;
-import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.GPSView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
-import edu.poly.bxmc.betaville.module.FrameSyncModule;
-import edu.poly.bxmc.betaville.module.Module;
-import edu.poly.bxmc.betaville.module.ModuleNameException;
 
 /**
  * Tool for measuring the distance between two points on the ground.
@@ -62,7 +59,7 @@ public class MeasureTool extends Window implements IBetavilleWindow{
 	private Label distance;
 	private static final String distancePrefix="Distance: ";
 
-	
+
 	private boolean point1NeverSet=true;
 	private boolean point2NeverSet=true;
 	private Vector3f point1Loc=new Vector3f(0, 0, 0);
@@ -77,39 +74,65 @@ public class MeasureTool extends Window implements IBetavilleWindow{
 		Container views = FengGUI.createWidget(Container.class);
 		views.setLayoutManager(new RowExLayout(true));
 
-		point1 = FengGUI.createWidget(GPSView.class);
+		point1 = new GPSView();
 		point1.setTitle("Point 1");
-		point2 = FengGUI.createWidget(GPSView.class);
+		point2 = new GPSView();
 		point2.setTitle("Point 2");
 
 		Button selectPoint1 = FengGUI.createWidget(Button.class);
+		selectPoint1.setLayoutData(new RowExLayoutData(true, true));
 		selectPoint1.setText("Select Point 1");
 		selectPoint1.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-				try {
-					SceneGameState.getInstance().addModuleToUpdateList(new PointSelectionModule(point1Loc));
-					point1NeverSet=false;
-				} catch (ModuleNameException e) {
-					logger.error("Module could not be added to the update list");
-				}
+				
+				SettingsPreferences.getGUIThreadPool().submit(new Runnable() {
+					public void run() {
+						while(!SceneGameState.getInstance().isGroundSelectorAttached()){
+							try {
+								Thread.sleep(25);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+						point1Loc = SceneGameState.getInstance().getGroundSelectorLocation().clone();
+						point1.updateLocation(JME2MapManager.instance.betavilleToUTM(point1Loc));
+						point1NeverSet=false;
+						updateCalculations();
+					}
+				});
 			}
 		});
-		
+
 		Button selectPoint2 = FengGUI.createWidget(Button.class);
+		selectPoint2.setLayoutData(new RowExLayoutData(true, true));
 		selectPoint2.setText("Select Point 2");
 		selectPoint2.addButtonPressedListener(new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-				try {
-					SceneGameState.getInstance().addModuleToUpdateList(new PointSelectionModule(point2Loc));
-					point2NeverSet=false;
-				} catch (ModuleNameException e) {
-					logger.error("Module could not be added to the update list");
-				}
+				
+				SettingsPreferences.getGUIThreadPool().submit(new Runnable() {
+					public void run() {
+						while(!SceneGameState.getInstance().isGroundSelectorAttached()){
+							try {
+								Thread.sleep(25);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+						point2Loc = SceneGameState.getInstance().getGroundSelectorLocation().clone();
+						point2.updateLocation(JME2MapManager.instance.betavilleToUTM(point2Loc));
+						point2NeverSet=false;
+						updateCalculations();
+					}
+				});
 			}
 		});
-		
+
 		Container buttons = FengGUI.createWidget(Container.class);
 		buttons.setLayoutManager(new RowExLayout(true));
 		buttons.addWidget(selectPoint1, selectPoint2);
@@ -123,14 +146,12 @@ public class MeasureTool extends Window implements IBetavilleWindow{
 		views.addWidget(point1, point2);
 		getContentContainer().addWidget(views, buttons, distance);
 	}
-	
+
 	private void updateCalculations(){
+		layout();
 		// only do the update if both points have been set during this runtime
 		if(point1NeverSet && point2NeverSet) return;
-		
-		point1.updateLocation(JME2MapManager.instance.betavilleToUTM(point1Loc));
-		point2.updateLocation(JME2MapManager.instance.betavilleToUTM(point2Loc));
-		
+
 		distance.setText(distancePrefix+Scale.toMeter(point1Loc.distance(point2Loc))+"m");
 	}
 
@@ -139,40 +160,6 @@ public class MeasureTool extends Window implements IBetavilleWindow{
 	 */
 	public void finishSetup() {
 		setTitle("Distance Tool");
-		setHeight(getHeight()+10);
 	}
 
-	private class PointSelectionModule extends Module implements FrameSyncModule{
-
-		Ray mouseRay;
-		Vector3f location = new Vector3f();
-		Vector2f screenPosition = new Vector2f();
-		Vector3f worldCoords = new Vector3f();
-
-		private Vector3f destinationLocation;
-
-		public PointSelectionModule(Vector3f destinationLocation) {
-			super("PointerLocationModule");
-			this.destinationLocation=destinationLocation;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see edu.poly.bxmc.betaville.module.IModule#deconstruct()
-		 */
-		public void deconstruct() {}
-
-		/*
-		 * (non-Javadoc)
-		 * @see edu.poly.bxmc.betaville.module.FrameSyncModule#frameUpdate(float)
-		 */
-		public void frameUpdate(float timePerFrame) {
-			if(SceneGameState.getInstance().isGroundSelectorAttached()){
-				destinationLocation=SceneGameState.getInstance().getGroundSelectorLocation().clone();
-				SceneGameState.getInstance().removeModuleFromUpdateList(this);
-				updateCalculations();
-			}
-		}
-
-	}
 }

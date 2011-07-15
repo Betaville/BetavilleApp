@@ -92,7 +92,6 @@ import edu.poly.bxmc.betaville.jme.map.CardinalDirections;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.model.AudibleDesign;
@@ -926,24 +925,22 @@ public class SceneGameState extends BasicGameState {
 	}
 
 	public void addModuleToUpdateList(Module module) throws ModuleNameException{
-		for(Module m : modules){
+		for(int i=0; i<modules.size(); i++){
+			Module m = modules.get(i);
 			if(module.getName().toLowerCase().equals(m.getName().toLowerCase())){
 				throw new ModuleNameException("Module '" + module.getName() + "' requires a unique name");
 			}
 		}
+		
 		if(module instanceof LocalSceneModule) {
 			((LocalSceneModule) module).initialize(designNode);
-			
 		}
 
 		else if(module instanceof GlobalSceneModule) {
 			((GlobalSceneModule) module).initialize(rootNode);
-			
 		}
 		
 		modules.add(module);
-		
-		
 	}
 
 	public void removeModuleFromUpdateList(Module module){
@@ -1005,7 +1002,8 @@ public class SceneGameState extends BasicGameState {
 		// sceneController.setMoveSpeed(Scale.toMeter(camera.getLocation().getY())/100);
 		// System.out.println(SceneGameState.getInstance().getMoveSpeed());
 
-		for (Module module : modules) {
+		for(int i=0; i<modules.size(); i++){
+			Module module = modules.get(i);
 			if (module instanceof LocalSceneModule) {
 				((SceneModule) module).onUpdate(designNode, camera
 						.getLocation(), camera.getDirection());
