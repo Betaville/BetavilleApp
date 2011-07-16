@@ -29,8 +29,6 @@ import org.fenggui.CheckBox;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
-import org.fenggui.event.ISelectionChangedListener;
-import org.fenggui.event.SelectionChangedEvent;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
 
@@ -45,57 +43,62 @@ import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
  * @author Skye Book
  *
  */
-public class GPSView extends Container implements LocationView{
+public class UTMView extends Container implements LocationView{
 	
 	private Label title;
 	
-	private Label latLabel;
-	private Label lonLabel;
-	private Label latValue;
-	private Label lonValue;
+	private Label latZoneLabel;
+	private Label lonZoneLabel;
+	private Label northingLabel;
+	private Label eastingLabel;
+	private Label latZoneValue;
+	private Label lonZoneValue;
+	private Label northingValue;
+	private Label eastingValue;
 	
-	private ILocation coordinate = null;
-	
-	private CheckBox<Boolean> ddDMSOption;
-	
-	public GPSView(){
+	public UTMView(){
 		setLayoutManager(new RowExLayout(false));
 		
 		title = FengGUI.createWidget(Label.class);
-		title.setText("GPS View");
+		title.setText("UTM View");
 		
 		Container latCon = FengGUI.createWidget(Container.class);
 		latCon.setLayoutManager(new RowExLayout(true));
 		Container lonCon = FengGUI.createWidget(Container.class);
 		lonCon.setLayoutManager(new RowExLayout(true));
+		Container northingContainer = FengGUI.createWidget(Container.class);
+		northingContainer.setLayoutManager(new RowExLayout(true));
+		Container eastingContainer = FengGUI.createWidget(Container.class);
+		eastingContainer.setLayoutManager(new RowExLayout(true));
 		
-		latLabel = FengGUI.createWidget(Label.class);
-		latLabel.setText("Latitude");
-		latLabel.setLayoutData(new RowExLayoutData(true, true));
-		lonLabel = FengGUI.createWidget(Label.class);
-		lonLabel.setText("Longitude");
-		lonLabel.setLayoutData(new RowExLayoutData(true, true));
+		latZoneLabel = FengGUI.createWidget(Label.class);
+		latZoneLabel.setText("Latitude Zone");
+		latZoneLabel.setLayoutData(new RowExLayoutData(true, true));
+		lonZoneLabel = FengGUI.createWidget(Label.class);
+		lonZoneLabel.setText("Longitude Zone");
+		lonZoneLabel.setLayoutData(new RowExLayoutData(true, true));
+		northingLabel = FengGUI.createWidget(Label.class);
+		northingLabel.setText("Easting");
+		northingLabel.setLayoutData(new RowExLayoutData(true, true));
+		eastingLabel = FengGUI.createWidget(Label.class);
+		eastingLabel.setText("Northing");
+		eastingLabel.setLayoutData(new RowExLayoutData(true, true));
 		
-		latValue = FengGUI.createWidget(Label.class);
-		latValue.setLayoutData(new RowExLayoutData(true, true));
-		lonValue = FengGUI.createWidget(Label.class);
-		lonValue.setLayoutData(new RowExLayoutData(true, true));
+		latZoneValue = FengGUI.createWidget(Label.class);
+		latZoneValue.setLayoutData(new RowExLayoutData(true, true));
+		lonZoneValue = FengGUI.createWidget(Label.class);
+		lonZoneValue.setLayoutData(new RowExLayoutData(true, true));
+		northingValue = FengGUI.createWidget(Label.class);
+		northingValue.setLayoutData(new RowExLayoutData(true, true));
+		eastingValue = FengGUI.createWidget(Label.class);
+		eastingValue.setLayoutData(new RowExLayoutData(true, true));
 		
-		latCon.addWidget(latLabel, latValue);
-		lonCon.addWidget(lonLabel, lonValue);
+		latCon.addWidget(latZoneLabel, latZoneValue);
+		lonCon.addWidget(lonZoneLabel, lonZoneValue);
+		northingContainer.addWidget(northingLabel, northingValue);
+		eastingContainer.addWidget(eastingLabel, eastingValue);
 		
-		ddDMSOption = FengGUI.createCheckBox();
-		ddDMSOption.setText("Display in Degrees/Minutes/Seconds");
-		ddDMSOption.setSelected(false);
-		ddDMSOption.addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			public void selectionChanged(Object arg0, SelectionChangedEvent arg1) {
-				// only update the view if a coordinate has been previously set
-				if(coordinate!=null) doLocationUpdate();
-			}
-		});
-		
-		addWidget(latCon, lonCon, ddDMSOption);
+		addWidget(latCon, lonCon, northingContainer, eastingContainer);
 	}
 	
 	/*
@@ -111,20 +114,11 @@ public class GPSView extends Container implements LocationView{
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.LocationView#updateLocation(com.jme.math.Vector3f)
 	 */
 	public void updateLocation(Vector3f location){
-		coordinate = JME2MapManager.instance.betavilleToUTM(location);
-		doLocationUpdate();
-	}
-	
-	private void doLocationUpdate(){
-		if(ddDMSOption.isSelected()){
-			float[] latDMS = DecimalDegreeConverter.ddToDMS(coordinate.getGPS().getLatitude());
-			float[] lonDMS = DecimalDegreeConverter.ddToDMS(coordinate.getGPS().getLongitude());
-			latValue.setText(latDMS[0]+", "+latDMS[1]+", "+latDMS[2]);
-			lonValue.setText(lonDMS[0]+", "+lonDMS[1]+", "+lonDMS[2]);
-		}
-		else{
-			latValue.setText(""+coordinate.getGPS().getLatitude());
-			lonValue.setText(""+coordinate.getGPS().getLongitude());
-		}
+		ILocation coordinate = JME2MapManager.instance.betavilleToUTM(location);
+		
+		latZoneValue.setText(""+coordinate.getUTM().getLatZone());
+		lonZoneValue.setText(""+coordinate.getUTM().getLonZone());
+		northingValue.setText(""+coordinate.getUTM().getNorthing()+"."+coordinate.getUTM().getNorthingCentimeters());
+		eastingValue.setText(""+coordinate.getUTM().getEasting()+"."+coordinate.getUTM().getEastingCentimeters());
 	}
 }
