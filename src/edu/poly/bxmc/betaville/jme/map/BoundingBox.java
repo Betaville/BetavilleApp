@@ -115,6 +115,10 @@ public class BoundingBox {
 		return !isInside(outer.nw) && !isInside(outer.ne) && !isInside(outer.sw) && !isInside(outer.se);
 	}
 	
+	public String toString(){
+		return "NW:\t"+nw.toString()+"\n"+"NE:\t"+ne.toString()+"\n"+"SW:\t"+sw.toString()+"\n"+"SE:\t"+se.toString();
+	}
+	
 	/**
 	 * Checks if a coordinate is located inside of this BoundingBox
 	 * @param coordinate The coordinate to check.

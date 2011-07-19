@@ -117,35 +117,35 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 	public ColladaExporter(File file, Spatial toExport, boolean exportLocal)
 	throws IOException {
 		super("COLLADA", file);
-		logger.info("COLLADA export started for " + toExport.getName());
+		logger.debug("COLLADA export started for " + toExport.getName());
 		namespace = Namespace.getNamespace("http://www.collada.org/2005/11/COLLADASchema");
 		rootElement.setAttribute(new Attribute("version", "1.4.1"));
 		exportTarget=toExport;
 		this.exportLocal=exportLocal;
 
 		createAsset();
-		logger.info("asset element exported");
+		logger.debug("asset element exported");
 		createLibCameras();
-		logger.info("camera element exported");
+		logger.debug("camera element exported");
 		createLibLights();
-		logger.info("lighting element exported");
+		logger.debug("lighting element exported");
 		createLibImages();
-		logger.info("images element exported");
+		logger.debug("images element exported");
 
 		// need materials first - generates the material entries in the same function
 		createLibEffects();
-		logger.info("effects and materials elements exported");
+		logger.debug("effects and materials elements exported");
 		createLibGeometries();
-		logger.info("geometry elements exported");
+		logger.debug("geometry elements exported");
 
 		createLibAnimations();
-		logger.info("anomations element exported");
+		logger.debug("anomations element exported");
 		createLibControllers();
-		logger.info("controllers element exported");
+		logger.debug("controllers element exported");
 		createLibVisualScenes();
-		logger.info("visual scene elements exported");
+		logger.debug("visual scene elements exported");
 		createScene();
-		logger.info("scene element exported");
+		logger.debug("scene element exported");
 	}
 
 	public void writeData() throws IOException{

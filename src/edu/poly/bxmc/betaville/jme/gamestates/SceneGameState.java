@@ -984,8 +984,8 @@ public class SceneGameState extends BasicGameState {
 						//logger.info("terrain block found! Checking at "+camera.getLocation().subtract(child.getLocalTranslation()));
 						float height = ((TerrainBlock)child).getHeight(camera.getLocation().subtract(child.getLocalTranslation()));
 						if(!Float.isNaN(height)){
-							if(height==0) logger.info("height is 0!");
-							camera.setLocation(new Vector3f(camera.getLocation().x, height, camera.getLocation().z));
+							//if(height==0) logger.info("height is 0!");
+							//camera.setLocation(new Vector3f(camera.getLocation().x, height, camera.getLocation().z));
 							//logger.info("height found");
 							break;
 						}

@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.terrain;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -42,12 +44,16 @@ import com.jme.util.TextureManager;
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
+import edu.poly.bxmc.betaville.jme.exporters.ColladaExporter;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
+import edu.poly.bxmc.betaville.jme.map.BoundingBox;
+import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
+import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 
 /**
  * Static utilities to load terrain
@@ -61,36 +67,88 @@ public class TerrainLoader {
 	private OSMTileRequestGenerator tileGenerator;
 	private MappedTerrainGenerator gen;
 	private String url;
-	private int radiusMeters;
+	private int eastSoFar=0;
+	private int northSoFar=0;
+	private int distanceEast;
+	private int distanceNorth;
 	private int numLat=0;
 	private int numLon=0;
 	private Vector3f originalLoc=null;
+	private boolean useElevations;
+	private BoundingBox acceptableTileArea;
+	
+	private TileCache cache;
 
-	public TerrainLoader(ILocation center, int radiusMeters, int zoomLevel) {
+	public TerrainLoader(ILocation center, int tilesEast, int tilesNorth, int zoomLevel, boolean useElevations) {
 		start=center;
-		this.radiusMeters=radiusMeters;
+		
+		// northeast coordinate
+		UTMCoordinate clone = start.getUTM().clone();
+		clone.move(tilesEast, tilesNorth, 0);
+		clone.setAltitude(0);
+		GPSCoordinate ne = clone.getGPS().clone();
+		
+		GPSCoordinate swClone = start.getGPS().clone();
+		swClone.setAltitude(0);
+		
+		
+		acceptableTileArea = new BoundingBox(
+				new GPSCoordinate(0, ne.getLatitude(), swClone.getLongitude()),
+				ne,
+				swClone,
+				new GPSCoordinate(0, start.getGPS().getLatitude(), ne.getLongitude()));
+		logger.info("BOUNDING BOX IS " + acceptableTileArea.toString());
+		
+		this.distanceEast=tilesEast;
+		this.distanceNorth=tilesNorth;
 		int checkedZoomLevel = zoomLevel;
 		if(zoomLevel>18) checkedZoomLevel=18;
 		else if(zoomLevel<0) checkedZoomLevel=0;
 		tileGenerator = new OSMTileRequestGenerator(checkedZoomLevel);
+		cache = new TileCache(tileGenerator.baseTileServerURL);
+		this.useElevations=useElevations;
 	}
-
+	
+	private GPSCoordinate splitDistances(GPSCoordinate one, GPSCoordinate two){
+		logger.info("Averaging:\n"+one.toString()+"\n"+two.toString());
+		double avgLat = (one.getLatitude()+two.getLatitude())/2;
+		double avgLon = (one.getLongitude()+two.getLongitude())/2;
+		double avgAlt = (one.getAltitude()+two.getAltitude())/2;
+		return new GPSCoordinate(avgAlt, avgLat, avgLon);
+	}
+	
 	public void loadTerrain(){
 		url = tileGenerator.generateTileRequest(start);
-		while(MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), start.getGPS())<radiusMeters){
-			while(MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), start.getGPS())<radiusMeters){
+		logger.info("MID-POINT: " +splitDistances(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getNe()).toString());
+		while(eastSoFar<distanceEast){
+			
+			while(northSoFar<distanceNorth){
 				loadSingleTerrain();
 				url = tileGenerator.shiftAndGetRequest(0, 1);
 				numLat++;
+				northSoFar++;
 			}
+			
+			
+			// reset the northing counter
 			url = tileGenerator.shiftAndGetRequest(1, numLat*-1);
 			numLat=0;
 			numLon++;
+			northSoFar=0;
+			eastSoFar++;
 		}
+		logger.info("Finished generation of all terrain");
 	}
 
 	private void loadSingleTerrain(){
-		gen = new USGSTerrainGenerator(15, tileGenerator.getCurrentBoundingBox().getSw(), (float)MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getSe()));
+		if(useElevations){
+			logger.info("Elevations enabled");
+			gen = new USGSTerrainGenerator(15, tileGenerator.getCurrentBoundingBox().getSw(), (float)MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getSe()));
+		}
+		else{
+			logger.info("Elevations disabled");
+			gen = new HeavyFlatTerrainGenerator(5, tileGenerator.getCurrentBoundingBox().getSw(), (float)MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getSe()));
+		}
 
 		//skgen = new FlatTerrainGenerator(tileGenerator.getCurrentBoundingBox().getSw(), (float)MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getSe()));
 		gen.addTerrainCompletionListener(new ITerrainCompletionListener() {
@@ -99,6 +157,7 @@ public class TerrainLoader {
 				//MaterialState ms = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 				//ms.setDiffuse(ColorRGBA.gray);
 				//terrainObject.setRenderState(ms);
+				terrainObject.setName(tileGenerator.xySet[0]+"/"+tileGenerator.xySet[1]);
 				terrainObject.updateRenderState();
 				terrainObject.setLocalScale(1f/SceneScape.SceneScale);
 				Vector3f loc=null;
@@ -127,6 +186,7 @@ public class TerrainLoader {
 
 				TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
 				try {
+					url = cache.requestImageTile(tileGenerator.zoomLevel, tileGenerator.xySet[0], tileGenerator.xySet[1]).toString();
 					Texture t = TextureManager.loadTexture(new URL(url), false);
 					if(t!=null){
 						t.setRotation(Rotator.angleZ(270));
@@ -134,6 +194,15 @@ public class TerrainLoader {
 						ts.setTexture(t);
 						terrainObject.setRenderState(ts);
 						terrainObject.updateRenderState();
+						/*
+						try {
+							ColladaExporter exporter = new ColladaExporter(new File(cache.createZoomAndXFolder(tileGenerator.zoomLevel, tileGenerator.xySet[0])+"/"+tileGenerator.xySet[1]+".dae"), terrainObject, false);
+							exporter.writeData();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						*/
 					}
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
@@ -168,8 +237,8 @@ public class TerrainLoader {
 
 	private void addToScene(Spatial terrainObject){
 		SceneGameState.getInstance().getTerrainNode().attachChild(terrainObject);
-		Box debugBox = new Box("box", terrainObject.getLocalTranslation(), .1f, .1f, .1f);
-		GeometryUtilities.removeRenderState(debugBox, StateType.Texture);
-		SceneGameState.getInstance().getTerrainNode().attachChild(debugBox);
+		//Box debugBox = new Box("box", terrainObject.getLocalTranslation(), .1f, .1f, .1f);
+		//GeometryUtilities.removeRenderState(debugBox, StateType.Texture);
+		//SceneGameState.getInstance().getTerrainNode().attachChild(debugBox);
 	}
 }

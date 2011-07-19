@@ -343,7 +343,7 @@ public class BetavilleNoCanvas {
 				public void run() {
 					TerrainLoader t = new TerrainLoader(JME2MapManager.instance
 							.betavilleToUTM(sceneGameState.getCamera()
-									.getLocation()), 5000, 17);
+									.getLocation()), 50, 50, 17, false);
 					t.loadTerrain();
 				}
 			});
