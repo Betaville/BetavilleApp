@@ -41,6 +41,7 @@ import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import com.jme.image.Texture;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -55,6 +56,7 @@ import com.jme.scene.TriMesh.Mode;
 import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.MaterialState.MaterialFace;
 import com.jme.scene.state.RenderState.StateType;
+import com.jme.scene.state.TextureState;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.exporters.ColladaEnums.NodeType;
@@ -83,7 +85,7 @@ import edu.poly.bxmc.betaville.xml.XMLWriter;
  */
 public class ColladaExporter extends XMLWriter implements MeshExporter {
 	private static final Logger logger = Logger.getLogger(ColladaExporter.class);
-	
+
 	static{
 		logger.setLevel(Level.DEBUG);
 	}
@@ -127,8 +129,8 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		logger.debug("asset element exported");
 		createLibCameras();
 		logger.debug("camera element exported");
-		createLibLights();
-		logger.debug("lighting element exported");
+		//createLibLights();
+		//logger.debug("lighting element exported");
 		createLibImages();
 		logger.debug("images element exported");
 
@@ -215,6 +217,9 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 	}
 
 	private void createLibImages(){
+
+		// images are actually taken care of when the effects library is created
+
 		rootElement.addContent(library_images);
 	}
 
@@ -230,6 +235,101 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 				Element matEffect = createMatEffect((MaterialState)s.getRenderState(StateType.Material), s.getName());
 				library_effects.addContent(matEffect);
 				library_materials.addContent(createMaterialEntry(matEffect.getAttributeValue("id"), s.getName()));
+			}
+			if(s.getRenderState(StateType.Texture)!=null){
+				TextureState ts = (TextureState)s.getRenderState(StateType.Texture);
+
+				// cycle through all of the reported texture unit to check for loaded data
+				for(int i=0; i<TextureState.getTotalNumberOfUnits(); i++){
+					Texture t = ts.getTexture(i);
+					if(t!=null){
+						Element image = new Element("image");
+						image.setAttribute("id", s.getName()+"_unit"+i);
+
+						Element texEffect = new Element("effect");
+						texEffect.setAttribute("id", s.getName()+"-texture-effect-"+i);
+
+						Element profile = new Element("profile_COMMON");
+						texEffect.addContent(profile);
+
+						Element surfaceParam = new Element("newparam");
+						surfaceParam.setAttribute("sid", "surface");
+						profile.addContent(surfaceParam);
+
+						// the surface references the actual texture
+						Element surface = new Element("surface");
+						surface.setAttribute("type", "2D");
+						surfaceParam.addContent(surface);
+
+						Element initSurfaceFrom = new Element("init_from");
+						initSurfaceFrom.addContent(image.getAttributeValue("id"));
+						surface.addContent(initSurfaceFrom);
+
+						Element samplerParam = new Element("newparam");
+						samplerParam.setAttribute("sid", "sampler");
+						profile.addContent(samplerParam);
+
+						Element sampler = new Element("sampler2D");
+						samplerParam.addContent(sampler);
+
+						Element samplerSrc = new Element("source");
+						samplerSrc.addContent(surfaceParam.getAttributeValue("sid"));
+						sampler.addContent(samplerSrc);
+
+						Element technique = new Element("technique");
+						technique.setAttribute(new Attribute("sid", "common"));
+						profile.addContent(technique);
+
+
+						Element lambert = new Element("lambert");
+						
+						ColorRGBA fullAlpha = new ColorRGBA(0, 0, 0, 1);
+						Element emission = new Element("emission");
+						emission.addContent(createColorElement(fullAlpha));
+						lambert.addContent(emission);
+						Element ambient = new Element("ambient");
+						ambient.addContent(createColorElement(fullAlpha));
+						lambert.addContent(ambient);
+						
+						Element diffuse = new Element("diffuse");
+						lambert.addContent(diffuse);
+						Element texture = new Element("texture");
+						texture.setAttribute("texture", samplerParam.getAttributeValue("sid"));
+						texture.setAttribute("texcoord", "TEX0");
+						diffuse.addContent(texture);
+						
+						Element transparent = new Element("transparent");
+						transparent.addContent(createColorElement(fullAlpha));
+						lambert.addContent(transparent);
+						Element transparency = new Element("transparency");
+						transparency.addContent(createFloatElement(1));
+						lambert.addContent(transparency);
+						
+						technique.addContent(lambert);
+
+
+
+						// check if the texture is being stored internally or referenced
+						if(t.isStoreTexture()){
+							logger.error("Internally stored textures are not currently supported");
+
+							// skip to the next texture
+							continue;
+						}
+						else{
+							logger.info("Texture location: "+t.getImageLocation());
+							Element init_from = new Element("init_from");
+							init_from.addContent(t.getImageLocation());
+							image.addContent(init_from);
+							library_images.addContent(image);
+						}
+
+						library_effects.addContent(texEffect);
+						library_materials.addContent(createMaterialEntry(texEffect.getAttributeValue("id"), s.getName()));
+					}
+				}
+
+
 			}
 		}
 		else{
@@ -486,7 +586,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		else{
 			logger.info("Colors skipped");
 		}
-		*/
+		 */
 
 		// Vertices
 		Element vertices = new Element("vertices");
@@ -670,6 +770,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 			}
 			else{
 				// whine
+				logger.error("Unsupported Geometry type caught: " + s.getClass().getName());
 			}
 		}
 	}
@@ -705,9 +806,30 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 	private Element createGeometryInstance(String meshName){
 		Element instance = new Element("instance_geometry");
 		instance.setAttribute(new Attribute("url","#"+findGeometry(meshName).getAttributeValue("id")));
+		int matCounter = 0;
+		for(int i=0; i<library_materials.getChildren().size(); i++){
+			Element material = (Element)library_materials.getChildren().get(i);
+			
+			// check if this material belongs to this piece geometry
+			if(material.getAttributeValue("id").startsWith(meshName)){
+				Element bind_material = new Element("bind_material");
+				instance.addContent(bind_material);
+				Element technique = createCommonTechnique();
+				bind_material.addContent(technique);
+				Element instance_material = new Element("instance_material");
+				instance_material.setAttribute("symbol", "Material"+i);
+				instance_material.setAttribute("target", "#"+material.getAttributeValue("id"));
+				technique.addContent(instance_material);
+				Element bind_vertex_input = new Element("bind_vertex_input");
+				bind_vertex_input.setAttribute("semantic", "TEX0");
+				bind_vertex_input.setAttribute("input_semantic", "TEXCOORD");
+				bind_vertex_input.setAttribute("input_set", "0");
+				instance_material.addContent(bind_vertex_input);
+			}
+		}
 		return instance;
 	}
-
+	
 	private Element findGeometry(String meshName){
 		for(Object geometry : library_geometries.getChildren()){
 			//System.out.println("Geometry: " + ((Element)geometry).getAttributeValue("id") + " Looking for " + meshName);
