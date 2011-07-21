@@ -62,6 +62,10 @@ public class TileCache {
 		}
 	}
 	
+	public void clearCacheEntry(int zoom, int x, int y){
+		createImagePath(zoom, x, y);
+	}
+	
 	public URL requestImageTile(int zoom, int x, int y){
 		if(doesTileExist(zoom, x, y)){
 			// return a locator for the tile
@@ -76,7 +80,7 @@ public class TileCache {
 			// download the tile
 			try {
 				// Yes, feel free to laugh at the rhyming nature of this variable name :)
-				File tileFile = new File(cacheLocation.toString()+"/"+createImagePath(zoom, x, y));
+				File tileFile = getImageFile(zoom, x, y);
 				// the zoom and x folders may not be created yet
 				createZoomAndXFolder(zoom, x).mkdirs();
 				FileOutputStream fos = new FileOutputStream(tileFile);
@@ -113,6 +117,10 @@ public class TileCache {
 		}
 		
 		return null;
+	}
+	
+	private File getImageFile(int zoom, int x, int y){
+		return new File(cacheLocation.toString()+"/"+createImagePath(zoom, x, y));
 	}
 	
 	private String createImagePath(int zoom, int x, int y){

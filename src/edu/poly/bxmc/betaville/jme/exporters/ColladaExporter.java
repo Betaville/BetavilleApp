@@ -25,6 +25,9 @@
  */
 package edu.poly.bxmc.betaville.jme.exporters;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -35,6 +38,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javax.imageio.ImageIO;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
@@ -42,6 +47,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import com.jme.image.Texture;
+import com.jme.math.FastMath;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
@@ -87,7 +93,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 	private static final Logger logger = Logger.getLogger(ColladaExporter.class);
 
 	static{
-		logger.setLevel(Level.DEBUG);
+		//logger.setLevel(Level.DEBUG);
 	}
 
 	private Spatial exportTarget;
@@ -242,7 +248,9 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 				// cycle through all of the reported texture unit to check for loaded data
 				for(int i=0; i<TextureState.getTotalNumberOfUnits(); i++){
 					Texture t = ts.getTexture(i);
+
 					if(t!=null){
+
 						Element image = new Element("image");
 						image.setAttribute("id", s.getName()+"_unit"+i);
 
@@ -282,7 +290,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 
 
 						Element lambert = new Element("lambert");
-						
+
 						ColorRGBA fullAlpha = new ColorRGBA(0, 0, 0, 1);
 						Element emission = new Element("emission");
 						emission.addContent(createColorElement(fullAlpha));
@@ -290,21 +298,33 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 						Element ambient = new Element("ambient");
 						ambient.addContent(createColorElement(fullAlpha));
 						lambert.addContent(ambient);
-						
+
 						Element diffuse = new Element("diffuse");
 						lambert.addContent(diffuse);
 						Element texture = new Element("texture");
 						texture.setAttribute("texture", samplerParam.getAttributeValue("sid"));
 						texture.setAttribute("texcoord", "TEX0");
 						diffuse.addContent(texture);
-						
+
+						// process extras (supported by some DCC tools, see the COLLADA specs)
+						Element extra = new Element("extra");
+						texture.addContent(extra);
+						Element ocmProfile = new Element("technique");
+						ocmProfile.setAttribute("profile", "OpenCOLLADAMaya");
+						extra.addContent(ocmProfile);
+						Element rotateUV = new Element("rotateUV");
+						float[] angles = t.getRotation().toAngles(null);
+						// set the rotation about Z as the UV rotation
+						rotateUV.addContent(""+(FastMath.RAD_TO_DEG*angles[2]));
+						//ocmProfile.addContent(rotateUV);
+
 						Element transparent = new Element("transparent");
 						transparent.addContent(createColorElement(fullAlpha));
 						lambert.addContent(transparent);
 						Element transparency = new Element("transparency");
 						transparency.addContent(createFloatElement(1));
 						lambert.addContent(transparency);
-						
+
 						technique.addContent(lambert);
 
 
@@ -317,9 +337,43 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 							continue;
 						}
 						else{
-							logger.info("Texture location: "+t.getImageLocation());
+							File textureToUse = new File(t.getImageLocation().replace("file:", ""));
+							// check the rotation
+							if(angles[2]!=0){
+								// if the image has been rotated, created a new image that is also rotated
+								try {
+									BufferedImage bi = ImageIO.read(textureToUse);
+									//Graphics2D g2d = rbi.createGraphics();
+									//g2d.rotate(angles[2]);
+									//g2d.drawImage(bi, null, 0, 0);
+									//g2d.dispose();
+									
+									
+									
+									int w = bi.getWidth();
+									int h = bi.getHeight();
+									BufferedImage rbi = new BufferedImage(h, w, bi.getType());
+									Graphics2D g2 = rbi.createGraphics();
+									double x = (h - w)/2.0;
+									double y = (w - h)/2.0;
+									AffineTransform at = AffineTransform.getTranslateInstance(x, y);
+									at.rotate(angles[2]+(FastMath.DEG_TO_RAD*180), w/2.0, h/2.0);
+									g2.drawRenderedImage(bi, at);
+									g2.dispose();
+									
+									logger.info("Image rotated " + FastMath.RAD_TO_DEG*angles[2] + " degrees");
+									
+									//((Graphics2D)bi.getGraphics()).rotate(angles[2]);
+									textureToUse = new File(textureToUse.getParentFile().toString()+"/"+textureToUse.getName().replace(".png", "")+"_rot.png");
+									ImageIO.write(rbi, "png", textureToUse);
+
+								} catch (IOException e) {
+									logger.error("The texture needs to be rotated before export, but could not be read from " + textureToUse.toString());
+								}
+							}
+							logger.info("Texture location: "+textureToUse);
 							Element init_from = new Element("init_from");
-							init_from.addContent(t.getImageLocation());
+							init_from.addContent(textureToUse.toString());
 							image.addContent(init_from);
 							library_images.addContent(image);
 						}
@@ -594,6 +648,8 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		vertices.addContent(createInput("POSITION", positionsSource.getAttributeValue("id")));
 		mesh.addContent(vertices);
 
+		boolean normals=false;
+		boolean maps=false;
 
 		Element triangles = new Element("triangles");
 		triangles.setAttribute(new Attribute("material", getMaterialName(trimesh.getName())));
@@ -603,12 +659,13 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		offset++;
 		//triangles.addContent(createInput("NORMAL", normalsSource.getAttributeValue("id"), offset));
 		//offset++;
-		if(mesh.getParent()!=null){
-			for(int i=0; i<mapSources.size(); i++){
-				triangles.addContent(createInput("TEXCOORD", mapSources.get(i).getAttributeValue("id"), offset, i));
-			}
-			offset++;
+		//if(mesh.getParent()!=null){
+		for(int i=0; i<mapSources.size(); i++){
+			//triangles.addContent(createInput("TEXCOORD", mapSources.get(i).getAttributeValue("id"), offset, i));
+			//maps=true;
 		}
+		offset++;
+		//}
 		if(colorsSource!=null){
 			triangles.addContent(createInput("COLOR", colorsSource.getAttributeValue("id"), offset));
 			offset++;
@@ -616,7 +673,34 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 
 		Element primArray = new Element("p");
 
+		/*
+		// create primitive array
+		int mapLength = trimesh.getTextureCoords().get(0).coords.capacity()/trimesh.getTextureCoords().get(0).perVert;
+		StringBuilder primBuilder = new StringBuilder();
+		IntBuffer faces = trimesh.getIndexBuffer().duplicate();
+		faces.rewind();
+		for(int i=0; i<mapLength; i++){
+			// add the face index
+			primBuilder.append(faces.get(i)+" ");
+			// add the map index
+			primBuilder.append(i+" ");
+		}
+		primArray.addContent(primBuilder.toString());
+		 */
+
 		primArray.addContent(arrayFromInts(trimesh.getIndexBuffer()));
+
+		/*
+		if(!maps) primArray.addContent(arrayFromInts(trimesh.getIndexBuffer()));
+		else if(maps){
+			int mapLength = trimesh.getTextureCoords().get(0).coords.capacity()/trimesh.getTextureCoords().get(0).perVert;
+			int[] mapArray = new int[mapLength];
+			for(int i=0; i<mapArray.length; i++){
+				mapArray[i]=i;
+			}
+			primArray.addContent(arrayFromIntArrays(trimesh.getIndexBuffer().array(), mapArray));
+		}
+		 */
 		triangles.addContent(primArray);
 		mesh.addContent(triangles);
 		// end polylist
@@ -695,6 +779,39 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		while(buffer.hasRemaining()){
 			array.append(buffer.get()+" ");
 		}
+		return array.toString();
+	}
+
+	private String arrayFromIntArrays(int[] a1, int[] a2){
+		StringBuilder array=new StringBuilder();
+
+		int stop1=-1;
+		int stop2=-1;
+		int limit=-1;
+		if(a1.length>a2.length){
+			stop2=a2.length;
+			limit=a1.length;
+		}
+		else if(a1.length<a2.length){
+			stop1=a1.length;
+			limit=a2.length;
+		}
+		else{
+			// they are equal so we can set the limit to either
+			limit=a1.length;
+		}
+
+		for(int i=0; i<limit; i++){
+			// read from 1
+			if(stop1==-1 || i<stop1){
+				array.append(a1[i]+" ");
+			}
+			// read from 2
+			if(stop2==-1 || i<stop2){
+				array.append(a2[i]+" ");
+			}
+		}
+
 		return array.toString();
 	}
 
@@ -809,7 +926,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		int matCounter = 0;
 		for(int i=0; i<library_materials.getChildren().size(); i++){
 			Element material = (Element)library_materials.getChildren().get(i);
-			
+
 			// check if this material belongs to this piece geometry
 			if(material.getAttributeValue("id").startsWith(meshName)){
 				Element bind_material = new Element("bind_material");
@@ -817,7 +934,11 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 				Element technique = createCommonTechnique();
 				bind_material.addContent(technique);
 				Element instance_material = new Element("instance_material");
-				instance_material.setAttribute("symbol", "Material"+i);
+				instance_material.setAttribute("symbol", material.getAttributeValue("id"));
+
+				// this was the original way of mapping it... it didn't work :(
+				//instance_material.setAttribute("symbol", "Material"+i);
+
 				instance_material.setAttribute("target", "#"+material.getAttributeValue("id"));
 				technique.addContent(instance_material);
 				Element bind_vertex_input = new Element("bind_vertex_input");
@@ -829,7 +950,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		}
 		return instance;
 	}
-	
+
 	private Element findGeometry(String meshName){
 		for(Object geometry : library_geometries.getChildren()){
 			//System.out.println("Geometry: " + ((Element)geometry).getAttributeValue("id") + " Looking for " + meshName);
