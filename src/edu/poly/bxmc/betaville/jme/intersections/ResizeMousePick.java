@@ -97,9 +97,9 @@ public class ResizeMousePick {
 						else if(widget.getParent().getName().equals("zAxis")){
 							return zBoxPicked;
 						}
-						else if(widget.getName().equals("$editorWidget-boundingBox")) {
+						/*else if() {	// if constraint checkbox is checked off.... scale all three ways!! (:
 							return boundingBoxPicked;
-						}
+						}*/
 					}
 				}
 

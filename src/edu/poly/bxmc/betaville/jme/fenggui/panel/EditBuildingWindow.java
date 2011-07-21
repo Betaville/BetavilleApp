@@ -4,9 +4,11 @@
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.fenggui.CheckBox;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
@@ -32,12 +34,19 @@ import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
+import edu.poly.bxmc.betaville.jme.fenggui.panel.EditBuildingWindow.FallbackSet;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
+import edu.poly.bxmc.betaville.jme.map.ILocation;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
+import edu.poly.bxmc.betaville.jme.map.Scale;
+import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
+import edu.poly.bxmc.betaville.module.LocalSceneModule;
+import edu.poly.bxmc.betaville.module.Module;
 import edu.poly.bxmc.betaville.module.ModuleNameException;
 import edu.poly.bxmc.betaville.module.PanelAction;
 import edu.poly.bxmc.betaville.module.RotateModule;
@@ -46,9 +55,11 @@ import edu.poly.bxmc.betaville.module.TranslateModule;
 import edu.poly.bxmc.betaville.net.NetPool;
 
 import com.jme.bounding.BoundingBox;
+import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import com.jme.renderer.Renderer;
+import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.scene.shape.AxisRods;
 import com.jme.scene.shape.Arrow;
@@ -66,13 +77,16 @@ import com.jme.scene.shape.Tube;
 public class EditBuildingWindow extends Window implements IBetavilleWindow {
 	private static Logger logger = Logger.getLogger(EditBuildingWindow.class);
 
-	private int width=230;
-	private int height=400;
+	private HashMap<Integer, FallbackSet> changeFallbacks;
+	
+	private int width=250;
+	private int height=430;
 	private int offset=15;
 
 	private Container editingContainer;
 
 	private Container buttonContainer;
+	private Container saveRevertContainer;
 
 	private FixedButton translate;
 	private AxisRods moveRod;
@@ -86,9 +100,6 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 	private FixedButton resize;
 	private AxisRods scaleRod;
 	private Box boundingBox;
-	private Box newTipX;
-	private Box newTipY;
-	private Box newTipZ;
 
 	private FixedButton delete;
 	private FixedButton reset;
@@ -155,6 +166,11 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 	private Container zScaleContainer;
 	private Label zScaleLabel;
 	private TextEditor zScaleTextEditor;
+	
+	private Container constraintContainer;
+	private Label constraintLabel;
+	private String constraintString = "constraint ";
+	public CheckBox constraintCheckBox; 
 
 	private String xPrefix="X:";
 	private String yPrefix="Y:";
@@ -166,22 +182,27 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 
 	public EditBuildingWindow() {
 		super(true, true);
-		panelActions = new ArrayList<PanelAction>();
-
+		
 		try {
+			SceneGameState.getInstance().addModuleToUpdateList(new ResizeModule());
 			SceneGameState.getInstance().addModuleToUpdateList(new TranslateModule());
 			SceneGameState.getInstance().addModuleToUpdateList(new RotateModule());
-			SceneGameState.getInstance().addModuleToUpdateList(new ResizeModule());
-		} catch (ModuleNameException e) {
+			SceneGameState.getInstance().addModuleToUpdateList(new TextFieldModule());
+		} catch (ModuleNameException eb) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			eb.printStackTrace();
 		}
+		panelActions = new ArrayList<PanelAction>();
+
+		
 		internalSetup();
 
 	}
 
 	//text field
 	private void internalSetup(){
+		
+		changeFallbacks  = new HashMap<Integer, EditBuildingWindow.FallbackSet>();
 
 		buttonContainer = FengGUI.createWidget(Container.class);
 		buttonContainer.setLayoutManager(new RowExLayout(false));
@@ -402,6 +423,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 
 		scaleTextContainer = FengGUI.createWidget(Container.class);
 		scaleTextContainer.setLayoutManager(new RowExLayout(true));
+		
 		/*
 		 * xScaleContainer
 		 */
@@ -423,7 +445,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		yScaleContainer = FengGUI.createWidget(Container.class);
 
 		yScaleLabel = FengGUI.createWidget(Label.class);
-		yScaleLabel.setText("    " + yPrefix);
+		yScaleLabel.setText("     " + yPrefix);
 
 		yScaleTextEditor = FengGUI.createWidget(TextEditor.class);
 		yScaleTextEditor.setText("-");
@@ -438,7 +460,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		zScaleContainer = FengGUI.createWidget(Container.class);
 
 		zScaleLabel = FengGUI.createWidget(Label.class);
-		zScaleLabel.setText("    " + zPrefix);
+		zScaleLabel.setText("     " + zPrefix);
 
 		zScaleTextEditor = FengGUI.createWidget(TextEditor.class);
 		zScaleTextEditor.setText("-");
@@ -446,9 +468,22 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		zScaleTextEditor.setLayoutData(new RowExLayoutData(true, true));
 
 		zScaleContainer.addWidget(zScaleLabel, zScaleTextEditor);
-
+		
+		/*
+		 * constraintCheckBox
+		 */
+		constraintContainer = FengGUI.createWidget(Container.class);
+		
+		constraintLabel = FengGUI.createWidget(Label.class);
+		constraintLabel.setText(constraintString);
+		
+		constraintCheckBox = FengGUI.createWidget(CheckBox.class);
+		constraintCheckBox.setSelected(false);
+		
+		constraintContainer.addWidget(constraintCheckBox, constraintLabel);
+		
 		scaleTextContainer.addWidget(xScaleContainer, yScaleContainer, zScaleContainer);
-		scaleContainer.addWidget(scaleLabel, scaleTextContainer);
+		scaleContainer.addWidget(scaleLabel, scaleTextContainer, constraintContainer);
 
 		/*****************************************************
 		 * End of Scale Labels/Text Edit Fields
@@ -465,6 +500,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		translate.setEnabled(true);
 		translate.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
+			
 
 				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
 				SceneScape.getTargetSpatial().updateRenderState();
@@ -611,7 +647,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					}
 				});
 
-				moveRod = new AxisRods("$editorWidget-axis", true, distance, distance*0.01f);
+				moveRod = new AxisRods("$editorWidget-moveRod", true, distance, distance*0.01f);
 				SceneGameState.getInstance().getEditorWidgetNode().attachChild(moveRod);
 
 				moveRod.setModelBound(new BoundingBox());
@@ -656,7 +692,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				}
 
 				moveRod.updateRenderState();
-
+				
 				////attributesContainer.addWidget(translateContainer);
 				
 				logger.info("added rods");
@@ -670,10 +706,16 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		rotate.setEnabled(true);
 		rotate.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-
+			
 				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
 				SceneScape.getTargetSpatial().updateRenderState();
 
+				if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
+					logger.info("A fallback was not previously created for this object, creating one");
+					FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
+					changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
+				}
+				
 				//attributesContainer.removeAllWidgets();
 				
 				MaterialState blue = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
@@ -699,7 +741,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				SceneScape.getTargetSpatial().getLocalRotation().toAngles(angles);
 
 
-				xRotateTextEditor.setText("" + angles[0]);
+				xRotateTextEditor.setText("" + Round(angles[0], 2));
 				xRotateTextEditor.addKeyListener(new IKeyListener() {
 
 					public void keyTyped(Object arg0, KeyTypedEvent arg1) {
@@ -707,17 +749,13 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 
 					public void keyReleased(Object arg0, KeyReleasedEvent arg1) {
 						if(arg1.getKeyClass().equals(Key.ENTER)){
-							// has the object already been moved?
-							/*if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
-								logger.info("A fallback was not previously created for this object, creating one");
-								FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
-								changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
-							}
-							 */
 							// perform the rotate action
 							int newRotation=0;
+							float floatRotation=0;
 							try {
-								newRotation = (int)FengUtils.getFloat(xRotateTextEditor);
+								floatRotation = FengUtils.getFloat(xRotateTextEditor);
+								newRotation = (int)floatRotation;
+								
 							} catch (FengTextContentException e) {
 								// This issue should not come up since FengGUI is only allowing valid numbers
 								logger.warn("An invalid value somehow made its way from a FengGUI input field that should have been " +
@@ -726,7 +764,10 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 								GUIGameState.getInstance().getDisp().addWidget(
 										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
 							}
-							SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleX(newRotation));
+							System.out.println("float rotation: " + floatRotation);
+							System.out.println("new rotation: " + newRotation);
+							
+							SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleX(newRotation).mult(1/newRotation).mult(floatRotation));
 							SceneScape.getTargetSpatial().setLocalRotation(Rotator.fromThreeAngles(newRotation, ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationZ()));
 							((ModeledDesign)SceneScape.getPickedDesign()).setRotationX(newRotation);
 						}
@@ -736,7 +777,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					}
 				});
 
-				yRotateTextEditor.setText("" + angles[1]);
+				yRotateTextEditor.setText("" + Round(angles[1], 2));
 				yRotateTextEditor.addKeyListener(new IKeyListener() {
 
 					public void keyTyped(Object arg0, KeyTypedEvent arg1) {
@@ -745,13 +786,12 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					public void keyReleased(Object arg0, KeyReleasedEvent arg1) {
 						if(arg1.getKeyClass().equals(Key.ENTER)){
 							// has the object already been moved?
-							/*
 							if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
 								logger.info("A fallback was not previously created for this object, creating one");
 								FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
 								changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
 							}
-							 */
+							
 							// perform the rotate action
 							int newRotation=0;
 							try {
@@ -774,7 +814,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					}
 				});
 
-				zRotateTextEditor.setText("" + angles[2]);
+				zRotateTextEditor.setText("" + Round(angles[2], 2));
 				zRotateTextEditor.addKeyListener(new IKeyListener() {
 
 					public void keyTyped(Object arg0, KeyTypedEvent arg1) {
@@ -783,13 +823,12 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					public void keyReleased(Object arg0, KeyReleasedEvent arg1) {
 						if(arg1.getKeyClass().equals(Key.ENTER)){
 							// has the object already been moved?
-							/*
 							if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
 								logger.info("A fallback was not previously created for this object, creating one");
 								FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
 								changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
 							}
-							 */
+							
 							// perform the rotate action
 							int newRotation=0;
 							try {
@@ -856,6 +895,12 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
 				SceneScape.getTargetSpatial().updateRenderState();
 
+				if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
+					logger.info("A fallback was not previously created for this object, creating one");
+					FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
+					changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
+				}
+				
 				//attributesContainer.removeAllWidgets();
 				
 				MaterialState yellow = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
@@ -880,11 +925,11 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				float distance = (float)(Math.sqrt(Math.pow(Math.sqrt(Math.pow(bb.xExtent, 2) + Math.pow(bb.yExtent, 2)), 2) + Math.pow(bb.zExtent, 2)));
 				//float newTipDimensions = distance/30;
 
-				final float originalZ = bb.zExtent * 100;
-				final float originalY = bb.yExtent * 100;
-				final float originalX = bb.xExtent * 100;
+				final float originalZ = Scale.toMeter(bb.zExtent);
+				final float originalY = Scale.toMeter(bb.yExtent);
+				final float originalX = Scale.toMeter(bb.xExtent);
 
-				xScaleTextEditor.setText("" + (int)(bb.xExtent * 100));
+				xScaleTextEditor.setText("" + Round(Scale.toMeter(bb.xExtent * 2), 2));
 				xScaleTextEditor.addKeyListener(new IKeyListener() {
 
 					/* 
@@ -899,11 +944,6 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					public void keyReleased(Object arg0, KeyReleasedEvent arg1) {
 						if(arg1.getKeyClass().equals(Key.ENTER) && !locked){
 							locked=true;
-							/*if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
-								logger.info("A fallback was not previously created for this object, creating one");
-								FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
-								changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
-							}*/
 
 							logger.info("---------ENTER KEY PRESSED---------");
 
@@ -919,11 +959,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 								GUIGameState.getInstance().getDisp().addWidget(
 										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
 							}
-							System.out.println("\nname: " + SceneScape.getTargetSpatial().getName());
-							System.out.println("original X: " + originalX);
-							System.out.println("original local scale: " + SceneScape.getTargetSpatial().getLocalScale() + "\nnewXscale: " + newXScale);
-							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(newXScale, SceneScape.getTargetSpatial().getLocalScale().y, SceneScape.getTargetSpatial().getLocalScale().z));
-							System.out.println("new local scale: " + SceneScape.getTargetSpatial().getLocalScale());
+							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(newXScale, SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().z));
 
 						}
 						locked=false;
@@ -932,7 +968,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					}
 				});
 
-				yScaleTextEditor.setText("" + (int)(bb.yExtent * 100));
+				yScaleTextEditor.setText("" + Round(Scale.toMeter(bb.yExtent * 2), 2));
 				yScaleTextEditor.addKeyListener(new IKeyListener() {
 
 					boolean locked=false;
@@ -963,11 +999,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 								GUIGameState.getInstance().getDisp().addWidget(
 										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
 							}
-							System.out.println("\nname: " + SceneScape.getTargetSpatial().getName());
-							System.out.println("original Y: " + originalY);
-							System.out.println("original local scale: " + SceneScape.getTargetSpatial().getLocalScale() + "\nnewYscale: " + newYScale);
-							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().y, newYScale, SceneScape.getTargetSpatial().getLocalScale().z));
-							System.out.println("new local scale: " + SceneScape.getTargetSpatial().getLocalScale());
+							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, newYScale, SceneScape.getTargetSpatial().getLocalScale().z));
 
 						}
 						locked=false;
@@ -976,7 +1008,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					}
 				});
 
-				zScaleTextEditor.setText("" + (int)(bb.zExtent * 100));
+				zScaleTextEditor.setText("" + Round(Scale.toMeter(bb.zExtent * 2), 2));
 				zScaleTextEditor.addKeyListener(new IKeyListener() {
 
 					boolean locked=false;
@@ -1007,12 +1039,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 								GUIGameState.getInstance().getDisp().addWidget(
 										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
 							}
-							System.out.println("\nname: " + SceneScape.getTargetSpatial().getName());
-							System.out.println("original Z: " + originalZ);
-							System.out.println("original local scale: " + SceneScape.getTargetSpatial().getLocalScale() + "\nnewZscale: " + newZScale);
 							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().y, newZScale));
-							System.out.println("new local scale: " + SceneScape.getTargetSpatial().getLocalScale());
-
 						}
 						locked=false;
 					}
@@ -1040,10 +1067,11 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				alphaState.setTestEnabled(true);
 				alphaState.setTestFunction(BlendState.TestFunction.GreaterThan);
 				alphaState.setEnabled(true);
-
+				
 				/*
 				 * Create a box called boundingBox and set its color+transparency
 				 */
+				
 				boundingBox = new Box("$editorWidget-boundingBox", center, bb.xExtent, bb.yExtent, bb.zExtent);
 				SceneGameState.getInstance().getEditorWidgetNode().attachChild(boundingBox);
 
@@ -1054,9 +1082,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				boundingBox.setRenderState(alphaState);
 				boundingBox.updateRenderState();
 				boundingBox.setRenderQueueMode(Renderer.QUEUE_TRANSPARENT);
-				//boundingBox.setLocalRotation(SceneScape.getTargetSpatial().getLocalRotation());
-				//boundingBox.updateRenderState();
-
+				
 				/*
 				 * Create a scale rod + take off arrow tips(pyramids) and replace them with boxes
 				 */
@@ -1065,12 +1091,9 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				SceneGameState.getInstance().getEditorWidgetNode().attachChild(scaleRod);
 
 				scaleRod.setModelBound(new BoundingBox());
+				//scaleRod.rotateUpTo(new Vector3f(45, 0, 0));
 				scaleRod.updateModelBound();
 				scaleRod.setLocalTranslation(center);
-				System.out.println("local rotation of the model: " + SceneScape.getTargetSpatial().getLocalRotation());
-				System.out.println("world rotation of the model: " + SceneScape.getTargetSpatial().getWorldRotation()); 
-				System.out.println("local rotation of scaleRod: " + scaleRod.getLocalRotation());
-				System.out.println("world rotation of scaleRod: " + scaleRod.getWorldRotation());
 				
 				scaleRod.updateRenderState();
 
@@ -1120,38 +1143,78 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 			}
 		});
 
+		// SAVE/REVERT CONTROL
+
 		save = FengGUI.createWidget(FixedButton.class);
 		save.setText("Save");
-		save.setWidth(save.getWidth()+10);
-		save.setEnabled(true);
+		save.setLayoutData(new RowExLayoutData(false, true));
 		save.addButtonPressedListener(new IButtonPressedListener() {
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-
-				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
-				SceneScape.getTargetSpatial().updateRenderState();
-
-				Window window = FengUtils.createTwoOptionWindow("Save", "Do you want to save?  ",
-						"no", "yes",
-						new IButtonPressedListener() {
-					public void buttonPressed(Object source, ButtonPressedEvent e) {
-
+			
+			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
+				if(changeFallbacks.get(SceneScape.getPickedDesign().getID())!=null){
+					// check if the location has been changed
+					
+					// check if the rotation has been updated
+					
+					if(NetPool.getPool().getSecureConnection().changeModeledDesignLocation(SceneScape.getPickedDesign().getID(),
+							((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), SettingsPreferences.getUser(), SettingsPreferences.getPass(),
+							SceneScape.getPickedDesign().getCoordinate())){
+						changeFallbacks.remove(SceneScape.getPickedDesign().getID());
+						logger.error("Network Save Success");
+						GUIGameState.getInstance().getDisp().addWidget(
+								FengUtils.createDismissableWindow("Betaville",
+										"This object's location has been saved", "ok", true));
 					}
-				}, 
-
-				new IButtonPressedListener() {
-					public void buttonPressed(Object source, ButtonPressedEvent e) {
-
+					else{
+						logger.info("Network Save Failed");
+						GUIGameState.getInstance().getDisp().addWidget(
+								FengUtils.createDismissableWindow("Betaville",
+										"This object's location could not be saved", "ok", true));
 					}
-				}, 
-				true, true);
-				window.setXY(FengUtils.midWidth(GUIGameState.getInstance().getDisp(), window),FengUtils.midHeight(GUIGameState.getInstance().getDisp(), window));
-				GUIGameState.getInstance().getDisp().addWidget(window);
-
+				}
+				else{
+					logger.warn("The object does not appear to have been changed should the " +
+					"reset button really be visible?");
+			GUIGameState.getInstance().getDisp().addWidget(
+					FengUtils.createDismissableWindow("Betaville",
+							"This object does not appear to have been moved", "ok", true));
+				}
 			}
 		});
 
-		buttonContainer.addWidget(translate, rotate, resize, delete, reset, save);
-		editingContainer.addWidget(buttonContainer, translateContainer, scaleContainer, rotateContainer);
+		reset = FengGUI.createWidget(FixedButton.class);
+		reset.setText("Reset");
+		reset.setLayoutData(new RowExLayoutData(false, true));
+		reset.addButtonPressedListener(new IButtonPressedListener() {
+			
+			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
+				FallbackSet fallbacks = changeFallbacks.get(SceneScape.getPickedDesign().getID());
+				
+				// If a set of fallbacks has been stored for this object, then we can put things back
+				if(fallbacks!=null){
+					SceneScape.getTargetSpatial().setLocalTranslation(JME2MapManager.instance.locationToBetaville(fallbacks.fallbackLocation));
+					SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).setCoordinate((UTMCoordinate)fallbacks.fallbackLocation);
+					
+					SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleY((int)fallbacks.fallbackRotation));
+					SceneScape.getTargetSpatial().setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SceneScape.getPickedDesign()).getRotationX(), (int)fallbacks.fallbackRotation, ((ModeledDesign)SceneScape.getPickedDesign()).getRotationZ()));
+					((ModeledDesign)SceneScape.getPickedDesign()).setRotationY((int)fallbacks.fallbackRotation);
+				}
+				else{
+					logger.warn("No fallbacks were available for the selected object, should the " +
+							"reset button really be visible?");
+					GUIGameState.getInstance().getDisp().addWidget(
+							FengUtils.createDismissableWindow("Betaville",
+									"This object does not appear to have been previously moved", "ok", true));
+				}
+			}
+		});
+
+		saveRevertContainer = FengGUI.createWidget(Container.class);
+		saveRevertContainer.setLayoutManager(new RowExLayout(true));
+		saveRevertContainer.addWidget(reset, save);
+		
+		buttonContainer.addWidget(translate, rotate, resize, delete);
+		editingContainer.addWidget(buttonContainer, translateContainer, scaleContainer, rotateContainer, saveRevertContainer);
 
 		getContentContainer().addWidget(editingContainer);
 
@@ -1194,6 +1257,25 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 
 	}
 
+	public boolean setScaleTextField(float x, float y, float z) {
+		xScaleTextEditor.setText("hi");
+		yScaleTextEditor.setText("" + Round(y * 100, 2));
+		zScaleTextEditor.setText("" + Round(z * 100, 2));
+		
+		return true;
+	}
+	
+	public void setRotateTextField(float xRotate, float yRotate, float zRotate) {
+		xRotateTextEditor.setText("" + xRotate);
+		yRotateTextEditor.setText("" + yRotate);
+		zRotateTextEditor.setText("" + zRotate);
+	}
+	
+	public void setTranslateTextField(float xTranslate, float yTranslate, float zTranslate) {
+		xTranslateTextEditor.setText("" + xTranslate);
+		yTranslateTextEditor.setText("" + yTranslate);
+		zTranslateTextEditor.setText("" + zTranslate);
+	}
 	/**
 	 * http://www.roseindia.net/java/beginners/RoundTwoDecimalPlaces.shtml
 	 * 
@@ -1207,6 +1289,16 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		float tmp = Math.round(Rval);
 		return (float)tmp/p;
 	}
+	
+	public class FallbackSet{
+		private ILocation fallbackLocation;
+		private float fallbackRotation;
+
+		private FallbackSet(ILocation location, float rotation){
+			this.fallbackLocation=location.clone();
+			this.fallbackRotation=rotation;
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
@@ -1215,6 +1307,33 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		setTitle("Edit Building");
 		setSize(width, height);
 		setXY(Binding.getInstance().getCanvasWidth() - this.width, 0);
+	}
+	
+	private class TextFieldModule extends Module implements LocalSceneModule {
+
+		public TextFieldModule() {
+			super("Update Text Fields");
+			// TODO Auto-generated constructor stub
+		}
+
+		public void initialize(Node scene) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onUpdate(Node scene, Vector3f cameraLocation,
+				Vector3f cameraDirection) {
+
+			if(SceneScape.getPickedDesign() != null)
+				scene.getChild(SceneScape.getPickedDesign().getFullIdentifier()).getLocalScale();
+			setScaleTextField(1, 2, 3);
+		}
+
+		public void deconstruct() {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 }

@@ -43,6 +43,9 @@ public class RotateModule extends Module implements GlobalSceneModule {
 	private final int verticalRotateTubePicked = 2;
 	private final int anotherRotateTubePicked = 3;
 	
+	private LineSegment firstLine;
+	private LineSegment secondLine;
+	
 	public RotateModule() {
 		super("Rotate Picker");
 	}
@@ -164,19 +167,24 @@ public class RotateModule extends Module implements GlobalSceneModule {
 		screenPosition.y=mouseYLastClick;
 		
 		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
-		LineSegment leftLine = new LineSegment(center, worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
+		firstLine = new LineSegment(center, worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
 		
 		newScreenPosition.x=MouseInput.get().getXAbsolute();
 		newScreenPosition.y=MouseInput.get().getYAbsolute();
 		
 		Vector3f newWorldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(newScreenPosition, 1.0f);
-		LineSegment rightLine = new LineSegment(center, newWorldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
+		secondLine = new LineSegment(center, newWorldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
 		
-		Vector3f leftVector = leftLine.getDirection();
-		Vector3f rightVector = rightLine.getDirection();
+		Vector3f firstVector = firstLine.getDirection();
+		Vector3f secondVector = secondLine.getDirection();
 		
-		float angleInDegrees = (float) (leftVector.angleBetween(rightVector) * (180/Math.PI));
+		float angleInDegrees = (float) (firstVector.angleBetween(secondVector) * (180/Math.PI));
 		
+		//System.out.println("angle in degrees: " + angleInDegrees);
+		
+		//if the second line is to the right of second line
+		
+		//secondLine.getDirection().x > firstLine.getDirection()
 		if(newScreenPosition.x < screenPosition.x || newScreenPosition.y > screenPosition.y)
 			return -angleInDegrees;
 		

@@ -2,6 +2,7 @@ package edu.poly.bxmc.betaville.module;
 
 import org.apache.log4j.Logger;
 
+import com.jme.bounding.BoundingBox;
 import com.jme.input.MouseInput;
 import com.jme.math.Plane;
 import com.jme.math.Ray;
@@ -9,12 +10,13 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.shape.Arrow;
+import com.jme.scene.shape.AxisRods;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.jme.fenggui.panel.EditBuildingWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.intersections.ResizeMousePick;
-import edu.poly.bxmc.betaville.jme.intersections.TranslatorMousePick;
 
 /**
  * 
@@ -30,10 +32,8 @@ public class ResizeModule extends Module implements LocalSceneModule {
 	private int mouseXLastClick = -1;
 	private int mouseYLastClick = -1;
 	
-	private int mouseNewX = 0;
-	private int mouseNewY = 0;
-
 	private static final Vector2f screenPosition = new Vector2f(0, 0);
+	private static final Vector2f newScreenPosition = new Vector2f(0, 0);
 
 	private static final Plane groundPlane = new Plane(Vector3f.UNIT_Y, 0f);
 	private static Plane frontPlane;
@@ -45,6 +45,9 @@ public class ResizeModule extends Module implements LocalSceneModule {
 	private final int xBoxPicked = 1;
 	private final int yBoxPicked = 2;
 	private final int zBoxPicked = 3;
+	
+	private Vector3f worldCoords = new Vector3f(0, 0, 0);
+	private Vector3f newWorldCoords = new Vector3f(0, 0, 0);
 
 	/**
 	 * @param name
@@ -77,74 +80,130 @@ public class ResizeModule extends Module implements LocalSceneModule {
 					mouseYLastClick = MouseInput.get().getYAbsolute();
 					
 					wasClickedPreviously = true;
+					
+					
 				}
 				else {
 					if(wasClickedPreviously = true) {
-						if(checkPick == zBoxPicked) {
-							final float originalZ = SceneScape.getTargetSpatial().getLocalScale().z;
-							float ratio = (getLeftCollision().z / getRightCollision().z) * originalZ;
+						if(checkPick == xBoxPicked) {
+							BoundingBox bb = ((BoundingBox)SceneScape.getTargetSpatial().getWorldBound());
+							final float originalX = bb.xExtent * 100;
 							
-							System.out.println("z: " + SceneScape.getTargetSpatial().getLocalScale().z);
-							System.out.println("ratio: " + ratio);
-							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().y, ratio));
-						}
-						else if(checkPick == xBoxPicked) {
+							float distanceFromOldPos = SceneScape.getTargetSpatial().getWorldTranslation().x - worldCoords.x;
+							float distanceFromNewPos = SceneScape.getTargetSpatial().getWorldTranslation().x - newWorldCoords.x;
 							
-							float ratio = 0;
-							final float originalX = SceneScape.getTargetSpatial().getLocalScale().x;
-							ratio = (getRightCollision().x / getLeftCollision().x) * originalX;
-							System.out.println("x: " + SceneScape.getTargetSpatial().getLocalScale().x);
-							System.out.println("ratio: " + ratio);
-							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(ratio, SceneScape.getTargetSpatial().getLocalScale().y, SceneScape.getTargetSpatial().getLocalScale().z));
-						
+							if(distanceFromNewPos < distanceFromOldPos)
+							{
+								float newX = ((originalX + Math.abs(calculateXZdifference().x)) / originalX) * SceneScape.getTargetSpatial().getLocalScale().x;
+								SceneScape.getTargetSpatial().setLocalScale(new Vector3f(newX, SceneScape.getTargetSpatial().getLocalScale().y, SceneScape.getTargetSpatial().getLocalScale().z));
+							
+							}
+							else
+							{
+								float newX = ((originalX - Math.abs(calculateXZdifference().x)) / originalX) * SceneScape.getTargetSpatial().getLocalScale().x;
+								SceneScape.getTargetSpatial().setLocalScale(new Vector3f(newX, SceneScape.getTargetSpatial().getLocalScale().y, SceneScape.getTargetSpatial().getLocalScale().z));
+							
+							}
 							
 						}
 						else if(checkPick == yBoxPicked) {
-							logger.info("y box picked");
+							BoundingBox bb = ((BoundingBox)SceneScape.getTargetSpatial().getWorldBound());
+							final float originalY = bb.xExtent * 100;
+							
+							if(screenPosition.y < newScreenPosition.y)
+							{
+								float newY = ((originalY + Math.abs(calculateYdifference().y * 0.05f)) / originalY) * SceneScape.getTargetSpatial().getLocalScale().y;
+								SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, newY, SceneScape.getTargetSpatial().getLocalScale().z));
+							
+							}
+							else
+							{
+								float newY = ((originalY - Math.abs(calculateYdifference().y * 0.05f)) / originalY) * SceneScape.getTargetSpatial().getLocalScale().y;
+								SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, newY, SceneScape.getTargetSpatial().getLocalScale().z));
+							
+							}
+							
+						}
+						else if(checkPick == zBoxPicked) {
+							BoundingBox bb = ((BoundingBox)SceneScape.getTargetSpatial().getWorldBound());
+							final float originalZ = bb.zExtent * 100;
+							
+							float distanceFromOldPos = SceneScape.getTargetSpatial().getWorldTranslation().z - worldCoords.z;
+							float distanceFromNewPos = SceneScape.getTargetSpatial().getWorldTranslation().z - newWorldCoords.z;
+							
+							if(distanceFromNewPos < distanceFromOldPos)
+							{
+								float newZ = ((originalZ + Math.abs(calculateXZdifference().z)) / originalZ) * SceneScape.getTargetSpatial().getLocalScale().z;
+								SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().y, newZ));
+								}
+							else
+							{
+								float newZ = ((originalZ - Math.abs(calculateXZdifference().z)) / originalZ) * SceneScape.getTargetSpatial().getLocalScale().z;
+								SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().y, newZ));
+							}
 							
 						}
 						
 						wasClickedPreviously = false;
+						
+						BoundingBox bb = ((BoundingBox)SceneScape.getTargetSpatial().getWorldBound());
+						float distance = (float)(Math.sqrt(Math.pow(Math.sqrt(Math.pow(bb.xExtent, 2) + Math.pow(bb.yExtent, 2)), 2) + Math.pow(bb.zExtent, 2)));
+						
+						((AxisRods)SceneGameState.getInstance().getEditorWidgetNode().getChild("$editorWidget-scaleRod")).updateGeometry(distance, distance * 0.01f, true);
+						
 					}
+					
+					
 					else {
 						wasClickedPreviously = true;
 					}
 					
 				}
-				// get the new size of the builidng by subtracting two coordinates x and y
 			}
 		}
+		mouseXLastClick = MouseInput.get().getXAbsolute();
+		mouseYLastClick = MouseInput.get().getYAbsolute();
 	}
 	
-	private Vector3f getLeftCollision(){
+	private Vector3f calculateXZdifference(){
 		screenPosition.x=mouseXLastClick;
 		screenPosition.y=mouseYLastClick;
 		
-		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
+		worldCoords = new Vector3f(0, 0, 0);
+		worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
 		Ray leftRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
 		leftRay.getDirection().normalizeLocal();
 		
 		leftRay.intersectsWherePlane(groundPlane, leftCollision);
 		
-		System.out.println("left Collsion" + leftCollision);
-		return leftCollision;
-	}
-	
-	private Vector3f getRightCollision(){
+		newScreenPosition.x=MouseInput.get().getXAbsolute();
+		newScreenPosition.y=MouseInput.get().getYAbsolute();
 		
-		screenPosition.x=MouseInput.get().getXAbsolute();
-		screenPosition.y=MouseInput.get().getYAbsolute();
+		newWorldCoords = new Vector3f(0, 0, 0);
+		newWorldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(newScreenPosition, 1.0f);
 		
-		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
-		
-		Ray rightRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
+		Ray rightRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), newWorldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
 		rightRay.getDirection().normalizeLocal();
 		
 		rightRay.intersectsWherePlane(groundPlane, rightCollision);
 		
-		System.out.println("right Collision" + rightCollision);
-		return rightCollision;
+		return leftCollision.subtract(rightCollision);
+	}
+	
+	private Vector3f calculateYdifference(){
+		screenPosition.x=mouseXLastClick;
+		screenPosition.y=mouseYLastClick;
 		
+		frontPlane = new Plane(new Vector3f(DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().x, 0, DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().z), 0f);
+
+		worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
+		
+		newScreenPosition.x=MouseInput.get().getXAbsolute();
+		newScreenPosition.y=MouseInput.get().getYAbsolute();
+		
+		newWorldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(newScreenPosition, 1.0f);
+		
+		return worldCoords.subtractLocal(newWorldCoords);
 	}
 
 	/* (non-Javadoc)

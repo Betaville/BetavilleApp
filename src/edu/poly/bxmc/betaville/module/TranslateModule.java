@@ -11,7 +11,6 @@ import com.jme.math.Ray;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
-import com.jme.scene.shape.Quad;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.SceneScape;
@@ -43,8 +42,6 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 	
 	private static final Vector3f leftCollision = new Vector3f();
 	private static final Vector3f rightCollision = new Vector3f();
-	//private static final Vector3f topCollision = new Vector3f();
-	//private static final Vector3f bottomCollision = new Vector3f();
 	
 
 	/**
@@ -98,7 +95,7 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 						else if(checkPick == yAxisPicked) {
 
 							Vector3f diff = viewportHeightAtGround();
-							float diffY = diff.y * -0.003f;
+							float diffY = diff.y * -0.0031f;
 							//logger.info("1: yAxis picked. " + SceneScape.getTargetSpatial().getLocalTranslation());
 							//logger.info("diff: " + diff);
 							Vector3f originalPos = SceneScape.getTargetSpatial().getLocalTranslation();
@@ -161,33 +158,15 @@ public class TranslateModule extends Module implements GlobalSceneModule {
 		screenPosition.x=mouseXLastClick;
 		screenPosition.y=mouseYLastClick;
 		
-		//System.out.println("Old Screen Position: " + screenPosition);
-		
-		// get the plane of the camera direction
 		frontPlane = new Plane(new Vector3f(DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().x, 0, DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().z), 0f);
 
-		//System.out.println("**" + DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().x + " " + DisplaySystem.getDisplaySystem().getRenderer().getCamera().getDirection().z);
 		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
-		
-		//Ray topRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
-		//topRay.getDirection().normalizeLocal();
-		
-		//topRay.intersectsWherePlane(frontPlane, topCollision);
 		
 		screenPosition.x=MouseInput.get().getXAbsolute();
 		screenPosition.y=MouseInput.get().getYAbsolute();
 		
-		//System.out.println("New Screen Position: " + screenPosition);
-		
 		Vector3f newWorldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
 		
-		//Ray bottomRay = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
-		//bottomRay.getDirection().normalizeLocal();
-		
-		//bottomRay.intersectsWherePlane(frontPlane, bottomCollision);
-		
-		//System.out.println("Top Collision: " + topCollision + "     Bottom Collision: " + bottomCollision);
-		//return bottomCollision.subtract(topCollision);
 		
 		return worldCoords.subtractLocal(newWorldCoords);
 	}
