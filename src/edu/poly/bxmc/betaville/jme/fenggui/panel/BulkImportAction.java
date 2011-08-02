@@ -37,6 +37,7 @@ import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.BulkLoader;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
@@ -70,6 +71,7 @@ public class BulkImportAction extends PanelAction {
 						JDialog dialog = new JDialog();
 						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
+						fileChooser.setFileFilter(new ColladaFileFilter());
 						fileChooser.setMultiSelectionEnabled(true);
 						if(fileChooser.showOpenDialog(dialog)==JFileChooser.APPROVE_OPTION){
 							final File[] files = fileChooser.getSelectedFiles();
