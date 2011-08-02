@@ -116,7 +116,17 @@ public class MousePicking {
 	}
 
 	private void findWidgetPicks(Spatial s){
-		((SharedMesh)s).findPick(rayToUse, widgetResults);
+		
+		if(s instanceof SharedMesh){
+			((SharedMesh)s).findPick(rayToUse, widgetResults);
+		}
+		else if(s instanceof Node){
+			if(((Node)s).getChildren()==null) return;
+			Iterator<Spatial> it = ((Node)s).getChildren().iterator();
+			while(it.hasNext()){
+				findWidgetPicks(it.next());
+			}
+		}
 	}
 	
 	public boolean widgetPicked(){
