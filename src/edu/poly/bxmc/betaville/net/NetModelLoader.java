@@ -131,11 +131,6 @@ public class NetModelLoader{
 			final AtomicBoolean listLock = new AtomicBoolean(false);
 			final ArrayList<Node> nodeList = new ArrayList<Node>();
 
-			// add progress listener
-			final IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Models Loading", itemsLoaded.get(), itemsToLoad.get());
-			item.setLockFromCompletion(true);
-			GUIGameState.getInstance().getProgressContainer().addItem(item);
-
 			UnprotectedManager manager = NetPool.getPool().getConnection();
 			if(lookupRoutine.equals(LookupRoutine.ALL_IN_CITY)){
 				designs = manager.findBaseDesignsByCity(cityID);
@@ -153,6 +148,10 @@ public class NetModelLoader{
 				throw new NullPointerException("designs not received!");
 			}
 			else{
+				// add progress listener once we know that there are models to load 
+				final IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Models Loading", itemsLoaded.get(), itemsToLoad.get());
+				item.setLockFromCompletion(true);
+				GUIGameState.getInstance().getProgressContainer().addItem(item);
 				itemsToLoad.set(designs.size());
 				item.setMax(itemsToLoad.get());
 				Collections.sort(designs, Design.distanceComparator(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
