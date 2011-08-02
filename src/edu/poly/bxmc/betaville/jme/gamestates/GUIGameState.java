@@ -303,7 +303,6 @@ public class GUIGameState extends GameState {
 			return;
 		}
 		
-
 		// Ray casting from mouse
 		Vector2f screenPosition = new Vector2f(MouseInput.get().getXAbsolute(), MouseInput.get().getYAbsolute());
 		Vector3f worldCoords = DisplaySystem.getDisplaySystem().getWorldCoordinates(screenPosition, 1.0f);
@@ -331,6 +330,12 @@ public class GUIGameState extends GameState {
 		}
 
 		MousePicking mp = new MousePicking(mouseRay);
+		
+		if(mp.widgetPicked()){
+			// If a widget has been left-clicked we don't want to deselect anything
+			return;
+		}
+		
 		if(!mp.flagPicked() && flagIsSelected){
 			for(IFlagSelectionListener listener : SceneScape.getFlagSelectionListeners()){
 				listener.flagDeselected();

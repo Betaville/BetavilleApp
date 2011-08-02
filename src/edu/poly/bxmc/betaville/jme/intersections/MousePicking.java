@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.intersections;
 
 import java.util.Iterator;
@@ -54,12 +54,14 @@ public class MousePicking {
 	private PickResults sceneResults = new TrianglePickResults();
 	private PickResults terrainResults = new TrianglePickResults();
 	private PickResults flagResults = new BoundingPickResults();
+	private PickResults widgetResults = new BoundingPickResults();
+
 	private Node pickedDesign;
 	private Node pickedTerrain;
 	private Geometry selectedMesh;
 	private float distanceToObject;
 	private Ray rayToUse;
-	
+
 	/**
 	 * 
 	 */
@@ -71,11 +73,13 @@ public class MousePicking {
 		// Hard to tell which one is more accurate, so we'll stick with the status quo for now ^
 		//Vector3f worldCoords = SceneGameState.getInstance().getCamera().getWorldCoordinates(screenPosition, 1.0f);
 		rayToUse = new Ray(SceneGameState.getInstance().getCamera().getLocation(), worldCoords.subtractLocal(SceneGameState.getInstance().getCamera().getLocation()));
-		
+
 		rayToUse.getDirection().normalizeLocal();
-		
+
 		flagResults.setCheckDistance(true);
 		flagResults.clear();
+		widgetResults.setCheckDistance(true);
+		widgetResults.clear();
 		sceneResults.setCheckDistance(true);
 		sceneResults.clear();
 		terrainResults.setCheckDistance(true);
@@ -83,6 +87,7 @@ public class MousePicking {
 		SceneGameState.getInstance().getDesignNode().findPick(rayToUse, sceneResults);
 		SceneGameState.getInstance().getTerrainNode().findPick(rayToUse, terrainResults);
 		findFlagPicks(SceneGameState.getInstance().getFlagNode());
+		findWidgetPicks(SceneGameState.getInstance().getEditorWidgetNode());
 
 		if(!flagPicked() && sceneResults.getNumber()>0 && sceneResults.getPickData(0).getTargetTris().size()>0){
 			selectedMesh = sceneResults.getPickData(0).getTargetMesh();
@@ -90,7 +95,7 @@ public class MousePicking {
 			logger.debug(pickedDesign.getName() + " picked from designNode");
 			distanceToObject = sceneResults.getPickData(0).getDistance();
 		}
-		
+
 		if(terrainResults.getNumber()>0 && terrainResults.getPickData(0).getTargetTris().size()>0){
 			pickedTerrain = findSelectedTerrainNode(terrainResults.getPickData(0).getTargetMesh());
 			logger.debug(pickedTerrain.getName() + " picked from terrainNode");
@@ -109,7 +114,20 @@ public class MousePicking {
 			}
 		}
 	}
+
+	private void findWidgetPicks(Spatial s){
+		((SharedMesh)s).findPick(rayToUse, widgetResults);
+	}
 	
+	public boolean widgetPicked(){
+		if(widgetResults.getNumber()>0){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
 	private Node findSelectedDesignNode(Spatial s){
 		if(s.getParent().getName().equals("designNode")){
 			return (Node)s;
@@ -118,7 +136,7 @@ public class MousePicking {
 			return findSelectedDesignNode(s.getParent());
 		}
 	}
-	
+
 	private Node findSelectedTerrainNode(Spatial s){
 		if(s.getParent().getName().equals("terrainNode")){
 			return (Node)s;
@@ -127,7 +145,7 @@ public class MousePicking {
 			return findSelectedTerrainNode(s.getParent());
 		}
 	}
-	
+
 	public Spatial getDesignFromFlag(){
 		for(int i=0; i<flagResults.getNumber(); i++){
 			if(flagResults.getPickData(i).getTargetMesh() instanceof SharedMesh){
@@ -136,11 +154,11 @@ public class MousePicking {
 		}
 		return null;
 	}
-	
+
 	public String getNameOfClosestFlag(){
 		return flagResults.getPickData(0).getTargetMesh().getName();
 	}
-	
+
 	public boolean flagPicked(){
 		if(flagResults.getNumber()>0){
 			return true;
