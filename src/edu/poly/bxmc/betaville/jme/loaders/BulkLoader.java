@@ -30,11 +30,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
-import com.jme.bounding.BoundingBox;
-import com.jme.math.Vector3f;
 import com.jme.scene.Spatial;
 import com.jme.util.export.binary.BinaryExporter;
 
@@ -43,7 +42,6 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
-import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.model.Design.Classification;
@@ -62,8 +60,8 @@ public class BulkLoader {
 	private static final Logger logger = Logger.getLogger(BulkLoader.class);
 
 	private ILocation origin;
-	private volatile int currentCounter=0;
-	private volatile int completionCounter=0;
+	private AtomicInteger currentCounter=new AtomicInteger(0);
+	private AtomicInteger completionCounter=new AtomicInteger(0);
 
 	private String xPrefix;
 	private String yPrefix;
@@ -90,10 +88,10 @@ public class BulkLoader {
 	 */
 	public void load(final List<File> files){
 		UpdaterPreferences.setBaseEnabled(false);
-		while(currentCounter<(files.size())){
+		while(currentCounter.get()<(files.size())){
 
 			try {
-				loadModel(files.get(currentCounter), files.size());
+				loadModel(files.get(currentCounter.get()), files.size());
 				incrementCurrentCounter();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -123,19 +121,46 @@ public class BulkLoader {
 
 	private void loadModel(File file, int numberFiles) throws IOException, URISyntaxException{
 		// begin the loading
-		progress.modelLoadStarting(file.getName(), currentCounter+1, numberFiles);
+		progress.modelLoadStarting(file.getName(), currentCounter.get()+1, numberFiles);
 
 		// Read the x/y/z offsets
+
 		String fileString = file.getName();
-		String xOffsetString = fileString.substring(fileString.indexOf(xPrefix)+xPrefix.length(), fileString.indexOf(yPrefix));
-		String yOffsetString = fileString.substring(fileString.indexOf(yPrefix)+xPrefix.length(), fileString.indexOf(zPrefix));
-		// this is somewhat of a guess...  if a file is named something like "object.mesh.xml" then we're screwed
-		String zOffsetString = fileString.substring(fileString.indexOf(zPrefix)+xPrefix.length(), fileString.lastIndexOf("."));
+		
+		
+		String xOffsetString = "0";
+		String yOffsetString = "0";
+		String zOffsetString = "0";
+		try{
+			xOffsetString = fileString.substring(fileString.indexOf(xPrefix)+xPrefix.length(), fileString.indexOf(yPrefix));
+			yOffsetString = fileString.substring(fileString.indexOf(yPrefix)+xPrefix.length(), fileString.indexOf(zPrefix));
+			// this is somewhat of a guess...  if a file is named something like "object.mesh.xml" then we're screwed
+			zOffsetString = fileString.substring(fileString.indexOf(zPrefix)+xPrefix.length(), fileString.lastIndexOf("."));
+		}catch(IndexOutOfBoundsException e){
+			// this will be thrown if an improperly formatted filename has been found
+			logger.error("Improperly formatted file name: "+fileString+"\n"+
+					"Here are the offsets we do have: (x)"+xOffsetString+" (y)"+yOffsetString+" (z)"+zOffsetString);
+		}
+		
+
+
+		logger.info("String ops DONE");
 
 		// parse the model
-		ModeledDesign design = new ModeledDesign(file.getName().substring(0, file.getName().indexOf("_x_")), origin.getUTM().clone(), "Not Supplied By Bulk Model", SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", file.toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
+
+		String nameToUse = fileString;
+		try{
+			nameToUse = fileString.substring(0, file.getName().indexOf("_x_"));
+		}catch(IndexOutOfBoundsException e){
+			// this will be thrown if an improperly formatted filename has been found
+			logger.error("Improperly formatted file name: "+fileString);
+		}
+
+		ModeledDesign design = new ModeledDesign(nameToUse, origin.getUTM().clone(), "Not Supplied By Bulk Model", SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", file.toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
+		logger.info("Entering ModelLoader");
 		ModelLoader ml = new ModelLoader(design, false, null);
-		progress.modelParsed(currentCounter);
+		logger.info("ModelLoader created (COLLADA has been parsed at this point)");
+		progress.modelParsed(currentCounter.get());
 
 		/*
 		 * This code no longer applies since we can't account for the proper transformations once
@@ -168,20 +193,25 @@ public class BulkLoader {
 		float xNum=Float.parseFloat(xOffsetString);
 		float yNum=Float.parseFloat(yOffsetString);
 		float zNum=Float.parseFloat(zOffsetString);
-		
+		//float xNum=0;
+		//float yNum=0;
+		//float zNum=0;
+
 		// if the have had their transformations frozen, we need to adjust the geometry internally
 		if(xNum==0 && yNum==0 && zNum ==0){
 			logger.warn("It would appear that the transformations have been frozen prior to being" +
-					"imported into Betaville.  Attempting to transform the internal geometry data");
+			"imported into Betaville.");
+
 			/*
+			logger.warn("Attempting to transform the internal geometry data");
 			Vector3f[] extents = GeometryUtilities.findObjectExtents(ml.getModel());
-			
+
 			// set the object's offsets correctly
 			xNum = extents[0].x;
 			yNum = extents[0].y;
 			zNum = extents[0].z;
-			*/
-			
+			 */
+
 			/*
 			ml.getModel().setModelBound(new BoundingBox());
 			ml.getModel().updateModelBound();
@@ -190,20 +220,20 @@ public class BulkLoader {
 			xNum = center.x;
 			yNum = center.y;
 			zNum = center.z;
-			*/
-			
-			
+			 */
+
+
 			logger.info("Object offsets calculated to be " + xNum+", "+yNum+", "+zNum);
 			logger.info("Continuing with internal geometry adjustment");
-			
+
 			GeometryUtilities.adjustObject(ml.getModel(), xNum*-1, yNum*-1, zNum*-1);
 		}
 
 		design.getCoordinate().move((int)zNum, (int)xNum, (int)yNum);
 		design.setClassification(Classification.BASE);
-		logger.info("design coordinate transformed");
+		logger.debug("design coordinate transformed");
 		ILocation corrected = design.getCoordinate().clone();
-		logger.info("corrected object cloned");
+		logger.debug("corrected object cloned");
 
 		SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
 		logger.info("model added to scene");
@@ -212,7 +242,7 @@ public class BulkLoader {
 		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 		logger.info("object moved to correct orientation");
 		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).updateRenderState();
-		progress.modelMovedToLocation(currentCounter, original, corrected);
+		progress.modelMovedToLocation(currentCounter.get(), original, corrected);
 
 
 		//SceneScape.getCity().addDesign(design);
@@ -235,11 +265,11 @@ public class BulkLoader {
 	}
 
 	private synchronized void incrementCurrentCounter(){
-		currentCounter++;
+		currentCounter.incrementAndGet();
 	}
 
 	private synchronized void incrementCompletionCounter(){
-		completionCounter++;
+		completionCounter.incrementAndGet();
 	}
 
 	public ILocation getOrigin(){
