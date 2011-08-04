@@ -125,7 +125,7 @@ public class ModelLoader {
 		importer.load(modelURL.openStream());
 		model = importer.getModel();
 		
-		GeometryUtilities.printInformation(logger, model, true, true, true, true);
+		//GeometryUtilities.printInformation(logger, model, true, true, true, true);
 		
 		// up axis - kind of tough to do correctly without zeroed transforms (though apparently not all exporters are compliant in writing this out correctly)
 		if(importer.getUpAxis()!=null){
