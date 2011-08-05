@@ -465,9 +465,9 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeModeledDesignLocation(int, int, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.jme.map.UTMCoordinate)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeModeledDesignLocation(int, float, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.jme.map.UTMCoordinate)
 	 */
-	public boolean changeModeledDesignLocation(int designID, int rotY, String user, String pass, UTMCoordinate newLocation){
+	public boolean changeModeledDesignLocation(int designID, float rotY, String user, String pass, UTMCoordinate newLocation){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the location for design " + designID);

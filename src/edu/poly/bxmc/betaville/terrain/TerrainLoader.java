@@ -25,17 +25,21 @@
  */
 package edu.poly.bxmc.betaville.terrain;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.imageio.IIOException;
 
 import org.apache.log4j.Logger;
 
 import com.jme.image.Texture;
 import com.jme.math.Vector3f;
+import com.jme.scene.Node;
+import com.jme.scene.SharedMesh;
 import com.jme.scene.Spatial;
-import com.jme.scene.shape.Quad;
+import com.jme.scene.TriMesh;
 import com.jme.scene.state.TextureState;
 import com.jme.scene.state.RenderState.StateType;
 import com.jme.system.DisplaySystem;
@@ -45,7 +49,6 @@ import com.jmex.terrain.TerrainBlock;
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
-import edu.poly.bxmc.betaville.jme.exporters.ColladaExporter;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.map.BoundingBox;
@@ -54,8 +57,9 @@ import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
-import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
+import edu.poly.bxmc.betaville.module.FrameSyncModule;
+import edu.poly.bxmc.betaville.module.ModuleNameException;
 
 /**
  * Static utilities to load terrain
@@ -78,29 +82,56 @@ public class TerrainLoader {
 	private Vector3f originalLoc=null;
 	private boolean useElevations;
 	private BoundingBox acceptableTileArea;
-	
+
+	private int imageLoadAttemptLimit = 2;
+
 	private TileCache cache;
 
-	public TerrainLoader(ILocation center, int tilesEast, int tilesNorth, int zoomLevel, boolean useElevations) {
+	private AtomicBoolean loaderLock = new AtomicBoolean(false);
+	private ArrayList<Spatial> loader = new ArrayList<Spatial>();
+	
+	public TerrainLoader(ILocation center, final int tilesEast, final int tilesNorth, int zoomLevel, boolean useElevations) {
 		start=center;
 		
+		// if the application isn't initialized, add it to the tasks that get performed on initialization
+		if(SceneGameState.getInstance()==null){
+			BetavilleNoCanvas.addCompletionListener(new IAppInitializationCompleteListener() {
+				public void applicationInitializationComplete() {
+					try {
+						SceneGameState.getInstance().addModuleToUpdateList(new LoadModule(tilesNorth*tilesEast));
+					} catch (ModuleNameException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+		else{
+			try {
+				SceneGameState.getInstance().addModuleToUpdateList(new LoadModule(tilesNorth*tilesEast));
+			} catch (ModuleNameException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		// northeast coordinate
 		UTMCoordinate clone = start.getUTM().clone();
 		clone.move(tilesEast, tilesNorth, 0);
 		clone.setAltitude(0);
 		GPSCoordinate ne = clone.getGPS().clone();
-		
+
 		GPSCoordinate swClone = start.getGPS().clone();
 		swClone.setAltitude(0);
-		
-		
+
+
 		acceptableTileArea = new BoundingBox(
 				new GPSCoordinate(0, ne.getLatitude(), swClone.getLongitude()),
 				ne,
 				swClone,
 				new GPSCoordinate(0, start.getGPS().getLatitude(), ne.getLongitude()));
 		logger.info("BOUNDING BOX IS " + acceptableTileArea.toString());
-		
+
 		this.distanceEast=tilesEast;
 		this.distanceNorth=tilesNorth;
 		int checkedZoomLevel = zoomLevel;
@@ -110,7 +141,7 @@ public class TerrainLoader {
 		cache = new TileCache(tileGenerator.baseTileServerURL);
 		this.useElevations=useElevations;
 	}
-	
+
 	private GPSCoordinate splitDistances(GPSCoordinate one, GPSCoordinate two){
 		logger.info("Averaging:\n"+one.toString()+"\n"+two.toString());
 		double avgLat = (one.getLatitude()+two.getLatitude())/2;
@@ -118,20 +149,20 @@ public class TerrainLoader {
 		double avgAlt = (one.getAltitude()+two.getAltitude())/2;
 		return new GPSCoordinate(avgAlt, avgLat, avgLon);
 	}
-	
+
 	public void loadTerrain(){
 		url = tileGenerator.generateTileRequest(start);
 		logger.info("MID-POINT: " +splitDistances(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getNe()).toString());
 		while(eastSoFar<distanceEast){
-			
+
 			while(northSoFar<distanceNorth){
 				loadSingleTerrain();
 				url = tileGenerator.shiftAndGetRequest(0, 1);
 				numLat++;
 				northSoFar++;
 			}
-			
-			
+
+
 			// reset the northing counter
 			url = tileGenerator.shiftAndGetRequest(1, numLat*-1);
 			numLat=0;
@@ -149,31 +180,56 @@ public class TerrainLoader {
 			//gen = new FlatTerrainGenerator(tileGenerator.getCurrentBoundingBox().getSw(), (float)MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getSe()));
 			gen.addTerrainCompletionListener(new ITerrainCompletionListener() {
 				public void terrainGenerationComplete(final Spatial terrainObject) {
-					setupTerrainObject(terrainObject);
+					setupTerrainObject(terrainObject, 1);
 				}
 			});
 			gen.createTerrainBlock();
 		}
 		else{
-			logger.info("Elevations disabled");
+			//logger.info("Elevations disabled");
 			//gen = new HeavyFlatTerrainGenerator(3, tileGenerator.getCurrentBoundingBox().getSw(), (float)MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getSe()));
 			float distanceAcross = (float)MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getSe());
 			float distanceHigh = (float)MapManager.greatCircleDistanced(tileGenerator.getCurrentBoundingBox().getSw(), tileGenerator.getCurrentBoundingBox().getNw());
-			logger.info("distance from west to east: " + distanceAcross);
-			logger.info("distance from south to north: " + distanceHigh);
-			
+			//logger.info("distance from west to east: " + distanceAcross);
+			//logger.info("distance from south to north: " + distanceHigh);
+
 			// use consistent number so we get a square..
 			//Quad terrainObject = new Quad(tileGenerator.xySet[0]+"x"+tileGenerator.xySet[1]+"y", distanceAcross, distanceAcross);
-			Spatial terrainObject = new TerrainBlock("", 2, /*new Vector3f(Scale.fromMeter(distanceAcross),Scale.fromMeter(distanceAcross),Scale.fromMeter(distanceAcross))*/ new Vector3f(distanceAcross, 1, distanceAcross), new float[]{0, 0, 0, 0,
+			//terrainObject.rotateUpTo(Vector3f.UNIT_Z);
+			
+			// we can use a shared mesh if an object has already been created for this latitude
+			//TriMesh copy = searchTerrainForBlockAtLatitude(tileGenerator.xySet[1]);
+			TriMesh copy = null;
+			TriMesh terrainObject;
+			if(copy==null){
+				logger.info("No object previously found at this latitude, creating a fresh mesh");
+				terrainObject = new TerrainBlock("", 2, /*new Vector3f(Scale.fromMeter(distanceAcross),Scale.fromMeter(distanceAcross),Scale.fromMeter(distanceAcross))*/ new Vector3f(distanceAcross, 1, distanceAcross), new float[]{0, 0, 0, 0,
 				/*0, 0, 0, 0,
 				0, 0, 0, 0,
 				0, 0, 0, 0*/}, new Vector3f(0, 0, 0));
-			//terrainObject.rotateUpTo(Vector3f.UNIT_Z);
-			setupTerrainObject(terrainObject);
+			}
+			else{
+				terrainObject = new SharedMesh(copy);
+			}
+			setupTerrainObject(terrainObject, 1);
 		}
 	}
 	
-	private void setupTerrainObject(final Spatial terrainObject){
+	private TriMesh searchTerrainForBlockAtLatitude(int yValue){
+		String searchString = "x"+yValue+"y";
+		Node terrainNode = SceneGameState.getInstance().getTerrainNode();
+		if(terrainNode.getQuantity()>0){
+			//logger.info("terrainNode has " + terrainNode.getQuantity() + " children");
+			for(Spatial child : terrainNode.getChildren()){
+				if(child instanceof TriMesh && child.getName().contains(searchString)){
+					return ((TriMesh)child);
+				}
+			}
+		}
+		return null;
+	}
+
+	private void setupTerrainObject(final Spatial terrainObject, int attempt){
 		GeometryUtilities.removeRenderState(terrainObject, StateType.Texture);
 		//MaterialState ms = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 		//ms.setDiffuse(ColorRGBA.gray);
@@ -202,8 +258,8 @@ public class TerrainLoader {
 			logger.info("lonStride: "+lonStride);
 			loc = new Vector3f(originalLoc.getX()+latStride,0,originalLoc.getZ()+lonStride);
 			logger.info("putting terrain at: " + loc.toString());
-			*/
-			
+			 */
+
 			// I wonder if this will work?!
 			loc = JME2MapManager.instance.locationToBetaville(tileGenerator.getCurrentBoundingBox().getSw());
 		}
@@ -211,30 +267,56 @@ public class TerrainLoader {
 		terrainObject.setLocalTranslation(loc);
 
 		TextureState ts = DisplaySystem.getDisplaySystem().getRenderer().createTextureState();
-		try {
-			url = cache.requestImageTile(tileGenerator.zoomLevel, tileGenerator.xySet[0], tileGenerator.xySet[1]).toString();
-			Texture t = TextureManager.loadTexture(new URL(url), false);
-			if(t==null){
-				logger.error("There was a problem loading the texture!");
-			}
-			if(t!=null){
-				t.setRotation(Rotator.angleZ(270));
-				t.setTranslation(new Vector3f(0, 1, 0));
-				ts.setTexture(t);
-				terrainObject.setRenderState(ts);
-				terrainObject.updateRenderState();
-				
-				try {
-					ColladaExporter exporter = new ColladaExporter(new File(cache.createZoomAndXFolder(tileGenerator.zoomLevel, tileGenerator.xySet[0])+"/"+tileGenerator.xySet[1]+".dae"), terrainObject, false);
-					exporter.writeData();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		url = cache.requestImageTile(tileGenerator.zoomLevel, tileGenerator.xySet[0], tileGenerator.xySet[1]).toString();
+
+		// attempt to load the texture
+		Texture t = null;
+		try{
+			t = TextureManager.loadTexture(new URL(url), false);
+		} catch (Exception e){
+			/*
+			 * If the file is corrupted, we should end up here.  If it simply failed to load,
+			 * we'll end up below at the null check for the texture object
+			 */
+			if(e instanceof IIOException){
+				if(attempt<imageLoadAttemptLimit+1){
+					logger.error("Tile image could not be loaded (attempt "+attempt+" of "+imageLoadAttemptLimit+", deleting the file and trying again");
+					cache.deleteImageCacheEntry(tileGenerator.zoomLevel, tileGenerator.xySet[0], tileGenerator.xySet[1]);
+					setupTerrainObject(terrainObject, attempt+1);
 				}
-				
+				else{
+					logger.warn("Maximum number of image loading attempts reached, moving on");
+				}
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			else if(e instanceof MalformedURLException){
+				e.printStackTrace();
+			}
+		}
+
+
+		if(t==null){
+			logger.error("There was a problem loading the texture!");
+		}
+		if(t!=null){
+			t.setRotation(Rotator.angleZ(270));
+			t.setTranslation(new Vector3f(0, 1, 0));
+			ts.setTexture(t);
+			terrainObject.setRenderState(ts);
+			terrainObject.updateRenderState();
+
+			/*
+			try {
+				File colladaFile = new File(
+						cache.createZoomAndXFolder(tileGenerator.zoomLevel, tileGenerator.xySet[0])+"/"+tileGenerator.xySet[1]+".dae");
+				if(!colladaFile.exists()){
+					ColladaExporter exporter = new ColladaExporter(colladaFile, terrainObject, false);
+					exporter.writeData();
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			*/
 		}
 
 		// if the application isn't initialized, add it to the tasks that get performed on initialization
@@ -251,9 +333,57 @@ public class TerrainLoader {
 	}
 
 	private void addToScene(Spatial terrainObject){
-		SceneGameState.getInstance().getTerrainNode().attachChild(terrainObject);
-		//Box debugBox = new Box("box", terrainObject.getLocalTranslation(), .1f, .1f, .1f);
-		//GeometryUtilities.removeRenderState(debugBox, StateType.Texture);
-		//SceneGameState.getInstance().getTerrainNode().attachChild(debugBox);
+		while(loaderLock.get()){
+			// wait for the lock to expire
+		}
+		loaderLock.set(true);
+		loader.add(terrainObject);
+		loaderLock.set(false);
+	}
+
+	private class LoadModule extends edu.poly.bxmc.betaville.module.Module implements FrameSyncModule{
+
+		private SceneGameState sceneGameState;
+		private int total;
+		private int loadedSoFar=0;
+		private float targetTPF = .005f;
+
+		public LoadModule(int total) {
+			super("Terrain Load Module");
+			// retrieve the scene game state ahead of time - yes, micro-optimization but it _can't_ hurt
+			sceneGameState = SceneGameState.getInstance();
+		}
+
+		public void deconstruct() {}
+
+		public void frameUpdate(float timePerFrame) {
+			while(loaderLock.get()){
+				// wait for the lock to expire
+			}
+			long start = System.currentTimeMillis();
+			loaderLock.set(true);
+			for(int i=0; i<loader.size(); i++){
+				sceneGameState.getTerrainNode().attachChild(loader.remove(i));
+				loadedSoFar++;
+				
+				// if we've reached the time limit for this update, move on to release the lock and return to the render loop
+				if(System.currentTimeMillis()-start>targetTPF){
+					break;
+				}
+			}
+			//loader.clear();
+			loaderLock.set(false);
+			
+			if(total==loadedSoFar){
+				logger.info("Loading complete, removing LoadModule");
+				sceneGameState.removeModuleFromUpdateList(this);
+			}
+			
+			//SceneGameState.getInstance().getTerrainNode().attachChild(terrainObject);
+			//Box debugBox = new Box("box", terrainObject.getLocalTranslation(), .1f, .1f, .1f);
+			//GeometryUtilities.removeRenderState(debugBox, StateType.Texture);
+			//SceneGameState.getInstance().getTerrainNode().attachChild(debugBox);
+		}
+
 	}
 }

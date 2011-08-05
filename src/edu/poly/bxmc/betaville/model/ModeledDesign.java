@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -38,13 +38,13 @@ public class ModeledDesign extends Design{
 	private float dimensionX;
 	private float dimensionY;
 	private float dimensionZ;
-	private int rotX=0;
-	private int rotY=0;
-	private int rotZ=0;
+	private float rotX=0;
+	private float rotY=0;
+	private float rotZ=0;
 	private boolean textured;
 	
 	public ModeledDesign(String name, UTMCoordinate coordinate, String address, 
-			int cityID, String user, String description, String filepath, String url, boolean isVisible, int rotX, int rotY, int rotZ, boolean textured){
+			int cityID, String user, String description, String filepath, String url, boolean isVisible, float rotX, float rotY, float rotZ, boolean textured){
 		super(name, coordinate, address, cityID, user, description, filepath, url, isVisible);
 		this.rotX=rotX;
 		this.rotY=rotY;
@@ -53,7 +53,7 @@ public class ModeledDesign extends Design{
 	}
 	
 	public ModeledDesign(String name, UTMCoordinate coordinate, String address, 
-			String user, String description, String filepath, String url, boolean isVisible, int rotX, int rotY, int rotZ, boolean textured){
+			String user, String description, String filepath, String url, boolean isVisible, float rotX, float rotY, float rotZ, boolean textured){
 		super(name, coordinate, address, user, description, filepath, url, isVisible);
 		this.rotX=rotX;
 		this.rotY=rotY;
@@ -82,27 +82,27 @@ public class ModeledDesign extends Design{
 		return dimensionY;
 	}
 	
-	public int getRotationX() {
+	public float getRotationX() {
 		return rotX;
 	}
 
-	public void setRotationX(int rotation) {
+	public void setRotationX(float rotation) {
 		this.rotX = rotation;
 	}
 	
-	public int getRotationY() {
+	public float getRotationY() {
 		return rotY;
 	}
 	
-	public void setRotationY(int rotation) {
+	public void setRotationY(float rotation) {
 		this.rotY = rotation;
 	}
 	
-	public int getRotationZ() {
+	public float getRotationZ() {
 		return rotZ;
 	}
 	
-	public void setRotationZ(int rotation) {
+	public void setRotationZ(float rotation) {
 		this.rotZ = rotation;
 	}
 
@@ -113,7 +113,7 @@ public class ModeledDesign extends Design{
 	public void setTextured(boolean textured) {
 		this.textured = textured;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -124,9 +124,9 @@ public class ModeledDesign extends Design{
 		result = prime * result + Float.floatToIntBits(dimensionX);
 		result = prime * result + Float.floatToIntBits(dimensionY);
 		result = prime * result + Float.floatToIntBits(dimensionZ);
-		result = prime * result + rotX;
-		result = prime * result + rotY;
-		result = prime * result + rotZ;
+		result = prime * result + Float.floatToIntBits(rotX);
+		result = prime * result + Float.floatToIntBits(rotY);
+		result = prime * result + Float.floatToIntBits(rotZ);
 		result = prime * result + (textured ? 1231 : 1237);
 		return result;
 	}
@@ -152,11 +152,11 @@ public class ModeledDesign extends Design{
 		if (Float.floatToIntBits(dimensionZ) != Float
 				.floatToIntBits(other.dimensionZ))
 			return false;
-		if (rotX != other.rotX)
+		if (Float.floatToIntBits(rotX) != Float.floatToIntBits(other.rotX))
 			return false;
-		if (rotY != other.rotY)
+		if (Float.floatToIntBits(rotY) != Float.floatToIntBits(other.rotY))
 			return false;
-		if (rotZ != other.rotZ)
+		if (Float.floatToIntBits(rotZ) != Float.floatToIntBits(other.rotZ))
 			return false;
 		if (textured != other.textured)
 			return false;

@@ -97,7 +97,7 @@ public class DuplicateWindow extends Window {
 	private int copies = 1;
 	private int maxCopies=5;
 	private UTMCoordinate originalLocation;
-	private int originalRotation;
+	private float originalRotation;
 	private Label savedLabel;
 
 	public DuplicateWindow(){

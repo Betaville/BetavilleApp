@@ -28,7 +28,6 @@ package edu.poly.bxmc.betaville.terrain;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -62,8 +61,15 @@ public class TileCache {
 		}
 	}
 	
-	public void clearCacheEntry(int zoom, int x, int y){
-		createImagePath(zoom, x, y);
+	public void deleteImageCacheEntry(int zoom, int x, int y){
+		File file = getImageFile(zoom, x, y);
+		if(file.exists()){
+			logger.info("Deleting tile from cache: " + file.toString());
+			file.delete();
+		}
+		else{
+			logger.warn("Tile does not exist and could not be deleted: " + file.toString());
+		}
 	}
 	
 	public URL requestImageTile(int zoom, int x, int y){

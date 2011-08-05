@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -46,8 +47,10 @@ import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.model.Design.Classification;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
-import edu.poly.bxmc.betaville.net.NetPool;
+import edu.poly.bxmc.betaville.module.Module;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
+import edu.poly.bxmc.betaville.net.ProtectedManager;
+import edu.poly.bxmc.betaville.net.SecureClientManager;
 import edu.poly.bxmc.betaville.updater.UpdaterPreferences;
 
 /**
@@ -68,6 +71,8 @@ public class BulkLoader {
 	private String zPrefix;
 
 	private IBulkLoadProgressListener progress;
+	
+	private ProtectedManager manager;
 
 	public BulkLoader(ILocation commonOriginForFiles, IBulkLoadProgressListener progressListener){
 		this(commonOriginForFiles, progressListener, "x_", "y_", "z_");
@@ -88,6 +93,7 @@ public class BulkLoader {
 	 */
 	public void load(final List<File> files){
 		UpdaterPreferences.setBaseEnabled(false);
+		manager = new SecureClientManager(new ArrayList<Module>(), true);
 		while(currentCounter.get()<(files.size())){
 
 			try {
@@ -251,7 +257,16 @@ public class BulkLoader {
 		// do model upload
 		ByteArrayOutputStream bo = new ByteArrayOutputStream();
 		BinaryExporter.getInstance().save(SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()), bo);
-		int response = NetPool.getPool().getSecureConnection().addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), new PhysicalFileTransporter(bo.toByteArray()));
+		//int response = NetPool.getPool().getSecureConnection().addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), new PhysicalFileTransporter(bo.toByteArray()));
+		
+		try {
+			// sleep for a little bit to catch breath
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), new PhysicalFileTransporter(bo.toByteArray()));
 		if(response>0){
 			// get handle on model
 			Spatial model = SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier());

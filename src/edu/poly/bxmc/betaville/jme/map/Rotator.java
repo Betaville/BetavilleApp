@@ -43,7 +43,7 @@ public class Rotator {
 	 * @param degrees to be converted to a Quaternion rotation.
 	 * @return Quaternion calculation of the requested angle.
 	 */
-	public static Quaternion angleX(int degrees){
+	public static Quaternion angleX(float degrees){
 		return new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD*degrees,  Vector3f.UNIT_X);
 	}
 	
@@ -53,7 +53,7 @@ public class Rotator {
 	 * @param degrees to be converted to a Quaternion rotation.
 	 * @return Quaternion calculation of the requested angle.
 	 */
-	public static Quaternion angleY(int degrees){
+	public static Quaternion angleY(float degrees){
 		return new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD*degrees,  Vector3f.UNIT_Y);
 	}
 	
@@ -63,11 +63,11 @@ public class Rotator {
 	 * @param degrees to be converted to a Quaternion rotation.
 	 * @return Quaternion calculation of the requested angle.
 	 */
-	public static Quaternion angleZ(int degrees){
+	public static Quaternion angleZ(float degrees){
 		return new Quaternion().fromAngleAxis(FastMath.DEG_TO_RAD*degrees,  Vector3f.UNIT_Z);
 	}
 	
-	public static Quaternion fromThreeAngles(int x, int y, int z){
+	public static Quaternion fromThreeAngles(float x, float y, float z){
 		return new Quaternion().fromAngles(FastMath.DEG_TO_RAD*x, FastMath.DEG_TO_RAD*y, FastMath.DEG_TO_RAD*z);
 	}
 }

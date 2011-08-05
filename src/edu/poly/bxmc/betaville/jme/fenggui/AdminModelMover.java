@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -92,7 +92,7 @@ public class AdminModelMover extends Window {
 	private int moveSpeed = 1;
 	private int maxMoveSpeed=50;
 	private UTMCoordinate originalLocation;
-	private int originalRotation;
+	private float originalRotation;
 	private Label savedLabel;
 
 	public AdminModelMover(){

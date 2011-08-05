@@ -125,7 +125,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 	public ColladaExporter(File file, Spatial toExport, boolean exportLocal)
 	throws IOException {
 		super("COLLADA", file);
-		logger.debug("COLLADA export started for " + toExport.getName());
+		logger.info("COLLADA export started for " + toExport.getName());
 		namespace = Namespace.getNamespace("http://www.collada.org/2005/11/COLLADASchema");
 		rootElement.setAttribute(new Attribute("version", "1.4.1"));
 		exportTarget=toExport;
@@ -361,7 +361,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 									g2.drawRenderedImage(bi, at);
 									g2.dispose();
 									
-									logger.info("Image rotated " + FastMath.RAD_TO_DEG*angles[2] + " degrees");
+									logger.debug("Image rotated " + FastMath.RAD_TO_DEG*angles[2] + " degrees");
 									
 									//((Graphics2D)bi.getGraphics()).rotate(angles[2]);
 									textureToUse = new File(textureToUse.getParentFile().toString()+"/"+textureToUse.getName().replace(".png", "")+"_rot.png");
@@ -371,7 +371,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 									logger.error("The texture needs to be rotated before export, but could not be read from " + textureToUse.toString());
 								}
 							}
-							logger.info("Texture location: "+textureToUse);
+							logger.debug("Texture location: "+textureToUse);
 							Element init_from = new Element("init_from");
 							init_from.addContent(textureToUse.toString());
 							image.addContent(init_from);
@@ -477,12 +477,12 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		if(!(s instanceof Node)){
 			if(s instanceof SharedMesh){
 				logger.warn(SharedMesh.class.getName()+" is not yet supported in this exporter, exporting the target");
-				logger.info("Creating COLLADA element from TriMesh " + s.getName());
+				logger.debug("Creating COLLADA element from TriMesh " + s.getName());
 				Element trimeshElement = createGeometryElement(((SharedMesh)s).getDeepTarget());
 				library_geometries.addContent(trimeshElement);
 			}
 			else if(s instanceof TriMesh){
-				logger.info("Creating COLLADA element from TriMesh " + s.getName());
+				logger.debug("Creating COLLADA element from TriMesh " + s.getName());
 				Element trimeshElement = createGeometryElement((TriMesh)s);
 				library_geometries.addContent(trimeshElement);
 			}
@@ -524,7 +524,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		positionsSource.addContent(positionsArrayTechnique);
 		mesh.addContent(positionsSource);
 
-		logger.info("Positions array created");
+		logger.debug("Positions array created");
 
 		// Normals
 
@@ -543,10 +543,10 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 			normalsSource.addContent(normalsArray);
 			normalsSource.addContent(normalsArrayTechnique);
 			mesh.addContent(normalsSource);
-			logger.info("Normals array created");
+			logger.debug("Normals array created");
 		}
 		else{
-			logger.info("Normals skipped");
+			logger.debug("Normals skipped");
 		}
 
 		// Texture Maps
@@ -564,21 +564,21 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 						logger.warn("There was no coordinate buffer present, skipping");
 						continue;
 					}
-					logger.info("texCoord " + i +" of "+texCoords.size()+" gotten");
+					logger.debug("texCoord " + i +" of "+texCoords.size()+" gotten");
 					Element map = createSourceElement();
 					map.setAttribute(new Attribute("id", trimesh.getName()+"-map-"+i));
 					Element mapArray = createFloatArray(map.getAttributeValue("id")+"-array", coord.coords.capacity());
 					if(mapArray==null) logger.error("The attribute could not be retrieved");
 					mapArray.addContent(arrayFromFloats(coord.coords));
-					logger.info("coordinate array added");
+					logger.debug("coordinate array added");
 					Element mapArrayTechnique = createCommonTechnique();
 					Element mATAccessor = createAccessor(mapArray.getAttributeValue("id"), (coord.coords.capacity()/coord.perVert), coord.perVert);
 					mATAccessor.addContent(createParam("S","float"));
 					mATAccessor.addContent(createParam("T","float"));
-					logger.info("ST values added");
+					logger.debug("ST values added");
 					if(coord.perVert==3){
 						mATAccessor.addContent(createParam("W", "float"));
-						logger.info("W value added");
+						logger.debug("W value added");
 					}
 					mapArrayTechnique.addContent(mATAccessor);
 					map.addContent(mapArray);
@@ -590,38 +590,38 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 				for(Element map : mapSources){
 					mesh.addContent(map);
 				}
-				logger.info("Texture maps created");
+				logger.debug("Texture maps created");
 			}
 			else{
-				logger.info("Texture maps skipped");
+				logger.debug("Texture maps skipped");
 			}
 		}
 		else{
-			logger.info("Texture maps skipped");
+			logger.debug("Texture maps skipped");
 		}
 
 		// Colors
 		Element colorsSource = null;
 		/*
-		logger.info("Creating color buffer");
+		logger.debug("Creating color buffer");
 		if(trimesh.getColorBuffer()!=null){
-			logger.info("Creating color buffer - color buffer not null");
+			logger.debug("Creating color buffer - color buffer not null");
 			if(trimesh.getColorBuffer().capacity()>0){
-				logger.info("Creating color buffer - color buffer capactiy is "+trimesh.getColorBuffer().capacity());
+				logger.debug("Creating color buffer - color buffer capactiy is "+trimesh.getColorBuffer().capacity());
 				colorsSource = createSourceElement();
 				colorsSource.setAttribute(new Attribute("id", trimesh.getName()+"-colors"));
-				logger.info("Creating color buffer - color source ID set");
+				logger.debug("Creating color buffer - color source ID set");
 				if(colorsSource.getAttributeValue("id")==null){
 					logger.error("Could not retrieve element");
 				}
 				else{
-					logger.info("MAKING ELEMENT CALLED " + colorsSource.getAttributeValue("id")+"-array");
+					logger.debug("MAKING ELEMENT CALLED " + colorsSource.getAttributeValue("id")+"-array");
 					Element colorArray = new Element(colorsSource.getAttributeValue("id")+"-array");
-					logger.info("Creating color buffer - color source ID retrieved");
+					logger.debug("Creating color buffer - color source ID retrieved");
 					colorArray.setAttribute(new Attribute("count", ""+trimesh.getColorBuffer().capacity()));
-					logger.info("Creating color buffer - About to create array from color buffer");
+					logger.debug("Creating color buffer - About to create array from color buffer");
 					colorArray.addContent(arrayFromFloats(trimesh.getColorBuffer()));
-					logger.info("Creating color buffer - Array created from color buffer");
+					logger.debug("Creating color buffer - Array created from color buffer");
 					Element colorArrayTechnique = createCommonTechnique();
 					Element cATAccessor = createAccessor(colorArray.getAttributeValue("id"), trimesh.getColorBuffer().capacity(), 4);
 					cATAccessor.addContent(createParam("R", "float"));
@@ -632,13 +632,13 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 					colorsSource.addContent(colorArray);
 					colorsSource.addContent(colorArrayTechnique);
 					mesh.addContent(colorsSource);
-					logger.info("Creating color buffer - Color array added to mesh");
+					logger.debug("Creating color buffer - Color array added to mesh");
 				}
 			}
-			logger.info("Colors array created");
+			logger.debug("Colors array created");
 		}
 		else{
-			logger.info("Colors skipped");
+			logger.debug("Colors skipped");
 		}
 		 */
 
@@ -865,7 +865,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 
 	private void createVisualLibSceneImpl(Element visualScene, Spatial s){
 		// handle nodes different as they have objects under them
-		logger.info("Processing " + s.getName() + " for visual scene");
+		logger.debug("Processing " + s.getName() + " for visual scene");
 		if(s instanceof Node){
 			if(((Node)s).getChildren()!=null){
 				for(Spatial child : (((Node)s).getChildren())){
@@ -875,7 +875,7 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 		}
 		else if(s instanceof Geometry){
 			// deal with single geometry
-			logger.info(s.getClass().getName() + " found named: " + s.getName());
+			logger.debug(s.getClass().getName() + " found named: " + s.getName());
 			if(s instanceof TriMesh){
 				Element node = createNode(s.getName(), NodeType.NODE, createGeometryInstance(s.getName()));
 				visualScene.addContent(node);

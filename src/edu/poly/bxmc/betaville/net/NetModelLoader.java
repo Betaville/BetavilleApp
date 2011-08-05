@@ -54,6 +54,7 @@ import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
+import edu.poly.bxmc.betaville.model.Design.Classification;
 import edu.poly.bxmc.betaville.progress.IntegerBasedProgressiveItem;
 
 /**
@@ -148,11 +149,16 @@ public class NetModelLoader{
 				throw new NullPointerException("designs not received!");
 			}
 			else{
+				for(Design d : designs){
+					if(d.getClassification().equals(Classification.BASE) && !(d instanceof EmptyDesign)) itemsToLoad.incrementAndGet();
+				}
 				// add progress listener once we know that there are models to load 
 				final IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Models Loading", itemsLoaded.get(), itemsToLoad.get());
 				item.setLockFromCompletion(true);
-				GUIGameState.getInstance().getProgressContainer().addItem(item);
-				itemsToLoad.set(designs.size());
+				if(itemsToLoad.get()>0) GUIGameState.getInstance().getProgressContainer().addItem(item);
+				// set the itemsToLoad value to the number of designs minus the amount of proposals
+
+				//itemsToLoad.set(designs.size());
 				item.setMax(itemsToLoad.get());
 				Collections.sort(designs, Design.distanceComparator(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
 
@@ -225,10 +231,8 @@ public class NetModelLoader{
 							item.setMax(itemsToLoad.get());
 							continue;
 						}
-						//logger.info("adding: " + design.getName() + " | ID: " + design.getID());
-
-
-
+						logger.info("adding: " + design.getName() + " | ID: " + design.getID());
+						
 						boolean fileResponse = false;
 						if(!(design instanceof EmptyDesign)){
 							fileResponse = CacheManager.getCacheManager().requestFile(design.getID(), design.getFilepath());
@@ -308,9 +312,9 @@ public class NetModelLoader{
 				}
 			}
 			logger.info("designNode has " + SceneGameState.getInstance().getDesignNode().getQuantity() + " objects (total: "+ GeometryUtilities.countAllChildren(SceneGameState.getInstance().getDesignNode())+")");
-			FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
-			testFlagger.getProposals(5000);
-			testFlagger.placeFlags();
+			//FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
+			//testFlagger.getProposals(5000);
+			//testFlagger.placeFlags();
 		}
 
 		/**

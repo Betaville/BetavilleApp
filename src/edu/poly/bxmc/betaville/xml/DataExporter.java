@@ -128,9 +128,9 @@ public class DataExporter{
 		if(design.getProposalPermission()!=null) d.setAttribute("proposalPermission", design.getProposalPermission().toString());
 		
 		if(design instanceof ModeledDesign){
-			d.setAttribute("rotX", Integer.toString(((ModeledDesign)design).getRotationX()));
-			d.setAttribute("rotY", Integer.toString(((ModeledDesign)design).getRotationY()));
-			d.setAttribute("rotZ", Integer.toString(((ModeledDesign)design).getRotationZ()));
+			d.setAttribute("rotX", Float.toString(((ModeledDesign)design).getRotationX()));
+			d.setAttribute("rotY", Float.toString(((ModeledDesign)design).getRotationY()));
+			d.setAttribute("rotZ", Float.toString(((ModeledDesign)design).getRotationZ()));
 			d.setAttribute("textured", Boolean.toString(((ModeledDesign)design).isTextured()));
 		}
 		else if(design instanceof AudibleDesign){

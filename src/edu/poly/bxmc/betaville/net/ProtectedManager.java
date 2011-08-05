@@ -227,7 +227,7 @@ public interface ProtectedManager extends UnprotectedManager{
 	 * @return Whether or not the location was changed.
 	 * @see UTMCoordinate
 	 */
-	public abstract boolean changeModeledDesignLocation(int designID, int rotY,
+	public abstract boolean changeModeledDesignLocation(int designID, float rotY,
 			String user, String pass, UTMCoordinate newLocation);
 
 	/**

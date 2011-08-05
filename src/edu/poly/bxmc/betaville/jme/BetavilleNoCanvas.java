@@ -116,11 +116,16 @@ public class BetavilleNoCanvas {
 					"com.apple.mrj.application.apple.menu.about.name",
 			"Betaville");
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
-
 		}
 
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			if(OS.isMac()){
+				//UIManager.setLookAndFeel(ch.randelshofer.quaqua.QuaquaManager.getLookAndFeel());
+				//System.setProperty("Quaqua.tabLayoutPolicy","wrap");
+				//System.out.println("Quaqua Look and Feel for OS X assigned");
+			}else{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (InstantiationException e1) {
@@ -173,40 +178,40 @@ public class BetavilleNoCanvas {
 					}
 				}
 			});
-			*/
-			
+			 */
+
 			appleApp.addApplicationListener(new ApplicationListener() {
-				
+
 				public void handleReOpenApplication(ApplicationEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void handleQuit(ApplicationEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void handlePrintFile(ApplicationEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void handlePreferences(ApplicationEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void handleOpenFile(ApplicationEvent arg0) {
 					logger.info("Apple File Open Requested for: " + arg0.getFilename());
 					fileOpenArgument=new File(arg0.getFilename());
 				}
-				
+
 				public void handleOpenApplication(ApplicationEvent arg0) {
 					// TODO Auto-generated method stub
-					
+
 				}
-				
+
 				public void handleAbout(ApplicationEvent arg0){
 					AboutWindow aw = new AboutWindow();
 					aw.setVisible(true);
@@ -255,14 +260,14 @@ public class BetavilleNoCanvas {
 				logger.error("Preferences file could not be written", e1);
 			}
 		}
-		
+
 		// Check for Kiosk Mode
 		addCompletionListener(new IAppInitializationCompleteListener() {
-			
+
 			public void applicationInitializationComplete() {
-				
+
 				if(!KioskMode.isInKioskMode()) return;
-				
+
 				// setup kiosk password
 				if(KioskMode.isExitPasswordRequired() &&
 						(KioskMode.getKioskPasswordHash()==null || KioskMode.getKioskPasswordHash().length()!=40)){
@@ -274,13 +279,13 @@ public class BetavilleNoCanvas {
 				else{
 					logger.info("Application is in Kiosk Mode and requires a password");
 				}
-				
-				
+
+
 				// setup kiosk refresher
 				if(KioskMode.getRefreshRate()>0){
 					betavilleUpdater.addTask(new BetavilleTask(new KioskUpdater(1000, KioskMode.getRefreshRate())));
 				}
-				
+
 			}
 		});
 
@@ -343,7 +348,7 @@ public class BetavilleNoCanvas {
 				public void run() {
 					TerrainLoader t = new TerrainLoader(JME2MapManager.instance
 							.betavilleToUTM(sceneGameState.getCamera()
-									.getLocation()), 50, 50, 17, false);
+									.getLocation()), 20, 10, 17, false);
 					t.loadTerrain();
 				}
 			});
@@ -409,10 +414,10 @@ public class BetavilleNoCanvas {
 				public void run() {
 					long startTime = System.currentTimeMillis();
 					NetModelLoader.loadCurrentCity(LookupRoutine.ALL_IN_CITY);
-					
+
 					// enable framerate optimization
 					//sceneGameState.setFramerateOptimizationEnabled(true);
-					
+
 					betavilleUpdater.addTask(new BetavilleTask(new BaseUpdater(
 							30000)));
 					logger.info("Done loading models, took: "
