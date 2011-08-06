@@ -286,8 +286,8 @@ public class AdminModelMover extends Window {
 				try {
 					int value;
 					
-					// only get the number if we see a positive value
-					if(!FengUtils.getText(rotYText).contains("-")){
+					// only get the number if we see a positive value (and the string isn't empty)
+					if(!FengUtils.getText(rotYText).contains("-") && !rotYText.getText().isEmpty()){
 						value = FengUtils.getNumber(rotYText);
 						if(value>360){
 							rotYText.setText(""+360);
