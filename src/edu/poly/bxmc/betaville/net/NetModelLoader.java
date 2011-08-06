@@ -312,9 +312,9 @@ public class NetModelLoader{
 				}
 			}
 			logger.info("designNode has " + SceneGameState.getInstance().getDesignNode().getQuantity() + " objects (total: "+ GeometryUtilities.countAllChildren(SceneGameState.getInstance().getDesignNode())+")");
-			//FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
-			//testFlagger.getProposals(5000);
-			//testFlagger.placeFlags();
+			FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
+			testFlagger.getProposals(5000);
+			testFlagger.placeFlags();
 		}
 
 		/**
