@@ -318,7 +318,7 @@ public class AdminModelMover extends Window {
 		
 		sliderListener = new ISliderMovedListener(){
 			public void sliderMoved(SliderMovedEvent arg0) {
-				int newValue = (int)(rotYSlider.getValue()*360);
+				float newValue = (float)(rotYSlider.getValue()*360f);
 				rotYText.removeTextChangedListener(rotYTextListener);
 				rotYText.setText(""+newValue);
 				rotYText.addTextChangedListener(rotYTextListener);
@@ -340,7 +340,7 @@ public class AdminModelMover extends Window {
 		getContentContainer().addWidget(sliderRotateContainer);
 	}
 	
-	private void doRotationChange(int newValue){
+	private void doRotationChange(float newValue){
 		SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleY(newValue));
 		SceneScape.getTargetSpatial().setLocalRotation(Rotator.fromThreeAngles(getDesign().getRotationX(), newValue, getDesign().getRotationZ()));
 		getDesign().setRotationY(newValue);
@@ -364,6 +364,7 @@ public class AdminModelMover extends Window {
 		logger.info("Changing the location of " + getDesign().getID());
 		logger.info("OLD: " + originalLocation.toString() + " Altitude: " + originalLocation.getAltitude());
 		logger.info("NEW: " + getDesign().getCoordinate().toString() + " Altitude: " + getDesign().getCoordinate().getAltitude());
+		logger.info("Rotation will be: " + getDesign().getRotationY());
 		
 		if(!NetPool.getPool().getSecureConnection().changeModeledDesignLocation(getDesign().getID(),
 				getDesign().getRotationY(), SettingsPreferences.getUser(), SettingsPreferences.getPass(),

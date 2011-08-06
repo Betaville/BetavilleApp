@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
 import java.util.HashMap;
@@ -71,11 +71,11 @@ public class ModelMover extends Window implements IBetavilleWindow {
 	private static final Logger logger = Logger.getLogger(ModelMover.class);
 
 	private HashMap<Integer, FallbackSet> changeFallbacks;
-	
+
 	private static enum Direction{
 		NORTH,SOUTH,EAST,WEST,UP,DOWN
 	}
-	
+
 	private final String rotationPrefix = "Rotation";
 	private Label rotationLabel;
 	private TextEditor rotation;
@@ -86,7 +86,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 	private Button south;
 	private Button east;
 	private Button west;
-	
+
 	private Button up;
 	private Button down;
 
@@ -97,9 +97,9 @@ public class ModelMover extends Window implements IBetavilleWindow {
 	 * 
 	 */
 	public ModelMover() {
-		
+
 		changeFallbacks  = new HashMap<Integer, ModelMover.FallbackSet>();
-		
+
 		getContentContainer().setLayoutManager(new RowExLayout(false));
 
 		// ROTATION CONTROL
@@ -113,10 +113,10 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		rotation.setRestrict(TextEditor.RESTRICT_NUMBERSONLYDECIMAL);
 		rotation.setLayoutData(new RowExLayoutData(true, true));
 		rotation.addKeyListener(new IKeyListener() {
-			
+
 			public void keyTyped(Object arg0, KeyTypedEvent arg1) {
 			}
-			
+
 			public void keyReleased(Object arg0, KeyReleasedEvent arg1) {
 				if(arg1.getKeyClass().equals(Key.ENTER)){
 					// has the object already been moved?
@@ -125,11 +125,11 @@ public class ModelMover extends Window implements IBetavilleWindow {
 						FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
 						changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
 					}
-					
+
 					// perform the rotate action
-					int newRotation=0;
+					float newRotation=0;
 					try {
-						newRotation = (int)FengUtils.getFloat(rotation);
+						newRotation = FengUtils.getFloat(rotation);
 					} catch (FengTextContentException e) {
 						// This issue should not come up since FengGUI is only allowing valid numbers
 						logger.warn("An invalid value somehow made its way from a FengGUI input field that should have been " +
@@ -143,7 +143,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 					((ModeledDesign)SceneScape.getPickedDesign()).setRotationY(newRotation);
 				}
 			}
-			
+
 			public void keyPressed(Object arg0, KeyPressedEvent arg1) {
 			}
 		});
@@ -166,22 +166,22 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		Container translateSpeedContainer = FengGUI.createWidget(Container.class);
 		translateSpeedContainer.setLayoutManager(new RowExLayout(true));
 		translateSpeedContainer.addWidget(translateLabel, translateSpeed);
-		
+
 		north = FengGUI.createWidget(Button.class);
 		north.setText("North");
 		north.setLayoutData(new RowExLayoutData(false, true));
 		north.addButtonPressedListener(new MoveListener(Direction.NORTH));
-		
+
 		south = FengGUI.createWidget(Button.class);
 		south.setText("South");
 		south.setLayoutData(new RowExLayoutData(false, true));
 		south.addButtonPressedListener(new MoveListener(Direction.SOUTH));
-		
+
 		east = FengGUI.createWidget(Button.class);
 		east.setText("East");
 		east.setLayoutData(new RowExLayoutData(false, true));
 		east.addButtonPressedListener(new MoveListener(Direction.EAST));
-		
+
 		west = FengGUI.createWidget(Button.class);
 		west.setText("West");
 		west.setLayoutData(new RowExLayoutData(false, true));
@@ -190,18 +190,18 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		Container translateActionContainer = FengGUI.createWidget(Container.class);
 		translateActionContainer.setLayoutManager(new RowExLayout(true));
 		translateActionContainer.addWidget(north, south, east, west);
-		
+
 		// ALTITUDE CONTROL
 		up = FengGUI.createWidget(Button.class);
 		up.setText("Up");
 		up.setLayoutData(new RowExLayoutData(false, true));
 		up.addButtonPressedListener(new MoveListener(Direction.UP));
-		
+
 		down = FengGUI.createWidget(Button.class);
 		down.setText("Down");
 		down.setLayoutData(new RowExLayoutData(false, true));
 		down.addButtonPressedListener(new MoveListener(Direction.DOWN));
-		
+
 		Container upDownContainer = FengGUI.createWidget(Container.class);
 		upDownContainer.setLayoutManager(new RowExLayout(true));
 		upDownContainer.addWidget(up, down);
@@ -212,13 +212,13 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		save.setText("Save");
 		save.setLayoutData(new RowExLayoutData(false, true));
 		save.addButtonPressedListener(new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				if(changeFallbacks.get(SceneScape.getPickedDesign().getID())!=null){
 					// check if the location has been changed
-					
+
 					// check if the rotation has been updated
-					
+
 					if(NetPool.getPool().getSecureConnection().changeModeledDesignLocation(SceneScape.getPickedDesign().getID(),
 							((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), SettingsPreferences.getUser(), SettingsPreferences.getPass(),
 							SceneScape.getPickedDesign().getCoordinate())){
@@ -238,9 +238,9 @@ public class ModelMover extends Window implements IBetavilleWindow {
 				else{
 					logger.warn("The object does not appear to have been changed should the " +
 					"reset button really be visible?");
-			GUIGameState.getInstance().getDisp().addWidget(
-					FengUtils.createDismissableWindow("Betaville",
-							"This object does not appear to have been moved", "ok", true));
+					GUIGameState.getInstance().getDisp().addWidget(
+							FengUtils.createDismissableWindow("Betaville",
+									"This object does not appear to have been moved", "ok", true));
 				}
 			}
 		});
@@ -249,22 +249,22 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		reset.setText("Reset");
 		reset.setLayoutData(new RowExLayoutData(false, true));
 		reset.addButtonPressedListener(new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				FallbackSet fallbacks = changeFallbacks.get(SceneScape.getPickedDesign().getID());
-				
+
 				// If a set of fallbacks has been stored for this object, then we can put things back
 				if(fallbacks!=null){
 					SceneScape.getTargetSpatial().setLocalTranslation(JME2MapManager.instance.locationToBetaville(fallbacks.fallbackLocation));
 					SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).setCoordinate((UTMCoordinate)fallbacks.fallbackLocation);
-					
+
 					SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleY((int)fallbacks.fallbackRotation));
 					SceneScape.getTargetSpatial().setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SceneScape.getPickedDesign()).getRotationX(), (int)fallbacks.fallbackRotation, ((ModeledDesign)SceneScape.getPickedDesign()).getRotationZ()));
 					((ModeledDesign)SceneScape.getPickedDesign()).setRotationY((int)fallbacks.fallbackRotation);
 				}
 				else{
 					logger.warn("No fallbacks were available for the selected object, should the " +
-							"reset button really be visible?");
+					"reset button really be visible?");
 					GUIGameState.getInstance().getDisp().addWidget(
 							FengUtils.createDismissableWindow("Betaville",
 									"This object does not appear to have been previously moved", "ok", true));
@@ -277,7 +277,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		saveRevertContainer.addWidget(reset, save);
 
 		// ADD CONTAINERS TO THE WINDOW
-		
+
 		getContentContainer().addWidget(rotateContainer);
 		getContentContainer().addWidget(translateSpeedContainer);
 		getContentContainer().addWidget(translateActionContainer);
@@ -290,18 +290,18 @@ public class ModelMover extends Window implements IBetavilleWindow {
 
 			public void selectionCleared(Design previousDesign) {
 				if(!isInWidgetTree()) return;
-				
+
 				enableAll(false);
 			}
 
 			public void designSelected(Spatial spatial, Design design) {
 				if(!isInWidgetTree()) return;
-				
+
 				enableAll(true);
 			}
 		});
 	}
-	
+
 	private void enableAll(boolean enabled){
 		north.setEnabled(enabled);
 		south.setEnabled(enabled);
@@ -322,16 +322,16 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		setTitle("Model Mover");
 		setHeight(getHeight()+10);
 	}
-	
-	
+
+
 	private class MoveListener implements IButtonPressedListener{
-		
+
 		private Direction direction;
-		
+
 		private MoveListener(Direction direction){
 			this.direction=direction;
 		}
-		
+
 		public void buttonPressed(Object arg0, ButtonPressedEvent arg1){
 			// has the object already been moved?
 			if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
@@ -339,7 +339,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 				FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
 				changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
 			}
-			
+
 			float moveAmount = 0;
 			try {
 				moveAmount = FengUtils.getFloat(translateSpeed);
@@ -351,7 +351,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 				GUIGameState.getInstance().getDisp().addWidget(
 						FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
 			}
-			
+
 			switch (direction) {
 			case NORTH:
 				Translator.moveNorth(SceneScape.getTargetSpatial(), moveAmount);
@@ -379,7 +379,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 				break;
 			}
 		}
-		
+
 	}
 
 
