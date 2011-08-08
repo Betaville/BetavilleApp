@@ -293,8 +293,8 @@ public class NetModelLoader{
 							}
 							else if(design instanceof EmptyDesign){
 								SceneScape.getCity(cityID).addDesign(design);
-								itemsLoaded.incrementAndGet();
-								item.update(itemsLoaded.get());
+								//itemsLoaded.incrementAndGet();
+								//item.update(itemsLoaded.get());
 							} 
 						}
 					}
