@@ -25,7 +25,10 @@
  */
 package edu.poly.bxmc.betaville.progress;
 
+import java.util.ArrayList;
+
 import org.fenggui.Container;
+import org.fenggui.IWidget;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
 
@@ -48,4 +51,22 @@ public class ProgressContainer extends Container{
 		pci.setLayoutData(new RowExLayoutData(true, true));
 		addWidget(pci);
 	}
+	
+	/**
+	 * Retrieve all of the progress items in this container
+	 * @return a {@link Iterable} of {@link ProgressContainerItem}
+	 */
+	public Iterable<ProgressContainerItem> getProgressItems() {
+		ArrayList<ProgressContainerItem> progressContainerItems = new ArrayList<ProgressContainerItem>();
+		
+		for(IWidget w : getWidgets()){
+			// only return the progress items
+			if(w instanceof ProgressContainerItem){
+				progressContainerItems.add((ProgressContainerItem)w);
+			}
+		}
+		
+		return progressContainerItems;
+	}
+	
 }
