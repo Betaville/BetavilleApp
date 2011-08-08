@@ -41,8 +41,10 @@ public class ProgressContainerItem extends Container {
 
 	private String progressTitle;
 	private Label statusLabel;
+	private ProgressiveItem item;
 
 	public ProgressContainerItem(ProgressiveItem item){
+		this.item=item;
 		getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 		progressTitle=item.getName();
 		statusLabel = FengGUI.createWidget(Label.class);
@@ -67,5 +69,13 @@ public class ProgressContainerItem extends Container {
 	
 	private void remove(){
 		if(getParent()!=null)((Container)getParent()).removeWidget(this);
+	}
+
+	/**
+	 * Get the progress item associated with this FengGUI widget
+	 * @return The {@link ProgressiveItem}
+	 */
+	public ProgressiveItem getItem() {
+		return item;
 	}
 }
