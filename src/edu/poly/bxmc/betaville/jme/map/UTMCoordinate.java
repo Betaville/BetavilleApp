@@ -69,10 +69,11 @@ public class UTMCoordinate implements ILocation, Serializable{
 	}
 	
 	/**
-	 * @param eastingDeltaMeters
-	 * @param northingDeltaMeters
-	 * @param altitudeDelta
-	 * @return
+	 * Moves the UTM coordinate in meters.  Calculations are done internally, the coordinate returned is a reference to this object
+	 * @param eastingDeltaMeters The amount of change in meters (can be positive or negative)
+	 * @param northingDeltaMeters The amount of change in meters (can be positive or negative)
+	 * @param altitudeDelta The amount of change in meters (can be positive or negative)
+	 * @return this object (for chaining purposes)
 	 */
 	public UTMCoordinate move(float eastingDeltaMeters, float northingDeltaMeters, float altitudeDelta){
 		int[] northing = Math.splitFraction(northingDeltaMeters);
@@ -86,10 +87,13 @@ public class UTMCoordinate implements ILocation, Serializable{
 	}
 	
 	/**
-	 * Moves the UTM coordinate in meters.
+	 * Moves the UTM coordinate in meters.  Calculations are done internally, the coordinate returned is a reference to this object
 	 * @param eastingDeltaMeters The amount of change in meters (can be positive or negative)
 	 * @param northingDeltaMeters The amount of change in meters (can be positive or negative)
+	 * @param eastingDeltaCentimeters The amount of change in centimeters (can be positive or negative)
+	 * @param northingDeltaCentimeters The amount of change in centimeters (can be positive or negative)
 	 * @param altitudeDelta The amount of change in meters (can be positive or negative)
+	 * @return this object (for chaining purposes)
 	 */
 	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, int eastingDeltaCentimeters, int northingDeltaCentimeters, int altitudeDelta){
 		int workingEastingMeters=eastingDeltaMeters;
@@ -105,6 +109,33 @@ public class UTMCoordinate implements ILocation, Serializable{
 		while(workingNorthingCentimeters>=100){
 			workingNorthingCentimeters-=100;
 			workingNorthingMeters+=1;
+		}
+		
+		
+		// if the centimeters are less than 100, reduce to meters
+		while(workingEastingCentimeters<=-100){
+			workingEastingCentimeters+=100;
+			workingEastingMeters-=1;
+		}
+		while(workingNorthingCentimeters<=-100){
+			workingNorthingCentimeters+=100;
+			workingNorthingMeters-=1;
+		}
+		
+		// now we're at a point where we're either adding or subtracting less than a full meter
+		if(workingEastingCentimeters<0){
+			// subtract the number of meters by one
+			workingEastingMeters-=1;
+			// offset the negative centimeters
+			workingEastingCentimeters+=100;
+		}
+		
+		// now we're at a point where we're either adding or subtracting less than a full meter
+		if(workingNorthingCentimeters<0){
+			// subtract the number of meters by one
+			workingNorthingMeters-=1;
+			// offset the negative centimeters
+			workingNorthingCentimeters+=100;
 		}
 		
 		eastingCentimeters = (short)workingEastingCentimeters;
