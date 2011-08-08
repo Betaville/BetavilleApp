@@ -49,7 +49,7 @@ public class FloatBasedProgressiveItem extends ProgressiveItem {
 			listener.progressUpdated(getPercentage(), getCurrentProgress());
 		}
 		
-		if(this.current==maximum){
+		if(this.current>=maximum){
 			for(IProgressUpdateListener listener : listeners){
 				listener.taskFinished();
 			}

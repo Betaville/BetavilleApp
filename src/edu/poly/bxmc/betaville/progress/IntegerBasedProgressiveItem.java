@@ -49,7 +49,7 @@ public class IntegerBasedProgressiveItem extends ProgressiveItem {
 			listener.progressUpdated(getPercentage(), getCurrentProgress());
 		}
 		
-		if(this.current==maximum){
+		if(this.current>=maximum){
 			if(lockFromCompletion) return;
 			for(IProgressUpdateListener listener : listeners){
 				listener.taskFinished();

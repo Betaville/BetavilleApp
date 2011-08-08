@@ -131,6 +131,7 @@ public class NetModelLoader{
 
 			final AtomicBoolean listLock = new AtomicBoolean(false);
 			final ArrayList<Node> nodeList = new ArrayList<Node>();
+			boolean itemIsInView = false;
 
 			UnprotectedManager manager = NetPool.getPool().getConnection();
 			if(lookupRoutine.equals(LookupRoutine.ALL_IN_CITY)){
@@ -149,17 +150,16 @@ public class NetModelLoader{
 				throw new NullPointerException("designs not received!");
 			}
 			else{
+				
 				for(Design d : designs){
-					if(d.getClassification().equals(Classification.BASE) && !(d instanceof EmptyDesign)) itemsToLoad.incrementAndGet();
+					if(d.getClassification().equals(Classification.BASE) && d instanceof ModeledDesign) itemsToLoad.incrementAndGet();
 				}
+				
 				// add progress listener once we know that there are models to load 
 				final IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Models Loading", itemsLoaded.get(), itemsToLoad.get());
 				item.setLockFromCompletion(true);
-				if(itemsToLoad.get()>0) GUIGameState.getInstance().getProgressContainer().addItem(item);
 				// set the itemsToLoad value to the number of designs minus the amount of proposals
 
-				//itemsToLoad.set(designs.size());
-				item.setMax(itemsToLoad.get());
 				Collections.sort(designs, Design.distanceComparator(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation())));
 
 				// setup the scene loader
@@ -173,6 +173,7 @@ public class NetModelLoader{
 						 * 	- The loading is done
 						 * 	- A model is currently being processed
 						 */
+						/*
 						while(nodeList.size()==0){
 							try {
 								// first check if the loading is done, return if there is
@@ -183,6 +184,7 @@ public class NetModelLoader{
 								e.printStackTrace();
 							}
 						}
+						*/
 
 						while(!allDesignsProcessed.get()){
 							if(nodeList.size()==0) continue;
@@ -229,6 +231,7 @@ public class NetModelLoader{
 								JME2MapManager.instance.locationToBetaville(design.getCoordinate())) > Scale.fromMeter(50000)){
 							itemsToLoad.decrementAndGet();
 							item.setMax(itemsToLoad.get());
+							item.update(itemsToLoad.get());
 							continue;
 						}
 						logger.info("adding: " + design.getName() + " | ID: " + design.getID());
@@ -286,8 +289,19 @@ public class NetModelLoader{
 								}
 
 								nodeList.add(dNode);
-
 								//itemsToLoad.incrementAndGet();
+								
+								// if the progress item hasn't been added to the display already, add it
+								if(!itemIsInView){
+									if(itemsToLoad.get()>0){
+										GUIGameState.getInstance().getProgressContainer().addItem(item);
+										itemIsInView=true;
+									}
+								}
+								else{
+									//item.setMax(itemsToLoad.get());
+									//item.update(itemsLoaded.get());
+								}
 								//item.setMax(itemsToLoad.get());
 
 							}
