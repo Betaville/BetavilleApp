@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -72,17 +73,19 @@ public class SceneScape {
 
 	private static Node emptySpatial = new Node("$empty");
 	private static Spatial targetSpatial = emptySpatial;
-	
+
 	private static Node selectedTerrain;
 
 	public static final int SELECTION_EMPTY=0;
-	
+
+	private static AtomicBoolean runningTriggers = new AtomicBoolean(false);
+
 	private static ArrayList<ISpatialSelectionListener> selectionListeners = new ArrayList<ISpatialSelectionListener>();
 	private static ArrayList<ITerrainSelectionListener> terrainListeners = new ArrayList<ITerrainSelectionListener>();
 	private static Vector<IFlagSelectionListener> flagSelectionListeners = new Vector<IFlagSelectionListener>();
 
 	static{
-		//logger.setLevel(Level.DEBUG);
+		logger.setLevel(Level.INFO);
 	}
 
 	/**
@@ -117,7 +120,7 @@ public class SceneScape {
 			logger.error("Adding city apparently failed as it could not be found in the city list", e);
 		}
 	}
-	
+
 	/**
 	 * Adds a city to the city list
 	 * @param newCity The city to add.
@@ -125,7 +128,7 @@ public class SceneScape {
 	public static void addCity(City newCity){
 		cities.add(newCity);
 	}
-	
+
 	public static void setCurrentCity(int cityID) throws Exception{
 		boolean cityFound=false;
 		for(City c : cities){
@@ -135,7 +138,7 @@ public class SceneScape {
 		currentCity=cityID;
 		logger.info("Current City ID Set To: " + cityID);
 	}
-	
+
 	public static int getCurrentCityID(){
 		return currentCity;
 	}
@@ -146,7 +149,7 @@ public class SceneScape {
 		}
 		return null;
 	}
-	
+
 	public static City getCity(int cityID){
 		for(City c : cities){
 			if(c.getCityID()==cityID) return c;
@@ -168,15 +171,20 @@ public class SceneScape {
 	}
 
 	public static void setTargetSpatial(Spatial s){
+		
+		while(runningTriggers.get()){
+			logger.warn("Waiting for previous selection to finish");
+		}
+		
 		if(s==null){
 			logger.info("Nothing picked!");
 			return;
 		}
 		logger.debug("trying to pick Spatial named: " + s.getName());
-		
+
 		// remove the red box
 		SceneGameState.getInstance().removeGroundBox();
-		
+
 		long visualDeApplicationStart = System.currentTimeMillis();
 		if(SettingsPreferences.SELECTION_VISUAL.equals(SelectionVisuals.WIREFRAME)){
 			targetSpatial.clearRenderState(StateType.Wireframe);
@@ -189,7 +197,7 @@ public class SceneScape {
 			SceneGameState.getInstance().getDesignNode().detachChildNamed("selectionBounding");
 		}
 		logger.debug("Visual de-application took " + (System.currentTimeMillis()-visualDeApplicationStart) + "ms");
-		
+
 		Design previousDesign = null;
 		if(!isTargetSpatialEmpty()){
 			long start = System.currentTimeMillis();
@@ -202,7 +210,7 @@ public class SceneScape {
 
 		// Assign the new spatial.
 		targetSpatial = s;
-		
+
 
 		long visualApplicationStart = System.currentTimeMillis();
 		if(SettingsPreferences.SELECTION_VISUAL.equals(SelectionVisuals.WIREFRAME)){
@@ -232,18 +240,30 @@ public class SceneScape {
 			}
 		}
 		logger.debug("Visual application took " + (System.currentTimeMillis()-visualApplicationStart) + "ms");
-		
+
 		targetSpatial.updateRenderState();
 
-		long lisnterStart = System.currentTimeMillis();
-		for(ISpatialSelectionListener listener : selectionListeners){
-			if(!isTargetSpatialEmpty()){
-				listener.designSelected(targetSpatial, getPickedDesign());
-			}
-			else if(previousDesign!=null) listener.selectionCleared(previousDesign);
-		}
-		logger.debug("Listener triggers took " + (System.currentTimeMillis()-lisnterStart) + "ms");
-		
+		submitTriggers(previousDesign);
+	}
+
+	private static void submitTriggers(final Design previousDesign){
+		//SettingsPreferences.getThreadPool().execute(new Runnable() {
+
+			//@Override
+			//public void run() {
+				runningTriggers.set(true);
+				long lisnterStart = System.currentTimeMillis();
+				for(int i=0; i<selectionListeners.size(); i++){
+					ISpatialSelectionListener listener = selectionListeners.get(i);
+					if(!isTargetSpatialEmpty()){
+						listener.designSelected(targetSpatial, getPickedDesign());
+					}
+					else if(previousDesign!=null) listener.selectionCleared(previousDesign);
+				}
+				logger.debug("Listener triggers took " + (System.currentTimeMillis()-lisnterStart) + "ms");
+				runningTriggers.set(false);
+			//}
+		//});
 	}
 
 	public static Spatial getTargetSpatial(){
@@ -267,31 +287,31 @@ public class SceneScape {
 	public static void clearTargetSpatial(){
 		setTargetSpatial(emptySpatial);
 	}
-	
+
 	public static Design getPickedDesign(){
 		return getCity().findDesignByFullIdentifier(targetSpatial.getName());
 	}
-	
+
 	public static void addSelectionListener(ISpatialSelectionListener listener){
 		selectionListeners.add(listener);
 	}
-	
+
 	public static void removeSelectionListener(ISpatialSelectionListener listener){
 		selectionListeners.remove(listener);
 	}
-	
+
 	public static void removeAllSelectionListeners(){
 		selectionListeners.clear();
 	}
-	
+
 	public static void addTerrainSelectionListener(ITerrainSelectionListener listener){
 		terrainListeners.add(listener);
 	}
-	
+
 	public static void removeTerrainSelectionListener(ITerrainSelectionListener listener){
 		terrainListeners.remove(listener);
 	}
-	
+
 	public static void removeAllTerrainSelectionListeners(){
 		terrainListeners.clear();
 	}
@@ -308,7 +328,7 @@ public class SceneScape {
 	public static void removaAllFlagSelectionListeners(){
 		flagSelectionListeners.removeAllElements();
 	}
-	
+
 	public static void setSelectedTerrain(Node terrainSelection){
 		logger.debug("terrain selected: " + terrainSelection.getName());
 		selectedTerrain = terrainSelection;
@@ -316,18 +336,18 @@ public class SceneScape {
 			l.terrainSelected(selectedTerrain);
 		}
 	}
-	
+
 	public static void clearTerrainSelection(){
 		selectedTerrain=null;
 		for(ITerrainSelectionListener l : terrainListeners){
 			l.terrainSelectionCleared();
 		}
 	}
-	
+
 	public static Node getSelectedTerrain(){
 		return selectedTerrain;
 	}
-	
+
 	public static Vector<IFlagSelectionListener> getFlagSelectionListeners(){
 		return flagSelectionListeners;
 	}
