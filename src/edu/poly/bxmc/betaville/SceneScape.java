@@ -28,6 +28,7 @@ package edu.poly.bxmc.betaville;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.jme.bounding.BoundingBox;
@@ -80,7 +81,9 @@ public class SceneScape {
 	private static ArrayList<ITerrainSelectionListener> terrainListeners = new ArrayList<ITerrainSelectionListener>();
 	private static Vector<IFlagSelectionListener> flagSelectionListeners = new Vector<IFlagSelectionListener>();
 
-
+	static{
+		//logger.setLevel(Level.DEBUG);
+	}
 
 	/**
 	 * Gets the minimum height that the camera is able
@@ -174,6 +177,7 @@ public class SceneScape {
 		// remove the red box
 		SceneGameState.getInstance().removeGroundBox();
 		
+		long visualDeApplicationStart = System.currentTimeMillis();
 		if(SettingsPreferences.SELECTION_VISUAL.equals(SelectionVisuals.WIREFRAME)){
 			targetSpatial.clearRenderState(StateType.Wireframe);
 		}
@@ -184,9 +188,14 @@ public class SceneScape {
 		else if(SettingsPreferences.SELECTION_VISUAL.equals(SelectionVisuals.BOUNDING)){
 			SceneGameState.getInstance().getDesignNode().detachChildNamed("selectionBounding");
 		}
+		logger.debug("Visual de-application took " + (System.currentTimeMillis()-visualDeApplicationStart) + "ms");
 		
 		Design previousDesign = null;
-		if(!isTargetSpatialEmpty()) previousDesign = getPickedDesign();
+		if(!isTargetSpatialEmpty()){
+			long start = System.currentTimeMillis();
+			previousDesign = getPickedDesign();
+			logger.debug("Design search took " + (System.currentTimeMillis()-start) + "ms");
+		}
 
 		// Now update the render state.  The spatial should now be ready for release.
 		targetSpatial.updateRenderState();
@@ -195,6 +204,7 @@ public class SceneScape {
 		targetSpatial = s;
 		
 
+		long visualApplicationStart = System.currentTimeMillis();
 		if(SettingsPreferences.SELECTION_VISUAL.equals(SelectionVisuals.WIREFRAME)){
 			targetSpatial.setRenderState(DisplaySystem.getDisplaySystem().getRenderer().createWireframeState());
 		}
@@ -221,15 +231,18 @@ public class SceneScape {
 				b.updateRenderState();
 			}
 		}
+		logger.debug("Visual application took " + (System.currentTimeMillis()-visualApplicationStart) + "ms");
 		
 		targetSpatial.updateRenderState();
 
+		long lisnterStart = System.currentTimeMillis();
 		for(ISpatialSelectionListener listener : selectionListeners){
 			if(!isTargetSpatialEmpty()){
 				listener.designSelected(targetSpatial, getPickedDesign());
 			}
 			else if(previousDesign!=null) listener.selectionCleared(previousDesign);
 		}
+		logger.debug("Listener triggers took " + (System.currentTimeMillis()-lisnterStart) + "ms");
 		
 	}
 
