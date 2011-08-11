@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@ package edu.poly.bxmc.betaville.jme.fenggui.extras;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
@@ -53,7 +52,6 @@ import org.fenggui.util.Color;
 import com.jme.input.MouseInput;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
-import edu.poly.bxmc.betaville.gui.BetavilleClipboardOwner;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ITweenFinishedListener;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -165,16 +163,6 @@ public class FengUtils {
 				}
 			}});
 		
-	}
-	
-	public static void copyAction(TextEditor te){
-		try {
-			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(getSelectedText(te)), BetavilleClipboardOwner.getInstance());
-			// remove the inserted "c"
-			te.setText(te.getText().substring(0, te.getText().length()-1));
-		} catch (HeadlessException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public static void pasteAction(TextEditor te){

@@ -32,7 +32,6 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.PropertyConfigurator;
 
 import com.jme.scene.Node;
 import com.jme.util.geom.GeometryTool;
@@ -40,7 +39,6 @@ import com.jmex.font3d.math.TriangulationVertex;
 import com.jmex.font3d.math.Triangulator;
 import com.jmex.model.collada.ThreadSafeColladaImporter;
 
-import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
 
 /**
@@ -71,7 +69,7 @@ public class LogManager{
 		setupConsoleLogger();
 		
 		try {
-			Logger.getRootLogger().addAppender(new FileAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n"), DriveFinder.getHomeDir().getAbsolutePath()+"/.betaville/testlog.log"));
+			Logger.getRootLogger().addAppender(new FileAppender(new PatternLayout("%-4r [%t] %-5p %c %x - %m%n"), DriveFinder.getHomeDir().getAbsolutePath()+"/.betaville/BetavilleApp.log"));
 			Logger.getRootLogger().setLevel(Level.INFO);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
