@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ public class BottomProposals extends Window {
 	private final String selectedDecoratorKey = "clicked";
 	private final String rollOverDecoratorKey = "over";
 	
-	// Tweeing time in milliseconds
+	// Tweening time in milliseconds
 	private int tweenTime = 1000;
 	private boolean slidIn = false;
 	
