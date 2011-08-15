@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.jme.map;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.ibm.util.CoordinateConversion;
@@ -371,6 +373,26 @@ public abstract class MapManager<T>{
 		double polar2 = 90-igpsCoordinate2.getLatitude();
 		double cosA = (StrictMath.cos(StrictMath.toRadians(polar1))*StrictMath.cos(StrictMath.toRadians(polar2))) + (StrictMath.sin(StrictMath.toRadians(polar1))*StrictMath.sin(StrictMath.toRadians(polar2))*StrictMath.cos(StrictMath.toRadians(deltaLon)));
 		return ((40074*StrictMath.toDegrees(StrictMath.acos(cosA)))/360)*1000;
+	}
+	
+	/**
+	 * Calculates the average point from a number of locations
+	 * @param locations The list of locations to calculate the average from
+	 * @return The average location
+	 */
+	public static ILocation averageLocations(List<ILocation> locations){
+		double latitude=0;
+		double longitude=0;
+		double altitude=0;
+		for(ILocation location : locations){
+			GPSCoordinate gps = location.getGPS();
+			latitude+=gps.getLatitude();
+			longitude+=gps.getLongitude();
+			altitude+=gps.getAltitude();
+		}
+		
+		return new GPSCoordinate(altitude/locations.size(), latitude/locations.size(), longitude/locations.size());
+		
 	}
 
 	/**
