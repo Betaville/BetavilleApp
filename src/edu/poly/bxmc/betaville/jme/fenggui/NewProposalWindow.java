@@ -793,6 +793,16 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						fileChooser.setFileFilter(modelFilter);
 						fileChooser.showOpenDialog(dialog);
 						File file = fileChooser.getSelectedFile();
+						
+						// flash an error if the file is larger than 5mb
+						if(file.length()>5000000){
+							logger.warn(file.toString()+" is "+file.length()+"bytes.  This is rather large");
+							
+							GUIGameState.getInstance().getDisp().addWidget(
+									FengUtils.createDismissableWindow("Betaville", "The selected file is rather large, at "+
+											(file.length()/1000000f)+"MB, why don't you see if you can't get that down a bit?", "ok", false));
+							
+						}
 
 						String pathToDisplay = file.toString();
 						if(pathToDisplay.contains("/")){
