@@ -22,10 +22,11 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
@@ -41,17 +42,20 @@ import org.fenggui.event.IGenericEventListener;
 import org.fenggui.event.mouse.MouseEnteredEvent;
 import org.fenggui.event.mouse.MouseExitedEvent;
 import org.fenggui.event.mouse.MouseReleasedEvent;
+import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.util.Color;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.IFlagSelectionListener;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ITweenFinishedListener;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.NetPool;
+import edu.poly.bxmc.betaville.progress.IntegerBasedProgressiveItem;
 
 /**
  * @author Skye Book
@@ -62,23 +66,26 @@ public class BottomProposals extends Window {
 	public static int targetWidth=330;
 	public static int targetHeight = 125;
 	private Label proposalsLabel;
-	
+
 	// Decorator keys that link to background colors for the clickable
 	// containers in FengGUI
 	private final String selectedDecoratorKey = "clicked";
 	private final String rollOverDecoratorKey = "over";
-	
+
 	// Tweening time in milliseconds
 	private int tweenTime = 1000;
 	private boolean slidIn = false;
-	
+
 	private int proposalNameCharLimit = 32;
-	
+
 	/**
 	 * Contains all of the clickable containers.  Must only have containers
 	 * as direct children.
 	 */
-	private Container proposalContainer;
+	//private Container proposalContainer;
+	
+	private BlockingScrollContainer sc;
+	private Container isc;
 
 	/**
 	 * 
@@ -89,7 +96,7 @@ public class BottomProposals extends Window {
 		removeWidget(getTitleBar());
 		getContentContainer().setLayoutManager(new StaticLayout());
 		setSize(targetWidth, targetHeight);
-		
+
 		proposalsLabel = FengGUI.createWidget(Label.class);
 		try {
 			proposalsLabel.setPixmap(new Pixmap(Binding.getInstance().getTexture("data/uiAssets/BottomWindows/proposalsLabel.jpg")));
@@ -101,48 +108,76 @@ public class BottomProposals extends Window {
 		proposalsLabel.setXY(getWidth()-proposalsLabel.getWidth(), getHeight()-proposalsLabel.getHeight());
 
 		SceneScape.addFlagSelectionListener(new IFlagSelectionListener() {
-			public void flagSelected(Design rootDesign) {
-				if(slidIn) proposalContainer.removeAllWidgets();
-				loadProposals(rootDesign);
+			public void flagSelected(List<Design> rootDesigns) {
+				if(slidIn) isc.removeAllWidgets();
+				loadProposals(rootDesigns);
 			}
 
 			public void flagDeselected() {
 				slideOutOfScene();
 			}
 		});
-		
+
 		createProposalContainer();
-		
-		getContentContainer().addWidget(proposalsLabel, proposalContainer);
+		getContentContainer().addWidget(proposalsLabel);
 	}
-	
+
 	private void createProposalContainer(){
+		/*
 		proposalContainer = FengGUI.createWidget(Container.class);
-		proposalContainer.setLayoutManager(new StaticLayout());
+		//proposalContainer.setLayoutManager(new StaticLayout());
+		proposalContainer.setLayoutManager(new RowExLayout(false));
 		proposalContainer.setXY(0, 0);
 		proposalContainer.setSize(targetWidth-30, targetHeight-15);
+		getContentContainer().addWidget(proposalContainer);
+		*/
+		
+		sc = FengGUI.createWidget(BlockingScrollContainer.class);
+		sc.setSize(targetWidth-30, targetHeight-15);
+		getContentContainer().addWidget(sc);
+		sc.setShowScrollbars(true);
+		isc = FengGUI.createWidget(Container.class);
+		isc.setLayoutManager(new RowExLayout(false));
+		sc.setShowScrollbars(true);
+		sc.setInnerWidget(isc);
+		sc.setXY(0, 0);
+		sc.layout();
 	}
 
-	private void loadProposals(Design rootDesign){
-		final int[] proposalList = NetPool.getPool().getConnection().findAllProposals(rootDesign.getID());
-		if(proposalList == null){
-			logger.error("Finding the proposals returned a null int[]");
-			return;
-		}
-
-		slideInToScene();
+	private void loadProposals(final List<Design> rootDesigns){
 		SettingsPreferences.getThreadPool().submit(new Runnable() {
 			public void run() {
-				int heightToUse=0;
-				for(int i=0; i<proposalList.length; i++){
-					Design p = NetPool.getPool().getConnection().findDesignByID(proposalList[i]);
-					if(p==null) continue;
-					SceneScape.getCity().addDesign(p);
-					Container c = createClickableContainer(p);
-					c.setXY(0, heightToUse);
-					heightToUse+=c.getHeight();
-					proposalContainer.addWidget(c);
+				IntegerBasedProgressiveItem item = new IntegerBasedProgressiveItem("Proposals Loading", 0, rootDesigns.size());
+				GUIGameState.getInstance().getProgressContainer().addItem(item);
+				int counter=0;
+				for(Design rootDesign : rootDesigns){
+					logger.info("Processing " + counter + " of " + rootDesigns.size());
+					counter++;
+					item.update(counter);
+					final int[] proposalList = NetPool.getPool().getConnection().findAllProposals(rootDesign.getSourceID());
+					if(proposalList == null){
+						logger.error("Finding the proposals returned a null int[]");
+						return;
+					}
+					else{
+
+					}
+
+					slideInToScene();
+
+					int heightToUse=0;
+					for(int i=0; i<proposalList.length; i++){
+						Design p = NetPool.getPool().getConnection().findDesignByID(proposalList[i]);
+						if(p==null) continue;
+						SceneScape.getCity().addDesign(p);
+						Container c = createClickableContainer(p);
+						c.setXY(0, heightToUse);
+						//heightToUse+=c.getHeight();
+						isc.addWidget(c);
+						sc.layout();
+					}
 				}
+
 			}
 		});
 	}
@@ -154,13 +189,14 @@ public class BottomProposals extends Window {
 	 * @return
 	 */
 	private Container createClickableContainer(final Design proposalDesign){
+		logger.info("creating container for " + proposalDesign.getName());
 		final Container clickableContainer = new Container(new StaticLayout());
 		clickableContainer.getAppearance().add(selectedDecoratorKey, new PlainBackground(Color.BLACK));
 		clickableContainer.getAppearance().add(rollOverDecoratorKey, new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 		clickableContainer.getAppearance().setEnabled(selectedDecoratorKey, false);
 		clickableContainer.getAppearance().setEnabled(rollOverDecoratorKey, false);
 		clickableContainer.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-			
+
 			public void processEvent(Object source, Event event) {
 				if(event instanceof MouseEnteredEvent){
 					clickableContainer.getAppearance().setEnabled(rollOverDecoratorKey, true);
@@ -171,61 +207,61 @@ public class BottomProposals extends Window {
 				else if(event instanceof MouseReleasedEvent){
 					GUIGameState.getInstance().getVersionsWindow().loadVersions(proposalDesign);
 					GUIGameState.getInstance().getVersionsWindow().slideInToScene();
-					
+
 					// change the background to black
 					turnOffBlackBackground();
 					clickableContainer.getAppearance().setEnabled(selectedDecoratorKey, true);
 				}
 			}
 		});
-		
+
 		Label propLabel = FengGUI.createWidget(Label.class);
 		Label userLabel = FengGUI.createWidget(Label.class);
-		
+
 		String textToUse = proposalDesign.getName();
-		
+
 		// If the name is too long, reduce it to something manageable
 		if(textToUse.length()>proposalNameCharLimit){
 			textToUse = textToUse.substring(0, proposalNameCharLimit)+"...";
 		}
 		propLabel.setText(textToUse);
-		
+
 		userLabel.setText(proposalDesign.getUser());
-		
-		clickableContainer.setSize(proposalContainer.getWidth(), propLabel.getHeight()+5);
-		
+
+		clickableContainer.setSize(sc.getWidth(), propLabel.getHeight()+5);
+
 		propLabel.setXY(0, 0);
 		userLabel.setXY(clickableContainer.getWidth()-userLabel.getWidth(), 0);
-		
+
 		clickableContainer.addWidget(propLabel, userLabel);
 		return clickableContainer;
 	}
-	
+
 	/**
 	 * Disables all of the black backgrounds in the proposal container
 	 */
 	private void turnOffBlackBackground(){
-		for(IWidget w : proposalContainer.getWidgets()){
+		for(IWidget w : isc.getWidgets()){
 			((Container)w).getAppearance().setEnabled("clicked", false);
 		}
 	}
-	
+
 	public void slideInToScene(){
 		if(slidIn) return;
 		FengUtils.tweenWidget(this, 0, 0, tweenTime, 30);
 		slidIn=true;
 	}
-	
+
 	public void slideOutOfScene(){
 		if(!slidIn) return;
 		FengUtils.tweenWidget(this, 0, getHeight()*-1, tweenTime, 30, new ITweenFinishedListener() {
 			public void tweenComplete() {
-				proposalContainer.removeAllWidgets();
+				isc.removeAllWidgets();
 			}
 		});
 		slidIn=false;
 	}
-	
+
 	public boolean isSlidIn(){
 		return slidIn;
 	}

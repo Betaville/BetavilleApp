@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,8 @@
 */
 package edu.poly.bxmc.betaville.flags;
 
+import java.util.List;
+
 import edu.poly.bxmc.betaville.model.Design;
 
 /**
@@ -34,9 +36,9 @@ import edu.poly.bxmc.betaville.model.Design;
 public interface IFlagSelectionListener {
 	/**
 	 * Fired when a flag is selected from the scene
-	 * @param rootDesign - The design that the proposals here are mounted to
+	 * @param rootDesigns - The designs that the proposals here are mounted to
 	 */
-	public void flagSelected(Design rootDesign);
+	public void flagSelected(List<Design> rootDesigns);
 	
 	/**
 	 * Called when a flag has not been selected

@@ -25,7 +25,7 @@
 */
 package edu.poly.bxmc.betaville.flags;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
@@ -38,8 +38,8 @@ import edu.poly.bxmc.betaville.model.Design;
  */
 public abstract class AbstractFlagPositionStrategy{
 	
-	public void placeFlag(UTMCoordinate location, int baseID, ArrayList<Design> proposals) {
-		SceneGameState.getInstance().addToFlagNode(JME2MapManager.instance.locationToBetaville(location), baseID, proposals.size());
+	public void placeFlag(UTMCoordinate location, List<Integer> baseIDs) {
+		SceneGameState.getInstance().addToFlagNode(JME2MapManager.instance.locationToBetaville(location), baseIDs);
 	}
 	
 	/**

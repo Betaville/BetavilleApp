@@ -234,7 +234,7 @@ public class NetModelLoader{
 							item.update(itemsToLoad.get());
 							continue;
 						}
-						logger.info("adding: " + design.getName() + " | ID: " + design.getID());
+						logger.debug("adding: " + design.getName() + " | ID: " + design.getID());
 						
 						boolean fileResponse = false;
 						if(!(design instanceof EmptyDesign)){

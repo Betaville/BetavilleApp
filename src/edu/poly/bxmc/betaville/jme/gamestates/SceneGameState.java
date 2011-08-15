@@ -849,30 +849,43 @@ public class SceneGameState extends BasicGameState {
 		DisplaySystem.getDisplaySystem().getRenderer().clearZBuffer();
 	}
 
-	public void addToFlagNode(Vector3f location, int baseID, int numberProposals){
+	public void addToFlagNode(Vector3f location, List<Integer> baseIDs){
 		//Pyramid p = new Pyramid("flagPyramid", Scale.fromMeter(5), Scale.fromMeter(5));
+		
+		Node thisFlagNode = new Node(""+location.hashCode());
+		thisFlagNode.setLocalTranslation(location);
+		
 		SharedMesh p = new SharedMesh(flagPyramid);
-		p.setLocalTranslation(location);
-		p.setLocalRotation(Rotator.ROLL180);
 		p.updateRenderState();
-		p.setName("$"+baseID);
+		p.setLocalRotation(Rotator.ROLL180);
+		
+		// clear the spatial's name first
+		p.setName("");
+		for(Integer baseID : baseIDs){
+			p.setName(p.getName()+baseID+";");
+		}
+		
 		p.setModelBound(new BoundingBox());
 		p.updateModelBound();
-		flagNode.attachChild(p);
-		Text3D proposalText = verdanaFont.createText(""+numberProposals, Scale.fromMeter(2), 0);
+		thisFlagNode.attachChild(p);
+		Text3D proposalText = verdanaFont.createText(""+baseIDs.size(), Scale.fromMeter(2), 0);
 		proposalText.setLocalScale(new Vector3f(Scale.fromMeter(3),Scale.fromMeter(3),Scale.fromMeter(.1f)));
 		proposalText.alignCenter();
 		//		proposalText.setFontColor(ColorRGBA.black);
 		proposalText.setRenderState(pyramidTextMaterial);
-		Vector3f textLocation = location.clone();
+		Vector3f textLocation = new Vector3f();
+		textLocation.setX(textLocation.x-(1*(Scale.fromMeter(2)/2)));
 		textLocation.setY(textLocation.y+(Scale.fromMeter(5)/2));
-		textLocation.setX(textLocation.x-(Scale.fromMeter(2)/2));
-		textLocation.setZ(textLocation.z-(Scale.fromMeter(2)/2));
+		textLocation.setZ(textLocation.z-(-1*(Scale.fromMeter(2)/2)));
 		proposalText.setLocalTranslation(textLocation);
-		proposalText.setLocalRotation(Rotator.fromThreeAngles(-90, -90, 0));
-		proposalText.setName("$text"+baseID);
-		flagNode.attachChild(proposalText);
+		//proposalText.setLocalRotation(Rotator.fromThreeAngles(-90, -90, 0));
+		proposalText.setLocalRotation(Rotator.fromThreeAngles(-90, 0, 0));
+		proposalText.setName("$text"+baseIDs.get(0));
+		thisFlagNode.attachChild(proposalText);
 		proposalText.updateRenderState();
+		
+		thisFlagNode.setLocalRotation(Rotator.angleY(180));
+		flagNode.attachChild(thisFlagNode);
 		flagNode.updateRenderState();
 	}
 

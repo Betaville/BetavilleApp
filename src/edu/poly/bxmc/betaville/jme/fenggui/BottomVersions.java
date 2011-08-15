@@ -26,6 +26,7 @@
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
@@ -82,7 +83,7 @@ public class BottomVersions extends Window {
 	private final String selectedDecoratorKey = "clicked";
 	private final String rollOverDecoratorKey = "over";
 	
-	// Tweeing time in milliseconds
+	// Tweening time in milliseconds
 	private int tweenTime = 1000;
 	private boolean slidIn = false;
 	
@@ -111,7 +112,7 @@ public class BottomVersions extends Window {
 		versionsLabel.setXY(0, getHeight()-versionsLabel.getHeight());
 		
 		SceneScape.addFlagSelectionListener(new IFlagSelectionListener() {
-			public void flagSelected(Design rootDesign) {
+			public void flagSelected(List<Design> rootDesigns) {
 				slideScrollContainer.clearHolster();
 			}
 			
@@ -153,7 +154,11 @@ public class BottomVersions extends Window {
 	
 	public void loadVersions(Design proposalDesign){
 		if(proposalDesign.getID()==loadedDesignID) return;
-		else loadedDesignID = proposalDesign.getID();
+		else{
+			// if the proposal has changed, clear what is currently displayed
+			slideScrollContainer.clearHolster();
+			loadedDesignID = proposalDesign.getID();
+		}
 		
 		int[] versionList = NetPool.getPool().getConnection().findVersionsOfProposal(proposalDesign.getID());
 		

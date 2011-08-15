@@ -353,18 +353,30 @@ public class GUIGameState extends GameState {
 
 		if(mp.flagPicked()){
 			flagIsSelected=true;
+			
+			// split this into a list of IDs
+			String[] flagIDs = mp.getNameOfClosestFlag().split(";");
+			
+			List<Design> designs = new ArrayList<Design>();
+			for(String rootDesignID : flagIDs){
+				Design d = SceneScape.getCity().findDesignByID(Integer.parseInt(rootDesignID));
+				if(d!=null) designs.add(d);
+				else logger.error(rootDesignID+" could not be found");
+			}
 
-			Design d = SceneScape.getCity().findDesignByFullIdentifier(mp.getNameOfClosestFlag());
-			logger.debug("design "+ d.getID() +" name " + d.getName());
-
+			
 			for(IFlagSelectionListener listener : SceneScape.getFlagSelectionListeners()){
-				listener.flagSelected(d);
+				listener.flagSelected(designs);
 			}
 
 			// EmptyDesigns don't appear in the scene, so we can't set them as target spatials
+			/*
+			 * NOTE: Commented out on August 15, 2011.  Won't work with multiple proposals on a flag,
+			 * and I'm not sure that this was necessarily doing anything in the first place
 			if(!(d instanceof EmptyDesign)){
 				SceneScape.setTargetSpatial(mp.getDesignFromFlag());
 			}
+			*/
 		}
 		else if(mp.getPickedDesignNode()!=null){
 			SceneScape.setTargetSpatial(mp.getPickedDesignNode());
