@@ -874,12 +874,12 @@ public class SceneGameState extends BasicGameState {
 		//		proposalText.setFontColor(ColorRGBA.black);
 		proposalText.setRenderState(pyramidTextMaterial);
 		Vector3f textLocation = new Vector3f();
-		textLocation.setX(textLocation.x-(1*(Scale.fromMeter(2)/2)));
+		textLocation.setX(textLocation.x-(-1*(Scale.fromMeter(2)/2)));
 		textLocation.setY(textLocation.y+(Scale.fromMeter(5)/2));
 		textLocation.setZ(textLocation.z-(-1*(Scale.fromMeter(2)/2)));
 		proposalText.setLocalTranslation(textLocation);
 		//proposalText.setLocalRotation(Rotator.fromThreeAngles(-90, -90, 0));
-		proposalText.setLocalRotation(Rotator.fromThreeAngles(-90, 0, 0));
+		proposalText.setLocalRotation(Rotator.fromThreeAngles(-90, 90, 0));
 		proposalText.setName("$text"+baseIDs.get(0));
 		thisFlagNode.attachChild(proposalText);
 		proposalText.updateRenderState();
