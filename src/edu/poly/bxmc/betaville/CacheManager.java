@@ -259,7 +259,9 @@ public class CacheManager {
 	
 	public static URL getCachedThumbnailURL(int designID){
 		try {
-			return new URL(SettingsPreferences.getDataFolder().toString().substring(0, SettingsPreferences.getDataFolder().toString().length()-1)+"thumbnail/"+designID+".png");
+			URL url = new URL(SettingsPreferences.getDataFolder().toString().substring(0, SettingsPreferences.getDataFolder().toString().length()-1)+"thumbnail/"+designID+".png");
+			logger.info("Thumbnail URL: " + url.toString());
+			return url;
 		} catch (MalformedURLException e) {
 			logger.error("A bad URL was created when generating the cached thumbnail URL", e);
 			return null;
