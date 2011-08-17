@@ -43,6 +43,7 @@ import edu.poly.bxmc.betaville.net.Monitor;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
 import edu.poly.bxmc.betaville.net.UnprotectedManager;
+import edu.poly.bxmc.betaville.util.OS;
 
 /**
  * Manages Betaville's cache directory.
@@ -260,6 +261,9 @@ public class CacheManager {
 	public static URL getCachedThumbnailURL(int designID){
 		try {
 			URL url = new URL(SettingsPreferences.getDataFolder().toString().substring(0, SettingsPreferences.getDataFolder().toString().length()-1)+"thumbnail/"+designID+".png");
+			if(OS.isWindows()){
+				url = new URL(SettingsPreferences.getDataFolder()+"thumbnail/"+designID+".png");
+			}
 			logger.info("Thumbnail URL: " + url.toString());
 			return url;
 		} catch (MalformedURLException e) {
