@@ -233,8 +233,11 @@ public abstract class MapManager<T>{
 		double zoneWidth = findZoneWidth(utm.getLonZone(), utm.getLonZone()+1);
 		double median = zoneWidth/2;
 		float easting=(float)(median+(utm.getEasting()-500000));
+		easting+=(((float)utm.getEastingCentimeters())/100f);
+		
+		float fullNorthing = utm.getNorthing()+(((float)utm.getNorthingCentimeters())/100f);
 
-		return new BVVec3f(((utm.getNorthing()-northingStart)/SceneScape.SceneScale)-xOffset, utm.getAltitude()/SceneScape.SceneScale, ((easting/SceneScape.SceneScale)*1)-zOffset);
+		return new BVVec3f(((fullNorthing-northingStart)/SceneScape.SceneScale)-xOffset, utm.getAltitude()/SceneScape.SceneScale, ((easting/SceneScape.SceneScale)*1)-zOffset);
 	}
 
 	/**
