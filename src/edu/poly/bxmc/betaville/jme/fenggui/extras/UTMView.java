@@ -37,6 +37,7 @@ import com.jme.math.Vector3f;
 import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
+import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 
 /**
  * Container to view a Latitude/Longitude coordinate
@@ -115,10 +116,13 @@ public class UTMView extends Container implements LocationView{
 	 */
 	public void updateLocation(Vector3f location){
 		ILocation coordinate = JME2MapManager.instance.betavilleToUTM(location);
-		
-		latZoneValue.setText(""+coordinate.getUTM().getLatZone());
-		lonZoneValue.setText(""+coordinate.getUTM().getLonZone());
-		northingValue.setText(""+coordinate.getUTM().getNorthing()+"."+coordinate.getUTM().getNorthingCentimeters());
-		eastingValue.setText(""+coordinate.getUTM().getEasting()+"."+coordinate.getUTM().getEastingCentimeters());
+		updateLocation(coordinate.getUTM());
+	}
+	
+	public void updateLocation(UTMCoordinate location){
+		latZoneValue.setText(""+location.getUTM().getLatZone());
+		lonZoneValue.setText(""+location.getUTM().getLonZone());
+		northingValue.setText(""+location.getUTM().getNorthing()+"."+location.getUTM().getNorthingCentimeters());
+		eastingValue.setText(""+location.getUTM().getEasting()+"."+location.getUTM().getEastingCentimeters());
 	}
 }

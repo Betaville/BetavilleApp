@@ -37,6 +37,7 @@ import org.fenggui.layout.RowExLayoutData;
 import com.jme.math.Vector3f;
 
 import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
+import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 
@@ -112,6 +113,11 @@ public class GPSView extends Container implements LocationView{
 	 */
 	public void updateLocation(Vector3f location){
 		coordinate = JME2MapManager.instance.betavilleToUTM(location);
+		doLocationUpdate();
+	}
+	
+	public void updateLocation(GPSCoordinate location){
+		coordinate = location;
 		doLocationUpdate();
 	}
 	
