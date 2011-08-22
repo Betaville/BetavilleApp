@@ -25,7 +25,6 @@
 */
 package edu.poly.bxmc.betaville.jme.fenggui.extras;
 
-import org.fenggui.CheckBox;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
@@ -34,7 +33,6 @@ import org.fenggui.layout.RowExLayoutData;
 
 import com.jme.math.Vector3f;
 
-import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
@@ -122,7 +120,11 @@ public class UTMView extends Container implements LocationView{
 	public void updateLocation(UTMCoordinate location){
 		latZoneValue.setText(""+location.getUTM().getLatZone());
 		lonZoneValue.setText(""+location.getUTM().getLonZone());
-		northingValue.setText(""+location.getUTM().getNorthing()+"."+location.getUTM().getNorthingCentimeters());
-		eastingValue.setText(""+location.getUTM().getEasting()+"."+location.getUTM().getEastingCentimeters());
+		northingValue.setText(""+location.getUTM().getNorthing()+toDecimal(location.getUTM().getNorthingCentimeters()));
+		eastingValue.setText(""+location.getUTM().getEasting()+toDecimal(location.getUTM().getEastingCentimeters()));
+	}
+	
+	private float toDecimal(short cm){
+		return ((float)cm)/100f;
 	}
 }
