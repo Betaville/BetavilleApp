@@ -77,10 +77,10 @@ public class UTMView extends Container implements LocationView{
 		lonZoneLabel.setText("Longitude Zone");
 		lonZoneLabel.setLayoutData(new RowExLayoutData(true, true));
 		northingLabel = FengGUI.createWidget(Label.class);
-		northingLabel.setText("Easting");
+		northingLabel.setText("Northing");
 		northingLabel.setLayoutData(new RowExLayoutData(true, true));
 		eastingLabel = FengGUI.createWidget(Label.class);
-		eastingLabel.setText("Northing");
+		eastingLabel.setText("Easting");
 		eastingLabel.setLayoutData(new RowExLayoutData(true, true));
 		
 		latZoneValue = FengGUI.createWidget(Label.class);
@@ -124,7 +124,8 @@ public class UTMView extends Container implements LocationView{
 		eastingValue.setText(""+location.getUTM().getEasting()+toDecimal(location.getUTM().getEastingCentimeters()));
 	}
 	
-	private float toDecimal(short cm){
-		return ((float)cm)/100f;
+	private String toDecimal(short cm){
+		String value = Float.toString(((float)cm)/100f);
+		return value.substring(1, value.length());
 	}
 }
