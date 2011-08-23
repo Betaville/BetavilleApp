@@ -78,7 +78,7 @@ public class DataExporter{
 			coordinate.setAttribute("northingCentimeters", Short.toString(((UTMCoordinate)location).getNorthingCentimeters()));
 			coordinate.setAttribute("lonZone", Integer.toString(((UTMCoordinate)location).getLonZone()));
 			coordinate.setAttribute("latZone", Character.toString(((UTMCoordinate)location).getLatZone()));
-			coordinate.setAttribute("altitude", Integer.toString(((UTMCoordinate)location).getAltitude()));
+			coordinate.setAttribute("altitude", Float.toString(((UTMCoordinate)location).getAltitude()));
 		}
 		else if(location instanceof GPSCoordinate){
 			coordinate.setAttribute("latitude", Double.toString(((GPSCoordinate)location).getLatitude()));

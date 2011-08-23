@@ -46,19 +46,31 @@ public class UTMCoordinate implements ILocation, Serializable{
 	private short northingCentimeters=0;
 	private int lonZone;
 	private char latZone;
-	private int altitude;
+	private float altitude;
 
 	/**
 	 * 
+	 * @param easting
+	 * @param northing
+	 * @param lonZone
+	 * @param latZone
+	 * @param altitude
 	 */
-	public UTMCoordinate(int easting, int northing, int lonZone, char latZone, int altitude) {
+	public UTMCoordinate(int easting, int northing, int lonZone, char latZone, float altitude) {
 		this(easting, northing, (short)0, (short)0, lonZone, latZone, altitude);
 	}
 	
 	/**
 	 * 
+	 * @param easting
+	 * @param northing
+	 * @param eastingCM
+	 * @param northingCM
+	 * @param lonZone
+	 * @param latZone
+	 * @param altitude
 	 */
-	public UTMCoordinate(int easting, int northing, short eastingCM, short northingCM, int lonZone, char latZone, int altitude) {
+	public UTMCoordinate(int easting, int northing, short eastingCM, short northingCM, int lonZone, char latZone, float altitude) {
 		this.easting=easting;
 		this.northing=northing;
 		this.eastingCentimeters=eastingCM;
@@ -86,6 +98,13 @@ public class UTMCoordinate implements ILocation, Serializable{
 		return move(easting[0], northing[0], easting[1], northing[1], (int)altitudeDelta);
 	}
 	
+	/**
+	 * Moves the UTM coordinate in meters.  Calculations are done internally, the coordinate returned is a reference to this object
+	 * @param eastingDeltaMeters The amount of change in meters (can be positive or negative)
+	 * @param northingDeltaMeters The amount of change in meters (can be positive or negative)
+	 * @param altitudeDelta The amount of change in meters (can be positive or negative)
+	 * @return this object (for chaining purposes)
+	 */
 	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, int altitudeDelta){
 		return move(eastingDeltaMeters, northingDeltaMeters, 0, 0, altitudeDelta);
 	}
@@ -160,38 +179,37 @@ public class UTMCoordinate implements ILocation, Serializable{
 		return latZone;
 	}
 
-	public int getAltitude() {
+	public float getAltitude() {
 		return altitude;
 	}
 
-	public void setAltitude(int altitude) {
+	public void setAltitude(float altitude) {
 		this.altitude = altitude;
-	}
-	
-	public double getLatitude(){
-		return MapManager.utmToLatLon(this).getLatitude();
-	}
-	
-	public double getLongitude(){
-		return MapManager.utmToLatLon(this).getLongitude();
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		UTMCoordinate other = (UTMCoordinate) obj;
-		if (altitude != other.altitude)
+		if (Float.floatToIntBits(altitude) != Float
+				.floatToIntBits(other.altitude))
 			return false;
 		if (easting != other.easting)
+			return false;
+		if (eastingCentimeters != other.eastingCentimeters)
 			return false;
 		if (latZone != other.latZone)
 			return false;
 		if (lonZone != other.lonZone)
 			return false;
 		if (northing != other.northing)
+			return false;
+		if (northingCentimeters != other.northingCentimeters)
 			return false;
 		return true;
 	}
@@ -200,11 +218,13 @@ public class UTMCoordinate implements ILocation, Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + altitude;
+		result = prime * result + Float.floatToIntBits(altitude);
 		result = prime * result + easting;
+		result = prime * result + eastingCentimeters;
 		result = prime * result + latZone;
 		result = prime * result + lonZone;
 		result = prime * result + northing;
+		result = prime * result + northingCentimeters;
 		return result;
 	}
 	
@@ -214,6 +234,10 @@ public class UTMCoordinate implements ILocation, Serializable{
 		
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.jme.map.ILocation#getGPS()
+	 */
 	public GPSCoordinate getGPS(){
 		return MapManager.utmToLatLon(this);
 	}
@@ -223,6 +247,10 @@ public class UTMCoordinate implements ILocation, Serializable{
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.jme.map.ILocation#getUTM()
+	 */
 	public UTMCoordinate getUTM() {
 		return this;
 	}
