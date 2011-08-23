@@ -108,7 +108,6 @@ public class UTMCoordinate implements ILocation, Serializable{
 		// go to floats to changes
 		double cmEastingChange = ((double) eastingDeltaCentimeters/100d);
 		double cmNorthingChange = ((double) northingDeltaCentimeters/100d);
-		System.out.println("Centimeter easting/northing:\t"+cmEastingChange+"\t"+cmNorthingChange);
 		
 		// add the whole meters
 		currentEasting=currentEasting+eastingDeltaMeters;
