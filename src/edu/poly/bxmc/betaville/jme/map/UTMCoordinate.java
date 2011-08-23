@@ -95,7 +95,7 @@ public class UTMCoordinate implements ILocation, Serializable{
 		System.out.println("Moving Easting: " + easting[0]+"dot"+easting[1]);
 		
 		//int[] altitude = Math.splitFraction(altitudeDelta);
-		return move(easting[0], northing[0], easting[1], northing[1], (int)altitudeDelta);
+		return move(easting[0], northing[0], easting[1], northing[1], altitudeDelta);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class UTMCoordinate implements ILocation, Serializable{
 	 * @param altitudeDelta The amount of change in meters (can be positive or negative)
 	 * @return this object (for chaining purposes)
 	 */
-	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, int altitudeDelta){
+	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, float altitudeDelta){
 		return move(eastingDeltaMeters, northingDeltaMeters, 0, 0, altitudeDelta);
 	}
 	
@@ -118,7 +118,7 @@ public class UTMCoordinate implements ILocation, Serializable{
 	 * @param altitudeDelta The amount of change in meters (can be positive or negative)
 	 * @return this object (for chaining purposes)
 	 */
-	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, int eastingDeltaCentimeters, int northingDeltaCentimeters, int altitudeDelta){
+	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, int eastingDeltaCentimeters, int northingDeltaCentimeters, float altitudeDelta){
 		
 		// go to floats for current data
 		double currentEasting = (double)easting+((double) eastingCentimeters/100d);
