@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,8 @@ import com.jme.input.MouseInput;
 import com.jme.input.MouseInputListener;
 import com.jme.input.action.InputActionEvent;
 import com.jme.input.action.KeyInputAction;
+import com.jme.system.DisplaySystem;
+import com.jme.system.lwjgl.LWJGLDisplaySystem;
  
 /**
  * FengJMEInputHandler - Translates jME input into FengGUI input.
@@ -50,6 +52,7 @@ public class FengJMEInputHandler extends InputHandler
 	private Display disp;
 	private KeyInputAction keyAction;
  
+	private boolean applicationHadFocusOnLastUpdate=true;
 	private boolean keyHandled;
 	private boolean mouseHandled;
 	
@@ -67,9 +70,11 @@ public class FengJMEInputHandler extends InputHandler
  
 	public void update(float time)
 	{
+		//if(DisplaySystem.getDisplaySystem().isActive()!=applicationHadFocusOnLastUpdate) System.out.println("FOCUS CHANGED");
 		keyHandled = false;
 		mouseHandled = false;
 		super.update(time);
+		applicationHadFocusOnLastUpdate = DisplaySystem.getDisplaySystem().isActive();
 	}
 	
 	public MouseEvent getMouseEvent(){
@@ -224,6 +229,11 @@ public class FengJMEInputHandler extends InputHandler
  
 		public void onButton(int button, boolean pressed, int x, int y)
 		{
+			if(!applicationHadFocusOnLastUpdate){
+				//System.out.println("Mouse event received on focus change");
+				//return;
+			}
+			
 			down = pressed;
 			lastButton = button;
 			if(pressed)
