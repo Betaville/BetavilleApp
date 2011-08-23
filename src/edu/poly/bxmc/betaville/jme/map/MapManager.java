@@ -235,9 +235,12 @@ public abstract class MapManager<T>{
 		float easting=(float)(median+(utm.getEasting()-500000));
 		easting+=(((float)utm.getEastingCentimeters())/100f);
 		
-		float fullNorthing = utm.getNorthing()+(((float)utm.getNorthingCentimeters())/100f);
+		float fullNorthing = ((float)utm.getNorthing());
+		// localize the northing early so that it fits within the scope of float-precision
+		fullNorthing-=northingStart;
+		fullNorthing+=(((float)utm.getNorthingCentimeters())/100f);
 
-		return new BVVec3f(((fullNorthing-northingStart)/SceneScape.SceneScale)-xOffset, utm.getAltitude()/SceneScape.SceneScale, ((easting/SceneScape.SceneScale)*1)-zOffset);
+		return new BVVec3f((fullNorthing/SceneScape.SceneScale)-xOffset, utm.getAltitude()/SceneScape.SceneScale, ((easting/SceneScape.SceneScale)*1)-zOffset);
 	}
 
 	/**

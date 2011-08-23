@@ -78,6 +78,10 @@ public class UTMCoordinate implements ILocation, Serializable{
 	public UTMCoordinate move(float eastingDeltaMeters, float northingDeltaMeters, float altitudeDelta){
 		int[] northing = Math.splitFraction(northingDeltaMeters);
 		int[] easting = Math.splitFraction(eastingDeltaMeters);
+		
+		System.out.println("Moving Northing: " + northing[0]+"dot"+northing[1]);
+		System.out.println("Moving Easting: " + easting[0]+"dot"+easting[1]);
+		
 		//int[] altitude = Math.splitFraction(altitudeDelta);
 		return move(easting[0], northing[0], easting[1], northing[1], (int)altitudeDelta);
 	}
@@ -96,93 +100,37 @@ public class UTMCoordinate implements ILocation, Serializable{
 	 * @return this object (for chaining purposes)
 	 */
 	public UTMCoordinate move(int eastingDeltaMeters, int northingDeltaMeters, int eastingDeltaCentimeters, int northingDeltaCentimeters, int altitudeDelta){
-		int workingEastingMeters=eastingDeltaMeters;
-		int workingNorthingMeters=northingDeltaMeters;
-		int workingEastingCentimeters=eastingDeltaCentimeters;
-		int workingNorthingCentimeters=northingDeltaCentimeters;
 		
-		// if the centimeters are in excess of 100, reduce to meters
-		while(workingEastingCentimeters>=100){
-			workingEastingCentimeters-=100;
-			workingEastingMeters+=1;
-		}
-		while(workingNorthingCentimeters>=100){
-			workingNorthingCentimeters-=100;
-			workingNorthingMeters+=1;
-		}
+		// go to floats for current data
+		double currentEasting = (double)easting+((double) eastingCentimeters/100d);
+		double currentNorthing = (double)northing+((double) northingCentimeters/100d);
 		
+		// go to floats to changes
+		double cmEastingChange = ((double) eastingDeltaCentimeters/100d);
+		double cmNorthingChange = ((double) northingDeltaCentimeters/100d);
+		System.out.println("Centimeter easting/northing:\t"+cmEastingChange+"\t"+cmNorthingChange);
 		
-		// if the centimeters are less than 100, reduce to meters
-		while(workingEastingCentimeters<=-100){
-			workingEastingCentimeters+=100;
-			workingEastingMeters-=1;
-		}
-		while(workingNorthingCentimeters<=-100){
-			workingNorthingCentimeters+=100;
-			workingNorthingMeters-=1;
-		}
+		// add the whole meters
+		currentEasting=currentEasting+eastingDeltaMeters;
+		currentNorthing=currentNorthing+northingDeltaMeters;
 		
-		// now we're at a point where we're either adding or subtracting less than a full meter
-		if(workingEastingCentimeters<0){
-			// subtract the number of meters by one
-			workingEastingMeters-=1;
-			// offset the negative centimeters
-			workingEastingCentimeters+=100;
-		}
+		// add the centimeters
+		currentEasting=currentEasting+cmEastingChange;
+		currentNorthing=currentNorthing+cmNorthingChange;
 		
-		// now we're at a point where we're either adding or subtracting less than a full meter
-		if(workingNorthingCentimeters<0){
-			// subtract the number of meters by one
-			workingNorthingMeters-=1;
-			// offset the negative centimeters
-			workingNorthingCentimeters+=100;
-		}
+		/* Return from whence you came
+		 * ^ Arrested Development quote, if you didn't recognize this line
+		 * stop immediately and go watch all three seasons of the series. 
+		 */
+		int[] eastingParts = Math.splitFraction(currentEasting);
+		int[] northingParts = Math.splitFraction(currentNorthing);
 		
-		eastingCentimeters = (short)workingEastingCentimeters;
-		northingCentimeters = (short)workingNorthingCentimeters;
+		easting=eastingParts[0];
+		eastingCentimeters=(short)eastingParts[1];
+		northing=northingParts[0];
+		northingCentimeters=(short)northingParts[1];
 		
-		// deal with northing
-		northing+=workingNorthingMeters;
-		
-		// width of zone at this northing
-		double width = MapManager.findUTMZoneWidthAtLatitude(getGPS().getLatitude());
-		
-		double eastBorder = 500000+(width/2);
-		double westBorder = 500000-(width/2);
-		
-		if((easting+workingEastingMeters)>eastBorder){
-			System.out.println("increasing lonZone");
-			if(lonZone==60) lonZone=(0);
-			else lonZone++;
-			
-			
-			double toBorder = eastBorder-easting;
-			System.out.println("distance to border: " + toBorder);
-			double intoNext = workingEastingMeters-toBorder;
-			System.out.println("intoNext:" + intoNext);
-			
-			while(intoNext>width){
-				intoNext-=width;
-				if(lonZone==60) lonZone=(0);
-				else lonZone++;
-			}
-			
-			easting = (int) (westBorder+intoNext);
-		}
-		else if((easting+workingEastingMeters)<westBorder){
-			if(lonZone==0) lonZone=(60);
-			else lonZone++;
-			
-			
-			double toBorder = easting-westBorder;
-			double intoLast = workingEastingMeters+toBorder;
-			
-			easting = (int) (eastBorder+intoLast);
-		}
-		else{
-			easting+=workingEastingMeters;
-		}
-		
+		// TODO: Crossing zone borders during coordinate translation needs to be addressed
 		
 		// deal with altitude
 		altitude+=altitudeDelta;

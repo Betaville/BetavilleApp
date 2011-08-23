@@ -25,12 +25,17 @@
 */
 package edu.poly.bxmc.betaville.util;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 /**
  * Math functions to make life [a bit] easier.
  * @author Skye Book
  *
  */
 public class Math {
+	
+	private static final MathContext half = new MathContext(2);
 
 	/**
 	 * Splits a floating point number into two integers, its whole
@@ -61,14 +66,7 @@ public class Math {
 	 */
 	public static int[] splitFraction(double number){
 		int whole = (int)number;
-		double part = (number-whole);
-		if(part>.5d){
-			part = (int)(part*100)+1;
-		}
-		else{
-			part = (int)(part*100);
-		}
-		
-		return new int[]{whole, (int)part};
+		BigDecimal part = new BigDecimal(100*(number-whole));
+		return new int[]{whole, part.round(half).intValue()};
 	}
 }
