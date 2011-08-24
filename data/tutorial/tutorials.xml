@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tutorials>
+	<tutorial>survey.xml</tutorial>
 	<tutorial>findedit.xml</tutorial>
 	<tutorial>movearound.xml</tutorial>
 	<tutorial>postcomment.xml</tutorial>
