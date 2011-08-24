@@ -26,15 +26,18 @@
 package edu.poly.bxmc.betaville.xml;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
 import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide;
+import edu.poly.bxmc.betaville.jme.fenggui.tutorial.RedirectSlideDeck;
 import edu.poly.bxmc.betaville.jme.fenggui.tutorial.Slide;
 import edu.poly.bxmc.betaville.jme.fenggui.tutorial.SlideDeck;
 import edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide;
@@ -44,6 +47,8 @@ import edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide;
  *
  */
 public class SlideLoader extends XMLReader{
+	private static final Logger logger = Logger.getLogger(SlideLoader.class);
+	
 	private SlideDeck slideDeck;
 	private int defaultSlideWidth=300;
 	private int defaultSlideHeight=200;
@@ -62,14 +67,19 @@ public class SlideLoader extends XMLReader{
 	 */
 	@Override
 	public void parse() throws Exception {
-		slideDeck = new SlideDeck();
+		if(rootElement.getName().equals("redirect_slidedeck")){
+			slideDeck = new RedirectSlideDeck();
+		}
+		else{
+			slideDeck = new SlideDeck();
+		}
 		parseProperties();
 		parseSlides();
 	}
-	
+
 	private void parseProperties(){
 		Element properties = rootElement.getChild("properties");
-		
+
 		// load authors
 		Element authors = properties.getChild("authors");
 		if(authors!=null){
@@ -82,20 +92,31 @@ public class SlideLoader extends XMLReader{
 			}
 			slideDeck.setAuthors(textAuthors.toArray(new String[textAuthors.size()]));
 		}
-		
+
 		Element title = properties.getChild("title");
 		if(title!=null)  slideDeck.setTitle(title.getText());
-		
+
 		Element date = properties.getChild("date");
 		if(date!=null) slideDeck.setDate(date.getText());
 		
+		if(slideDeck instanceof RedirectSlideDeck){
+			Element link = properties.getChild("link");
+			if(link!=null)
+				try {
+					((RedirectSlideDeck)slideDeck).setRedirectLink(new URL(link.getText()));
+				} catch (MalformedURLException e) {
+					logger.error("Could not load the <link> element from " +
+							"XML for the " +slideDeck.getTitle() +" tutorial");
+				}
+		}
+
 		Element defaults = properties.getChild("default");
 		if(defaults!=null){
 			Element font = defaults.getChild("font");
 			if(font!=null) slideDeck.setDefaultFont(font.getText());
 			Element size = defaults.getChild("size");
 			if(size!=null) slideDeck.setDefaultSize(Integer.parseInt(size.getText()));
-			
+
 			// create RGBA color array
 			Element color = defaults.getChild("color");
 			if(color!=null){
@@ -110,7 +131,7 @@ public class SlideLoader extends XMLReader{
 			}
 		}
 	}
-	
+
 	private void parseSlides() throws ClassNotFoundException, IOException{
 		Element slideList = rootElement.getChild("slides");
 		if(slideList!=null){
@@ -136,7 +157,7 @@ public class SlideLoader extends XMLReader{
 			}
 		}
 	}
-	
+
 	public SlideDeck getSlideDeck(){
 		return slideDeck;
 	}

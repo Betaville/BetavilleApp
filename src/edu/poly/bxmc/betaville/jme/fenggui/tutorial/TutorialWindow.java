@@ -173,11 +173,25 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 			FixedButton button = FengGUI.createWidget(FixedButton.class);
 			button.setText(slideDeck.getTitle());
 			button.setWidth(button.getWidth()+10);
-			button.addButtonPressedListener(new IButtonPressedListener() {
-				public void buttonPressed(Object source, ButtonPressedEvent e) {
-					activateSlideDeck(slideDecks.indexOf(slideDeck));
-				}
-			});
+			
+			// create an alternative button listener for tutorials that are external links
+			if(slideDeck instanceof RedirectSlideDeck){
+				button.addButtonPressedListener(new IButtonPressedListener() {
+					
+					@Override
+					public void buttonPressed(Object source, ButtonPressedEvent e) {
+						BareBonesBrowserLaunch.openURL(((RedirectSlideDeck)slideDeck).getRedirectLink().toString());
+					}
+				});
+			}
+			else{
+				button.addButtonPressedListener(new IButtonPressedListener() {
+					public void buttonPressed(Object source, ButtonPressedEvent e) {
+						activateSlideDeck(slideDecks.indexOf(slideDeck));
+					}
+				});
+			}
+			
 			splash.addWidget(button);
 		}
 	}
