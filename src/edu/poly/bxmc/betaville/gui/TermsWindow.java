@@ -25,6 +25,7 @@
  */
 package edu.poly.bxmc.betaville.gui;
 
+import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -34,7 +35,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -71,7 +71,7 @@ public class TermsWindow extends JFrame {
 		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		setLayout(new BorderLayout());
 		setSize(500, 275);
 		
 		try {
@@ -79,7 +79,7 @@ public class TermsWindow extends JFrame {
 			JScrollPane jsp = new JScrollPane(contentLicense);
 			contentLicense.setSize(getSize());
 			jsp.setSize(getSize());
-			add(jsp);
+			add(jsp, BorderLayout.CENTER);
 			
 			JButton accept = new JButton("Accept");
 			accept.addActionListener(new ActionListener() {
@@ -141,7 +141,7 @@ public class TermsWindow extends JFrame {
 			JPanel buttons = new JPanel();
 			buttons.add(accept);
 			buttons.add(decline);
-			add(buttons);
+			add(buttons, BorderLayout.SOUTH);
 		} catch (IOException e) {
 			String licenseNotFound = "The license file could not be found." +
 					"  You, unfortunately, cannot use the application without selecting the license, so we will be forced to quit";
