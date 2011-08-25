@@ -37,6 +37,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -58,6 +60,7 @@ import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.LoginManager;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.gui.TermsWindow.TermsAcceptedListener;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.StringVerifier;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
@@ -78,7 +81,7 @@ public class SwingLoginWindow extends JFrame{
 	private ProtectedManager manager;
 	private JTextField userField;
 	private JPasswordField passField;
-	private JCheckBox checkBox;
+	private JCheckBox savePassword;
 	private JButton forgotPassword;
 	private JButton registerAccount;
 	private JButton login;
@@ -225,7 +228,7 @@ public class SwingLoginWindow extends JFrame{
 
 	private void saveCookie(){
 		loginManager = new LoginManager();
-		if(checkBox.isSelected()){
+		if(savePassword.isSelected()){
 			loginData = new String[2];
 			loginData[0] = userField.getText();
 			char[] c1 = passField.getPassword();
@@ -322,12 +325,12 @@ public class SwingLoginWindow extends JFrame{
 		passField.setToolTipText("Enter your password here");
 		passField.addKeyListener(keyAuthListener);
 
-		checkBox = new JCheckBox("Remember Login");
-		checkBox.setSelected(false);
+		savePassword = new JCheckBox("Remember Login");
+		savePassword.setSelected(false);
 		if(loginData!=null){
 			userField.setText(loginData[0]);
 			passField.setText(loginData[1]);
-			checkBox.setSelected(true);
+			savePassword.setSelected(true);
 		}
 
 		forgotPassword = new JButton("Forgot Password");
@@ -352,7 +355,24 @@ public class SwingLoginWindow extends JFrame{
 		login.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				//login.setEnabled(false);
-				doAuthAction();
+				
+				// check that the terms have been accepted first
+				if(!Boolean.parseBoolean(System.getProperty("betaville.license.content.agree"))){
+					// agree to the license
+					TermsWindow tw = new TermsWindow();
+					tw.setVisible(true);
+					tw.addTermsAcceptedListener(new TermsAcceptedListener() {
+						
+						@Override
+						public void termsAccepted() {
+							doAuthAction();
+						}
+					});
+				}
+				else{
+					doAuthAction();
+				}
+				
 				//login.setEnabled(true);
 			}
 		});
@@ -387,7 +407,7 @@ public class SwingLoginWindow extends JFrame{
 
 		c.gridy=2;
 		c.gridx=2;
-		loginPanel.add(checkBox, c);
+		loginPanel.add(savePassword, c);
 
 		c.gridy=3;
 		c.gridx=1;

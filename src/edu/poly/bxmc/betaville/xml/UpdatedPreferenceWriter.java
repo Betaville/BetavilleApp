@@ -47,7 +47,7 @@ public class UpdatedPreferenceWriter {
 	 * 
 	 */
 	public static void writeDefaultPreferences() throws IOException {
-		logger.info("Writing default preferences");
+		logger.info("Writing preferences");
 		if(System.getProperty("betaville.display.fullscreen")==null) System.setProperty("betaville.display.fullscreen", "false");
 		if(System.getProperty("betaville.display.resolution")==null) System.setProperty("betaville.display.resolution", "EMPTY");
 		if(System.getProperty("betaville.display.textured")==null) System.setProperty("betaville.display.textured", "true");
@@ -71,6 +71,7 @@ public class UpdatedPreferenceWriter {
 		if(System.getProperty("betaville.kiosk.requirepass")==null) System.setProperty("betaville.kiosk.requirepass", "false");
 		if(System.getProperty("betaville.kiosk.refresh")==null) System.setProperty("betaville.kiosk.refresh", "0");
 		if(System.getProperty("betaville.guestmode.enabled")==null) System.setProperty("betaville.guestmode.enabled", "false");
+		if(System.getProperty("betaville.license.content.agree")==null) System.setProperty("betaville.license.content.agree", "false");
 		
 		PreferenceWriter pr = new PreferenceWriter();
 		pr.writeData();
