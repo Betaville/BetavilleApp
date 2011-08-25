@@ -75,6 +75,13 @@ public class TermsWindow extends JFrame {
 		setSize(500, 275);
 		
 		try {
+			
+			/**
+			 * The code for
+			 */
+			JHyperLink linkToLicense = new JHyperLink("http://creativecommons.org/licenses/by-sa/3.0/", "Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)", "Betaville Content License");
+			add(linkToLicense, BorderLayout.NORTH);
+			
 			JEditorPane contentLicense = new JEditorPane(new File("data/license/by-sa.html").toURI().toURL());
 			JScrollPane jsp = new JScrollPane(contentLicense);
 			contentLicense.setSize(getSize());
