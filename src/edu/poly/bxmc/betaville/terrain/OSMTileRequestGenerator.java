@@ -96,7 +96,7 @@ public class OSMTileRequestGenerator implements ITileRequestGenerator {
 
 	// This is based on a method found on the OpenStreetMaps wiki:
 	// http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Java
-	int[] getTileXY(double lat, double lon){
+	private int[] getTileXY(double lat, double lon){
 		int xTile = (int)Math.floor((lon + 180) / 360 * (1<<zoomLevel)) ;
 		int yTile = (int)Math.floor((1 - Math.log(Math.tan(Math.toRadians(lat)) + 1 / Math.cos(Math.toRadians(lat))) / Math.PI) / 2 * (1<<zoomLevel)) ;
 		return new int[]{xTile,yTile};
