@@ -280,8 +280,8 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 									street.setText("The nearest street could not be retrieved");
 								}
 							} catch (IOException e) {
-								logger.error("Could not connecto to geocoder server");
-								street.setText("Could not connecto to geocoder server");
+								logger.error("Could not connect to geocoder server");
+								street.setText("Could not connect to geocoder server");
 							} finally {
 								lastStreetUpdate=System.currentTimeMillis();
 								streetUpdateIsInProgress=false;
