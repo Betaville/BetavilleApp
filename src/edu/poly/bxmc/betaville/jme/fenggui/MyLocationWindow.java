@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
@@ -38,6 +40,7 @@ import org.fenggui.layout.RowLayout;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
@@ -46,6 +49,8 @@ import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.module.LocalSceneModule;
 import edu.poly.bxmc.betaville.module.Module;
 import edu.poly.bxmc.betaville.module.ModuleNameException;
+import edu.poly.bxmc.betaville.search.Geocoder;
+import edu.poly.bxmc.betaville.search.OpenStreetMapGeocoder;
 
 /**
  * Displays the camera's location and orientation
@@ -57,12 +62,13 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 
 	private int targetWidth = 300;
 
-	private enum Mode {UTM, GPS, Vector3f};
+	private enum Mode {UTM, GPS, Vector3f, Street};
 	private Mode displayMode = Mode.GPS;
 
 	private FixedButton goGPS;
 	private FixedButton goUTM;
 	private FixedButton goVec;
+	private FixedButton goStr;
 
 	private Container gpsContainer;
 	private Label lat;
@@ -77,6 +83,13 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 	private Label x;
 	private Label y;
 	private Label z;
+	
+	private Container strContainer;
+	private Label street;
+	private long lastStreetUpdate = -1;
+	private long streetUpdateInterval = 1000;
+	private boolean streetUpdateIsInProgress = false;
+	private Geocoder geocoder;
 
 	public MyLocationWindow(){
 		super(true, true);
@@ -114,10 +127,21 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 				}
 			}
 		});
+		
+		goStr = FengGUI.createWidget(FixedButton.class);
+		goStr.setText("Street");
+		goStr.setWidth(goStr.getWidth()+10);
+		goStr.addButtonPressedListener(new IButtonPressedListener() {
+			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				if(!displayMode.equals(Mode.Vector3f)){
+					switchModes(Mode.Street);
+				}
+			}
+		});
 
 		Container buttonContainer = FengGUI.createWidget(Container.class);
 		buttonContainer.setLayoutManager(new RowLayout(true));
-		buttonContainer.addWidget(goGPS, goUTM, goVec);
+		buttonContainer.addWidget(goGPS, goUTM, goVec, goStr);
 
 		gpsContainer = FengGUI.createWidget(Container.class);
 		gpsContainer.setLayoutManager(new RowLayout(true));
@@ -145,6 +169,14 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 		y = FengGUI.createWidget(Label.class);
 		z = FengGUI.createWidget(Label.class);
 		vecContainer.addWidget(x, y, z);
+		
+		strContainer = FengGUI.createWidget(Container.class);
+		street = FengGUI.createWidget(Label.class);
+		street.setWordWarping(true);
+		street.setMultiline(true);
+		street.setText("Location not updated");
+		strContainer.addWidget(street);
+		geocoder = new OpenStreetMapGeocoder();
 
 		getContentContainer().addWidget(buttonContainer, gpsContainer);
 
@@ -159,20 +191,30 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 		if(newMode.equals(Mode.GPS)){
 			getContentContainer().removeWidget(vecContainer);
 			getContentContainer().removeWidget(utmContainer);
+			getContentContainer().removeWidget(strContainer);
 			getContentContainer().addWidget(gpsContainer);
 			displayMode=Mode.GPS;
 		}
 		else if(newMode.equals(Mode.UTM)){
 			getContentContainer().removeWidget(gpsContainer);
 			getContentContainer().removeWidget(vecContainer);
+			getContentContainer().removeWidget(strContainer);
 			getContentContainer().addWidget(utmContainer);
 			displayMode=Mode.UTM;
 		}
 		else if(newMode.equals(Mode.Vector3f)){
 			getContentContainer().removeWidget(utmContainer);
 			getContentContainer().removeWidget(gpsContainer);
+			getContentContainer().removeWidget(strContainer);
 			getContentContainer().addWidget(vecContainer);
 			displayMode=Mode.Vector3f;
+		}
+		else if(newMode.equals(Mode.Street)){
+			getContentContainer().removeWidget(utmContainer);
+			getContentContainer().removeWidget(gpsContainer);
+			getContentContainer().removeWidget(vecContainer);
+			getContentContainer().addWidget(strContainer);
+			displayMode=Mode.Street;
 		}
 	}
 
@@ -204,11 +246,9 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 			}
 			
 			
-			UTMCoordinate utm = JME2MapManager.instance.betavilleToUTM(cameraLocation);
-			GPSCoordinate gps = utm.getGPS();
+			final UTMCoordinate utm = JME2MapManager.instance.betavilleToUTM(cameraLocation);
+			final GPSCoordinate gps = utm.getGPS();
 			
-			// By only 
-
 			// update UTM
 			if(displayMode.equals(Mode.UTM)){
 				zone.setText(utm.getLonZone()+""+utm.getLatZone());
@@ -219,6 +259,36 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 			else if(displayMode.equals(Mode.GPS)){
 				lat.setText(Double.toString(gps.getLatitude()));
 				lon.setText(Double.toString(gps.getLongitude()));
+			}
+			// Update Street
+			else if(displayMode.equals(Mode.Street)){
+				if(System.currentTimeMillis()-lastStreetUpdate>streetUpdateInterval && !streetUpdateIsInProgress){
+					// lock out other attempts at updating while this update is in progress
+					streetUpdateIsInProgress=true;
+					
+					// off-load this onto the thread pool so that we don't 
+					SettingsPreferences.getGUIThreadPool().execute(new Runnable() {
+						
+						@Override
+						public void run() {
+							try {
+								String streetResponse = geocoder.reverse(gps);
+								if(streetResponse!=null){
+									street.setText(streetResponse);
+								}
+								else{
+									street.setText("The nearest street could not be retrieved");
+								}
+							} catch (IOException e) {
+								logger.error("Could not connecto to geocoder server");
+								street.setText("Could not connecto to geocoder server");
+							} finally {
+								lastStreetUpdate=System.currentTimeMillis();
+								streetUpdateIsInProgress=false;
+							}
+						}
+					});
+				}
 			}
 		}
 
