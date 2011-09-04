@@ -25,23 +25,24 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
-import org.fenggui.Label;
+import org.fenggui.RadioButton;
+import org.fenggui.ToggableGroup;
 import org.fenggui.composite.Window;
-import org.fenggui.event.ButtonPressedEvent;
-import org.fenggui.event.IButtonPressedListener;
+import org.fenggui.event.ISelectionChangedListener;
+import org.fenggui.event.SelectionChangedEvent;
 import org.fenggui.layout.RowExLayout;
-import org.fenggui.layout.RowLayout;
+import org.fenggui.layout.RowExLayoutData;
 
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 
-import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.GPSView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.OpenGLView;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.StreetView;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.UTMView;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
@@ -49,8 +50,6 @@ import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.module.LocalSceneModule;
 import edu.poly.bxmc.betaville.module.Module;
 import edu.poly.bxmc.betaville.module.ModuleNameException;
-import edu.poly.bxmc.betaville.search.Geocoder;
-import edu.poly.bxmc.betaville.search.OpenStreetMapGeocoder;
 
 /**
  * Displays the camera's location and orientation
@@ -58,163 +57,110 @@ import edu.poly.bxmc.betaville.search.OpenStreetMapGeocoder;
  *
  */
 public class MyLocationWindow extends Window implements IBetavilleWindow {
-	private static Logger logger = Logger.getLogger(MyLocationWindow.class);
-
 	private int targetWidth = 300;
-
-	private enum Mode {UTM, GPS, Vector3f, Street};
-	private Mode displayMode = Mode.GPS;
-
-	private FixedButton goGPS;
-	private FixedButton goUTM;
-	private FixedButton goVec;
-	private FixedButton goStr;
-
-	private Container gpsContainer;
-	private Label lat;
-	private Label lon;
-
-	private Container utmContainer;
-	private Label zone;
-	private Label northing;
-	private Label easting;
-
-	private Container vecContainer;
-	private Label x;
-	private Label y;
-	private Label z;
 	
-	private Container strContainer;
-	private Label street;
-	private long lastStreetUpdate = -1;
-	private long streetUpdateInterval = 1000;
-	private boolean streetUpdateIsInProgress = false;
-	private Geocoder geocoder;
+	private Container locationContainer;
+	private Container selectorContainer;
+	
+	private ToggableGroup<RadioButton<Boolean>> togglableGroup;
+	private RadioButton<Boolean> latLon;
+	private RadioButton<Boolean> utm;
+	private RadioButton<Boolean> ogl;
+	private RadioButton<Boolean> str;
+	
+	private static final String latLonSelection = "Lat/Lon";
+	private static final String utmSelection = "UTM";
+	private static final String openGLSelection = "OpenGL Units";
+	private static final String streetSelection = "Street";
 
+	private GPSView gpsView;
+	
+	private UTMView utmView;
+
+	private OpenGLView oglView;
+	
+	private StreetView streetView;
+	
 	public MyLocationWindow(){
 		super(true, true);
 		getContentContainer().setLayoutManager(new RowExLayout(false));
-
-		goGPS = FengGUI.createWidget(FixedButton.class);
-		goGPS.setText("GPS");
-		goGPS.setWidth(goGPS.getWidth()+10);
-		goGPS.addButtonPressedListener(new IButtonPressedListener() {
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(!displayMode.equals(Mode.GPS)){
-					switchModes(Mode.GPS);
+		
+		locationContainer = FengGUI.createWidget(Container.class);
+		locationContainer.setLayoutManager(new RowExLayout(false));
+		
+		gpsView = new GPSView();
+		gpsView.setLayoutData(new RowExLayoutData(true, true));
+		
+		utmView = new UTMView();
+		utmView.setLayoutData(new RowExLayoutData(true, true));
+		
+		oglView = new OpenGLView();
+		oglView.setLayoutData(new RowExLayoutData(true, true));
+		
+		streetView = new StreetView();
+		streetView.setLayoutData(new RowExLayoutData(true, true));
+		
+		selectorContainer = FengGUI.createWidget(Container.class);
+		selectorContainer.setLayoutManager(new RowExLayout(true));
+		
+		togglableGroup = new ToggableGroup<RadioButton<Boolean>>();
+	    latLon = FengGUI.createRadioButton();
+	    latLon.setLayoutData(new RowExLayoutData(true, true));
+	    latLon.setRadioButtonGroup(togglableGroup);
+	    latLon.setText(latLonSelection);
+	    
+	    utm = FengGUI.createRadioButton();
+	    utm.setLayoutData(new RowExLayoutData(true, true));
+	    utm.setRadioButtonGroup(togglableGroup);
+	    utm.setText(utmSelection);
+	    
+	    ogl = FengGUI.createRadioButton();
+	    ogl.setLayoutData(new RowExLayoutData(true, true));
+	    ogl.setRadioButtonGroup(togglableGroup);
+	    ogl.setText(openGLSelection);
+	    
+	    str = FengGUI.createRadioButton();
+	    str.setLayoutData(new RowExLayoutData(true, true));
+	    str.setRadioButtonGroup(togglableGroup);
+	    str.setText(streetSelection);
+	    
+	    latLon.setSelected(true);
+	    selectorContainer.addWidget(latLon, utm, ogl, str);
+	    
+	    locationContainer.addWidget(selectorContainer, gpsView);
+	    
+	    togglableGroup.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			public void selectionChanged(Object arg0, SelectionChangedEvent arg1) {
+				// remove widgets from location container
+				locationContainer.removeAllWidgets();
+				
+				locationContainer.addWidget(selectorContainer);
+				// add the widgets based on the selection
+				if(togglableGroup.getSelectedItem().equals(latLon)){
+					locationContainer.addWidget(gpsView);
 				}
-			}
-		});
-
-		goUTM = FengGUI.createWidget(FixedButton.class);
-		goUTM.setText("UTM");
-		goUTM.setWidth(goUTM.getWidth()+10);
-		goUTM.addButtonPressedListener(new IButtonPressedListener() {
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(!displayMode.equals(Mode.UTM)){
-					switchModes(Mode.UTM);
+				else if(togglableGroup.getSelectedItem().equals(utm)){
+					locationContainer.addWidget(utmView);
 				}
-			}
-		});
-
-		goVec = FengGUI.createWidget(FixedButton.class);
-		goVec.setText("Vector3f");
-		goVec.setWidth(goVec.getWidth()+10);
-		goVec.addButtonPressedListener(new IButtonPressedListener() {
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(!displayMode.equals(Mode.Vector3f)){
-					switchModes(Mode.Vector3f);
+				else if(togglableGroup.getSelectedItem().equals(ogl)){
+					locationContainer.addWidget(oglView);
 				}
+				else if(togglableGroup.getSelectedItem().equals(str)){
+					locationContainer.addWidget(streetView);
+				}
+				
+				layout();
+				
 			}
 		});
 		
-		goStr = FengGUI.createWidget(FixedButton.class);
-		goStr.setText("Street");
-		goStr.setWidth(goStr.getWidth()+10);
-		goStr.addButtonPressedListener(new IButtonPressedListener() {
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(!displayMode.equals(Mode.Vector3f)){
-					switchModes(Mode.Street);
-				}
-			}
-		});
-
-		Container buttonContainer = FengGUI.createWidget(Container.class);
-		buttonContainer.setLayoutManager(new RowLayout(true));
-		buttonContainer.addWidget(goGPS, goUTM, goVec, goStr);
-
-		gpsContainer = FengGUI.createWidget(Container.class);
-		gpsContainer.setLayoutManager(new RowLayout(true));
-		lat = FengGUI.createWidget(Label.class);
-		lon = FengGUI.createWidget(Label.class);
-		lat.setText("lat");
-		lon.setText("lon");
-		lat.setWidth(targetWidth/2);
-		lon.setWidth(targetWidth/2);
-		gpsContainer.addWidget(lat, lon);
-
-		utmContainer = FengGUI.createWidget(Container.class);
-		utmContainer.setLayoutManager(new RowLayout(true));
-		zone = FengGUI.createWidget(Label.class);
-		northing = FengGUI.createWidget(Label.class);
-		easting = FengGUI.createWidget(Label.class);
-		zone.setText("zone");
-		northing.setText("northing");
-		easting.setText("easting");
-		utmContainer.addWidget(zone, northing, easting);
-
-		vecContainer = FengGUI.createWidget(Container.class);
-		vecContainer.setLayoutManager(new RowLayout(true));
-		x = FengGUI.createWidget(Label.class);
-		y = FengGUI.createWidget(Label.class);
-		z = FengGUI.createWidget(Label.class);
-		vecContainer.addWidget(x, y, z);
-		
-		strContainer = FengGUI.createWidget(Container.class);
-		street = FengGUI.createWidget(Label.class);
-		street.setWordWarping(true);
-		street.setMultiline(true);
-		street.setText("Location not updated");
-		strContainer.addWidget(street);
-		geocoder = new OpenStreetMapGeocoder();
-
-		getContentContainer().addWidget(buttonContainer, gpsContainer);
+		getContentContainer().addWidget(locationContainer);
 
 		try {
 			SceneGameState.getInstance().addModuleToUpdateList(new UpdateModule("LocationWindowUpdater"));
 		} catch (ModuleNameException e1) {
 			e1.printStackTrace();
-		}
-	}
-
-	private void switchModes(Mode newMode){
-		if(newMode.equals(Mode.GPS)){
-			getContentContainer().removeWidget(vecContainer);
-			getContentContainer().removeWidget(utmContainer);
-			getContentContainer().removeWidget(strContainer);
-			getContentContainer().addWidget(gpsContainer);
-			displayMode=Mode.GPS;
-		}
-		else if(newMode.equals(Mode.UTM)){
-			getContentContainer().removeWidget(gpsContainer);
-			getContentContainer().removeWidget(vecContainer);
-			getContentContainer().removeWidget(strContainer);
-			getContentContainer().addWidget(utmContainer);
-			displayMode=Mode.UTM;
-		}
-		else if(newMode.equals(Mode.Vector3f)){
-			getContentContainer().removeWidget(utmContainer);
-			getContentContainer().removeWidget(gpsContainer);
-			getContentContainer().removeWidget(strContainer);
-			getContentContainer().addWidget(vecContainer);
-			displayMode=Mode.Vector3f;
-		}
-		else if(newMode.equals(Mode.Street)){
-			getContentContainer().removeWidget(utmContainer);
-			getContentContainer().removeWidget(gpsContainer);
-			getContentContainer().removeWidget(vecContainer);
-			getContentContainer().addWidget(strContainer);
-			displayMode=Mode.Street;
 		}
 	}
 
@@ -237,59 +183,17 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 		public void onUpdate(Node scene, Vector3f cameraLocation, Vector3f cameraDirection){
 			if(!isInWidgetTree()) return;  // No need to update if the window isn't being shown..
 			
-			// update Vector3f
-			if(displayMode.equals(Mode.Vector3f)){
-				x.setText("x "+cameraLocation.x);
-				y.setText("y "+cameraLocation.y);
-				z.setText("z "+cameraLocation.z);
-				return; // no need to go further
-			}
+			// NEW
 			
+			UTMCoordinate utm = JME2MapManager.instance.betavilleToUTM(cameraLocation);
+			GPSCoordinate gps = utm.getGPS();
 			
-			final UTMCoordinate utm = JME2MapManager.instance.betavilleToUTM(cameraLocation);
-			final GPSCoordinate gps = utm.getGPS();
+			// update the location views
+			gpsView.updateLocation(gps);
+			utmView.updateLocation(utm);
+			oglView.updateLocation(cameraLocation);
+			streetView.updateLocation(gps);
 			
-			// update UTM
-			if(displayMode.equals(Mode.UTM)){
-				zone.setText(utm.getLonZone()+""+utm.getLatZone());
-				northing.setText(utm.getNorthing()+"N");
-				easting.setText(utm.getEasting()+"E");
-			}
-			// update GPS
-			else if(displayMode.equals(Mode.GPS)){
-				lat.setText(Double.toString(gps.getLatitude()));
-				lon.setText(Double.toString(gps.getLongitude()));
-			}
-			// Update Street
-			else if(displayMode.equals(Mode.Street)){
-				if(System.currentTimeMillis()-lastStreetUpdate>streetUpdateInterval && !streetUpdateIsInProgress){
-					// lock out other attempts at updating while this update is in progress
-					streetUpdateIsInProgress=true;
-					
-					// off-load this onto the thread pool so that we don't 
-					SettingsPreferences.getGUIThreadPool().execute(new Runnable() {
-						
-						@Override
-						public void run() {
-							try {
-								String streetResponse = geocoder.reverse(gps);
-								if(streetResponse!=null){
-									street.setText(streetResponse);
-								}
-								else{
-									street.setText("The nearest street could not be retrieved");
-								}
-							} catch (IOException e) {
-								logger.error("Could not connect to geocoder server");
-								street.setText("Could not connect to geocoder server");
-							} finally {
-								lastStreetUpdate=System.currentTimeMillis();
-								streetUpdateIsInProgress=false;
-							}
-						}
-					});
-				}
-			}
 		}
 
 		public void deconstruct(){}
