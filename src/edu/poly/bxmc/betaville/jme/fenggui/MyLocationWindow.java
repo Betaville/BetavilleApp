@@ -99,6 +99,7 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 		
 		streetView = new StreetView();
 		streetView.setLayoutData(new RowExLayoutData(true, true));
+		streetView.useUpdateLabel(false);
 		
 		selectorContainer = FengGUI.createWidget(Container.class);
 		selectorContainer.setLayoutManager(new RowExLayout(true));
@@ -182,8 +183,6 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 
 		public void onUpdate(Node scene, Vector3f cameraLocation, Vector3f cameraDirection){
 			if(!isInWidgetTree()) return;  // No need to update if the window isn't being shown..
-			
-			// NEW
 			
 			UTMCoordinate utm = JME2MapManager.instance.betavilleToUTM(cameraLocation);
 			GPSCoordinate gps = utm.getGPS();
