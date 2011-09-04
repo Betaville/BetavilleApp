@@ -44,6 +44,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.GPSView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.LocationView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.OpenGLView;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.StreetView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.UTMView;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.model.Design;
@@ -75,16 +76,20 @@ public class DetailedInfoAction extends Window implements IBetavilleWindow {
 	private RadioButton<Boolean> latLon;
 	private RadioButton<Boolean> utm;
 	private RadioButton<Boolean> ogl;
+	private RadioButton<Boolean> str;
 	
 	private static final String latLonSelection = "Lat/Lon";
 	private static final String utmSelection = "UTM";
 	private static final String openGLSelection = "OpenGL Units";
+	private static final String streetSelection = "Street";
 
 	private GPSView gpsView;
 	
 	private UTMView utmView;
 
 	private OpenGLView oglView;
+	
+	private StreetView streetView;
 	
 	
 	private boolean empty=true;
@@ -103,16 +108,16 @@ public class DetailedInfoAction extends Window implements IBetavilleWindow {
 		locationContainer.setLayoutManager(new RowExLayout(false));
 		
 		gpsView = new GPSView();
-		gpsView.setTitle("Point 1");
 		gpsView.setLayoutData(new RowExLayoutData(true, true));
 		
 		utmView = new UTMView();
-		utmView.setTitle("Point 1");
 		utmView.setLayoutData(new RowExLayoutData(true, true));
 		
 		oglView = new OpenGLView();
-		oglView.setTitle("Point 1");
 		oglView.setLayoutData(new RowExLayoutData(true, true));
+		
+		streetView = new StreetView();
+		streetView.setLayoutData(new RowExLayoutData(true, true));
 		
 		selectorContainer = FengGUI.createWidget(Container.class);
 		selectorContainer.setLayoutManager(new RowExLayout(true));
@@ -133,8 +138,13 @@ public class DetailedInfoAction extends Window implements IBetavilleWindow {
 	    ogl.setRadioButtonGroup(togglableGroup);
 	    ogl.setText(openGLSelection);
 	    
+	    str = FengGUI.createRadioButton();
+	    str.setLayoutData(new RowExLayoutData(true, true));
+	    str.setRadioButtonGroup(togglableGroup);
+	    str.setText(streetSelection);
+	    
 	    latLon.setSelected(true);
-	    selectorContainer.addWidget(latLon, utm, ogl);
+	    selectorContainer.addWidget(latLon, utm, ogl/*, str*/);
 	    
 	    locationContainer.addWidget(selectorContainer, gpsView);
 	    
@@ -154,6 +164,9 @@ public class DetailedInfoAction extends Window implements IBetavilleWindow {
 				}
 				else if(togglableGroup.getSelectedItem().equals(ogl)){
 					locationContainer.addWidget(oglView);
+				}
+				else if(togglableGroup.getSelectedItem().equals(str)){
+					locationContainer.addWidget(streetView);
 				}
 				
 				layout();
@@ -179,6 +192,7 @@ public class DetailedInfoAction extends Window implements IBetavilleWindow {
 				gpsView.updateLocation(design.getCoordinate().getGPS());
 				utmView.updateLocation(design.getCoordinate());
 				oglView.updateLocation(spatial.getLocalTranslation());
+				//streetView.updateLocation(spatial.getLocalTranslation());
 				
 				
 				if(empty){
