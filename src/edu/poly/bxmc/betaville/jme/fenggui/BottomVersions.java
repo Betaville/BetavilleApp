@@ -284,14 +284,15 @@ public class BottomVersions extends Window {
 		final FixedButton show = FengGUI.createWidget(FixedButton.class);
 		show.getAppearance().add("orange", new PlainBackground(new Color(252,58,0)));
 		show.getAppearance().setEnabled("orange", false);
-		show.setText("show");
+		if(LiveProposalManager.getInstance().isVersionOn(versionDesign.getID())) show.setText("hide");
+		else show.setText("show");
 		show.setWidth(show.getWidth()+5);
 		show.setXY(clickableContainer.getWidth()-show.getWidth(), 0);
 		show.addButtonPressedListener(new IButtonPressedListener() {
 			
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				
-				if(show.getText()=="show"){
+				if(show.getText().equals("show")){
 					//show.removeGreen();
 					//show.getAppearance().setEnabled("orange", true);
 					
