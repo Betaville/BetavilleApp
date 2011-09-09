@@ -22,15 +22,17 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -52,25 +54,28 @@ import edu.poly.bxmc.betaville.util.OS;
  */
 public class CacheManager {
 	private static final Logger logger = Logger.getLogger(CacheManager.class);
-	
+
 	private static CacheManager cm = null;
-	
+
 	// Holds the maximum size of the cache in MB
 	private int maxSize;
-	
-	// Stores the current size of the cache in KB
-	private int currentSize;
+
+	// Stores the current size of the cache in bytes
+	private long currentSize;
 
 	private HashMap<String,Long> files;
-	
+
+	private ArrayList<ICacheModifiedListener> cacheModifiedListeners;
+
 	/**
 	 * Private constructor to enforce singleton class.
 	 */
 	private CacheManager() {
 		files = new HashMap<String,Long>();
+		cacheModifiedListeners = new ArrayList<ICacheModifiedListener>();
 		countFiles();
 	}
-	
+
 	private void countFiles(){
 		try {
 			File cacheDir = new File(SettingsPreferences.getDataFolder().toURI());
@@ -85,7 +90,7 @@ public class CacheManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private boolean findFile(String file){
 		File target;
 		try {
@@ -98,7 +103,7 @@ public class CacheManager {
 		}
 		return false;
 	}
-	
+
 	private boolean findThumb(int designID){
 		File target;
 		try {
@@ -112,8 +117,8 @@ public class CacheManager {
 		}
 		return false;
 	}
-	
-	public int getSizeInMB(String fileName){
+
+	public int getSizeOfFile(String fileName){
 		Long value = files.get(removeExtension(fileName));
 		if(value!=null){
 			return (int)(value/1000);
@@ -121,6 +126,23 @@ public class CacheManager {
 		else return 0;
 	}
 	
+	/**
+	 * Deletes all files from the cache
+	 */
+	public void deleteAllFiles(){
+		ArrayList<String> toDelete = new ArrayList<String>();
+		
+		// Accumulate a list of files to delete
+		for(Entry<String, Long> file : files.entrySet()){
+			toDelete.add(file.getKey());
+		}
+		
+		// delete the files
+		for(String fileToDelete : toDelete){
+			deleteFile(fileToDelete);
+		}
+	}
+
 	/**
 	 * Adds a file to those currently tracked by the cache
 	 * @param fileName
@@ -134,23 +156,38 @@ public class CacheManager {
 			}
 		}
 	}
-	
+
 	private void doFileRegistration(File file){
 		if(file.isFile()){
 			files.put(removeExtension(file.getName()), file.length());
-			currentSize+=(file.length()/1000);
-		}
-	}
-	
-	public void deleteFile(String fileName){
-		File file = new File(SettingsPreferences.getDataFolder()+fileName);
-		if(file.exists()){
-			if(file.delete()){
-				files.remove(removeExtension(fileName));
+			currentSize+=file.length();
+			
+			// notify the listeners
+			for(ICacheModifiedListener listener : cacheModifiedListeners){
+				listener.fileAdded(file, currentSize);
 			}
 		}
 	}
-	
+
+	public void deleteFile(String fileName){
+		File file = new File(SettingsPreferences.getDataFolder()+fileName);
+		if(file.exists()){
+			long length = file.length();
+			if(file.delete()){
+				files.remove(removeExtension(fileName));
+				currentSize-=length;
+				
+				// notify the listeners
+				for(ICacheModifiedListener listener : cacheModifiedListeners){
+					listener.fileRemoved(file, currentSize);
+				}
+			}
+		}
+		else{
+			logger.warn("No File to delete");
+		}
+	}
+
 	/**
 	 * Removes file from the cache that are not in the same
 	 * UTM zone as the given coordinate.
@@ -167,7 +204,7 @@ public class CacheManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Strips a filename, and the final dot, from a String
 	 * @param name The filename from which to remove the extension
@@ -176,7 +213,7 @@ public class CacheManager {
 	private String removeExtension(String name){
 		return name.substring(0, name.lastIndexOf("."));
 	}
-	
+
 	private boolean doRequestFile(int designID, String filename, UnprotectedManager manager, boolean keepAlive){
 		if(!findFile(filename)){
 			SettingsPreferences.getThreadPool().submit(new Monitor((ClientManager)manager));
@@ -201,7 +238,7 @@ public class CacheManager {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Request a file from the server using an externally
 	 * maintained client manager.
@@ -214,7 +251,7 @@ public class CacheManager {
 		if(findFile(filename)) return true;
 		else return doRequestFile(designID, filename, manager, true);
 	}
-	
+
 	/**
 	 * Request a file using a ClientManager created from within this method.
 	 * @param designID
@@ -225,7 +262,7 @@ public class CacheManager {
 		if(findFile(filename)) return true;
 		else return doRequestFile(designID, filename, NetPool.getPool().getConnection(), true);
 	}
-	
+
 	/**
 	 * Requests the thumbnail for the specified design id
 	 * @param designID
@@ -257,7 +294,7 @@ public class CacheManager {
 			return true;
 		}
 	}
-	
+
 	public static URL getCachedThumbnailURL(int designID){
 		try {
 			URL url = new URL(SettingsPreferences.getDataFolder().toString().substring(0, SettingsPreferences.getDataFolder().toString().length()-1)+"thumbnail/"+designID+".png");
@@ -271,7 +308,39 @@ public class CacheManager {
 			return null;
 		}
 	}
+
+	/**
+	 * Adds a modification listener to this cache
+	 * @param listener The {@link ICacheModifiedListener} to add
+	 */
+	public void addCacheModifiedListener(ICacheModifiedListener listener){
+		cacheModifiedListeners.add(listener);
+	}
+
+	/**
+	 * Removes a modification listener from this cache
+	 * @param listener The {@link ICacheModifiedListener} to remove
+	 */
+	public void removeCacheModifiedListener(ICacheModifiedListener listener){
+		cacheModifiedListeners.remove(listener);
+	}
 	
+	/**
+	 * Gets the number of files saved in the cache
+	 * @return The number of files saved in the cache
+	 */
+	public int getNumberOfFiles(){
+		return files.size();
+	}
+	
+	/**
+	 * Gets the total file size of the cache
+	 * @return The size of all of the cached files in bytes
+	 */
+	public long getSizeOfCache(){
+		return currentSize;
+	}
+
 	/**
 	 * @return The static instance of the {@link CacheManager}
 	 */
