@@ -54,8 +54,10 @@ import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.CacheManager;
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.IFlagSelectionListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.UpdatingLabel;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ISlideScrollSpreadChangeListener;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ITweenFinishedListener;
 import edu.poly.bxmc.betaville.model.Design;
@@ -264,8 +266,6 @@ public class BottomVersions extends Window {
 		name.setText(versionDesign.getName());
 		name.setXY(thumbnail.getWidth()+5, thumbnail.getHeight()-name.getHeight());
 		
-		
-		
 		Label date = FengGUI.createWidget(Label.class);
 		date.setText(versionDesign.getDateAdded());
 		date.setXY(name.getX(), 0);
@@ -296,22 +296,47 @@ public class BottomVersions extends Window {
 					//show.removeGreen();
 					//show.getAppearance().setEnabled("orange", true);
 					
-					LiveProposalManager.getInstance().turnProposalOff(versionDesign.getSourceID());
-					LiveProposalManager.getInstance().turnVersionOn(versionDesign);
-					LiveProposalManager.getInstance().addProposalChangedListener(new ILiveProposalChangedListener() {
+					
+					// Create and start the loading label
+					final UpdatingLabel loading = FengGUI.createWidget(UpdatingLabel.class);
+					loading.setText("Loading");
+					clickableContainer.addWidget(loading);
+					loading.setXY(clickableContainer.getWidth()-(loading.getWidth()+10), show.getY()+(show.getHeight()*2));
+					loading.start();
+					
+					SettingsPreferences.getThreadPool().execute(new Runnable() {
 						
-						public void isChanged(int rootProposalID) {
-							show.setText("show");
+						@Override
+						public void run() {
+							// make the button un-clickable
+							show.setEnabled(false);
+							
+							
+							LiveProposalManager.getInstance().turnProposalOff(versionDesign.getSourceID());
+							
+							LiveProposalManager.getInstance().turnVersionOn(versionDesign);
+							
+							loading.stop();
+							clickableContainer.removeWidget(loading);
+							
+							LiveProposalManager.getInstance().addProposalChangedListener(new ILiveProposalChangedListener() {
+								
+								public void isChanged(int rootProposalID) {
+									show.setText("show");
+								}
+							});
+							
+							// sets only this show button to say "hide"
+							show.setText("hide");
+							
+							// change the background to black
+							turnOffBlackBackground();
+							clickableContainer.getAppearance().setEnabled(selectedDecoratorKey, true);
+							
+							// re-enable the button
+							show.setEnabled(true);
 						}
 					});
-					
-					// sets only this show button to say "hide"
-					show.setText("hide");
-					
-					// change the background to black
-					turnOffBlackBackground();
-					clickableContainer.getAppearance().setEnabled(selectedDecoratorKey, true);
-					
 				}
 				else{
 					LiveProposalManager.getInstance().turnVersionOff(versionDesign.getID());
