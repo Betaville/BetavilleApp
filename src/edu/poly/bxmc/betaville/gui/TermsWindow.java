@@ -66,7 +66,7 @@ public class TermsWindow extends JFrame {
 	/**
 	 * @throws HeadlessException
 	 */
-	public TermsWindow() throws HeadlessException {
+	public TermsWindow(String licenseName, String licenseLink, File licenseFile, String licenseUse) throws HeadlessException {
 		super("Terms of Use");
 		
 		
@@ -79,10 +79,10 @@ public class TermsWindow extends JFrame {
 			/**
 			 * The code for
 			 */
-			JHyperLink linkToLicense = new JHyperLink("http://creativecommons.org/licenses/by-sa/3.0/", "Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)", "Betaville Content License");
+			JHyperLink linkToLicense = new JHyperLink(licenseLink, licenseName, licenseUse);
 			add(linkToLicense, BorderLayout.NORTH);
 			
-			JEditorPane contentLicense = new JEditorPane(new File("data/license/by-sa.html").toURI().toURL());
+			JEditorPane contentLicense = new JEditorPane(licenseFile.toURI().toURL());
 			JScrollPane jsp = new JScrollPane(contentLicense);
 			contentLicense.setSize(getSize());
 			jsp.setSize(getSize());
@@ -204,7 +204,7 @@ public class TermsWindow extends JFrame {
 			
 			@Override
 			public void run() {
-				TermsWindow tw = new TermsWindow();
+				TermsWindow tw = new TermsWindow("Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)", "http://creativecommons.org/licenses/by-sa/3.0/", new File("data/license/by-sa.html"), "Betaville Content License");
 				tw.setVisible(true);
 			}
 		});

@@ -39,6 +39,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -359,9 +360,12 @@ public class SwingLoginWindow extends JFrame{
 				// check that the terms have been accepted first
 				if(!Boolean.parseBoolean(System.getProperty("betaville.license.content.agree"))){
 					// agree to the license
-					TermsWindow tw = new TermsWindow();
-					tw.setVisible(true);
-					tw.addTermsAcceptedListener(new TermsAcceptedListener() {
+					TermsWindow contentLicenseWindow = new TermsWindow("Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)",
+							"http://creativecommons.org/licenses/by-sa/3.0/",
+							new File("data/license/by-sa.html"),
+							"Betaville Content License");
+					contentLicenseWindow.setVisible(true);
+					contentLicenseWindow.addTermsAcceptedListener(new TermsAcceptedListener() {
 						
 						@Override
 						public void termsAccepted() {
