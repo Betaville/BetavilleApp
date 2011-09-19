@@ -53,9 +53,6 @@ public class StringZipper {
 		}
 		bo.close();
 		byte[] output = bo.toByteArray();
-
-		System.out.println("Original: "+input.length);
-		System.out.println("Compressed: "+output.length);
 		return output;
 	}
 
@@ -72,10 +69,6 @@ public class StringZipper {
 		}
 		bo.close();
 		byte[] output = bo.toByteArray();
-
-		System.out.println("Original: "+bytes.length);
-		System.out.println("Extracted: "+output.length);
-		//String s = new String(output, "UTF-8");
 		return new String(output, "UTF-8");
 	}
 }
