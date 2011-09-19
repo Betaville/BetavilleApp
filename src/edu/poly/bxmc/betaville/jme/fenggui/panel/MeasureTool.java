@@ -51,9 +51,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.OpenGLView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.UTMView;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
-import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 
 /**

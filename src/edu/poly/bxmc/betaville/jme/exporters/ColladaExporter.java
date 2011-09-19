@@ -40,7 +40,6 @@ import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
 import org.jdom.Element;

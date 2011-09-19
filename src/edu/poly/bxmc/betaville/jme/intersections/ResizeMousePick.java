@@ -36,8 +36,6 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.scene.Geometry;
 import com.jme.scene.Spatial;
-import com.jme.scene.shape.Arrow;
-import com.jme.scene.shape.AxisRods;
 import com.jme.scene.shape.Box;
 import com.jme.scene.shape.Cylinder;
 import com.jme.system.DisplaySystem;

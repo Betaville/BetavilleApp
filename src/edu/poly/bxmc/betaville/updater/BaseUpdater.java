@@ -25,18 +25,13 @@
  */
 package edu.poly.bxmc.betaville.updater;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.Design;
-import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.net.NetPool;
 
 /**

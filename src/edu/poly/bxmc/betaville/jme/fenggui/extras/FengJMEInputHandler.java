@@ -37,7 +37,6 @@ import com.jme.input.MouseInputListener;
 import com.jme.input.action.InputActionEvent;
 import com.jme.input.action.KeyInputAction;
 import com.jme.system.DisplaySystem;
-import com.jme.system.lwjgl.LWJGLDisplaySystem;
  
 /**
  * FengJMEInputHandler - Translates jME input into FengGUI input.

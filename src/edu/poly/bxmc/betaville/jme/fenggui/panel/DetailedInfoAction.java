@@ -42,7 +42,6 @@ import com.jme.scene.Spatial;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.GPSView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
-import edu.poly.bxmc.betaville.jme.fenggui.extras.LocationView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.OpenGLView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.StreetView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.UTMView;

@@ -74,7 +74,6 @@ import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.model.Design;
-import edu.poly.bxmc.betaville.model.EmptyDesign;
 import edu.poly.bxmc.betaville.module.GUIModule;
 import edu.poly.bxmc.betaville.progress.ProgressContainer;
 

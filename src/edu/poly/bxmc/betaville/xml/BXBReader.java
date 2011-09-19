@@ -34,7 +34,6 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
-import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 

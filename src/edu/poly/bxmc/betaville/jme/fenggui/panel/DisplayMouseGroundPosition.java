@@ -31,9 +31,7 @@ import org.fenggui.Container;
 import org.fenggui.FengGUI;
 import org.fenggui.Label;
 import org.fenggui.composite.Window;
-import org.fenggui.event.ISelectionChangedListener;
 import org.fenggui.event.IWindowClosedListener;
-import org.fenggui.event.SelectionChangedEvent;
 import org.fenggui.event.WindowClosedEvent;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
@@ -43,7 +41,6 @@ import com.jme.math.Plane;
 import com.jme.math.Ray;
 import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
-import com.jme.scene.Node;
 import com.jme.scene.shape.AxisRods;
 import com.jme.system.DisplaySystem;
 
@@ -51,13 +48,11 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
-import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.module.FrameSyncModule;
 import edu.poly.bxmc.betaville.module.Module;
 import edu.poly.bxmc.betaville.module.ModuleNameException;
-import edu.poly.bxmc.betaville.module.SceneModule;
 
 /**
  * Utility window for checking the mouse pointer's position on the ground

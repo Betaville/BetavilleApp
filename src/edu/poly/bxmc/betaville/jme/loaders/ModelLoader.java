@@ -37,7 +37,6 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 
-import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.state.RenderState.StateType;
 import com.jme.util.export.binary.BinaryExporter;

@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.geonames.FeatureClass;
-import org.geonames.InsufficientStyleException;
 import org.geonames.Toponym;
 import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;

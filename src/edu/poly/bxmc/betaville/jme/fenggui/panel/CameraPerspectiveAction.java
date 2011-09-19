@@ -31,7 +31,6 @@ import org.fenggui.event.IButtonPressedListener;
 import com.jme.math.Vector3f;
 
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
 

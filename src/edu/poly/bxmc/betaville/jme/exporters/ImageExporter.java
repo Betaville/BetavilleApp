@@ -28,14 +28,12 @@ package edu.poly.bxmc.betaville.jme.exporters;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
 import com.jme.image.Image;
-import com.jme.util.TextureManager;
 
 /**
  * @author Skye Book

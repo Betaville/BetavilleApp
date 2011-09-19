@@ -10,7 +10,6 @@ import com.jme.scene.Geometry;
 import com.jme.scene.shape.Arrow;
 import com.jme.scene.shape.Cylinder;
 import com.jme.scene.shape.Box;
-import com.jme.scene.shape.Pyramid;
 import com.jme.util.export.InputCapsule;
 import com.jme.util.export.JMEExporter;
 import com.jme.util.export.JMEImporter;

@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.NetModelLoader;
 import edu.poly.bxmc.betaville.net.NetModelLoader.LookupRoutine;
 import edu.poly.bxmc.betaville.updater.BaseUpdater;

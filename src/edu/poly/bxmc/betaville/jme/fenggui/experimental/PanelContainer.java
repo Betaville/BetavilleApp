@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
-import org.fenggui.binding.render.Binding;
 import org.fenggui.decorator.background.PlainBackground;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;

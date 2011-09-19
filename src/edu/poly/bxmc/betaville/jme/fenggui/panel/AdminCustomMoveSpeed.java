@@ -47,7 +47,6 @@ import com.jme.scene.Node;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.jme.controllers.SceneController;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;

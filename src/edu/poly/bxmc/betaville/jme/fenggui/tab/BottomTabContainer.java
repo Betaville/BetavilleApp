@@ -28,7 +28,6 @@
 package edu.poly.bxmc.betaville.jme.fenggui.tab;
 
 import org.fenggui.composite.tab.TabContainer;
-import org.fenggui.composite.tab.TabItem;
 import org.fenggui.util.Alignment;
 
 /**
