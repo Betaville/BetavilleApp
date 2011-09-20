@@ -43,6 +43,8 @@ public class SketchedDesign extends Design{
 	private char upPlane;
 	private int rotation;
 	
+	public SketchedDesign(){}
+	
 	public SketchedDesign(String name, UTMCoordinate coordinate, String address,
 			int cityID, String user, String description, String filepath, String url, boolean isVisible, int rotation, char upPlane){
 		super(name, coordinate, address, cityID, user, description, filepath, url, isVisible);
@@ -81,6 +83,19 @@ public class SketchedDesign extends Design{
 		result = prime * result + rotation;
 		result = prime * result + upPlane;
 		return result;
+	}
+	
+	/**
+	 * Performs a shallow copy of {@link SketchedDesign} data
+	 * into an object
+	 * @param design
+	 * @see Design#load(Design)
+	 */
+	public void load(SketchedDesign design){
+		super.load(design);
+		dimensions = design.dimensions;
+		upPlane = design.upPlane;
+		rotation = design.rotation;
 	}
 
 	@Override

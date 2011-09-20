@@ -45,6 +45,8 @@ public class AudibleDesign extends Design{
 	
 	private SoundStyle soundStyle;
 	
+	public AudibleDesign(){}
+	
 	public AudibleDesign(String name, UTMCoordinate coordinate, String address,
 			int cityID, String user, String description, String filepath,
 			String url, boolean isVisible, float directionX, float directionY, float directionZ, int volume, SoundStyle soundStyle) {
@@ -118,6 +120,21 @@ public class AudibleDesign extends Design{
 			this.directionZ=1;
 		}
 		else this.directionZ=directionZ;
+	}
+	
+	/**
+	 * Performs a shallow copy of {@link AudibleDesign} data
+	 * into an object
+	 * @param design
+	 * @see Design#load(Design)
+	 */
+	public void load(AudibleDesign design){
+		super.load(design);
+		directionX = design.directionX;
+		directionY = design.directionY;
+		directionZ = design.directionZ;
+		volume = design.volume;
+		soundStyle = design.soundStyle;
 	}
 
 	@Override

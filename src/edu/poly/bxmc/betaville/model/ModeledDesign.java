@@ -43,6 +43,8 @@ public class ModeledDesign extends Design{
 	private float rotZ=0;
 	private boolean textured;
 	
+	public ModeledDesign(){}
+	
 	public ModeledDesign(String name, UTMCoordinate coordinate, String address, 
 			int cityID, String user, String description, String filepath, String url, boolean isVisible, float rotX, float rotY, float rotZ, boolean textured){
 		super(name, coordinate, address, cityID, user, description, filepath, url, isVisible);
@@ -112,6 +114,23 @@ public class ModeledDesign extends Design{
 
 	public void setTextured(boolean textured) {
 		this.textured = textured;
+	}
+	
+	/**
+	 * Performs a shallow copy of {@link ModeledDesign} data
+	 * into an object
+	 * @param design
+	 * @see Design#load(Design)
+	 */
+	public void load(ModeledDesign design){
+		super.load(design);
+		dimensionX = design.dimensionX;
+		dimensionY = design.dimensionY;
+		dimensionZ = design.dimensionZ;
+		rotX = design.rotX;
+		rotY = design.rotY;
+		rotZ = design.rotZ;
+		textured = design.textured;
 	}
 	
 	/* (non-Javadoc)

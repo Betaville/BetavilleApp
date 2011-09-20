@@ -95,6 +95,8 @@ public class Design implements Serializable{
 	protected List<String> favedBy;
 	protected ProposalPermission proposalPermission;
 	
+	public Design(){}
+	
 	/**
 	 * Creates a new design.
 	 * @param name
@@ -365,6 +367,31 @@ public class Design implements Serializable{
 	 */
 	public void setDuplicationFunction(DuplicationFunction duplicationFunction) {
 		this.duplicationFunction = duplicationFunction;
+	}
+	
+	/**
+	 * Performs a shallow copy of {@link Design} data
+	 * into an object
+	 * @param design
+	 */
+	public void load(Design design){
+		name=design.name;
+		classification=design.classification;
+		duplicationFunction = design.duplicationFunction;
+		id=design.id;
+		sourceID=design.sourceID;
+		coordinate=design.coordinate;
+		address=design.address;
+		cityID = design.cityID;
+		user = design.user;
+		description = design.description;
+		filepath = design.filepath;
+		url = design.url;
+		dateAdded = design.dateAdded;
+		isPublic = design.isPublic;
+		designsToRemove = design.designsToRemove;
+		favedBy = design.favedBy;
+		proposalPermission = design.proposalPermission;
 	}
 
 	public static Comparator<Design> COMPARE_BY_ID = new Comparator<Design>(){

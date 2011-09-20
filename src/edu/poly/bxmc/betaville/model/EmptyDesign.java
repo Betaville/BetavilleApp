@@ -38,6 +38,8 @@ public class EmptyDesign extends Design {
 	private static final long serialVersionUID = 1L;
 	private int length;
 	private int width;
+	
+	public EmptyDesign(){}
 
 	/**
 	 * @param name
@@ -92,6 +94,18 @@ public class EmptyDesign extends Design {
 
 	public void setWidth(int width) {
 		this.width = width;
+	}
+	
+	/**
+	 * Performs a shallow copy of {@link EmptyDesign} data
+	 * into an object
+	 * @param design
+	 * @see Design#load(Design)
+	 */
+	public void load(EmptyDesign design){
+		super.load(design);
+		length = design.length;
+		width = design.width;
 	}
 
 	@Override

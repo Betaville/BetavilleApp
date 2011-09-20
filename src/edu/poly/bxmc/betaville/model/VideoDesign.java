@@ -41,6 +41,8 @@ public class VideoDesign extends Design {
 	private int length;
 	public enum Format{AVI, MPG, WMV, FLV};
 	private Format format;
+	
+	public VideoDesign(){};
 
 	public VideoDesign(String name, UTMCoordinate coordinate, String address,
 			int cityID, String user, String description, String filepath,
@@ -120,6 +122,22 @@ public class VideoDesign extends Design {
 	
 	public void setLength(int length){
 		this.length=length;
+	}
+	
+	/**
+	 * Performs a shallow copy of {@link VideoDesign} data
+	 * into an object
+	 * @param design
+	 * @see Design#load(Design)
+	 */
+	public void load(VideoDesign design){
+		super.load(design);
+		directionX = design.directionX;
+		directionY = design.directionY;
+		directionZ = design.directionZ;
+		volume = design.volume;
+		length = design.length;
+		format = design.format;
 	}
 
 	@Override
