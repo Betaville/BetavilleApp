@@ -152,6 +152,7 @@ public class TermsWindow extends JFrame {
 			buttons.add(decline);
 			add(buttons, BorderLayout.SOUTH);
 		} catch (IOException e) {
+			logger.error("License file could not be found" , e);
 			String licenseNotFound = "The license file could not be found." +
 					"  You, unfortunately, cannot use the application without selecting the license, so we will be forced to quit";
 			JOptionPane.showMessageDialog(getContentPane(), licenseNotFound);
