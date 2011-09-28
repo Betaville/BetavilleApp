@@ -58,6 +58,7 @@ import javax.swing.text.PlainDocument;
 import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.LoginManager;
+import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.TermsWindow.TermsAcceptedListener;
 import edu.poly.bxmc.betaville.model.Design;
@@ -360,7 +361,7 @@ public class SwingLoginWindow extends JFrame{
 					// agree to the license
 					TermsWindow contentLicenseWindow = new TermsWindow("Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)",
 							"http://creativecommons.org/licenses/by-sa/3.0/",
-							new File("data/license/by-sa.html"),
+							ResourceLoader.loadResource("data/license/by-sa.html"),
 							"Betaville Content License");
 					contentLicenseWindow.setVisible(true);
 					contentLicenseWindow.addTermsAcceptedListener(new TermsAcceptedListener() {
