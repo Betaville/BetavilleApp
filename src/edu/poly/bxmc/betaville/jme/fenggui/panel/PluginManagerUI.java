@@ -42,10 +42,8 @@ import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
-import org.fenggui.util.Alignment;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
-import edu.poly.bxmc.betaville.gui.AcceptedModelFilter;
 import edu.poly.bxmc.betaville.gui.JARFileFilter;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -138,10 +136,8 @@ public class PluginManagerUI extends Window implements IBetavilleWindow{
 					JDialog dialog = new JDialog();
 					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 					JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
-					AcceptedModelFilter modelFilter = new AcceptedModelFilter();
 					fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
 					fileChooser.addChoosableFileFilter(new JARFileFilter());
-					fileChooser.setFileFilter(modelFilter);
 					fileChooser.showOpenDialog(dialog);
 					File jarFile = fileChooser.getSelectedFile();
 					destination.setText(jarFile.toString());

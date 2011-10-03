@@ -29,6 +29,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Vector;
 
+import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
+
 /**
  * @author Skye Book
  *
@@ -96,7 +98,8 @@ public class PluginManager {
 		//URLClassLoader classLoader = new URLClassLoader(new URL[]{pluginURL}, PluginManager.class.getClass().getClassLoader());
 		//Class<?> plugin = classLoader.loadClass(pluginClass);
 		//JARClassLoader classLoader = new JARClassLoader(pluginURL, PluginManager.class.getClass().getClassLoader());
-		JARClassLoader classLoader = new JARClassLoader(pluginURL,ClassLoader.getSystemClassLoader());
+		//JARClassLoader classLoader = new JARClassLoader(pluginURL, ClassLoader.getSystemClassLoader());
+		JARClassLoader classLoader = new JARClassLoader(pluginURL, BetavilleNoCanvas.class.getClassLoader());
 		Class<?> plugin = Class.forName(pluginClass, false, classLoader);
 		
 		Object pluginInstance = plugin.newInstance();
