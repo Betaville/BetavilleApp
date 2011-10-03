@@ -186,6 +186,15 @@ public class FengUtils {
 		return (place.getHeight()/2)-(thing.getHeight()/2);
 	}
 	
+	public static void putAtMiddleOfScreen(Widget item){
+		putAtMiddle(item, GUIGameState.getInstance().getDisp());
+	}
+	
+	public static void putAtMiddle(Widget item, Container destination){
+		item.setXY(midWidth(destination, item), midHeight(destination, item));
+		destination.addWidget(item);
+	}
+	
 	/**
 	 * Sets a widget at the mouse's location while still being fully
 	 * inside of the window, preventing spilling over.
