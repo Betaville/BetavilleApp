@@ -26,7 +26,6 @@
 package edu.poly.bxmc.betaville.plugin;
 
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Vector;
 
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
