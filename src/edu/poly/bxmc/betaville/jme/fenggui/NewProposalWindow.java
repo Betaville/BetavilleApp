@@ -1409,9 +1409,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							ProtectedManager manager = NetPool.getPool().getSecureConnection();
 							int response=-4;
 							if(stepOneSelection.equals(Classification.BASE)){
-								logger.info("+"+design.getID());
-								logger.info("+"+design.getFilepath());
-								response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()));
+								
+								// Attempt to get a thumbnail
+								PhysicalFileTransporter thumbTransporter=packThumbnail();
+								response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter);
 							}
 							else if(stepOneSelection.equals(Classification.VERSION)){
 
@@ -1447,46 +1448,12 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 								}
 								response = manager.addVersion(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter);
 
-								/*
-								// If something is selected, assume that this is the root
-								if(SceneScape.getTargetSpatial().getName()!="$empty"){
-									Design rootDesign = SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName());
-
-									// if we've reached the first in the proposal, then we use its ID as the source
-									// if not, we use the selected version's sourceID
-									if(rootDesign.isProposal()){
-										design.setSourceID(rootDesign.getID());
-									}
-									else if(rootDesign.isVersion()){
-										design.setSourceID(rootDesign.getSourceID());
-									}
-									else{
-										showSimpleError("Versions only allowed in proposals");
-										return;
-									}
-
-									// set the description
-									design.setDescription(FengUtils.getText(versionDescription));
-									response = manager.addVersion(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()));
-								}
-								 */
 							}
 							else if(stepOneSelection.equals(Classification.PROPOSAL)){
-								PhysicalFileTransporter thumbTransporter=null;
-								if(atLeastOnePictureTaken){
-									if(imageFile.isFile()){
-										FileInputStream fis = new FileInputStream(imageFile.getCanonicalFile());
-
-										// Read the contents and pack it into a PFT
-										byte[] b = new byte[fis.available()];
-										fis.read(b);
-										thumbTransporter = new PhysicalFileTransporter(b);
-										logger.info("Screenshot exists for proposal");
-									}
-								}
-								else logger.info("No screenshots taken for proposal");
+								PhysicalFileTransporter thumbTransporter=packThumbnail();
 								response = manager.addProposal(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, permission);
 							}
+							
 
 							// interpret responses
 							if(response>0){
@@ -1528,6 +1495,28 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 		stepFive.addWidget(shareIt, groupList, permissionsCombo, upload);
 		//stepFive.addWidget(permissionsClosed, permissionsOpen, permissionsGroup);
+	}
+	
+	/**
+	 * Packs the saved thumbnail, if it was taken, into a file transporter
+	 * @return A {@link PhysicalFileTransporter} containing the image data
+	 * or null if there was no thumbnail saved.
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	private PhysicalFileTransporter packThumbnail() throws FileNotFoundException, IOException{
+		if(atLeastOnePictureTaken){
+			if(imageFile.isFile()){
+				FileInputStream fis = new FileInputStream(imageFile.getCanonicalFile());
+
+				// Read the contents and pack it into a PFT
+				byte[] b = new byte[fis.available()];
+				fis.read(b);
+				return new PhysicalFileTransporter(b);
+			}
+		}
+		
+		return null;
 	}
 
 	private void applyAdvisorAppearance(Label label){

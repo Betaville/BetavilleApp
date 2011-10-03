@@ -266,7 +266,7 @@ public class BulkLoader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		int response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), new PhysicalFileTransporter(bo.toByteArray()));
+		int response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), new PhysicalFileTransporter(bo.toByteArray()), null);
 		if(response>0){
 			// get handle on model
 			Spatial model = SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier());

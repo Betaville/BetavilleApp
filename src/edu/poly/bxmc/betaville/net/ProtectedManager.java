@@ -158,7 +158,7 @@ public interface ProtectedManager extends UnprotectedManager{
 	 * @see PhysicalFileTransporter
 	 */
 	public abstract int addBase(Design design, String user, String pass,
-			PhysicalFileTransporter pft);
+			PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter);
 
 	/**
 	 * Removes a <code>Design</code> from the database.  Must be performed by the user who

@@ -322,11 +322,17 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addBase(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
-	public int addBase(Design design, String user, String pass, PhysicalFileTransporter pft){
+	public int addBase(Design design, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter){
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a base design");
-			output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft});
+			// send the thumbnail along as well if its transporter isn't null
+			if(thumbTransporter==null){
+				output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft});
+			}
+			else{
+				output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft, thumbTransporter});
+			}
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
