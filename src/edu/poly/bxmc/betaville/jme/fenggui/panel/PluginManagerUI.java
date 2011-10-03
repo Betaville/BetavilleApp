@@ -48,9 +48,11 @@ import edu.poly.bxmc.betaville.gui.JARFileFilter;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
-import edu.poly.bxmc.betaville.module.PanelAction;
 import edu.poly.bxmc.betaville.plugin.IncorrectPluginTypeException;
+import edu.poly.bxmc.betaville.plugin.Plugin;
 import edu.poly.bxmc.betaville.plugin.PluginAlreadyLoadedException;
+import edu.poly.bxmc.betaville.plugin.PluginEntry;
+import edu.poly.bxmc.betaville.plugin.PluginEntry.RemoveCallback;
 import edu.poly.bxmc.betaville.plugin.PluginManager;
 
 /**
@@ -58,13 +60,15 @@ import edu.poly.bxmc.betaville.plugin.PluginManager;
  * @author Skye Book
  *
  */
-public class PluginManagerUI extends Window implements IBetavilleWindow{
+public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelOnScreenAwareWindow{
 	private static Logger logger = Logger.getLogger(PluginManagerUI.class);
 	private int targetWidth= 300;
 	private int targetHeight = 200;
 	
 	private BlockingScrollContainer sc;
 	private Container isc;
+	
+	private Container list;
 	
 	private Button addPluginFromFile;
 	
@@ -85,18 +89,36 @@ public class PluginManagerUI extends Window implements IBetavilleWindow{
 		sc.setInnerWidget(isc);
 		sc.layout();
 		
+		list = FengGUI.createWidget(Container.class);
+		list.setLayoutManager(new RowExLayout(false));
+		
 		addPluginFromFile = FengGUI.createWidget(Button.class);
 		addPluginFromFile.setText("Add Plugin From File");
 		addPluginFromFile.addButtonPressedListener(new LaunchLoadFromFileWindowDelegate());
 		
 		
-		getContentContainer().addWidget(sc, addPluginFromFile);
+		getContentContainer().addWidget(list, addPluginFromFile);
+		
+		updatePluginList();
 	}
 	
-	public void addAction(PanelAction action){
-		if(SettingsPreferences.getUserType().compareTo(action.getRequiredUserLevel())>=0){
-			isc.addWidget(action.getButton());
+	private void updatePluginList(){
+		for(Plugin plugin : PluginManager.getList()){
+			PluginEntry entry = FengGUI.createWidget(PluginEntry.class);
+			entry.setPlugin(plugin.getClass().getName());
+			//isc.addWidget(entry);
+			list.addWidget(entry);
+			entry.setRemoveCallback(new RemoveCallback() {
+				
+				@Override
+				public void onPluginRemoval(PluginEntry pluginEntry) {
+					//isc.removeWidget(pluginEntry);
+					list.removeWidget(pluginEntry);
+				}
+			});
 		}
+		
+		layout();
 	}
 	
 	public void finishSetup(){
@@ -148,7 +170,7 @@ public class PluginManagerUI extends Window implements IBetavilleWindow{
 	}
 	
 	private Window createLoadFromFileWindow(){
-		Window w = FengGUI.createWindow(true, true);
+		final Window w = FengGUI.createWindow(true, true);
 		w.getContentContainer().setLayoutManager(new RowExLayout(false));
 		w.setSize(275, 175);
 		w.setTitle("Load Plugin From File");
@@ -185,6 +207,8 @@ public class PluginManagerUI extends Window implements IBetavilleWindow{
 				
 				try {
 					PluginManager.loadPlugin(new File(FengUtils.getText(jarEditor)).toURI().toURL(), FengUtils.getText(className));
+					updatePluginList();
+					w.close();
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -210,5 +234,10 @@ public class PluginManagerUI extends Window implements IBetavilleWindow{
 		w.getContentContainer().addWidget(jarContainer, className, load);
 		
 		return w;
+	}
+
+	@Override
+	public void panelTurnedOn() {
+		updatePluginList();
 	}
 }

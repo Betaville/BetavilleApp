@@ -43,6 +43,10 @@ public class PluginManager {
 		pluginList = new Vector<Plugin>();
 	}
 	
+	public synchronized static Vector<Plugin> getList(){
+		return pluginList;
+	}
+	
 	/**
 	 * 
 	 * @param pluginURL
