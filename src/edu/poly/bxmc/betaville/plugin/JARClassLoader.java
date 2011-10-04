@@ -41,4 +41,14 @@ public class JARClassLoader extends URLClassLoader {
 		super(new URL[]{jarURL}, classLoader);
 		addURL(jarURL);
 	}
+	
+	/**
+	 * @param urls
+	 */
+	public JARClassLoader(URL[] jarURL, ClassLoader classLoader) {
+		super(jarURL, classLoader);
+		for(URL url : jarURL){
+			addURL(url);
+		}
+	}
 }

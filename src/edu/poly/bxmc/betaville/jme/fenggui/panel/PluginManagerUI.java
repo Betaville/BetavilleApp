@@ -28,6 +28,7 @@ package edu.poly.bxmc.betaville.jme.fenggui.panel;
 import java.awt.Dialog.ModalityType;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -206,7 +207,7 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 				}
 				
 				try {
-					PluginManager.loadPlugin(new File(FengUtils.getText(jarEditor)).toURI().toURL(), FengUtils.getText(className));
+					PluginManager.loadPlugin(new URL[]{new File(FengUtils.getText(jarEditor)).toURI().toURL()}, FengUtils.getText(className));
 					updatePluginList();
 					w.close();
 				} catch (MalformedURLException e) {
