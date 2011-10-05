@@ -125,15 +125,16 @@ public class PluginManager {
 		else{
 			((Plugin)pluginInstance).initialize();
 			pluginList.add((Plugin)pluginInstance);
+			
+			// the directory is not there, let's set it up
+			File directory = getPluginDirectory(pluginClass);
+			directory.mkdirs();
 
-			// ensure that the plugin's folder is created
-			if(!getPluginDirectory(pluginClass).exists()){
-				// the directory is not there, let's set it up
-				File directory = getPluginDirectory(pluginClass);
-				directory.mkdirs();
+			// copy the jars into the bin folder
+			File binFolder = new File(directory.toString()+"/bin/");
 
-				// copy the jars into the bin folder
-				File binFolder = new File(directory.toString()+"/bin/");
+			// ensure that the plugin's bin folder is created
+			if(!binFolder.exists()){
 				binFolder.mkdirs();
 
 				// copy each individual JAR
