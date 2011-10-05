@@ -53,6 +53,29 @@ public class RotateModule extends Module implements GlobalSceneModule {
 	public void initialize(Node scene) {
 		pick = new RotateMousePick(SceneGameState.getInstance().getEditorWidgetNode());
 
+		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
+			public void selectionCleared(Design previousDesign) {
+				
+				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
+				SceneScape.getTargetSpatial().updateRenderState();
+				
+				wasClickedPreviously = false;
+				newHorizontalRotation = -1;
+				newVerticalRotation = -1;
+				newAnotherRotation = -1;
+			}
+			
+			public void designSelected(Spatial spatial, Design design) {
+
+				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
+				SceneScape.getTargetSpatial().updateRenderState();
+				
+				wasClickedPreviously = false;
+				newHorizontalRotation = -1;
+				newVerticalRotation = -1;
+				newAnotherRotation = -1;
+			}
+		});
 	}
 
 	public void onUpdate(Node scene, Vector3f cameraLocation,
@@ -133,30 +156,6 @@ public class RotateModule extends Module implements GlobalSceneModule {
 		
 		mouseXLastClick = MouseInput.get().getXAbsolute();
 		mouseYLastClick = MouseInput.get().getYAbsolute();
-		
-		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
-			public void selectionCleared(Design previousDesign) {
-				
-				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
-				SceneScape.getTargetSpatial().updateRenderState();
-				
-				wasClickedPreviously = false;
-				newHorizontalRotation = -1;
-				newVerticalRotation = -1;
-				newAnotherRotation = -1;
-			}
-			
-			public void designSelected(Spatial spatial, Design design) {
-
-				SceneGameState.getInstance().getEditorWidgetNode().detachAllChildren();
-				SceneScape.getTargetSpatial().updateRenderState();
-				
-				wasClickedPreviously = false;
-				newHorizontalRotation = -1;
-				newVerticalRotation = -1;
-				newAnotherRotation = -1;
-			}
-		});
 	}
 	
 	public float calculateRotation() {
