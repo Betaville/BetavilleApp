@@ -25,19 +25,31 @@
  */
 package edu.poly.bxmc.betaville.plugin;
 
+import java.io.File;
+
 /**
  * @author Skye Book
  *
  */
-public interface Plugin {
+public abstract class Plugin {
+	
+	/**
+	 * Gets the directory that this plugin should store its data in
+	 * @return
+	 */
+	protected File getDataDirectory(){
+		File dataDirectory = new File(PluginManager.getPluginDirectory(getClass().getName()).toString()+"/data/");
+		dataDirectory.mkdirs();
+		return dataDirectory;
+	}
 	
 	/**
 	 * Start the plugin
 	 */
-	public void initialize();
+	public abstract void initialize();
 	
 	/**
 	 * Stop the plugin
 	 */
-	public void destroy();
+	public abstract void destroy();
 }
