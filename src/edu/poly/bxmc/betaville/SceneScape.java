@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -260,7 +260,7 @@ public class SceneScape {
 					}
 					else if(previousDesign!=null) listener.selectionCleared(previousDesign);
 				}
-				logger.debug("Listener triggers took " + (System.currentTimeMillis()-lisnterStart) + "ms");
+				logger.debug(selectionListeners.size()+" listener triggers took " + (System.currentTimeMillis()-lisnterStart) + "ms");
 				runningTriggers.set(false);
 			//}
 		//});
