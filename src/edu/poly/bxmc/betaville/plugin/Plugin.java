@@ -33,6 +33,10 @@ import java.io.File;
  */
 public abstract class Plugin {
 	
+	protected String name;
+	protected String author;
+	protected String description;
+	
 	/**
 	 * Gets the directory that this plugin should store its data in
 	 * @return
@@ -52,4 +56,28 @@ public abstract class Plugin {
 	 * Stop the plugin
 	 */
 	public abstract void destroy();
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }

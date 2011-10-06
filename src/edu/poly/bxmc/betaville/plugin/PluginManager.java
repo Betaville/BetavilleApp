@@ -112,7 +112,7 @@ public class PluginManager {
 		return new File(DriveFinder.getBetavilleFolder().toString()+"/plugins/"+pluginClass+"/");
 	}
 
-	private static Plugin loadAndRegister(URL[] pluginURL, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException {
+	public static Plugin loadAndRegister(URL[] pluginURL, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException {
 		//URLClassLoader classLoader = new URLClassLoader(new URL[]{pluginURL}, PluginManager.class.getClass().getClassLoader());
 		//Class<?> plugin = classLoader.loadClass(pluginClass);
 		//JARClassLoader classLoader = new JARClassLoader(pluginURL, PluginManager.class.getClass().getClassLoader());
