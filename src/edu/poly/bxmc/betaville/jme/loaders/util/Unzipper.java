@@ -64,7 +64,7 @@ public class Unzipper {
 				if(!entry.getName().endsWith(".DS_Store") && !entry.getName().startsWith("__MACOSX")){
 					File localFolder = new File(destinationFolder+"/"+entry.getName().substring(0, entry.getName().indexOf("/")+1));
 					localFolder.mkdirs();
-					FileOutputStream fos = new FileOutputStream(destinationFolder+"/"+entry.getName().substring(getFilename(file).length()+1));
+					FileOutputStream fos = new FileOutputStream(destinationFolder+"/"+entry.getName());
 
 					byte[] readBuffer = new byte[BUFFER_SIZE];
 					int n;
