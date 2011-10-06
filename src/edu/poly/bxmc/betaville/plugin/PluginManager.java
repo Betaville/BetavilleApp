@@ -69,9 +69,9 @@ public class PluginManager {
 	InstantiationException, IllegalAccessException, IncorrectPluginTypeException{
 		// check if the plugin is already loaded
 		if(isPluginLoaded(pluginClass)) throw new PluginAlreadyLoadedException(pluginClass + " has already been loaded");
-		
+
 		logger.info("redirecting to loadAndRegister");
-		
+
 		return loadAndRegister(pluginURL, pluginClass);
 	}
 
@@ -120,12 +120,12 @@ public class PluginManager {
 	private static Plugin loadAndRegister(URL[] pluginURL, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException {
 
 		logger.info("loadAndRegister called");
-		
+
 		logger.info("Loading " + pluginClass + " from the following JARs");
 		for(URL url : pluginURL){
 			logger.info("JAR: " + url.toString());
 		}
-		
+
 		// create the plugin's directory if it doesn't exist
 		File directory = getPluginDirectory(pluginClass);
 		if(!directory.exists()) directory.mkdirs();
@@ -143,14 +143,17 @@ public class PluginManager {
 					String jarName = getJARFilename(pluginURL[i]);
 					System.out.println("JAR destination: " + jarName);
 					File fileSaveLocation = new File(binFolder.toString()+"/"+jarName);
-					FileOutputStream outputStream = new FileOutputStream(fileSaveLocation);
-					InputStream is = pluginURL[i].openStream();
-					int byteValue = -1;
-					while((byteValue = is.read())!=-1){
-						outputStream.write(byteValue);
+					// only copy the file if it isn't already there
+					if(!fileSaveLocation.exists()){
+						FileOutputStream outputStream = new FileOutputStream(fileSaveLocation);
+						InputStream is = pluginURL[i].openStream();
+						int byteValue = -1;
+						while((byteValue = is.read())!=-1){
+							outputStream.write(byteValue);
+						}
+						outputStream.close();
 					}
-					outputStream.close();
-					
+
 					// switch the URL's
 					pluginURL[i] = fileSaveLocation.toURI().toURL();
 				} catch (FileNotFoundException e) {
@@ -162,7 +165,7 @@ public class PluginManager {
 				}
 			}
 		}
-		
+
 		logger.info("JARs moved to:");
 		for(URL url : pluginURL){
 			logger.info("JAR: " + url.toString());

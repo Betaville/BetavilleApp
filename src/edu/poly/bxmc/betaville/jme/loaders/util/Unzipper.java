@@ -50,38 +50,48 @@ public class Unzipper {
 		try {
 			BufferedOutputStream dest = null;
 			if(destinationFolder==null) destinationFolder = new File(file.toString().substring(0, file.toString().indexOf(".")));
-			else destinationFolder = new File(destinationFolder+"/"+file.toString().substring(file.toString().lastIndexOf("/")+1, file.toString().indexOf(".")));
+			else destinationFolder = new File(destinationFolder+"/"+getFilename(file));
 			System.out.println("folder: " + destinationFolder);
 			if(!destinationFolder.exists()){
 				destinationFolder.mkdirs();
 			}
 			FileInputStream fis = new 
-			FileInputStream(file);
+					FileInputStream(file);
 			ZipInputStream zis = new 
-			ZipInputStream(new BufferedInputStream(fis));
+					ZipInputStream(new BufferedInputStream(fis));
 			ZipEntry entry;
 			while((entry = zis.getNextEntry()) != null) {
 				System.out.println("Extracting: " +entry);
-				int count;
-				byte data[] = new byte[BUFFER_SIZE];
+
 				// write the files to the disk
 				if(!entry.getName().endsWith(".DS_Store") && !entry.getName().startsWith("__MACOSX")){
 					File localFolder = new File(destinationFolder+"/"+entry.getName().substring(0, entry.getName().indexOf("/")+1));
 					localFolder.mkdirs();
 					FileOutputStream fos = new FileOutputStream(destinationFolder+"/"+entry.getName());
-					dest = new 
-					BufferedOutputStream(fos, BUFFER_SIZE);
-					while ((count = zis.read(data, 0, BUFFER_SIZE)) 
-							!= -1) {
-						dest.write(data, 0, count);
+
+					byte[] readBuffer = new byte[BUFFER_SIZE];
+					int n;
+					while ((n = zis.read(readBuffer, 0, BUFFER_SIZE)) != -1){
+						fos.write(readBuffer, 0, n);
 					}
-					dest.flush();
-					dest.close();
+					fos.close();
+					fos = null;
 				}
 			}
 			zis.close();
+			fis.close();
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static String getFilename(File file){
+		if(file.toString().contains("\\")){
+			System.out.println("Uses backslashes");
+			return file.toString().substring(file.toString().lastIndexOf("\\")+1, file.toString().length());
+		}
+		else{
+			return file.toString().substring(file.toString().lastIndexOf("/")+1, file.toString().length());
 		}
 	}
 }
