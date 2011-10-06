@@ -44,6 +44,8 @@ import edu.poly.bxmc.betaville.xml.XMLReader;
  */
 public class PluginConfigReader extends XMLReader {
 	private static Logger logger = Logger.getLogger(PluginConfigReader.class);
+	
+	private List<PluginParsedCallback> callbacks;
 
 	/**
 	 * 
@@ -53,8 +55,12 @@ public class PluginConfigReader extends XMLReader {
 	 */
 	public PluginConfigReader(File xmlFile) throws JDOMException, IOException{
 		super();
+		callbacks = new ArrayList<PluginConfigReader.PluginParsedCallback>();
 		loadFile(xmlFile);
-		parse();
+	}
+	
+	public void addCallback(PluginParsedCallback callback){
+		callbacks.add(callback);
 	}
 
 	/* (non-Javadoc)
@@ -73,6 +79,8 @@ public class PluginConfigReader extends XMLReader {
 			jars.add(((Element)dpChildren.get(i)).getText());
 		}
 		
+		logger.info("XML traversal complete");
+		
 		// convert to URLs
 		List<URL> urlList = new ArrayList<URL>();
 		for(String jar : jars){
@@ -83,12 +91,28 @@ public class PluginConfigReader extends XMLReader {
 			}
 		}
 		
+		logger.info("URL conversion complete");
+		
 		// start the plugin
 		try {
-			Plugin plugin = PluginManager.loadAndRegister((URL[])urlList.toArray(), classname);
+			
+			URL[] urlArray = new URL[urlList.size()];
+			for(int i=0; i<urlList.size(); i++){
+				urlArray[i] = urlList.get(i);
+			}
+			
+			Plugin plugin = PluginManager.loadPlugin(urlArray, classname);
+			logger.info("Plugin loaded");
 			plugin.setName(name);
 			plugin.setDescription(description);
 			plugin.setAuthor(author);
+			
+			// trigger callbacks
+			logger.info("Firing callbacks after plugin parsing");
+			for(PluginParsedCallback callback : callbacks){
+				callback.onPluginParsed(name, description, author, classname);
+			}
+			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,6 +125,21 @@ public class PluginConfigReader extends XMLReader {
 		} catch (IncorrectPluginTypeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (PluginAlreadyLoadedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+	}
+	
+	public interface PluginParsedCallback{
+		
+		/**
+		 * Called when a plugin is parsed
+		 * @param name
+		 * @param description
+		 * @param author
+		 * @param classname
+		 */
+		public void onPluginParsed(String name, String description, String author, String classname);
 	}
 }

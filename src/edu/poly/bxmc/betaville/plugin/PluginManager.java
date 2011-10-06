@@ -33,6 +33,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
 
@@ -41,6 +43,7 @@ import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
  *
  */
 public class PluginManager {
+	private static final Logger logger = Logger.getLogger(PluginManager.class);
 
 	private static Vector<Plugin> pluginList;
 
@@ -62,12 +65,14 @@ public class PluginManager {
 	 * @throws IllegalAccessException
 	 * @throws IncorrectPluginTypeException
 	 */
-	public synchronized static void loadPlugin(URL[] pluginURL, String pluginClass) throws PluginAlreadyLoadedException, ClassNotFoundException,
+	public synchronized static Plugin loadPlugin(URL[] pluginURL, String pluginClass) throws PluginAlreadyLoadedException, ClassNotFoundException,
 	InstantiationException, IllegalAccessException, IncorrectPluginTypeException{
 		// check if the plugin is already loaded
 		if(isPluginLoaded(pluginClass)) throw new PluginAlreadyLoadedException(pluginClass + " has already been loaded");
-
-		loadAndRegister(pluginURL, pluginClass);
+		
+		logger.info("redirecting to loadAndRegister");
+		
+		return loadAndRegister(pluginURL, pluginClass);
 	}
 
 	/**
@@ -112,8 +117,15 @@ public class PluginManager {
 		return new File(DriveFinder.getBetavilleFolder().toString()+"/plugins/"+pluginClass+"/");
 	}
 
-	public static Plugin loadAndRegister(URL[] pluginURL, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException {
+	private static Plugin loadAndRegister(URL[] pluginURL, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException {
 
+		logger.info("loadAndRegister called");
+		
+		logger.info("Loading " + pluginClass + " from the following JARs");
+		for(URL url : pluginURL){
+			logger.info("JAR: " + url.toString());
+		}
+		
 		// create the plugin's directory if it doesn't exist
 		File directory = getPluginDirectory(pluginClass);
 		if(!directory.exists()) directory.mkdirs();
@@ -149,6 +161,11 @@ public class PluginManager {
 					e.printStackTrace();
 				}
 			}
+		}
+		
+		logger.info("JARs moved to:");
+		for(URL url : pluginURL){
+			logger.info("JAR: " + url.toString());
 		}
 
 		// now that we are sure the JAR's are saved locally, load the plugin
