@@ -48,7 +48,6 @@ public class Unzipper {
 	public static void unzip(File file, File destinationFolder){
 		try {
 			if(destinationFolder==null) destinationFolder = new File(file.toString().substring(0, file.toString().indexOf(".")));
-			else destinationFolder = new File(destinationFolder+"/"+getFilename(file));
 			System.out.println("folder: " + destinationFolder);
 			if(!destinationFolder.exists()){
 				destinationFolder.mkdirs();
@@ -65,7 +64,7 @@ public class Unzipper {
 				if(!entry.getName().endsWith(".DS_Store") && !entry.getName().startsWith("__MACOSX")){
 					File localFolder = new File(destinationFolder+"/"+entry.getName().substring(0, entry.getName().indexOf("/")+1));
 					localFolder.mkdirs();
-					FileOutputStream fos = new FileOutputStream(destinationFolder+"/"+entry.getName());
+					FileOutputStream fos = new FileOutputStream(destinationFolder+"/"+entry.getName().substring(getFilename(file).length()+1));
 
 					byte[] readBuffer = new byte[BUFFER_SIZE];
 					int n;
