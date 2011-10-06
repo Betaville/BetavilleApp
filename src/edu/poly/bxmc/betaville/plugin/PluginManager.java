@@ -113,10 +113,45 @@ public class PluginManager {
 	}
 
 	public static Plugin loadAndRegister(URL[] pluginURL, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException {
-		//URLClassLoader classLoader = new URLClassLoader(new URL[]{pluginURL}, PluginManager.class.getClass().getClassLoader());
-		//Class<?> plugin = classLoader.loadClass(pluginClass);
-		//JARClassLoader classLoader = new JARClassLoader(pluginURL, PluginManager.class.getClass().getClassLoader());
-		//JARClassLoader classLoader = new JARClassLoader(pluginURL, ClassLoader.getSystemClassLoader());
+
+		// create the plugin's directory if it doesn't exist
+		File directory = getPluginDirectory(pluginClass);
+		if(!directory.exists()) directory.mkdirs();
+
+		// copy the jars into the bin folder
+		File binFolder = new File(directory.toString()+"/bin/");
+
+		// ensure that the plugin's bin folder is created
+		if(!binFolder.exists()){
+			binFolder.mkdirs();
+
+			// copy each individual JAR
+			for(int i=0; i<pluginURL.length; i++){
+				try {
+					String jarName = getJARFilename(pluginURL[i]);
+					System.out.println("JAR destination: " + jarName);
+					File fileSaveLocation = new File(binFolder.toString()+"/"+jarName);
+					FileOutputStream outputStream = new FileOutputStream(fileSaveLocation);
+					InputStream is = pluginURL[i].openStream();
+					int byteValue = -1;
+					while((byteValue = is.read())!=-1){
+						outputStream.write(byteValue);
+					}
+					outputStream.close();
+					
+					// switch the URL's
+					pluginURL[i] = fileSaveLocation.toURI().toURL();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		// now that we are sure the JAR's are saved locally, load the plugin
 		JARClassLoader classLoader = new JARClassLoader(pluginURL, BetavilleNoCanvas.class.getClassLoader());
 		Class<?> plugin = Class.forName(pluginClass, false, classLoader);
 
@@ -125,44 +160,11 @@ public class PluginManager {
 		else{
 			((Plugin)pluginInstance).initialize();
 			pluginList.add((Plugin)pluginInstance);
-			
-			// the directory is not there, let's set it up
-			File directory = getPluginDirectory(pluginClass);
-			directory.mkdirs();
-
-			// copy the jars into the bin folder
-			File binFolder = new File(directory.toString()+"/bin/");
-
-			// ensure that the plugin's bin folder is created
-			if(!binFolder.exists()){
-				binFolder.mkdirs();
-
-				// copy each individual JAR
-				for(URL url : pluginURL){
-					try {
-						String jarName = getJARFilename(url);
-						System.out.println("JAR destination: " + jarName);
-						FileOutputStream outputStream = new FileOutputStream(new File(binFolder.toString()+"/"+jarName));
-						InputStream is = url.openStream();
-						int byteValue = -1;
-						while((byteValue = is.read())!=-1){
-							outputStream.write(byteValue);
-						}
-						outputStream.close();
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
 
 			return (Plugin)pluginInstance;
 		}
 	}
-	
+
 	private static String getJARFilename(URL url){
 		if(url.toString().contains("\\")){
 			System.out.println("Uses backslashes");
