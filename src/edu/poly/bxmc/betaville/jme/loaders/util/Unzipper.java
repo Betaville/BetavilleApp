@@ -26,7 +26,6 @@
 package edu.poly.bxmc.betaville.jme.loaders.util;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,7 +47,6 @@ public class Unzipper {
 	 */
 	public static void unzip(File file, File destinationFolder){
 		try {
-			BufferedOutputStream dest = null;
 			if(destinationFolder==null) destinationFolder = new File(file.toString().substring(0, file.toString().indexOf(".")));
 			else destinationFolder = new File(destinationFolder+"/"+getFilename(file));
 			System.out.println("folder: " + destinationFolder);
