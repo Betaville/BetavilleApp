@@ -46,6 +46,7 @@ import com.jme.system.DisplaySystem;
 import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.LoadingGameState;
 
+import edu.poly.bxmc.betaville.CityManager;
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.SceneScape;
@@ -53,6 +54,7 @@ import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.AboutWindow;
 import edu.poly.bxmc.betaville.gui.BetavilleSettingsPanel;
 import edu.poly.bxmc.betaville.gui.CitySelector;
+import edu.poly.bxmc.betaville.gui.CitySelector.CitySelectedCallback;
 import edu.poly.bxmc.betaville.gui.SwingLoginWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.CreateKioskPasswordPrompt;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -64,6 +66,7 @@ import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.City;
+import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.net.NetModelLoader;
 import edu.poly.bxmc.betaville.net.NetPool;
@@ -102,6 +105,8 @@ public class BetavilleNoCanvas {
 
 	private static File fileOpenArgument = null;
 
+	private static ILocation cameraStartPosition=null;
+
 	private static boolean validateResolutionString(String resString) {
 		return resString.matches("[0-9]+x[0-9]+");
 	}
@@ -115,7 +120,7 @@ public class BetavilleNoCanvas {
 		if (OS.isMac()) {
 			System.setProperty(
 					"com.apple.mrj.application.apple.menu.about.name",
-			"Betaville");
+					"Betaville");
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 		}
 
@@ -220,13 +225,13 @@ public class BetavilleNoCanvas {
 			});
 		}
 
-		ILocation whereToStartTheCamera=null;
+
 		if(fileOpenArgument!=null){
 			logger.info("Application opened with file: " + fileOpenArgument.toString());
 			try {
 				if(fileOpenArgument.toString().toLowerCase().endsWith("bxb")){
 					BXBReader bxb = new BXBReader(fileOpenArgument);
-					whereToStartTheCamera = bxb.getCoordinate();
+					cameraStartPosition = bxb.getCoordinate();
 				}
 			} catch (JDOMException e2) {
 				// TODO Auto-generated catch block
@@ -296,23 +301,36 @@ public class BetavilleNoCanvas {
 				.getProperty("betaville.display.resolution"))
 				|| SettingsPreferences.alwaysShowSettings()) {
 			if (BetavilleSettingsPanel.prompt(game.getSettings(),
-			"Betaville Settings")) {
+					"Betaville Settings")) {
 				logger.warn("Display settings set");
 			}
 		} else {
 			// load the resolution already there
 			String[] widthHeight = SettingsPreferences.getResolution().split(
-			"x");
+					"x");
 			game.getSettings().setWidth(Integer.parseInt(widthHeight[0]));
 			game.getSettings().setHeight(Integer.parseInt(widthHeight[1]));
 		}
 
 		if(!SettingsPreferences.guestMode()) SwingLoginWindow.prompt();
 		else SettingsPreferences.setUserType(UserType.GUEST);
-		
+
 		/*
 		CitySelector citySelector = new CitySelector();
+		citySelector.setCitySelectedCallback(new CitySelectedCallback() {
+
+			@Override
+			public void onSelection(Wormhole wormhole) {
+				SettingsPreferences.setStartupCity(wormhole.getCityID());
+				cameraStartPosition = wormhole.getLocation();
+			}
+		});
+
 		citySelector.setVisible(true);
+
+		while(citySelector.isVisible()){
+			Thread.sleep(25);
+		}
 		*/
 
 		if(game.getSettings().isFullscreen()){
@@ -344,7 +362,7 @@ public class BetavilleNoCanvas {
 
 		transitionGameState.setProgress(0.05f, "Initializing Scene");
 
-		sceneGameState = new SceneGameState("sceneGameState", whereToStartTheCamera);
+		sceneGameState = new SceneGameState("sceneGameState", cameraStartPosition);
 		GameStateManager.getInstance().attachChild(sceneGameState);
 		sceneGameState.setActive(false);
 		if (!SettingsPreferences.useGeneratedTerrainEnabled())

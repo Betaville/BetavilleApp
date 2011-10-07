@@ -134,7 +134,7 @@ public class SceneScape {
 		for(City c : cities){
 			if(c.getCityID()==cityID) cityFound=true;
 		}
-		if(!cityFound) throw new Exception("City not found in local list of cities");
+		if(!cityFound) logger.warn("City not found in local list of cities");
 		currentCity=cityID;
 		logger.info("Current City ID Set To: " + cityID);
 	}

@@ -77,6 +77,7 @@ public class CitySelector extends JFrame {
 				Wormhole selectedLocation = locations.get(cityList.getSelectedIndex());
 				logger.info("User selected wormhole: " + selectedLocation.getName());
 				if(callback!=null) callback.onSelection(selectedLocation);
+				setVisible(false);
 			}
 		});
 		

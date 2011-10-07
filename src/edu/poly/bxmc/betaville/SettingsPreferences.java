@@ -26,6 +26,7 @@
 package edu.poly.bxmc.betaville;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -34,6 +35,7 @@ import java.util.concurrent.Executors;
 
 import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
+import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
 
 /**
  * Singleton class for keeping track of user preferences as well as
@@ -238,6 +240,20 @@ public class SettingsPreferences {
 			return Integer.parseInt(value);
 		}catch (NumberFormatException e) {
 			return 2;
+		}
+	}
+	
+	/**
+	 * Gets the startup city described in the user's xml file on startup.
+	 * @param cityID The ID of the city, or 2 if the value was invalid.
+	 */
+	public static void setStartupCity(int cityID){
+		System.setProperty("betaville.startup.city", Integer.toString(cityID));
+		try {
+			UpdatedPreferenceWriter.writeDefaultPreferences();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }
