@@ -52,6 +52,7 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.AboutWindow;
 import edu.poly.bxmc.betaville.gui.BetavilleSettingsPanel;
+import edu.poly.bxmc.betaville.gui.CitySelector;
 import edu.poly.bxmc.betaville.gui.SwingLoginWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.CreateKioskPasswordPrompt;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -308,6 +309,11 @@ public class BetavilleNoCanvas {
 
 		if(!SettingsPreferences.guestMode()) SwingLoginWindow.prompt();
 		else SettingsPreferences.setUserType(UserType.GUEST);
+		
+		/*
+		CitySelector citySelector = new CitySelector();
+		citySelector.setVisible(true);
+		*/
 
 		if(game.getSettings().isFullscreen()){
 			// setup for undecorated window
