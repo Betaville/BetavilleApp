@@ -42,8 +42,6 @@ import com.jme.util.GameTaskQueueManager;
 import edu.poly.bxmc.betaville.CacheManager;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
-import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
-import edu.poly.bxmc.betaville.flags.FlagProducer;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.ModelLoader;
@@ -326,9 +324,6 @@ public class NetModelLoader{
 				}
 			}
 			logger.info("designNode has " + SceneGameState.getInstance().getDesignNode().getQuantity() + " objects (total: "+ GeometryUtilities.countAllChildren(SceneGameState.getInstance().getDesignNode())+")");
-			FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
-			testFlagger.getProposals(5000);
-			testFlagger.placeFlags();
 		}
 
 		/**

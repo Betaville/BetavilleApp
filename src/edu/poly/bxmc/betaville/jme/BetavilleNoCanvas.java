@@ -51,6 +51,8 @@ import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
+import edu.poly.bxmc.betaville.flags.FlagProducer;
 import edu.poly.bxmc.betaville.gui.AboutWindow;
 import edu.poly.bxmc.betaville.gui.BetavilleSettingsPanel;
 import edu.poly.bxmc.betaville.gui.CitySelector;
@@ -437,7 +439,14 @@ public class BetavilleNoCanvas {
 			SettingsPreferences.getThreadPool().submit(new Runnable() {
 				public void run() {
 					long startTime = System.currentTimeMillis();
+					
+					// load the base model
 					NetModelLoader.loadCurrentCity(LookupRoutine.ALL_IN_CITY);
+					
+					// load proposals
+					FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
+					testFlagger.getProposals(5000);
+					testFlagger.placeFlags();
 
 					// enable framerate optimization
 					//sceneGameState.setFramerateOptimizationEnabled(true);
