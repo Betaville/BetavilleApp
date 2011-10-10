@@ -107,7 +107,7 @@ public class FlagProducer {
 				double distance = MapManager.greatCircleDistanced(entry.getValue().getGPS(), base.getCoordinate().getGPS());
 
 				if(distance<groupingProximityThreshold){
-					logger.info("Found a proposal to be grouped!");
+					logger.debug("Found a proposal to be grouped!");
 					ArrayList<Design> group = entry.getKey();
 					group.add(base);
 					hasBeenPutInGroup=true;
