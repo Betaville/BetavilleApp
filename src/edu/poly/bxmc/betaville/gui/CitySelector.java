@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
+import edu.poly.bxmc.betaville.net.UnprotectedManager;
 
 /**
  * @author Skye Book
@@ -61,9 +62,11 @@ public class CitySelector extends JFrame {
 		setLayout(new BorderLayout());
 		final List<Wormhole> locations = NetPool.getPool().getConnection().getAllWormholes();
 
+		UnprotectedManager net = NetPool.getPool().getConnection();
 		DefaultListModel dlm = new DefaultListModel();
 		for(Wormhole location : locations){
-			dlm.addElement(location.getName());
+			String[] cityInfo = net.findCityByID(location.getCityID());
+			dlm.addElement(((cityInfo!=null)?cityInfo[0]+" - ":"")+location.getName());
 		}
 
 		cityList = new JList(dlm);
