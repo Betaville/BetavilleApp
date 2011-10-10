@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.fenggui.Button;
 import org.fenggui.CheckBox;
 import org.fenggui.ComboBox;
 import org.fenggui.Container;
@@ -55,17 +56,24 @@ import org.fenggui.event.mouse.MouseEnteredEvent;
 import org.fenggui.event.mouse.MouseEvent;
 import org.fenggui.event.mouse.MouseExitedEvent;
 import org.fenggui.event.mouse.MouseReleasedEvent;
+import org.fenggui.layout.BorderLayout;
+import org.fenggui.layout.BorderLayoutData;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.text.content.factory.simple.TextStyle;
 import org.fenggui.text.content.factory.simple.TextStyleEntry;
 import org.fenggui.util.Color;
 
+import com.jme.math.Vector3f;
+import com.jme.renderer.Camera;
+
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
+import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.search.GeoNamesSearchQuery;
 import edu.poly.bxmc.betaville.search.LocationalSearchResult;
 import edu.poly.bxmc.betaville.search.SearchQuery;
@@ -99,7 +107,6 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 	private SearchQuery searchQuery;
 	
 	private ScrollContainer sc;
-	//private Container isc;
 	
 	private Container resultsContainer;
 	
@@ -211,7 +218,6 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 						
 						resultsContainer.removeAllWidgets();
 						for(SearchResult result : results){
-							// TODO: layout required?
 							resultsContainer.addWidget(createResult(result));
 							layout();
 						}
@@ -225,18 +231,41 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 	
 	private Container createResult(final SearchResult result){
 		final Container c = FengGUI.createWidget(Container.class);
-		c.setLayoutManager(new RowExLayout(true));
+		c.setLayoutManager(new BorderLayout());
 		c.setWidth(targetWidth-resultsWidthOffset);
 		
 		final Label name = FengGUI.createWidget(Label.class);
 		name.setText(result.getMainTitle());
+		name.setLayoutData(BorderLayoutData.WEST);
 		c.setHeight(name.getHeight());
 		c.addWidget(name);
 		
+		final Button goHere = FengGUI.createWidget(Button.class);
+		goHere.setText("Go Here!");
+		goHere.setLayoutData(BorderLayoutData.CENTER);
+		goHere.addButtonPressedListener(new IButtonPressedListener() {
+			
+			@Override
+			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				if(result instanceof LocationalSearchResult){
+					// get location of target
+					Vector3f target = JME2MapManager.instance.locationToBetaville(((LocationalSearchResult) result).getLocation());
+					
+					Camera camera = SceneGameState.getInstance().getCamera();
+					Vector3f cameraLocation = camera.getLocation();
+					cameraLocation.setX(target.x-Scale.fromMeter(50));
+					cameraLocation.setZ(target.z-Scale.fromMeter(50));
+					cameraLocation.setY(Scale.fromMeter(500));
+					camera.update();
+					camera.lookAt(target, Vector3f.UNIT_Y);
+				}
+			}
+		});
 		
 		if(result instanceof LocationalSearchResult){
 			Label location = FengGUI.createWidget(Label.class);
 			location.setText(((LocationalSearchResult)result).getLocation().getGPS().getLatitude()+", "+((LocationalSearchResult)result).getLocation().getGPS().getLongitude());
+			location.setLayoutData(BorderLayoutData.EAST);
 			c.addWidget(location);
 			SceneGameState.getInstance().addSearchResult(((LocationalSearchResult)result).getLocation(), result.getWebLink());
 		}
@@ -246,6 +275,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 			public void processEvent(Object source, Event event) {
 				if(event instanceof MouseEvent){
 					if(event instanceof MouseEnteredEvent){
+						c.addWidget(goHere);
 						c.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 						if(defaultTextColor==null) defaultTextColor=name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).getColor();
 						name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(Color.YELLOW);
@@ -253,6 +283,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 						if(result instanceof LocationalSearchResult) SceneGameState.getInstance().setSingledSearchResult(result.getWebLink());
 					}
 					else if(event instanceof MouseExitedEvent){
+						c.removeWidget(goHere);
 						c.getAppearance().removeAll();
 						/* null check required because its possible that an exit event can happen before an
 						 * enter event (where the default color is assigned). i.e: mouse is over result position
