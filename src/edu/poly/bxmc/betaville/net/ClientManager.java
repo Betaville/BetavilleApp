@@ -26,6 +26,9 @@
 package edu.poly.bxmc.betaville.net;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -576,7 +579,15 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		try {
 			logger.debug("Requesting file for design " + designID);
 			output.writeObject(new Object[]{"design", "requestfile", designID});
-			PhysicalFileTransporter response = (PhysicalFileTransporter)readResponse();
+			Object object = readResponse();
+			PhysicalFileTransporter response = null;
+			if(object instanceof PhysicalFileTransporter){
+				response = (PhysicalFileTransporter)object;
+			}
+			else{
+				// use the URL
+			}
+			
 			busy.getAndSet(false);
 			touchLastUsed();
 			return response;
