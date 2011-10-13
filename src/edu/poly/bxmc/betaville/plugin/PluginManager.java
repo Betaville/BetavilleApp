@@ -178,7 +178,7 @@ public class PluginManager {
 		Object pluginInstance = plugin.newInstance();
 		if(!(pluginInstance instanceof Plugin)) throw new IncorrectPluginTypeException(pluginInstance.getClass().getName() + " is not an allowed plugin type");
 		else{
-			((Plugin)pluginInstance).initialize();
+			((Plugin)pluginInstance).initialize(classLoader);
 			pluginList.add((Plugin)pluginInstance);
 
 			return (Plugin)pluginInstance;

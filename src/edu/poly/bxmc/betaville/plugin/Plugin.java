@@ -50,8 +50,10 @@ public abstract class Plugin {
 	
 	/**
 	 * Start the plugin
+	 * @param classLoader The classLoader for this plugin, providing access
+	 * to resources within the archive if required
 	 */
-	public abstract void initialize();
+	public abstract void initialize(JARClassLoader classLoader);
 	
 	/**
 	 * Stop the plugin
