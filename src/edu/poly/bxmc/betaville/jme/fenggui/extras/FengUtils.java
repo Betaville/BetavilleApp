@@ -62,19 +62,19 @@ import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
  */
 public class FengUtils {
 	private static Logger logger = Logger.getLogger(FengUtils.class);
-	
+
 	public static String getText(TextEditor te){
 		return te.getText().replaceAll("[\\r\\n]", "");
 	}
-	
+
 	public static String getSelectedText(TextEditor te){
 		return te.getTextRendererData().getSelectedContent().replaceAll("[\\r\\n]", "");
 	}
-	
+
 	public static int getNumber(TextEditor te) throws FengTextContentException{
 		if(te.getRestrict()==TextEditor.RESTRICT_NUMBERSONLY){
 			String toUse = getText(te);
-			
+
 			// remove the decimal point and any trailing numbers
 			if(toUse.contains(".")){
 				toUse = toUse.substring(0, toUse.indexOf("."));
@@ -85,7 +85,7 @@ public class FengUtils {
 			throw new FengTextContentException("TextEditor must be restricted to numbers only", te.getText());
 		}
 	}
-	
+
 	public static float getFloat(TextEditor te) throws FengTextContentException{
 		if(te.getRestrict()==TextEditor.RESTRICT_NUMBERSONLYDECIMAL){
 			return Float.parseFloat(getText(te));
@@ -94,7 +94,7 @@ public class FengUtils {
 			throw new FengTextContentException("TextEditor must be restricted to numbers & decimals only", te.getText());
 		}
 	}
-	
+
 	/**
 	 * Moves a widget to a location over a length of time
 	 * @param widget The widget to move
@@ -108,7 +108,7 @@ public class FengUtils {
 			public void tweenComplete(){}
 		});
 	}
-	
+
 	/**
 	 * Moves a widget to a location over a length of time
 	 * @param widget The widget to move
@@ -151,7 +151,7 @@ public class FengUtils {
 						// too late for this update, do the move immediately
 						logger.warn("Tweener came too late on this pass");
 					}
-					
+
 					// perform the actual move
 					if(i<resolution-1){
 						widget.setXY(widget.getX()+intervalX, widget.getY()+intervalY);
@@ -162,9 +162,9 @@ public class FengUtils {
 					}
 				}
 			}});
-		
+
 	}
-	
+
 	public static void pasteAction(TextEditor te){
 		try {
 			// remove the inserted v and paste
@@ -181,20 +181,22 @@ public class FengUtils {
 	public static int midWidth(Widget place, Widget thing){
 		return (place.getWidth()/2)-(thing.getWidth()/2);
 	}
-	
+
 	public static int midHeight(Widget place, Widget thing){
 		return (place.getHeight()/2)-(thing.getHeight()/2);
 	}
-	
+
 	public static void putAtMiddleOfScreen(Widget item){
 		putAtMiddle(item, GUIGameState.getInstance().getDisp());
 	}
-	
+
 	public static void putAtMiddle(Widget item, Container destination){
-		item.setXY(midWidth(destination, item), midHeight(destination, item));
-		destination.addWidget(item);
+		if(!item.isInWidgetTree()){
+			item.setXY(midWidth(destination, item), midHeight(destination, item));
+			destination.addWidget(item);
+		}
 	}
-	
+
 	/**
 	 * Sets a widget at the mouse's location while still being fully
 	 * inside of the window, preventing spilling over.
@@ -203,7 +205,7 @@ public class FengUtils {
 	public static void setAtSafeMousePosition(IWidget w){
 		w.setXY(MouseInput.get().getXAbsolute()-(w.getSize().getWidth()/2),
 				MouseInput.get().getYAbsolute()-(w.getSize().getHeight()/2));
-		
+
 		int xDiff = w.getX()+w.getSize().getWidth()-Binding.getInstance().getCanvasWidth();
 		if(xDiff>0){
 			w.setX(w.getX()-xDiff);
@@ -211,7 +213,7 @@ public class FengUtils {
 		else if(w.getX()<0){
 			w.setX(0);
 		}
-		
+
 		int yDiff = w.getY()+w.getSize().getHeight()-Binding.getInstance().getCanvasHeight();
 		if(yDiff>0){
 			w.setY(w.getY()-yDiff);
@@ -220,13 +222,13 @@ public class FengUtils {
 			w.setY(0);
 		}
 	}
-	
+
 	public static void showNewDismissableWindow(String name, String message, String buttonText, boolean forceFocus){
 		Window w = createDismissableWindow(name, message, buttonText, forceFocus);
 		GUIGameState.getInstance().getDisp().addWidget(w);
 		GUIGameState.getInstance().forceFocus(w, true);
 	}
-	
+
 	/**
 	 * Closes on click
 	 * @param name
@@ -248,12 +250,12 @@ public class FengUtils {
 		}
 
 		int width=100;
-		
+
 		Label msg = FengGUI.createWidget(Label.class);
 		msg.setMultiline(true);
 		msg.setText(message);
 		msg.setLayoutData(new RowExLayoutData(true, true));
-		
+
 		FixedButton b1 = FengGUI.createWidget(FixedButton.class);
 		b1.setText(buttonText);
 		b1.setWidth(b1.getWidth()+10);
@@ -266,14 +268,14 @@ public class FengUtils {
 		if(msg.getWidth()>width){
 			String text = msg.getText();
 			String newText = "";
-			
+
 			// find the number of lines and split the label
 			int numLines=(msg.getWidth()/width)+1;
 			for(int i=numLines; i>0; i--){
 				newText += text.substring(0, text.length()/i)+"\n";
 				text = text.substring(text.length()/i, text.length());
 			}
-			
+
 			int oneLineHeight = msg.getHeight();
 			msg.setMultiline(true);
 			msg.setWordWarping(true);
@@ -281,27 +283,27 @@ public class FengUtils {
 			msg.setHeight(oneLineHeight*numLines);
 			logger.debug("msg height set to " + msg.getHeight());
 		}*/
-		
+
 		//w.getContentContainer().setSize((int)(width*.75f), b1.getHeight()+20+msg.getHeight());
 		//w.setSize(width, b1.getHeight()+20+msg.getHeight()+w.getTitleBar().getHeight());
-		
+
 		//b1.setXY(5, 5);
-		
+
 		//msg.setXY(5, b1.getY()+b1.getHeight()+10);
-		
+
 		//w.getContentContainer().setLayoutManager(new StaticLayout());
-		
+
 		Container c = FengGUI.createWidget(Container.class);
 		c.setLayoutManager(new StaticLayout());
 		c.setLayoutData(new RowExLayoutData(true, true));
 		c.addWidget(b1);
 		StaticLayout.center(b1, c);
-		
+
 		w.getContentContainer().addWidget(msg, c);
 		w.setXY((Binding.getInstance().getCanvasWidth()/2)-(w.getWidth()/2), (Binding.getInstance().getCanvasHeight()/2)-(w.getHeight()/2));
 		return w;
 	}
-	
+
 	public static boolean checkIfWithin(int x, int y, IWidget widget){
 		if (x >= widget.getX() && x <= widget.getSize().getWidth() + widget.getX() && y >= widget.getY() && y <= widget.getSize().getHeight() + widget.getY()){
 			return true;
@@ -309,9 +311,9 @@ public class FengUtils {
 			return false;
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 
 	 * @param name
@@ -331,48 +333,48 @@ public class FengUtils {
 		w.setTitle(name);
 		//w.getTitleBar().removeWidget(w.getCloseButton());
 		w.getContentContainer().setLayoutManager(new StaticLayout());
-		
+
 		Label msg = FengGUI.createWidget(Label.class);
 		msg.setText(message);
 		msg.setLayoutData(new RowExLayoutData(true, true));
-		
+
 		IButtonPressedListener clickCloseListener = new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				w.close();
 			}
 		};
-		
+
 		FixedButton b1 = FengGUI.createWidget(FixedButton.class);
 		b1.setText(b1Name);
 		b1.setWidth(b1.getWidth()+10);
 		if(b1Listener!=null) b1.addButtonPressedListener(b1Listener);
 		if(closeOnB1Click) b1.addButtonPressedListener(clickCloseListener);
-		
+
 		FixedButton b2 = FengGUI.createWidget(FixedButton.class);
 		b2.setText(b2Name);
 		b2.setWidth(b2.getWidth()+10);
 		if(b2Listener!=null) b2.addButtonPressedListener(b2Listener);
 		if(closeOnB2Click) b2.addButtonPressedListener(clickCloseListener);
-		
+
 		// set the window sizes equal
 		if(b1.getWidth()>b2.getWidth()){
 			b2.setWidth(b1.getWidth());
 		}
 		else b1.setWidth(b2.getWidth());
-		
+
 		int buttonSetWidth = b1.getWidth()+20+b2.getWidth();
 		/*
 		if(msg.getWidth()>buttonSetWidth){
 			String text = msg.getText();
 			String newText = "";
-			
+
 			// find the number of lines and split the label
 			int numLines=(msg.getWidth()/buttonSetWidth)+1;
 			for(int i=numLines; i>0; i--){
 				newText += text.substring(0, text.length()/i)+"\n";
 				text = text.substring(text.length()/i, text.length());
 			}
-			
+
 			int oneLineHeight = msg.getHeight();
 			msg.setMultiline(true);
 			msg.setWordWarping(true);
@@ -380,20 +382,20 @@ public class FengUtils {
 			msg.setHeight(oneLineHeight*numLines);
 			logger.info("msg height set to " + msg.getHeight());
 		}*/
-		
+
 		w.getContentContainer().setSize(buttonSetWidth, b1.getHeight()+20+msg.getHeight());
 		w.setSize(buttonSetWidth, b1.getHeight()+20+msg.getHeight()+w.getTitleBar().getHeight());
-		
+
 		b1.setXY(5, 5);
 		b2.setXY(w.getContentContainer().getWidth()-b1.getWidth()-5, 5);
-		
+
 		msg.setXY(5, b1.getY()+b1.getHeight()+10);
-		
+
 		w.getContentContainer().addWidget(msg, b1, b2);
 		w.setXY((Binding.getInstance().getCanvasWidth()/2)-(w.getWidth()/2), (Binding.getInstance().getCanvasHeight()/2)-(w.getHeight()/2));
 		return w;
 	}
-	
+
 	/**
 	 * Set the appearance of text style in White color
 	 * @param lbl Label on which apply the new text style
@@ -401,7 +403,7 @@ public class FengUtils {
 	public static void setAppearanceTextStyleWhiteColor(Label lbl) {
 		lbl.getAppearance().getStyle("default").getTextStyleEntry("default").setColor(Color.WHITE);		
 	}
-	
+
 	/**
 	 * Set the appearance of of a label to a different color
 	 * @param lbl Label on which apply the new text style
