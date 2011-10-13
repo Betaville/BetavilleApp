@@ -36,6 +36,7 @@ public abstract class Plugin {
 	protected String name;
 	protected String author;
 	protected String description;
+	protected String version;
 	
 	/**
 	 * Gets the directory that this plugin should store its data in
@@ -79,5 +80,13 @@ public abstract class Plugin {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 }
