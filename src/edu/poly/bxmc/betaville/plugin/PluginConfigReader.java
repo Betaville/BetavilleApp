@@ -45,6 +45,8 @@ import edu.poly.bxmc.betaville.xml.XMLReader;
 public class PluginConfigReader extends XMLReader {
 	private static Logger logger = Logger.getLogger(PluginConfigReader.class);
 	
+	private URL configURL;
+	
 	private List<PluginParsedCallback> callbacks;
 
 	/**
@@ -55,6 +57,7 @@ public class PluginConfigReader extends XMLReader {
 	 */
 	public PluginConfigReader(File xmlFile) throws JDOMException, IOException{
 		super();
+		configURL = xmlFile.toURI().toURL();
 		callbacks = new ArrayList<PluginConfigReader.PluginParsedCallback>();
 		loadFile(xmlFile);
 	}
@@ -101,7 +104,7 @@ public class PluginConfigReader extends XMLReader {
 				urlArray[i] = urlList.get(i);
 			}
 			
-			Plugin plugin = PluginManager.loadPlugin(urlArray, classname);
+			Plugin plugin = PluginManager.loadPlugin(urlArray, configURL, classname);
 			logger.info("Plugin loaded");
 			plugin.setName(name);
 			plugin.setDescription(description);
@@ -126,6 +129,9 @@ public class PluginConfigReader extends XMLReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (PluginAlreadyLoadedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

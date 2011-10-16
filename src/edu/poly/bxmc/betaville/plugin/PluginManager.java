@@ -58,21 +58,23 @@ public class PluginManager {
 	/**
 	 * 
 	 * @param pluginURL
+	 * @param pluginConfigFile
 	 * @param pluginClass
 	 * @throws PluginAlreadyLoadedException
 	 * @throws ClassNotFoundException
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 * @throws IncorrectPluginTypeException
+	 * @throws IOException 
 	 */
-	public synchronized static Plugin loadPlugin(URL[] pluginURL, String pluginClass) throws PluginAlreadyLoadedException, ClassNotFoundException,
-	InstantiationException, IllegalAccessException, IncorrectPluginTypeException{
+	public synchronized static Plugin loadPlugin(URL[] pluginURL, URL pluginConfigFile, String pluginClass) throws PluginAlreadyLoadedException, ClassNotFoundException,
+	InstantiationException, IllegalAccessException, IncorrectPluginTypeException, IOException{
 		// check if the plugin is already loaded
 		if(isPluginLoaded(pluginClass)) throw new PluginAlreadyLoadedException(pluginClass + " has already been loaded");
 
 		logger.info("redirecting to loadAndRegister");
 
-		return loadAndRegister(pluginURL, pluginClass);
+		return loadAndRegister(pluginURL, pluginConfigFile, pluginClass);
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class PluginManager {
 		return new File(DriveFinder.getBetavilleFolder().toString()+"/plugins/"+pluginClass+"/");
 	}
 
-	private static Plugin loadAndRegister(URL[] pluginURL, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException {
+	private static Plugin loadAndRegister(URL[] pluginURL, URL pluginConfigFile, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException, IOException {
 
 		logger.info("loadAndRegister called");
 
@@ -130,6 +132,23 @@ public class PluginManager {
 		File directory = getPluginDirectory(pluginClass);
 		if(!directory.exists()) directory.mkdirs();
 
+		// copy the plugin's config file
+		String xmlName = getJARFilename(pluginConfigFile);
+		//System.out.println("XML destination: " + xmlName);
+		File xmlSaveLocation = new File(directory.toString()+"/"+xmlName);
+		// only copy the file if it isn't already there
+		if(!xmlSaveLocation.exists()){
+			FileOutputStream outputStream = new FileOutputStream(xmlSaveLocation);
+			InputStream is = pluginConfigFile.openStream();
+			int byteValue = -1;
+			while((byteValue = is.read())!=-1){
+				outputStream.write(byteValue);
+			}
+			outputStream.close();
+		}
+
+
+
 		// copy the jars into the bin folder
 		File binFolder = new File(directory.toString()+"/bin/");
 
@@ -139,30 +158,22 @@ public class PluginManager {
 
 			// copy each individual JAR
 			for(int i=0; i<pluginURL.length; i++){
-				try {
-					String jarName = getJARFilename(pluginURL[i]);
-					System.out.println("JAR destination: " + jarName);
-					File fileSaveLocation = new File(binFolder.toString()+"/"+jarName);
-					// only copy the file if it isn't already there
-					if(!fileSaveLocation.exists()){
-						FileOutputStream outputStream = new FileOutputStream(fileSaveLocation);
-						InputStream is = pluginURL[i].openStream();
-						int byteValue = -1;
-						while((byteValue = is.read())!=-1){
-							outputStream.write(byteValue);
-						}
-						outputStream.close();
+				String jarName = getJARFilename(pluginURL[i]);
+				//System.out.println("JAR destination: " + jarName);
+				File jarSaveLocation = new File(binFolder.toString()+"/"+jarName);
+				// only copy the file if it isn't already there
+				if(!jarSaveLocation.exists()){
+					FileOutputStream outputStream = new FileOutputStream(jarSaveLocation);
+					InputStream is = pluginURL[i].openStream();
+					int byteValue = -1;
+					while((byteValue = is.read())!=-1){
+						outputStream.write(byteValue);
 					}
-
-					// switch the URL's
-					pluginURL[i] = fileSaveLocation.toURI().toURL();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					outputStream.close();
 				}
+
+				// switch the URL's
+				pluginURL[i] = jarSaveLocation.toURI().toURL();
 			}
 		}
 
