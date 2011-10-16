@@ -28,8 +28,6 @@ package edu.poly.bxmc.betaville.jme.fenggui.panel;
 import java.awt.Dialog.ModalityType;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -47,14 +45,11 @@ import org.fenggui.layout.RowExLayoutData;
 import org.jdom.JDOMException;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
-import edu.poly.bxmc.betaville.gui.JARFileFilter;
 import edu.poly.bxmc.betaville.gui.XMLFileFilter;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
-import edu.poly.bxmc.betaville.plugin.IncorrectPluginTypeException;
 import edu.poly.bxmc.betaville.plugin.Plugin;
-import edu.poly.bxmc.betaville.plugin.PluginAlreadyLoadedException;
 import edu.poly.bxmc.betaville.plugin.PluginConfigReader;
 import edu.poly.bxmc.betaville.plugin.PluginConfigReader.PluginParsedCallback;
 import edu.poly.bxmc.betaville.plugin.PluginEntry;
@@ -95,16 +90,12 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 		list = FengGUI.createWidget(Container.class);
 		list.setLayoutManager(new RowExLayout(false));
 		
-		Button addPluginFromFile = FengGUI.createWidget(Button.class);
-		addPluginFromFile.setText("Add Plugin From File");
-		addPluginFromFile.addButtonPressedListener(new LaunchLoadFromFileWindowDelegate());
-		
 		Button addPluginFromWeb = FengGUI.createWidget(Button.class);
 		addPluginFromWeb.setText("Add Plugin From Web");
 		addPluginFromWeb.addButtonPressedListener(new LaunchLoadFromWebWindowDelegate());
 		
 		
-		getContentContainer().addWidget(list, addPluginFromFile, addPluginFromWeb);
+		getContentContainer().addWidget(list, addPluginFromWeb);
 		
 		updatePluginList();
 	}
@@ -133,18 +124,6 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 		setSize(targetWidth, targetHeight);
 	}
 	
-	private class LaunchLoadFromFileWindowDelegate implements IButtonPressedListener{
-
-		/* (non-Javadoc)
-		 * @see org.fenggui.event.IButtonPressedListener#buttonPressed(java.lang.Object, org.fenggui.event.ButtonPressedEvent)
-		 */
-		@Override
-		public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-			Window window = createLoadFromFileWindow();
-			FengUtils.putAtMiddleOfScreen(window);
-		}
-	}
-	
 	private class LaunchLoadFromWebWindowDelegate implements IButtonPressedListener{
 		
 		/* (non-Javadoc)
@@ -154,37 +133,6 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 		public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 			Window window = createLoadFromWebWindow();
 			FengUtils.putAtMiddleOfScreen(window);
-		}
-	}
-	
-	private class LoadPluginFromFileDelegate implements IButtonPressedListener{
-		
-		private TextEditor destination;
-		
-		private LoadPluginFromFileDelegate(TextEditor destinationEditor){
-			destination = destinationEditor;
-		}
-
-		/* (non-Javadoc)
-		 * @see org.fenggui.event.IButtonPressedListener#buttonPressed(java.lang.Object, org.fenggui.event.ButtonPressedEvent)
-		 */
-		@Override
-		public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-			
-			SettingsPreferences.getGUIThreadPool().submit(new Runnable() {
-
-				public void run() {
-					JDialog dialog = new JDialog();
-					dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-					JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
-					fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
-					fileChooser.addChoosableFileFilter(new JARFileFilter());
-					fileChooser.showOpenDialog(dialog);
-					File jarFile = fileChooser.getSelectedFile();
-					destination.setText(jarFile.toString());
-					dialog.dispose();
-				}
-			});
 		}
 	}
 	
@@ -218,73 +166,6 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 				}
 			});
 		}
-	}
-	
-	private Window createLoadFromFileWindow(){
-		final Window w = FengGUI.createWindow(true, true);
-		w.getContentContainer().setLayoutManager(new RowExLayout(false));
-		w.setSize(275, 175);
-		w.setTitle("Load Plugin From File");
-		
-		Container jarContainer = FengGUI.createWidget(Container.class);
-		jarContainer.setLayoutManager(new RowExLayout(true));
-		
-		final TextEditor jarEditor = FengGUI.createWidget(TextEditor.class);
-		jarEditor.setEmptyText("Location of plugin JAR");
-		jarEditor.setLayoutData(new RowExLayoutData(true, true));
-		
-		Button browse = FengGUI.createWidget(Button.class);
-		browse.setText("Browse..");
-		browse.setLayoutData(new RowExLayoutData(true, false));
-		browse.addButtonPressedListener(new LoadPluginFromFileDelegate(jarEditor));
-		
-		jarContainer.addWidget(jarEditor, browse);
-		
-		final TextEditor className = FengGUI.createWidget(TextEditor.class);
-		className.setLayoutData(new RowExLayoutData(true, false));
-		className.setEmptyText("Put the qualified classname here");
-		
-		Button load = FengGUI.createWidget(Button.class);
-		load.setText("Load");
-		load.addButtonPressedListener(new IButtonPressedListener() {
-			
-			@Override
-			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-				// both fields need to be filled in
-				if(FengUtils.getText(jarEditor).isEmpty() || FengUtils.getText(className).isEmpty()){
-					FengUtils.showNewDismissableWindow("Betaville", "Please ensure that both fields are filled in", "OK", true);
-					return;
-				}
-				
-				try {
-					PluginManager.loadPlugin(new URL[]{new File(FengUtils.getText(jarEditor)).toURI().toURL()}, FengUtils.getText(className));
-					updatePluginList();
-					w.close();
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (PluginAlreadyLoadedException e) {
-					FengUtils.showNewDismissableWindow("Plugin Manager", e.getMessage(), "OK", true);
-					logger.error("Plugin has been previously loaded", e);
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IncorrectPluginTypeException e) {
-					FengUtils.showNewDismissableWindow("Plugin Manager", "This plugin appears to be of the incorrect type", "OK", true);
-					logger.error("This plugin appears to be of the incorrect type", e);
-				}
-			}
-		});
-		
-		w.getContentContainer().addWidget(jarContainer, className, load);
-		
-		return w;
 	}
 	
 	private Window createLoadFromWebWindow(){
