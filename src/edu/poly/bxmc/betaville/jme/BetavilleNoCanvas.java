@@ -451,8 +451,7 @@ public class BetavilleNoCanvas {
 					// enable framerate optimization
 					//sceneGameState.setFramerateOptimizationEnabled(true);
 
-					betavilleUpdater.addTask(new BetavilleTask(new BaseUpdater(
-							30000)));
+					//betavilleUpdater.addTask(new BetavilleTask(new BaseUpdater(30000)));
 					logger.info("Done loading models, took: "
 							+ (System.currentTimeMillis() - startTime));
 					betavilleUpdater.addTask(new BetavilleTask(NetPool
