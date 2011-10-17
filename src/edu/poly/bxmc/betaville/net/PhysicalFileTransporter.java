@@ -55,6 +55,14 @@ public class PhysicalFileTransporter implements Serializable{
 		bytes = b;
 	}
 	
+	/**
+	 * Gets the raw data packed in this transporter
+	 * @return The raw data as it was supplied
+	 */
+	public byte[] getData(){
+		return bytes;
+	}
+	
 	public boolean writeToFileSystem(File fileToWrite){
 		if(!fileToWrite.getParentFile().exists()){
 			fileToWrite.getParentFile().mkdirs();
