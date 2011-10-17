@@ -317,7 +317,7 @@ public class BetavilleNoCanvas {
 		if(!SettingsPreferences.guestMode()) SwingLoginWindow.prompt();
 		else SettingsPreferences.setUserType(UserType.GUEST);
 
-		/*
+		
 		CitySelector citySelector = new CitySelector();
 		citySelector.setCitySelectedCallback(new CitySelectedCallback() {
 
@@ -333,7 +333,7 @@ public class BetavilleNoCanvas {
 		while(citySelector.isVisible()){
 			Thread.sleep(25);
 		}
-		*/
+		
 
 		if(game.getSettings().isFullscreen()){
 			// setup for undecorated window
