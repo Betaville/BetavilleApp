@@ -77,7 +77,7 @@ public class OnOffPanelAction extends PanelAction implements ICityPanelClosedLis
 		this.forcedOffscreenByCityPanelCloseEvent=forcedOffscreenByCityPanelCloseEvent;
 		try{
 			associatedWindow = (Window)FengGUI.createWidget(window);
-			logger.info("associatedWindow is of type: " + associatedWindow.getClass().getName());
+			logger.debug("associatedWindow is of type: " + associatedWindow.getClass().getName());
 		}catch(Exception e){
 			logger.error("All kinds of bad, associatedWindow is of type: " + associatedWindow.getClass().getName(), e);
 		}
