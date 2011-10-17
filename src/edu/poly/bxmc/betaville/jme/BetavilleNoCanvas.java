@@ -444,7 +444,7 @@ public class BetavilleNoCanvas {
 					NetModelLoader.loadCurrentCity(LookupRoutine.ALL_IN_CITY);
 					
 					// load proposals
-					FlagProducer testFlagger = new FlagProducer(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), new DesktopFlagPositionStrategy());
+					FlagProducer testFlagger = new FlagProducer(cameraStartPosition.getUTM(), new DesktopFlagPositionStrategy());
 					testFlagger.getProposals(5000);
 					testFlagger.placeFlags();
 

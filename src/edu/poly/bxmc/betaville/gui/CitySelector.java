@@ -76,6 +76,9 @@ public class CitySelector extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// do nothing if an item has not been selected
+				if(cityList.getSelectedIndex()==-1) return;
+				
 				// load this city
 				Wormhole selectedLocation = locations.get(cityList.getSelectedIndex());
 				logger.info("User selected wormhole: " + selectedLocation.getName());
