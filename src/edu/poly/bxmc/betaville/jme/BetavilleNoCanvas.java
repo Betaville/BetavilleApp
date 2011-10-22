@@ -323,6 +323,7 @@ public class BetavilleNoCanvas {
 
 			@Override
 			public void onSelection(Wormhole wormhole) {
+				SceneScape.setUTMZone(wormhole.getLocation().getLonZone(), wormhole.getLocation().getLatZone());
 				SettingsPreferences.setStartupCity(wormhole.getCityID());
 				cameraStartPosition = wormhole.getLocation();
 			}
