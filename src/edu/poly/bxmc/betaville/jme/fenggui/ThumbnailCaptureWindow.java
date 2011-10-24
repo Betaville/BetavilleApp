@@ -98,7 +98,7 @@ public class ThumbnailCaptureWindow extends Window implements IBetavilleWindow, 
 
 		setupViewfinder();
 
-		slaveViewfinderToThisWindow();		
+		slaveViewfinderToThisWindow();
 	}
 
 	private void setupControls(){
