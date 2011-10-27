@@ -159,6 +159,16 @@ public interface ProtectedManager extends UnprotectedManager{
 	 */
 	public abstract int addBase(Design design, String user, String pass,
 			PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter);
+	
+	/**
+	 * Sets a thumbnail for an object
+	 * @param designID The {@link Design} to set the thumbnail for.
+	 * @param pft The data containing the thumbnail image
+	 * @param user The user uploading the data
+	 * @param pass The password of the user uploading the data
+	 * @return
+	 */
+	public abstract int setThumbnailForObject(int designID, PhysicalFileTransporter pft, String user, String pass);
 
 	/**
 	 * Removes a <code>Design</code> from the database.  Must be performed by the user who

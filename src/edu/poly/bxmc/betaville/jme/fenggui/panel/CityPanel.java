@@ -51,6 +51,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.ModelSwapWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.MyLocationWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.NetworkedWormholeWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.TerrainLoader;
+import edu.poly.bxmc.betaville.jme.fenggui.ThumbnailCaptureWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -130,7 +131,8 @@ public class CityPanel extends Window implements IBetavilleWindow{
 			}
 		}));
 		*/
-		addAction(new SearchAction());
+		addAction(new OnOffPanelAction("Thumbnail Capture", "Capture thumbnail images", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailCaptureWindow.class, false));
+		addAction(new OnOffPanelAction("Search", "Allows you to search", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SearchActionWindow.class, false));
 		//addAction(new WhitewashAction());
 		addAction(new UnlockFromTerrain());
 		addAction(new ScreenshotPanelAction());

@@ -36,11 +36,14 @@ import org.fenggui.event.ISelectionChangedListener;
 import org.fenggui.event.ISliderMovedListener;
 import org.fenggui.event.SelectionChangedEvent;
 import org.fenggui.event.SliderMovedEvent;
+import org.fenggui.layout.BorderLayout;
+import org.fenggui.layout.BorderLayoutData;
 import org.fenggui.layout.RowExLayout;
 
 import com.jme.light.DirectionalLight;
 import com.jme.light.Light;
 import com.jme.math.Vector3f;
+import com.jme.scene.state.LightState;
 
 import edu.poly.bxmc.betaville.jme.fenggui.extras.SavableBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -78,7 +81,8 @@ public class LightAngleModifier extends SavableBetavilleWindow {
 	 */
 	public LightAngleModifier() {
 		super(true, true);
-		getContentContainer().setLayoutManager(new RowExLayout(false));
+		//getContentContainer().setLayoutManager(new RowExLayout(false));
+		getContentContainer().setLayoutManager(new BorderLayout());
 		createSelector();
 		createSliders();
 		getContentContainer().addWidget(selector, sliderContainer);
@@ -86,9 +90,12 @@ public class LightAngleModifier extends SavableBetavilleWindow {
 
 	private void createSelector(){
 		selector = FengGUI.createWidget(ComboBox.class);
+		selector.setLayoutData(BorderLayoutData.NORTH);
 
-		for(int i=0; i<SceneGameState.getInstance().getLightState().getLightList().size(); i++){
-			selector.addItem(new LightItem(i, SceneGameState.getInstance().getLightState().getLightList().get(i)));
+		LightState lightState = SceneGameState.getInstance().getLightState();
+		logger.debug("There are " + lightState.getQuantity() + " lights");
+		for(int i=0; i<lightState.getLightList().size(); i++){
+			selector.addItem(new LightItem(i, lightState.getLightList().get(i)));
 		}
 		
 		selector.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -127,6 +134,7 @@ public class LightAngleModifier extends SavableBetavilleWindow {
 		
 		sliderContainer = FengGUI.createWidget(Container.class);
 		sliderContainer.setLayoutManager(new RowExLayout(false));
+		sliderContainer.setLayoutData(BorderLayoutData.SOUTH);
 		sliderContainer.addWidget(xLabel, x, yLabel, y, zLabel, z);
 	}
 	

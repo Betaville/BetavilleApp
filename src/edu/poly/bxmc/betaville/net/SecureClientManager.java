@@ -57,21 +57,21 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	 * Constant <PORT_SERVER> - Port of the server
 	 */
 	private final int PORT_SERVER = 14500;
-	
+
 	/**
 	 * Constructor - Creation of the client manager
 	 */
 	public SecureClientManager(List<Module> modules, boolean createSocketHere){
 		this(modules, createSocketHere, SettingsPreferences.getServerIP());
 	}
-	
+
 	/**
 	 * Constructor - Creation of the client manager
 	 */
 	public SecureClientManager(List<Module> modules, boolean createSocketHere, String serverIP){
-		
+
 		if(!createSocketHere) return;
-		
+
 		try {
 			clientSocket = new Socket(serverIP, PORT_SERVER);
 			logger.info("Client application : "+ clientSocket.toString());
@@ -345,6 +345,31 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		}
 		busy.getAndSet(false);
 		return -3;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#setThumbnailForObject(int, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public int setThumbnailForObject(int designID,
+			PhysicalFileTransporter pft, String user, String pass) {
+		busy.getAndSet(true);
+		try {
+			logger.info("Adding a base design");
+			// send the thumbnail along as well if its transporter isn't null
+			output.writeObject(new Object[]{"design", "setthumb", designID, pft, user, pass});
+			busy.getAndSet(false);
+			touchLastUsed();
+			return Integer.parseInt((String)readResponse());
+		} catch (IOException e) {
+			logger.error("Network issue detected", e);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (UnexpectedServerResponse e) {
+			e.printStackTrace();
+		}
+		busy.getAndSet(false);
+		return -1;
 	}
 
 	/* (non-Javadoc)
