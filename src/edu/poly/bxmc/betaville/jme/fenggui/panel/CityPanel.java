@@ -122,15 +122,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new FocusOnSelectedAction());
 		addAction(new BulkImportAction());
 		//addAction(new BookmarkPanel());
-		/*
-		addAction(new PanelAction("Wormhole", "Wormhole", "Wormhole", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, new IButtonPressedListener() {
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(wormholeWindow == null){
-					GUIGameState.getInstance().showWormholeWindow("Wormhole Garage NY");
-				}
-			}
-		}));
-		*/
+		
 		addAction(new OnOffPanelAction("Thumbnail Capture", "Capture thumbnail images", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailCaptureWindow.class, false));
 		addAction(new OnOffPanelAction("Search", "Allows you to search", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, SearchActionWindow.class, false));
 		//addAction(new WhitewashAction());
