@@ -39,6 +39,8 @@ public class Comment extends Criticism implements Serializable{
 	private int repliesToCommentID;
 	private String date;
 	private int indentLevel;
+	private int commentDesignID;
+	private String commentUser;
 
 	/**
 	 * 
@@ -98,6 +100,14 @@ public class Comment extends Criticism implements Serializable{
 		return id;
 	}
 	
+	public int getCommentDesignID() {
+		return commentDesignID;
+	}
+	
+	public void setComment(String comment) {
+		this.comment=comment;
+	}
+	
 	public String getDate(){
 		return date;
 	}
@@ -106,6 +116,21 @@ public class Comment extends Criticism implements Serializable{
 		indentLevel=level;
 	}
 	
+	public void setDate(String date) {
+		this.date=date;
+	}
+	
+	public void setDesignID(String designs) {
+		this.commentDesignID=Integer.parseInt(designs);
+	}
+	
+	public void setUser(String user) {
+		this.commentUser = user;
+	}
+	
+	public void setRepliesTo(int replies) {
+		this.repliesToCommentID = replies;
+	}
 	/**
 	 * Retrieves the level of indentation based on
 	 * which comment this is replying to.
