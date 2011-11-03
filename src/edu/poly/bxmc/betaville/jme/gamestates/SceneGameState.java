@@ -398,12 +398,12 @@ public class SceneGameState extends BasicGameState {
 		directionalLight.setShadowCaster(false);
 		directionalLight.setEnabled(true);
 
-		DirectionalLight directionalLight2 = new DirectionalLight();
-		directionalLight2.setDirection(new Vector3f(-.25f,.85f,-.75f));//previously  -1f,.85f,0)
-		directionalLight2.setDiffuse(diffuseLightColor2);
-		directionalLight2.setAmbient(ambientLightColor2);
-		directionalLight2.setShadowCaster(false);
-		directionalLight2.setEnabled(true);
+		DirectionalLight fillLight = new DirectionalLight();
+		fillLight.setDirection(new Vector3f(-.25f,.85f,-.75f));//previously  -1f,.85f,0)
+		fillLight.setDiffuse(diffuseLightColor2);
+		fillLight.setAmbient(ambientLightColor2);
+		fillLight.setShadowCaster(false);
+		fillLight.setEnabled(true);
 
 		/*
 		SpotLight sl = new SpotLight();
@@ -432,7 +432,7 @@ public class SceneGameState extends BasicGameState {
 		lightState.detachAll();
 		lightState.setEnabled(true);
 		lightState.attach(directionalLight);
-		lightState.attach(directionalLight2);
+		lightState.attach(fillLight);
 		//lightState.attach(sl);
 
 		/*
