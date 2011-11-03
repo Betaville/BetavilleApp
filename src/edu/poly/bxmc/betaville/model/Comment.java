@@ -47,6 +47,7 @@ public class Comment extends Criticism implements Serializable{
 	 */
 	public Comment(int id, int designID, String user, String comment){
 		super(designID, user);
+		this.commentDesignID=designID;
 		this.id=id;
 		this.comment=comment;
 	}
