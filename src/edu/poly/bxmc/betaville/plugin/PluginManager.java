@@ -68,12 +68,34 @@ public class PluginManager {
 	 */
 	public synchronized static Plugin loadPlugin(URL[] pluginURL, URL pluginConfigFile, String pluginClass) throws PluginAlreadyLoadedException, ClassNotFoundException,
 	InstantiationException, IllegalAccessException, IncorrectPluginTypeException, IOException{
+		return loadPlugin(pluginURL, pluginConfigFile, pluginClass, null);
+	}
+	
+	/**
+	 * 
+	 * @param pluginURL
+	 * @param pluginConfigFile
+	 * @param pluginClass
+	 * @param version
+	 * @throws PluginAlreadyLoadedException
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IncorrectPluginTypeException
+	 * @throws IOException 
+	 */
+	public synchronized static Plugin loadPlugin(URL[] pluginURL, URL pluginConfigFile, String pluginClass, String version) throws PluginAlreadyLoadedException, ClassNotFoundException,
+	InstantiationException, IllegalAccessException, IncorrectPluginTypeException, IOException{
 		// check if the plugin is already loaded
 		if(isPluginLoaded(pluginClass)) throw new PluginAlreadyLoadedException(pluginClass + " has already been loaded");
-
+		
 		logger.info("redirecting to loadAndRegister");
-
-		return loadAndRegister(pluginURL, pluginConfigFile, pluginClass);
+		
+		return loadAndRegister(pluginURL, pluginConfigFile, pluginClass, version);
+	}
+	
+	private static boolean checkIfVersionOfPluginAlreadyExists(String pluginClass, String version){
+		return false;
 	}
 
 	/**
@@ -118,13 +140,17 @@ public class PluginManager {
 		return new File(DriveFinder.getBetavilleFolder().toString()+"/plugins/"+pluginClass+"/");
 	}
 
-	private static Plugin loadAndRegister(URL[] pluginURL, URL pluginConfigFile, String pluginClass) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException, IOException {
+	private static Plugin loadAndRegister(URL[] pluginURL, URL pluginConfigFile, String pluginClass, String version) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IncorrectPluginTypeException, IOException {
 
 		logger.info("loadAndRegister called");
 
 		logger.info("Loading " + pluginClass + " from the following JARs");
 		for(URL url : pluginURL){
 			logger.info("JAR: " + url.toString());
+		}
+		
+		if(checkIfVersionOfPluginAlreadyExists(pluginClass, version)){
+			// just update the plugin
 		}
 
 		// create the plugin's directory if it doesn't exist

@@ -76,6 +76,7 @@ public class PluginConfigReader extends XMLReader {
 		String author = rootElement.getChild("author").getText();
 		String classname = rootElement.getChild("classname").getText();
 		Element dependencies = rootElement.getChild("dependencies");
+		String version = rootElement.getChild("version").getText();
 		List<?> dpChildren = dependencies.getChildren();
 		List<String> jars = new ArrayList<String>();
 		for(int i=0; i<dpChildren.size(); i++){
@@ -104,7 +105,7 @@ public class PluginConfigReader extends XMLReader {
 				urlArray[i] = urlList.get(i);
 			}
 			
-			Plugin plugin = PluginManager.loadPlugin(urlArray, configURL, classname);
+			Plugin plugin = PluginManager.loadPlugin(urlArray, configURL, classname, version);
 			logger.info("Plugin loaded");
 			plugin.setName(name);
 			plugin.setDescription(description);
