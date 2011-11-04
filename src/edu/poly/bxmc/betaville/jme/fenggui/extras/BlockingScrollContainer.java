@@ -51,8 +51,8 @@ public class BlockingScrollContainer extends ScrollContainer {
 	 */
 	public BlockingScrollContainer() {
 		super(false);
-
-		//System.out.println("in constructor");
+		
+		System.out.println("in blocking scroll container constructor");
 
 		performSetup();
 	}
@@ -60,6 +60,8 @@ public class BlockingScrollContainer extends ScrollContainer {
 	private void performSetup(){
 		zl = new ScrollContainerZoomLock();
 
+		System.out.println("adding zoom lock");
+		
 		addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 			public void processEvent(Object arg0, Event arg1) {
 				if(arg1 instanceof MouseEvent){
