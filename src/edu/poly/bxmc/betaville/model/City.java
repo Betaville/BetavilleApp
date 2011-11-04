@@ -135,6 +135,24 @@ public class City implements ICity{
 	public int getCityID() {
 		return cityID;
 	}
+	
+	public void setCityID(int id) {
+		this.cityID = id;
+	}
+	/*
+	 * Adding getters and setters to accept requests by JsonClientManager
+	 */
+	public void setCityName(String name) {
+		this.city = name;
+	}
+	
+	public void setCityState(String state) {
+		this.state = state;
+	}
+	
+	public void setCityCountry(String country) {
+		this.country = country;
+	}
 
 	public synchronized Design findDesignByFullIdentifier(String name) {
 		for(Iterator<Design> designIter=designs.iterator(); designIter.hasNext();)
