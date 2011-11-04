@@ -15,7 +15,9 @@ import org.fenggui.ScrollContainer;
 import org.fenggui.binding.render.Binding;
 import org.fenggui.binding.render.Pixmap;
 import org.fenggui.composite.Window;
+import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.Event;
+import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.event.IGenericEventListener;
 import org.fenggui.event.mouse.MouseEnteredEvent;
 import org.fenggui.event.mouse.MouseExitedEvent;
@@ -32,6 +34,8 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainerFactory
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.panel.IPanelOnScreenAwareWindow;
 import edu.poly.bxmc.betaville.model.Design;
+import edu.poly.bxmc.betaville.net.NetPool;
+import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
 
 public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, IPanelOnScreenAwareWindow{
 	private static final Logger logger = Logger.getLogger(ThumbnailUploadWindow.class);
@@ -44,13 +48,32 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 	
 	private Button uploadButton;
 	
+	private ThumbContainer hoveredImageContainer;
+	
 	
 	public ThumbnailUploadWindow(){
 		super(true, true);
-		//getContentContainer().setLayoutManager(new RowExLayout(false));
 		
 		uploadButton = FengGUI.createWidget(Button.class);
 		uploadButton.setText("Upload");
+		uploadButton.addButtonPressedListener(new IButtonPressedListener() {
+			
+			@Override
+			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				if(hoveredImageContainer==null) return;
+				FileInputStream fis;
+				try {
+					fis = new FileInputStream(hoveredImageContainer.file);
+					byte[] b = new byte[fis.available()];
+					fis.read(b);
+					NetPool.getPool().getSecureConnection().setThumbnailForObject(hoveredImageContainer.designID,
+							new PhysicalFileTransporter(b), SettingsPreferences.getUser(), SettingsPreferences.getPass());
+				} catch (IOException ioException) {
+					ioException.printStackTrace();
+				}
+				
+			}
+		});
 		
 		sc = BlockingScrollContainerFactory.createBlockingScrollCotnainer();
 		sc.setSize(640, 480);
@@ -95,7 +118,11 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 	}
 	
 	private IWidget createImageContainer(Design design, File thumbnail){
-		final Container imageContainer = FengGUI.createWidget(Container.class);
+		//final ThumbContainer imageContainer = FengGUI.createWidget(ThumbContainer.class);
+		final ThumbContainer imageContainer = new ThumbContainer();
+		imageContainer.designID=design.getID();
+		imageContainer.file=thumbnail;
+		
 		imageContainer.setLayoutManager(new BorderLayout());
 		
 		Label imageLabel = FengGUI.createWidget(Label.class);
@@ -131,11 +158,13 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 					if(!isMouseOverUploadButton()){
 						removeUploadButton();
 						imageContainer.addWidget(uploadButton);
+						hoveredImageContainer = imageContainer;
 					}
 				}
 				else if(event instanceof MouseExitedEvent){
 					if(!isMouseOverUploadButton()){
 						removeUploadButton();
+						hoveredImageContainer = null;
 					}
 				}
 				
@@ -175,6 +204,16 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 		sc.setSize(getContentContainer().getSize());
 		//galleryContainer.setSize(getContentContainer().getSize());
 		generateGallery();
+	}
+	
+	private class ThumbContainer extends Container{
+		
+		private ThumbContainer(){
+			super();
+		}
+		
+		int designID;
+		File file;
 	}
 
 }
