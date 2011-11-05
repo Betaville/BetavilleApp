@@ -259,7 +259,7 @@ public class LiveProposalManager {
 		return proposals;
 	}
 
-	public static LiveProposalManager getInstance(){
+	public synchronized static LiveProposalManager getInstance(){
 		if(lpm==null) lpm = new LiveProposalManager();
 		return lpm;
 	}

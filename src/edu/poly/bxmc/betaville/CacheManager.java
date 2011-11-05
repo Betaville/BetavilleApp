@@ -344,7 +344,7 @@ public class CacheManager {
 	/**
 	 * @return The static instance of the {@link CacheManager}
 	 */
-	public static CacheManager getCacheManager(){
+	public synchronized static CacheManager getCacheManager(){
 		if(cm!=null){
 			return cm;
 		}
