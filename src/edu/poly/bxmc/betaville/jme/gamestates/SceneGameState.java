@@ -1235,7 +1235,7 @@ public class SceneGameState extends BasicGameState {
 		if(1f/tpf > target){
 			// ADD
 			for(Design d : SceneScape.getCity().getDesigns()){
-				if(!d.equals(Classification.BASE)) continue;
+				if(!d.getClassification().equals(Classification.BASE)) continue;
 				
 				boolean isInScene=false;
 				
