@@ -58,7 +58,6 @@ import org.fenggui.event.mouse.MouseExitedEvent;
 import org.fenggui.event.mouse.MouseReleasedEvent;
 import org.fenggui.layout.BorderLayout;
 import org.fenggui.layout.BorderLayoutData;
-import org.fenggui.layout.GridLayout;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.text.content.factory.simple.TextStyle;
@@ -74,6 +73,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.search.GeoNamesSearchQuery;
@@ -113,6 +113,10 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 	private Container resultsContainer;
 
 	private Color defaultTextColor = null;
+	
+	private ILocation rolledOverLocation = null;
+	
+	private Button goHere;
 
 	public SearchActionWindow() {
 		super(true, true);
@@ -169,6 +173,29 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 		search.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				searchAction();
+			}
+		});
+		
+		goHere = FengGUI.createWidget(Button.class);
+		goHere.setText("Go Here!");
+		goHere.setLayoutData(BorderLayoutData.EAST);
+		goHere.addButtonPressedListener(new IButtonPressedListener() {
+
+			@Override
+			public void buttonPressed(Object source, ButtonPressedEvent e) {
+				if(rolledOverLocation!=null){
+					// get location of target
+					//Vector3f target = JME2MapManager.instance.locationToBetaville(((LocationalSearchResult) result).getLocation());
+					Vector3f target = JME2MapManager.instance.locationToBetaville(rolledOverLocation);
+
+					Camera camera = SceneGameState.getInstance().getCamera();
+					Vector3f cameraLocation = camera.getLocation();
+					cameraLocation.setX(target.x-Scale.fromMeter(50));
+					cameraLocation.setZ(target.z-Scale.fromMeter(50));
+					cameraLocation.setY(Scale.fromMeter(500));
+					camera.update();
+					camera.lookAt(target, Vector3f.UNIT_Y);
+				}
 			}
 		});
 
@@ -243,30 +270,10 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 		final Label name = FengGUI.createWidget(Label.class);
 		name.setText(result.getMainTitle());
 		name.setLayoutData(BorderLayoutData.WEST);
-		left.setHeight(name.getHeight());
+		c.setHeight(name.getHeight());
 		left.addWidget(name);
-
-		final Button goHere = FengGUI.createWidget(Button.class);
-		goHere.setText("Go Here!");
-		goHere.setLayoutData(BorderLayoutData.EAST);
-		goHere.addButtonPressedListener(new IButtonPressedListener() {
-
-			@Override
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(result instanceof LocationalSearchResult){
-					// get location of target
-					Vector3f target = JME2MapManager.instance.locationToBetaville(((LocationalSearchResult) result).getLocation());
-
-					Camera camera = SceneGameState.getInstance().getCamera();
-					Vector3f cameraLocation = camera.getLocation();
-					cameraLocation.setX(target.x-Scale.fromMeter(50));
-					cameraLocation.setZ(target.z-Scale.fromMeter(50));
-					cameraLocation.setY(Scale.fromMeter(500));
-					camera.update();
-					camera.lookAt(target, Vector3f.UNIT_Y);
-				}
-			}
-		});
+		
+		c.setHeight(goHere.getHeight());
 
 		if(result instanceof LocationalSearchResult){
 			Label location = FengGUI.createWidget(Label.class);
@@ -290,18 +297,25 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 							if(defaultTextColor==null) defaultTextColor=name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).getColor();
 							name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(Color.YELLOW);
 							// set the scene object:
-							if(result instanceof LocationalSearchResult) SceneGameState.getInstance().setSingledSearchResult(result.getWebLink());
+							if(result instanceof LocationalSearchResult){
+								SceneGameState.getInstance().setSingledSearchResult(result.getWebLink());
+								rolledOverLocation = ((LocationalSearchResult)result).getLocation();
+							}
 						}
 					}
 					else if(event instanceof MouseExitedEvent){
 						if(!isMouseOverButton(goHere)){
-							c.removeWidget(goHere);
+							if(goHere.isInWidgetTree()){
+								((Container)goHere.getParent()).removeWidget(goHere);
+							}
 							c.getAppearance().removeAll();
 							/* null check required because its possible that an exit event can happen before an
 							 * enter event (where the default color is assigned). i.e: mouse is over result position
 							 * when they are first displayed */
 							if(defaultTextColor!=null)name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(defaultTextColor);
 							else name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(Color.WHITE);
+							
+							rolledOverLocation = null;
 						}
 					}
 					else if(event instanceof MouseReleasedEvent){
@@ -344,8 +358,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 		// We should rethink the logic of this option a bit, or at least test that it works
 		//geonamesOptions.addWidget(exactMatch);
 	}
-
-
+	
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
