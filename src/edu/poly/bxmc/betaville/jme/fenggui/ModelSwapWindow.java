@@ -159,6 +159,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 					fis = new FileInputStream(designFile);
 					byte[] b = new byte[fis.available()];
 					fis.read(b);
+					fis.close();
 					PhysicalFileTransporter transport = new PhysicalFileTransporter(b);
 					boolean netResponse = NetPool.getPool().getSecureConnection().changeDesignFile(designID, SettingsPreferences.getUser(), SettingsPreferences.getPass(), transport, textureOnOff);
 					if(netResponse){

@@ -103,7 +103,7 @@ public class RemoteControlServer {
 						SocketChannel client = server.accept();
 						client.configureBlocking(false);
 						SelectionKey clientkey = client.register(selector, SelectionKey.OP_READ);
-						clientkey.attach(new Integer(0));
+						clientkey.attach(Integer.valueOf(0));
 					}
 				} else {
 					SocketChannel client = (SocketChannel) key.channel();

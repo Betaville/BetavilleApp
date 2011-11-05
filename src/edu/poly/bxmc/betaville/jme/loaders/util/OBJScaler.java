@@ -80,6 +80,8 @@ public class OBJScaler {
 			
 			// force centimeters for maya
 			objScale = .01f;
+			
+			objReader.close();
 		}
 		
 		logger.info("OBJ Scale set to " + objScale);

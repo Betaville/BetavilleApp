@@ -1443,6 +1443,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 										// Read the contents and pack it into a PFT
 										byte[] b = new byte[fis.available()];
 										fis.read(b);
+										fis.close();
 										thumbTransporter = new PhysicalFileTransporter(b);
 									}
 								}
@@ -1512,6 +1513,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				// Read the contents and pack it into a PFT
 				byte[] b = new byte[fis.available()];
 				fis.read(b);
+				fis.close();
 				return new PhysicalFileTransporter(b);
 			}
 		}

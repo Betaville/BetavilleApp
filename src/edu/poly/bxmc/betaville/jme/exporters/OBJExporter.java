@@ -91,9 +91,11 @@ public class OBJExporter {
 		
 		objWriter.write(meshData);
 		objWriter.flush();
+		objWriter.close();
 		
 		mtlWriter.write(mtlData);
 		mtlWriter.flush();
+		mtlWriter.close();
 		finished=true;
 	}
 	

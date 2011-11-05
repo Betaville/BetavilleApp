@@ -1030,8 +1030,8 @@ public class ColladaExporter extends XMLWriter implements MeshExporter {
 
 		return (iso8601.format(new Object[] {
 				cal.getTime(),
-				new Integer(zoneHrs),
-				new Integer(zoneMins)
+				Integer.valueOf(zoneHrs),
+				Integer.valueOf(zoneMins)
 		}
 		)) ;
 	}

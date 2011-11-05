@@ -66,6 +66,7 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 					fis = new FileInputStream(hoveredImageContainer.file);
 					byte[] b = new byte[fis.available()];
 					fis.read(b);
+					fis.close();
 					NetPool.getPool().getSecureConnection().setThumbnailForObject(hoveredImageContainer.designID,
 							new PhysicalFileTransporter(b), SettingsPreferences.getUser(), SettingsPreferences.getPass());
 				} catch (IOException ioException) {
