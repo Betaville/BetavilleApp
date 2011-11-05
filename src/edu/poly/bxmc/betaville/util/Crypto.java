@@ -100,13 +100,13 @@ public class Crypto {
 	 * @return A random String
 	 */
 	public static String createSalt(int size){
-		String salt = "";
+		StringBuilder salt = new StringBuilder();
 		for(int i=0; i<size; i++){
 			double random = java.lang.Math.random();
 			int asInt = (int)(random*10);
-			salt = salt+asInt;
+			salt.append(asInt);
 		}
-		return salt;
+		return salt.toString();
 	}
 	
 	/**
