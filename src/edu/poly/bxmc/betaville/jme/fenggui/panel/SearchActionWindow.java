@@ -22,7 +22,7 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
 import java.util.ArrayList;
@@ -58,12 +58,14 @@ import org.fenggui.event.mouse.MouseExitedEvent;
 import org.fenggui.event.mouse.MouseReleasedEvent;
 import org.fenggui.layout.BorderLayout;
 import org.fenggui.layout.BorderLayoutData;
+import org.fenggui.layout.GridLayout;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.text.content.factory.simple.TextStyle;
 import org.fenggui.text.content.factory.simple.TextStyleEntry;
 import org.fenggui.util.Color;
 
+import com.jme.input.MouseInput;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 
@@ -85,46 +87,46 @@ import edu.poly.bxmc.betaville.search.SearchResult;
  */
 public class SearchActionWindow extends Window implements IBetavilleWindow {
 	private static final Logger logger = Logger.getLogger(SearchActionWindow.class);
-	
+
 	private int targetWidth=400;
 	private int targetHeight=200;
 	private int resultsWidthOffset=15;
 	private final String title = "Feature Search <Beta>";
-	
+
 	private Container typeEditorContainer;
-	
+
 	private ComboBox searchType;
-	
+
 	private TextEditor searchEditor;
 	private final String emptySearchText = "Enter Search Term...";
-	
+
 	private Container geonamesOptions;
 	private CheckBox<Boolean> searchAll;
 	private CheckBox<Boolean> exactMatch;
-	
+
 	private FixedButton search;
-	
+
 	private SearchQuery searchQuery;
-	
+
 	private ScrollContainer sc;
-	
+
 	private Container resultsContainer;
-	
+
 	private Color defaultTextColor = null;
-	
+
 	public SearchActionWindow() {
 		super(true, true);
 		getContentContainer().setSize(targetWidth, targetHeight);
 		getContentContainer().setLayoutManager(new RowExLayout(false));
-		
+
 		typeEditorContainer = FengGUI.createWidget(Container.class);
 		typeEditorContainer.setLayoutManager(new StaticLayout());
-		
+
 		searchEditor = FengGUI.createWidget(TextEditor.class);
 		searchEditor.setEmptyText(emptySearchText);
 		searchEditor.setWidth(((targetWidth/3)*2)-10);
 		searchEditor.setXY(5,0);
-		
+
 		searchEditor.addTextChangedListener(new ITextChangedListener() {
 			public void textChanged(TextChangedEvent textChangedEvent){
 				if(FengUtils.getText(searchEditor).isEmpty() || FengUtils.getText(searchEditor).equals(emptySearchText)){
@@ -134,9 +136,9 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 			}
 		});
 		searchEditor.addKeyListener(new IKeyListener() {
-			
+
 			public void keyTyped(Object sender, KeyTypedEvent keyTypedEvent) {}
-			
+
 			public void keyReleased(Object sender, KeyReleasedEvent keyReleasedEvent) {
 				if(keyReleasedEvent.getKeyClass().equals(Key.ENTER)){
 					searchAction();
@@ -144,7 +146,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 			}
 			public void keyPressed(Object sender, KeyPressedEvent keyPressedEvent) {}
 		});
-		
+
 		searchType = FengGUI.createWidget(ComboBox.class);
 		searchType.addItem(GeoNamesSearchQuery.SEARCH_IDENTIFIER);
 		searchType.setXY(searchEditor.getX()+searchEditor.getWidth()+5, 0);
@@ -156,11 +158,11 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 			}
 		});
 		searchQuery = new GeoNamesSearchQuery();
-		
+
 		typeEditorContainer.addWidget(searchType, searchEditor);
-		
+
 		createGeonamesOptions();
-		
+
 		search = FengGUI.createWidget(FixedButton.class);
 		search.setText("Search");
 		search.setEnabled(false);
@@ -169,7 +171,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 				searchAction();
 			}
 		});
-		
+
 		Container scrollHolder = FengGUI.createWidget(Container.class);
 		scrollHolder.setLayoutManager(new StaticLayout());
 		//scrollHolder.setSize(targetWidth, targetHeight-getTitleBar().getHeight()-geonamesOptions.getHeight()-search.getHeight());
@@ -188,7 +190,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 		getContentContainer().addWidget(geonamesOptions);
 		getContentContainer().addWidget(search);
 	}
-	
+
 	private void searchAction(){
 		// hand the search task off to another thread as it is dependent on a server response.
 		SettingsPreferences.getThreadPool().submit(new Runnable() {
@@ -215,7 +217,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 						// search post-processing
 						setTitle(title+"     ("+results.size()+" results)");
 						search.setText("Search");
-						
+
 						resultsContainer.removeAllWidgets();
 						for(SearchResult result : results){
 							resultsContainer.addWidget(createResult(result));
@@ -228,29 +230,33 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 			}
 		});
 	}
-	
+
 	private Container createResult(final SearchResult result){
 		final Container c = FengGUI.createWidget(Container.class);
 		c.setLayoutManager(new BorderLayout());
 		c.setWidth(targetWidth-resultsWidthOffset);
-		
+
+		Container left = FengGUI.createWidget(Container.class);
+		left.setLayoutManager(new BorderLayout());
+		left.setLayoutData(BorderLayoutData.WEST);
+
 		final Label name = FengGUI.createWidget(Label.class);
 		name.setText(result.getMainTitle());
 		name.setLayoutData(BorderLayoutData.WEST);
-		c.setHeight(name.getHeight());
-		c.addWidget(name);
-		
+		left.setHeight(name.getHeight());
+		left.addWidget(name);
+
 		final Button goHere = FengGUI.createWidget(Button.class);
 		goHere.setText("Go Here!");
-		goHere.setLayoutData(BorderLayoutData.CENTER);
+		goHere.setLayoutData(BorderLayoutData.EAST);
 		goHere.addButtonPressedListener(new IButtonPressedListener() {
-			
+
 			@Override
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(result instanceof LocationalSearchResult){
 					// get location of target
 					Vector3f target = JME2MapManager.instance.locationToBetaville(((LocationalSearchResult) result).getLocation());
-					
+
 					Camera camera = SceneGameState.getInstance().getCamera();
 					Vector3f cameraLocation = camera.getLocation();
 					cameraLocation.setX(target.x-Scale.fromMeter(50));
@@ -261,35 +267,42 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 				}
 			}
 		});
-		
+
 		if(result instanceof LocationalSearchResult){
 			Label location = FengGUI.createWidget(Label.class);
 			location.setText(((LocationalSearchResult)result).getLocation().getGPS().getLatitude()+", "+((LocationalSearchResult)result).getLocation().getGPS().getLongitude());
 			location.setLayoutData(BorderLayoutData.EAST);
-			c.addWidget(location);
+			left.addWidget(location);
 			SceneGameState.getInstance().addSearchResult(((LocationalSearchResult)result).getLocation(), result.getWebLink());
 		}
-		
+
 		c.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-			
+
 			public void processEvent(Object source, Event event) {
 				if(event instanceof MouseEvent){
 					if(event instanceof MouseEnteredEvent){
-						c.addWidget(goHere);
-						c.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
-						if(defaultTextColor==null) defaultTextColor=name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).getColor();
-						name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(Color.YELLOW);
-						// set the scene object:
-						if(result instanceof LocationalSearchResult) SceneGameState.getInstance().setSingledSearchResult(result.getWebLink());
+						if(!isMouseOverButton(goHere)){
+							if(goHere.isInWidgetTree()){
+								((Container)goHere.getParent()).removeWidget(goHere);
+							}
+							c.addWidget(goHere);
+							c.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
+							if(defaultTextColor==null) defaultTextColor=name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).getColor();
+							name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(Color.YELLOW);
+							// set the scene object:
+							if(result instanceof LocationalSearchResult) SceneGameState.getInstance().setSingledSearchResult(result.getWebLink());
+						}
 					}
 					else if(event instanceof MouseExitedEvent){
-						c.removeWidget(goHere);
-						c.getAppearance().removeAll();
-						/* null check required because its possible that an exit event can happen before an
-						 * enter event (where the default color is assigned). i.e: mouse is over result position
-						 * when they are first displayed */
-						if(defaultTextColor!=null)name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(defaultTextColor);
-						else name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(Color.WHITE);
+						if(!isMouseOverButton(goHere)){
+							c.removeWidget(goHere);
+							c.getAppearance().removeAll();
+							/* null check required because its possible that an exit event can happen before an
+							 * enter event (where the default color is assigned). i.e: mouse is over result position
+							 * when they are first displayed */
+							if(defaultTextColor!=null)name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(defaultTextColor);
+							else name.getAppearance().getStyle(TextStyle.DEFAULTSTYLEKEY).getTextStyleEntry(TextStyleEntry.DEFAULTSTYLESTATEKEY).setColor(Color.WHITE);
+						}
 					}
 					else if(event instanceof MouseReleasedEvent){
 						// TODO: Show individual result popup
@@ -297,13 +310,25 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 				}
 			}
 		});
+
+		c.addWidget(left);
 		return c;
 	}
-	
+
+	private boolean isMouseOverButton(Button button){
+		int mouseX = MouseInput.get().getXAbsolute();
+		int mouseY = MouseInput.get().getYAbsolute();
+
+		return (mouseX > button.getDisplayX() &&
+				mouseX < button.getDisplayX()+button.getWidth()
+				&& mouseY > button.getDisplayY() &&
+				mouseY < button.getDisplayY()+button.getHeight());
+	}
+
 	private void createGeonamesOptions(){
 		geonamesOptions = FengGUI.createWidget(Container.class);
 		geonamesOptions.setLayoutManager(new RowExLayout(true, 5));
-		
+
 		searchAll = FengGUI.createCheckBox();
 		searchAll.setText("Search All Fields");
 		searchAll.addSelectionChangedListener(new ISelectionChangedListener() {
