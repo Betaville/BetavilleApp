@@ -81,7 +81,7 @@ public abstract class MappedTerrainGenerator {
 		this.blockSize=blockSize;
 		logger.info("Block size is: "+blockSize);
 		// ensure that the number of plot points is always an odd number.
-		if(plotPoints%2==1)this.plotPoints=plotPoints;
+		if(plotPoints%2!=0)this.plotPoints=plotPoints;
 		else{
 			logger.warn("plotPoints value must be an odd number! " +plotPoints + " will be changed to " + (plotPoints-1));
 			this.plotPoints=plotPoints-1;
