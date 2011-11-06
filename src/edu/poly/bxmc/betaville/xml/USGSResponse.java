@@ -48,11 +48,14 @@ public class USGSResponse extends XMLReader {
 	private int attempts=0;
 	private int maxAttempts=3;
 	
+	public USGSResponse(){
+	}
+	
 	public USGSResponse(double lat, double lon){
 		doRequest(lat, lon);
 	}
 	
-	private void doRequest(double lat, double lon){
+	public void doRequest(double lat, double lon){
 		try {
 			attempts++;
 			URL url = new URL("http://gisdata.usgs.gov/xmlwebservices2/elevation_service.asmx/getElevation?X_Value="+lon+"&Y_Value="+lat+"&Elevation_Units=METERS&Source_Layer=-1&Elevation_Only=false");
