@@ -392,14 +392,15 @@ public class SceneGameState extends BasicGameState {
 	private void buildLights() {
 		// Set up a directional light
 		DirectionalLight directionalLight = new DirectionalLight();
-		directionalLight.setDirection(new Vector3f(.25f, -.85f, .75f)); //previously 1, -.85f, 0
+		directionalLight.setDirection(new Vector3f(.25f, -.85f, .75f));
 		directionalLight.setDiffuse(diffuseLightColor);
 		directionalLight.setAmbient(ambientLightColor);
 		directionalLight.setShadowCaster(false);
 		directionalLight.setEnabled(true);
 
 		DirectionalLight fillLight = new DirectionalLight();
-		fillLight.setDirection(new Vector3f(-.25f,.85f,-.75f));//previously  -1f,.85f,0)
+		fillLight.setDirection(new Vector3f(-.25f,.85f,-.75f));
+		//fillLight.setDirection(directionalLight.getDirection().negate());
 		fillLight.setDiffuse(diffuseLightColor2);
 		fillLight.setAmbient(ambientLightColor2);
 		fillLight.setShadowCaster(false);
