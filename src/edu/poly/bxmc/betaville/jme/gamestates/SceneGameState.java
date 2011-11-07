@@ -149,8 +149,7 @@ public class SceneGameState extends BasicGameState {
 	private ColorRGBA diffuseLightColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
 	private ColorRGBA ambientLightColor2 = new ColorRGBA(.3f,.4f,.45f,.1f);
-	//private ColorRGBA diffuseLightColor = new ColorRGBA(0.85f, 0.85f, 0.85f, .85f);
-	private ColorRGBA diffuseLightColor2 = new ColorRGBA(.3f,.4f,.45f,.3f);
+	private ColorRGBA diffuseLightColor2 = new ColorRGBA(154f/255f, 160f/255f, 166f/255f, 185f/255f);
 
 	/** The camera that creates the viewport for the user.*/
 	private Camera camera = DisplaySystem.getDisplaySystem().getRenderer().getCamera();
