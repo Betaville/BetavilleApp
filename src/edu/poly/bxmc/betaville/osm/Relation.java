@@ -68,5 +68,10 @@ public class Relation extends OSMObject{
 	public List<RelationMemeber> getMemebers(){
 		return members;
 	}
+	
+	@Override
+	public String toString() {
+		return "Relation "+id;
+	}
 
 }

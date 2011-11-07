@@ -69,4 +69,9 @@ public class Node extends OSMObject{
 	public void setLocation(GPSCoordinate location) {
 		this.location = location;
 	}
+	
+	@Override
+	public String toString() {
+		return "Node "+id;
+	}
 }

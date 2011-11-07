@@ -64,5 +64,10 @@ public class Way extends OSMObject{
 	public List<Node> getNodes(){
 		return nodes;
 	}
+	
+	@Override
+	public String toString() {
+		return "Way "+id;
+	}
 
 }
