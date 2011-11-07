@@ -51,6 +51,7 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
+import edu.poly.bxmc.betaville.jme.fenggui.panel.ModelMover;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
@@ -61,6 +62,7 @@ import edu.poly.bxmc.betaville.model.ModeledDesign;
 import edu.poly.bxmc.betaville.net.NetPool;
 
 /**
+ * @deprecated - Use {@link ModelMover} instead
  * @author Skye Book
  *
  */

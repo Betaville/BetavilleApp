@@ -43,7 +43,6 @@ import com.jme.scene.Spatial;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.AddLayersWindow;
-import edu.poly.bxmc.betaville.jme.fenggui.AdminModelMover;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.LightAngleModifier;
 import edu.poly.bxmc.betaville.jme.fenggui.LightTweaker;
@@ -87,7 +86,6 @@ public class CityPanel extends Window implements IBetavilleWindow{
 	private FixedButton swap;
 	private FixedButton lockToTerrain;
 	
-	private AdminModelMover mover;
 	private TerrainLoader terrainWindow;
 	private ModelSwapWindow modelSwapper;
 	
@@ -166,18 +164,6 @@ public class CityPanel extends Window implements IBetavilleWindow{
 			}
 		}));
 		*/
-		
-		mover = FengGUI.createWidget(AdminModelMover.class);
-		mover.finishSetup();
-		move = FengGUI.createWidget(FixedButton.class);
-		move.setText("Move");
-		move.setWidth(move.getWidth()+10);
-		move.setEnabled(false);
-		move.addButtonPressedListener(new IButtonPressedListener() {
-			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(!mover.isInWidgetTree()) GUIGameState.getInstance().getDisp().addWidget(mover);
-			}
-		});
 		
 		terrainWindow = FengGUI.createWidget(TerrainLoader.class);
 		terrainWindow.finishSetup();
