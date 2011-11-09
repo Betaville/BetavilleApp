@@ -22,16 +22,19 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
+import java.awt.Dialog.ModalityType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Iterator;
+
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 
 import org.apache.log4j.Logger;
 import org.fenggui.ComboBox;
@@ -40,8 +43,6 @@ import org.fenggui.FengGUI;
 import org.fenggui.Label;
 import org.fenggui.TextEditor;
 import org.fenggui.composite.Window;
-import org.fenggui.composite.filedialog.FileDialogListener;
-import org.fenggui.composite.filedialog.FileDialogWindow;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.layout.RowExLayout;
@@ -49,12 +50,14 @@ import org.fenggui.layout.RowLayout;
 
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
+import edu.poly.bxmc.betaville.gui.AcceptedModelFilter;
+import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
+import edu.poly.bxmc.betaville.gui.WavefrontFileFilter;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ReportBugListener;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
@@ -94,35 +97,50 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 		browseButton.setText("Browse...");
 		browseButton.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
-				final FileDialogWindow fileDiag = new FileDialogWindow(true, false, false, true);
-				fileDiag.getDialog().setCurrentDirectory(SettingsPreferences.BROWSER_LOCATION);
 
-				// populate the drop down list of locations
-				Iterator<File> it = DriveFinder.getPartitions().iterator();
-				while(it.hasNext()){
-					fileDiag.getDialog().addToRoots(it.next());
-				}
+				SettingsPreferences.getThreadPool().submit(new Runnable() {
 
-				fileDiag.setSize((GUIGameState.getInstance().getDisp().getWidth() / 4)*3, (GUIGameState.getInstance().getDisp().getHeight() / 4)*3);
-				GUIGameState.getInstance().getDisp().addWidget(fileDiag);
+					public void run() {
+						JDialog dialog = new JDialog();
+						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
+						AcceptedModelFilter modelFilter = new AcceptedModelFilter();
+						fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
+						fileChooser.addChoosableFileFilter(modelFilter);
+						fileChooser.addChoosableFileFilter(new ColladaFileFilter());
+						fileChooser.addChoosableFileFilter(new WavefrontFileFilter());
+						fileChooser.setFileFilter(modelFilter);
+						fileChooser.showOpenDialog(dialog);
+						File file = fileChooser.getSelectedFile();
 
-				fileDiag.getDialog().addListener(new FileDialogListener(){
+						// flash an error if the file is larger than 5mb
+						if(file.length()>5000000){
+							logger.warn(file.toString()+" is "+file.length()+"bytes.  This is rather large");
 
-					public void cancel() {
-						System.out.println("cancel button hit");
-					}
+							GUIGameState.getInstance().getDisp().addWidget(
+									FengUtils.createDismissableWindow("Betaville", "The selected file is rather large, at "+
+											(file.length()/1000000f)+"MB, why don't you see if you can't get that down a bit?", "ok", false));
 
-					public void fileSelected(File file) {
-						System.out.println("file selected");
-						modelEditor.setText(file.toString());
+						}
+
+						String pathToDisplay = file.toString();
+						if(pathToDisplay.contains("/")){
+							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("/")+1);
+						}
+						else if(pathToDisplay.contains("\\")){
+							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("\\")+1);
+						}
+						SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
+						logger.info("path "+pathToDisplay);
+						modelEditor.setText(pathToDisplay);
 						try {
 							model = file.toURI().toURL();
-							SettingsPreferences.BROWSER_LOCATION=fileDiag.getDialog().getCurrentDirectory();
 						} catch (MalformedURLException e) {
-							System.out.println("PROBLEM");
-							e.printStackTrace();
+							logger.warn("Problem occured when selecting from file browser", e);
 						}
-					}});
+					}
+				});
+
 			}
 		});
 
@@ -139,7 +157,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 		textureContainer.addWidget(textureSelect);
 
 		applyButton = FengGUI.createWidget(FixedButton.class);
-		applyButton.setText("Create Design");
+		applyButton.setText("Swap Model");
 
 		applyButton.addButtonPressedListener(new IButtonPressedListener() {
 
