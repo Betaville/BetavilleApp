@@ -53,7 +53,7 @@ import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 public class LogoMenuWindow extends Window implements IBetavilleWindow {
 
 	private static Logger logger = Logger.getLogger(LogoMenuWindow.class);
-	private static boolean exists = false;
+	private boolean exists = false;
 
 	private Label exit;
 	private Label about;
