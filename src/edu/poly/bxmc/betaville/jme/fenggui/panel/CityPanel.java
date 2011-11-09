@@ -80,7 +80,6 @@ public class CityPanel extends Window implements IBetavilleWindow{
 	private BlockingScrollContainer sc;
 	private Container isc;
 	
-	private FixedButton move;
 	private FixedButton delete;
 	private FixedButton terrain;
 	private FixedButton swap;
@@ -245,21 +244,18 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		
 		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
 			public void selectionCleared(Design previousDesign) {
-				move.setEnabled(false);
 				delete.setEnabled(false);
 				swap.setEnabled(false);
 				lockToTerrain.setEnabled(false);
 			}
 			
 			public void designSelected(Spatial spatial, Design design) {
-				move.setEnabled(true);
 				delete.setEnabled(true);
 				swap.setEnabled(true);
 				lockToTerrain.setEnabled(true);
 			}
 		});
 		
-		if(SettingsPreferences.getUserType().compareTo(UserType.MODERATOR)>=0)isc.addWidget(move);
 		if(SettingsPreferences.getUserType().compareTo(UserType.MODERATOR)>=0)isc.addWidget(delete);
 		if(SettingsPreferences.getUserType().compareTo(UserType.MODERATOR)>=0)isc.addWidget(swap);
 		//if(SettingsPreferences.getUserType().compareTo(UserType.MODERATOR)>=0)getContentContainer().addWidget(terrain);
