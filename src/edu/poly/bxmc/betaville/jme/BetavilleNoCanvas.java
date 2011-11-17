@@ -446,7 +446,7 @@ public class BetavilleNoCanvas {
 					
 					// load proposals
 					FlagProducer testFlagger = new FlagProducer(cameraStartPosition.getUTM(), new DesktopFlagPositionStrategy());
-					testFlagger.getProposals(5000);
+					testFlagger.getProposals(30000);
 					testFlagger.placeFlags();
 
 					// enable framerate optimization
