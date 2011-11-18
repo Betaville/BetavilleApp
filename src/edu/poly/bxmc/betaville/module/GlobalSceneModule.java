@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,9 @@ package edu.poly.bxmc.betaville.module;
 
 /**
  * A scene module that has access to the entire scene.
- * in the scenegraph at which to work.  If this level
- * of integration is not required, then it will likely
- * be easier and more efficient to work with {@link LocalSceneModule}
+ * If this level of integration is not required, then it
+ * will likely be easier and more efficient to work with
+ * {@link LocalSceneModule}
  * 
  * @author Skye Book
  * @see SceneModule
