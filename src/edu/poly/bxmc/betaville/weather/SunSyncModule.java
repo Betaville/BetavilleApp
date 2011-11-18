@@ -29,19 +29,24 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.apache.log4j.Logger;
 import org.geotools.nature.SunRelativePosition;
 
 import com.jme.light.DirectionalLight;
+import com.jme.math.Matrix3f;
 import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
+import com.jme.scene.shape.Box;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState.StateType;
 
 import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
+import edu.poly.bxmc.betaville.jme.map.CardinalDirections;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
+import edu.poly.bxmc.betaville.jme.map.Scale;
 import edu.poly.bxmc.betaville.module.GlobalSceneModule;
 import edu.poly.bxmc.betaville.module.Module;
 
@@ -51,6 +56,7 @@ import edu.poly.bxmc.betaville.module.Module;
  *
  */
 public class SunSyncModule extends Module implements GlobalSceneModule {
+	private static final Logger logger = Logger.getLogger(SunSyncModule.class);
 	
 	protected GPSCoordinate coordinate;
 	
@@ -64,27 +70,25 @@ public class SunSyncModule extends Module implements GlobalSceneModule {
 	private boolean realTime = true;
 	
 	private GregorianCalendar calendar;
-
+	
 	/**
 	 * @param name
 	 */
 	public SunSyncModule(String name) {
 		super(name);
-		sunRelativePosition = new SunRelativePosition();
+		sunRelativePosition = new SunRelativePosition(Double.NaN);
 		dateTime = new Date(System.currentTimeMillis());
 		calendar = new GregorianCalendar(TimeZone.getDefault());
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		dateTime = calendar.getTime();
+		
 	}
 
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.module.SceneModule#initialize(com.jme.scene.Node)
 	 */
 	@Override
-	public void initialize(Node scene) {
-		// TODO Auto-generated method stub
-
-	}
+	public void initialize(Node scene) {}
 
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.module.SceneModule#onUpdate(com.jme.scene.Node, com.jme.math.Vector3f, com.jme.math.Vector3f)
@@ -107,12 +111,17 @@ public class SunSyncModule extends Module implements GlobalSceneModule {
 		sunRelativePosition.setCoordinate(coordinate.getLongitude(), coordinate.getLatitude());
 		double azimuth = sunRelativePosition.getAzimuth();
 		double elevation = sunRelativePosition.getElevation();
-		Quaternion q = Rotator.angleY((float)azimuth);
-		q.addLocal(Rotator.angleX((float)elevation));
-		q.toAngles(vector);
-		sunAngle.x=vector[0];
-		sunAngle.y=vector[1];
-		sunAngle.z=vector[2];
+		
+		//Quaternion a = Rotator.angleY(((360f)-(float)azimuth));
+		Quaternion a = Rotator.angleY((float)azimuth);
+		Quaternion e = Rotator.angleZ(-1*(float)elevation);
+		Quaternion fin = a.mult(e);
+		
+		fin.mult(CardinalDirections.NORTH, sunAngle);
+		
+		logger.info("Sun Azimuth: " + azimuth);
+		logger.info("Sun Elevation: " + elevation);
+		logger.info("Sun Angle: " + sunAngle.toString());
 		
 		((DirectionalLight)lightState.get(0)).setDirection(sunAngle);
 		((DirectionalLight)lightState.get(1)).setDirection(sunAngle.negate());

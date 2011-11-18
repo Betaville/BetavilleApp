@@ -108,6 +108,7 @@ import edu.poly.bxmc.betaville.module.ModuleNameException;
 import edu.poly.bxmc.betaville.module.SceneModule;
 import edu.poly.bxmc.betaville.proposals.JMEDesktopProposalController;
 import edu.poly.bxmc.betaville.proposals.LiveProposalManager;
+import edu.poly.bxmc.betaville.weather.SunSyncModule;
 
 /**
  * Creates the Betaville application's 3D content layer.
@@ -388,7 +389,7 @@ public class SceneGameState extends BasicGameState {
 		foliage.addObjectToCache(new File("data/foliage/bush.dae"), "bush");
 	}
 
-	private void buildLights() {
+	private void buildLights(){
 		// Set up a directional light
 		DirectionalLight directionalLight = new DirectionalLight();
 		directionalLight.setDirection(new Vector3f(.25f, -.85f, .75f));
@@ -449,7 +450,18 @@ public class SceneGameState extends BasicGameState {
 
 		rootNode.setRenderState(lightState);
 		rootNode.updateRenderState();
-
+		
+		/*
+		try {
+			SunSyncModule lsm = new SunSyncModule("LightSync");
+			lsm.setRealTime(false);
+			lsm.getCalendar().set(2011, 6, 21, 12, 0);
+			addModuleToUpdateList(lsm);
+		} catch (ModuleNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
 	}
 
 	private void setupLensFlare(){
