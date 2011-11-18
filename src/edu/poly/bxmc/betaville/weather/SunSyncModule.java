@@ -119,9 +119,9 @@ public class SunSyncModule extends Module implements GlobalSceneModule {
 		
 		fin.mult(CardinalDirections.NORTH, sunAngle);
 		
-		logger.info("Sun Azimuth: " + azimuth);
-		logger.info("Sun Elevation: " + elevation);
-		logger.info("Sun Angle: " + sunAngle.toString());
+		//logger.info("Sun Azimuth: " + azimuth);
+		//logger.info("Sun Elevation: " + elevation);
+		//logger.info("Sun Angle: " + sunAngle.toString());
 		
 		((DirectionalLight)lightState.get(0)).setDirection(sunAngle);
 		((DirectionalLight)lightState.get(1)).setDirection(sunAngle.negate());
