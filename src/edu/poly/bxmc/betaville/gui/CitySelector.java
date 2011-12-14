@@ -60,6 +60,7 @@ public class CitySelector extends JFrame {
 	 */
 	public CitySelector() throws HeadlessException {
 		setLayout(new BorderLayout());
+		setTitle("Select Starting Location");
 		final List<Wormhole> locations = NetPool.getPool().getConnection().getAllWormholes();
 
 		UnprotectedManager net = NetPool.getPool().getConnection();
