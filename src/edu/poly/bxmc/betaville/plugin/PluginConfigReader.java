@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
+import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.xml.XMLReader;
 
 /**
@@ -133,7 +134,7 @@ public class PluginConfigReader extends XMLReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			FengUtils.showNewDismissableWindow("Betaville", "The plugin could not be loaded, please check your logs", "OK", true);
 			e.printStackTrace();
 		}
 	}

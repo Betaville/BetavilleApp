@@ -42,6 +42,8 @@ import javax.swing.JTextArea;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.ShutdownManager;
+import edu.poly.bxmc.betaville.ShutdownManager.IShutdownProcedure;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.model.Comment;
 import edu.poly.bxmc.betaville.model.Design;
@@ -88,6 +90,15 @@ public class SwingCommentWindow extends JFrame {
 		
 		setSize(640, 480);
 		
+		ShutdownManager.shutdownProcedures.add(new IShutdownProcedure() {
+			
+			@Override
+			public boolean runProcedure() {
+				setVisible(false);
+				return true;
+			}
+		});
+		
 		// set up the comment maintenance
 		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
 			
@@ -110,16 +121,15 @@ public class SwingCommentWindow extends JFrame {
 					JLabel label = new JLabel(comment.getUser()+"\n"+comment.getDate());
 					postedComment.add(label, BorderLayout.LINE_START);
 					
-					JTextArea commentText = new JTextArea();
-					commentText.setEditable(false);
+					JLabel commentText = new JLabel();
 					commentText.setText(comment.getComment());
 					postedComment.add(commentText, BorderLayout.CENTER);
 					
-					//commentPanel.add(postedComment);
-					//commentPanel.add(new JSeparator(JSeparator.HORIZONTAL));
-					System.out.println("bang");
-					commentPanel.add(new JLabel("hello"));
+					commentPanel.add(postedComment);
+					commentPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 				}
+				
+				pack();
 			}
 		});
 	}
