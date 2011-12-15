@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="junit"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry exported="true" kind="lib" path="lib/jme/jme-audio.jar" sourcepath="/jme"/>
 	<classpathentry exported="true" kind="lib" path="lib/jme/jme-awt.jar" sourcepath="/jme"/>
