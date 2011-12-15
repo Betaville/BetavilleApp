@@ -146,7 +146,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new OnOffPanelAction("My Location", "Shows My Location!", AvailabilityRule.ALWAYS, UserType.MEMBER, false, MyLocationWindow.class, false));
 		//addAction(new OnOffPanelAction("Bookmarks", "Manage your bookmarks", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, BookmarkWindow.class, false));
 		addAction(new OnOffPanelAction("Wormhole", "Wormholes", AvailabilityRule.ALWAYS, UserType.MEMBER, false, NetworkedWormholeWindow.class, false));
-		addAction(new OnOffPanelAction("Edit Building", "Edit existing building", AvailabilityRule.OBJECT_SELECTED, UserType.MEMBER, false, EditBuildingWindow.class, false));
+		//addAction(new OnOffPanelAction("Edit Building", "Edit existing building", AvailabilityRule.OBJECT_SELECTED, UserType.MEMBER, false, EditBuildingWindow.class, false));
 		addAction(new OnOffPanelAction("Plugin Manager", "Install Plugins", AvailabilityRule.ALWAYS, UserType.MEMBER, false, PluginManagerUI.class, false));
 		addAction(new PerformancePanelAction());
 		addAction(new PanelAction("Toggle Shadows", "Shadows", new IButtonPressedListener() {
