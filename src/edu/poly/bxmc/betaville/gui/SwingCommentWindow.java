@@ -26,7 +26,6 @@
 package edu.poly.bxmc.betaville.gui;
 
 import java.awt.BorderLayout;
-import java.awt.GraphicsConfiguration;
 import java.awt.HeadlessException;
 import java.util.List;
 
@@ -47,7 +46,6 @@ import edu.poly.bxmc.betaville.ShutdownManager.IShutdownProcedure;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.model.Comment;
 import edu.poly.bxmc.betaville.model.Design;
-import edu.poly.bxmc.betaville.net.InsecureClientManager;
 import edu.poly.bxmc.betaville.net.NetPool;
 
 /**
@@ -58,6 +56,10 @@ public class SwingCommentWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private JPanel commentPanel;
+	
+	private String htmlStart = "<html><body style='width: ";
+	private String htmlAfterPixels = "px'>";
+	private String htmlEnd = "</body></html>";
 	
 	private JTextArea commentTextEntry;
 	private JButton submitComment;
@@ -116,20 +118,21 @@ public class SwingCommentWindow extends JFrame {
 				
 				for(Comment comment : comments){
 					JPanel postedComment = new JPanel();
-					postedComment.setLayout(new BorderLayout());
+					postedComment.setLayout(new BorderLayout(5, 5));
 					
 					JLabel label = new JLabel(comment.getUser()+"\n"+comment.getDate());
 					postedComment.add(label, BorderLayout.LINE_START);
 					
 					JLabel commentText = new JLabel();
-					commentText.setText(comment.getComment());
+					commentText.setText(htmlStart+300+htmlAfterPixels+comment.getComment()+htmlEnd);
 					postedComment.add(commentText, BorderLayout.CENTER);
 					
 					commentPanel.add(postedComment);
 					commentPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 				}
 				
-				pack();
+				//pack();
+				validate();
 			}
 		});
 	}

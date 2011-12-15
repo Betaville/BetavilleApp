@@ -124,7 +124,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		//addAction(new BookmarkPanel());
 		
 		addAction(new OnOffPanelAction("Upload Thumbnail", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailUploadWindow.class, false));
-		addAction(new SwingOnOffPanelAction("Comments in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingCommentWindow.class));
+		//addAction(new SwingOnOffPanelAction("Comments in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingCommentWindow.class));
 		addAction(new OnOffPanelAction("Thumbnail Capture", "Capture thumbnail images", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailCaptureWindow.class, false));
 		addAction(new OnOffPanelAction("Search", "Allows you to search", AvailabilityRule.ALWAYS, UserType.MEMBER, false, SearchActionWindow.class, false));
 		//addAction(new WhitewashAction());
