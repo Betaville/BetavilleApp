@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -198,7 +199,10 @@ public class ModelLoader {
 			model.clearRenderState(StateType.Texture);
 		}
 		else{
-			GeometryUtilities.setupTextureStorage(model);
+			List<File> textureFiles = GeometryUtilities.setupTextureStorage(model, null);
+			for(File textureFile : textureFiles){
+				logger.info("TEXTURE: " + textureFile.toString());
+			}
 		}
 		File fileout;
 		try {
