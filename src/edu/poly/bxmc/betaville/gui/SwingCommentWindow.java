@@ -26,21 +26,26 @@
 package edu.poly.bxmc.betaville.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
+import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.ShutdownManager.IShutdownProcedure;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
@@ -54,84 +59,127 @@ import edu.poly.bxmc.betaville.net.NetPool;
  */
 public class SwingCommentWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
-	
-	private JPanel commentPanel;
-	
-	private String htmlStart = "<html><body style='width: ";
-	private String htmlAfterPixels = "px'>";
-	private String htmlEnd = "</body></html>";
-	
-	private JTextArea commentTextEntry;
-	private JButton submitComment;
+
+	private int currentDesignCommentThread = -1;
+
+	private JScrollPane scrollPane;
+	private JEditorPane commentPane;
+
+	private JSplitPane bottomSplit;
+	private JButton submit;
+	private JScrollPane editorScroller;
+	private JTextArea commentEditor;
+
+
 
 	/**
 	 * @throws HeadlessException
 	 */
 	public SwingCommentWindow() throws HeadlessException {
+
 		getContentPane().setLayout(new BorderLayout());
-		
-		commentPanel = new JPanel();
-		commentPanel.setLayout(new BoxLayout(commentPanel, BoxLayout.Y_AXIS));
-		
-		JScrollPane scrollPane = new JScrollPane(commentPanel);
-		
+
+		commentPane = new JEditorPane();
+		commentPane.setEditable(false);
+		commentPane.setContentType("text/html");
+		commentPane.addHyperlinkListener(new HyperlinkListener() {
+
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if(e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)){
+					BareBonesBrowserLaunch.openURL(e.getURL().toString());
+				}
+			}
+		});
+
+		scrollPane = new JScrollPane();
+		scrollPane.setViewportView(commentPane);
+
+
+		bottomSplit = new JSplitPane();
+		bottomSplit.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+		bottomSplit.setResizeWeight(1.0);
+
+		submit = new JButton("Submit");
+		submit.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				// do nothing if there is no content
+				if(commentEditor.getText().length()==0) return;
+				
+				commentEditor.setEditable(false);
+				submit.setText("...");
+				submit.setEnabled(false);
+
+				boolean result = NetPool.getPool().getSecureConnection().addComment(
+						new Comment(0,
+								currentDesignCommentThread,
+								SettingsPreferences.getUser(),
+								commentEditor.getText(),
+								0),
+								SettingsPreferences.getPass()
+						);
+				
+				// if the comment submission succeeded, we can clear the text editor
+				if(result) commentEditor.setText("");
+				else{
+					// if it didn't, we should flash the error
+				}
+				
+				commentEditor.setEditable(true);
+				submit.setText("Submit");
+				submit.setEnabled(true);
+			}
+		});
+
+		bottomSplit.setRightComponent(submit);
+
+		commentEditor = new JTextArea();
+		commentEditor.setColumns(20);
+		commentEditor.setRows(5);
+
+		editorScroller = new JScrollPane();
+		editorScroller.setViewportView(commentEditor);
+
+		bottomSplit.setLeftComponent(editorScroller);
+
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
-		
-		JPanel commentEntryPanel = new JPanel();
-		
-		commentTextEntry = new JTextArea(3, 30);
-		commentTextEntry.setLayout(new BorderLayout());
-		commentTextEntry.setEditable(true);
-		commentTextEntry.setText("Enter Comment Here");
-		commentEntryPanel.add(new JScrollPane(commentTextEntry), BorderLayout.CENTER);
-		
-		submitComment = new JButton("Submit");
-		commentEntryPanel.add(submitComment, BorderLayout.LINE_END);
-		
-		getContentPane().add(commentEntryPanel, BorderLayout.PAGE_END);
-		
-		setSize(640, 480);
-		
+		getContentPane().add(bottomSplit, BorderLayout.SOUTH);
+
+
 		ShutdownManager.shutdownProcedures.add(new IShutdownProcedure() {
-			
+
 			@Override
 			public boolean runProcedure() {
 				setVisible(false);
 				return true;
 			}
 		});
-		
+
 		// set up the comment maintenance
 		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
-			
+
 			@Override
 			public void selectionCleared(Design previousDesign) {
-				// TODO Auto-generated method stub
-				
+				commentPane.removeAll();
 			}
-			
+
 			@Override
 			public void designSelected(Spatial spatial, Design design) {
-				commentPanel.removeAll();
-				
+
 				List<Comment> comments = NetPool.getPool().getConnection().getComments(design.getID());
-				
+
+				StringBuilder sb = new StringBuilder();
+
 				for(Comment comment : comments){
-					JPanel postedComment = new JPanel();
-					postedComment.setLayout(new BorderLayout(5, 5));
-					
-					JLabel label = new JLabel(comment.getUser()+"\n"+comment.getDate());
-					postedComment.add(label, BorderLayout.LINE_START);
-					
-					JLabel commentText = new JLabel();
-					commentText.setText(htmlStart+300+htmlAfterPixels+comment.getComment()+htmlEnd);
-					postedComment.add(commentText, BorderLayout.CENTER);
-					
-					commentPanel.add(postedComment);
-					commentPanel.add(new JSeparator(JSeparator.HORIZONTAL));
+					sb.append("<b><a href=http://betaville.net/profile.php?uName="+comment.getUser()+"\">"+comment.getUser()+"</a> ("+comment.getDate()+")</b> - ");
+					sb.append(comment.getComment());
+					sb.append("<br>");
 				}
-				
-				//pack();
+
+				commentPane.setText(sb.toString());
 				validate();
 			}
 		});
