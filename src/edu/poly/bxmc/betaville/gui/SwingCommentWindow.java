@@ -36,7 +36,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -67,7 +66,7 @@ public class SwingCommentWindow extends JFrame {
 	private JSplitPane bottomSplit;
 	private JButton submit;
 	private JScrollPane editorScroller;
-	private JTextArea commentEditor;
+	private JPopupTextArea commentEditor;
 
 
 
@@ -138,7 +137,7 @@ public class SwingCommentWindow extends JFrame {
 
 		bottomSplit.setRightComponent(submit);
 
-		commentEditor = new JTextArea();
+		commentEditor = new JPopupTextArea();
 		commentEditor.setLineWrap(true);
 		//commentEditor.setColumns(20);
 		commentEditor.setRows(3);
