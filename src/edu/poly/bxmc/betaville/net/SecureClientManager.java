@@ -542,7 +542,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	public boolean addComment(Comment comment, String pass){
 		busy.getAndSet(true);
 		try {
-			logger.info("Inserting a comment for about design " + comment.getDesignID());
+			logger.info("Inserting a comment for design " + comment.getDesignID());
 			output.writeObject(new Object[]{"comment", "add", comment, pass});
 			boolean response = Boolean.parseBoolean((String)readResponse());
 			System.out.println("received net response");
