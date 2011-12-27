@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +39,8 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -48,6 +51,7 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.ShutdownManager.IShutdownProcedure;
+import edu.poly.bxmc.betaville.jme.fenggui.CommentWindow;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.model.Comment;
 import edu.poly.bxmc.betaville.model.Design;
@@ -76,7 +80,7 @@ public class SwingCommentWindow extends JFrame {
 	 * @throws HeadlessException
 	 */
 	public SwingCommentWindow() throws HeadlessException {
-
+		setTitle("Discussion");
 		getContentPane().setLayout(new BorderLayout());
 
 		commentPane = new JEditorPane();
@@ -137,8 +141,9 @@ public class SwingCommentWindow extends JFrame {
 		bottomSplit.setRightComponent(submit);
 
 		commentEditor = new JTextArea();
-		commentEditor.setColumns(20);
-		commentEditor.setRows(5);
+		commentEditor.setLineWrap(true);
+		//commentEditor.setColumns(20);
+		commentEditor.setRows(3);
 
 		editorScroller = new JScrollPane();
 		editorScroller.setViewportView(commentEditor);
@@ -164,6 +169,7 @@ public class SwingCommentWindow extends JFrame {
 			@Override
 			public void selectionCleared(Design previousDesign) {
 				commentPane.removeAll();
+				currentDesignCommentThread = -1;
 			}
 
 			@Override
@@ -173,14 +179,20 @@ public class SwingCommentWindow extends JFrame {
 
 				StringBuilder sb = new StringBuilder();
 
-				for(Comment comment : comments){
+				for(int i=0; i<comments.size(); i++){
+					Comment comment = comments.get(i);
 					sb.append("<b><a href=http://betaville.net/profile.php?uName="+comment.getUser()+"\">"+comment.getUser()+"</a> ("+comment.getDate()+")</b> - ");
 					sb.append(comment.getComment());
 					sb.append("<br>");
+					
+					// add a horizontal rule if this is not the last comment
+					if(i<comments.size()-1) sb.append("<hr>");
 				}
 
 				commentPane.setText(sb.toString());
 				validate();
+				
+				currentDesignCommentThread = design.getID();
 			}
 		});
 	}
