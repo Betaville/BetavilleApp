@@ -122,6 +122,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new WireframePanelAction());
 		addAction(new FocusOnSelectedAction());
 		addAction(new BulkImportAction());
+		//addAction(new VertexEditorPanelAction());
 		//addAction(new BookmarkPanel());
 		
 		addAction(new OnOffPanelAction("Upload Thumbnail", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailUploadWindow.class, false));

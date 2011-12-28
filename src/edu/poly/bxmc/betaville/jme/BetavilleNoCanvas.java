@@ -46,7 +46,6 @@ import com.jme.system.DisplaySystem;
 import com.jmex.game.state.GameStateManager;
 import com.jmex.game.state.load.LoadingGameState;
 
-import edu.poly.bxmc.betaville.CityManager;
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.SceneScape;
@@ -76,7 +75,6 @@ import edu.poly.bxmc.betaville.net.NetModelLoader.LookupRoutine;
 import edu.poly.bxmc.betaville.obstructions.ObstructionManager;
 import edu.poly.bxmc.betaville.proposals.LiveProposalManager;
 import edu.poly.bxmc.betaville.terrain.TerrainLoader;
-import edu.poly.bxmc.betaville.updater.BaseUpdater;
 import edu.poly.bxmc.betaville.updater.BetavilleTask;
 import edu.poly.bxmc.betaville.updater.BetavilleUpdater;
 import edu.poly.bxmc.betaville.updater.KioskUpdater;
@@ -429,7 +427,7 @@ public class BetavilleNoCanvas {
 		soundGameState.setActive(true);
 		// if(SettingsPreferences.isWaterOn()) waterGameState.setActive(true);
 		guiGameState.setActive(true);
-
+		
 		// now that the application is loaded, we can run the completion
 		// listeners
 		for (IAppInitializationCompleteListener listener : listeners) {
