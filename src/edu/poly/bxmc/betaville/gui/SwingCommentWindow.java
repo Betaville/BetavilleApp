@@ -91,9 +91,7 @@ public class SwingCommentWindow extends JFrame {
 			}
 		});
 
-		scrollPane = new JScrollPane();
-		scrollPane.setViewportView(commentPane);
-
+		scrollPane = new JScrollPane(commentPane);
 
 		bottomSplit = new JSplitPane();
 		bottomSplit.setOrientation(JSplitPane.HORIZONTAL_SPLIT);

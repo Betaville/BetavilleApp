@@ -191,4 +191,18 @@ public class NetPool extends AbstractUpdater{
 	public boolean isInUpdate() {
 		return isInUpdate;
 	}
+
+	/**
+	 * @return the autoCleanupEnabled
+	 */
+	public boolean isAutoCleanupEnabled() {
+		return autoCleanupEnabled;
+	}
+
+	/**
+	 * @param autoCleanupEnabled the autoCleanupEnabled to set
+	 */
+	public void setAutoCleanupEnabled(boolean autoCleanupEnabled) {
+		this.autoCleanupEnabled = autoCleanupEnabled;
+	}
 }
