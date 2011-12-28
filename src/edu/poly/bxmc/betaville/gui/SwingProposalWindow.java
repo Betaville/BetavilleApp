@@ -116,6 +116,7 @@ public class SwingProposalWindow extends JFrame{
 		infoPane = new JEditorPane();
 		infoPane.setEditable(false);
 		infoPane.setContentType("text/html");
+		populateInfoPane(null);
 
 		infoPane.addHyperlinkListener(new HyperlinkListener() {
 
@@ -139,7 +140,6 @@ public class SwingProposalWindow extends JFrame{
 		
 		ILocation location = JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation());
 		List<Design> proposalDesigns = NetPool.getPool().getConnection().findAllProposalsNearLocation(location.getUTM(), 30000);
-		System.out.println("proposals retrieved");
 		for(Design proposalDesign : proposalDesigns){
 			DesignNode proposalRootNode = new DesignNode(proposalDesign);
 
@@ -147,7 +147,6 @@ public class SwingProposalWindow extends JFrame{
 			if(versionsOfProposal!=null){
 				for(int thisIsConvoluted : versionsOfProposal){
 					Design version = NetPool.getPool().getConnection().findDesignByID(thisIsConvoluted);
-					System.out.println("version retrieved");
 					if(version!=null){
 						proposalRootNode.add(new DesignNode(version));
 					}
@@ -164,15 +163,14 @@ public class SwingProposalWindow extends JFrame{
 		private static final long serialVersionUID = 1L;
 
 		private Design design;
-		private String name = "DEFAULT NAME";
 
 		public DesignNode(Design design){
 			super(design.getName());
-			name = design.getName();
+			this.design=design;
 		}
 
 		public String toString(){
-			return name;
+			return design.getName();
 		}
 	}
 
@@ -180,11 +178,28 @@ public class SwingProposalWindow extends JFrame{
 
 		@Override
 		public void valueChanged(TreeSelectionEvent e) {
-			System.out.println("hello");
 			if(proposalTree.getLastSelectedPathComponent() instanceof DesignNode){
-				System.out.println("Makes sense.");
+				Design design = ((DesignNode)proposalTree.getLastSelectedPathComponent()).design;
+				populateInfoPane(design);
 			}
+			else{
+				populateInfoPane(null);
+			}
+			
+			validate();
 		}
+	}
+	
+	private void populateInfoPane(Design design){
+		StringBuilder sb = new StringBuilder();
+		sb.append("<style> type=\"text/css\" font-family: verdana, sans-serif;</style>");
+		sb.append("<strong>Name:</strong> ");
+		sb.append(design==null?"":design.getName());
+		sb.append("<br><strong>User:</strong> ");
+		sb.append(design==null?"":design.getUser());
+		sb.append("<br><strong>Description: </strong>");
+		sb.append(design==null?"":design.getDescription());
+		infoPane.setText(sb.toString());
 	}
 
 }
