@@ -75,14 +75,14 @@ public class HTTPDownloader {
 			totalRead+=n;
 			if(totalRead-lastUpdate>updateInterval){
 				// update the progress callback
-				progressCallback.update(totalRead, size);
+				if(progressCallback!=null) progressCallback.update(totalRead, size);
 				lastUpdate=totalRead;
 			}
 			outputStream.write(readBuffer, 0, n);
 		}
 		outputStream.close();
 		
-		downloadCompleteCallback.downloadComplete(url, fileSaveLocation, (System.currentTimeMillis()-startTime));
+		if(downloadCompleteCallback!=null) downloadCompleteCallback.downloadComplete(url, fileSaveLocation, (System.currentTimeMillis()-startTime));
 	}
 	
 	
