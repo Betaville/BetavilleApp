@@ -22,15 +22,17 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.loaders;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -82,28 +84,27 @@ public class ModelLoader {
 			replacement=true;
 			this.originalFile=originalFile;
 		}
-		
+
 		String fileExtension = design.getFilepath().substring(design.getFilepath().lastIndexOf(".")+1, design.getFilepath().length());
 		if(isInCache){
 			modelURL = new URL(SettingsPreferences.getDataFolder()+design.getFilepath());
 		}
 		else modelURL = new URL(design.getFilepath());
-		
-		
+
+
 		ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_MODEL,
 				new SimpleResourceLocator(modelURL));
 		if(design.isTextured()){
 			ResourceLocatorTool.addResourceLocator(ResourceLocatorTool.TYPE_TEXTURE,
 					new SimpleResourceLocator(new URL(modelURL.toString().substring(0, modelURL.toString().lastIndexOf("/")+1))));
 		}
-		
-		
+
+
 		// determine file type
 		if(fileExtension.matches("[Dd][Aa][Ee]")){
 			loadDAE(design);
 		}
 		else if(fileExtension.matches("[Oo][Bb][Jj]")){
-			
 			loadOBJ(design);
 		}
 		// TODO: For OGRE we need to check for a two part file extension (change to regex for the end of the file string?)
@@ -119,14 +120,14 @@ public class ModelLoader {
 			loadJME(new File(modelURL.toURI()));
 		}
 	}
-	
+
 	private void loadDAE(ModeledDesign design) throws IOException, URISyntaxException{
 		ThreadSafeColladaImporter importer = new ThreadSafeColladaImporter(design.getName());
 		importer.load(modelURL.openStream());
 		model = importer.getModel();
-		
+
 		//GeometryUtilities.printInformation(logger, model, true, true, true, true);
-		
+
 		// up axis - kind of tough to do correctly without zeroed transforms (though apparently not all exporters are compliant in writing this out correctly)
 		if(importer.getUpAxis()!=null){
 			String up = importer.getUpAxis().toLowerCase();
@@ -158,18 +159,19 @@ public class ModelLoader {
 		}
 		finishSetup(design);
 	}
-	
+
 	private void loadOGRE(Design design) throws IOException, ModelFormatException{
 		OgreLoader ol = new OgreLoader();
 		model = (Node)ol.loadModel(modelURL, design.getName()+"$local");
 		finishSetup(design);
 	}
-	
+
 	private void loadOBJ(Design design){
 		ObjToJme converter = new ObjToJme();
+
 		// Point the converter to where it will find the .mtl file
 		converter.setProperty("mtllib", modelURL);
-		
+
 		ByteArrayOutputStream BO = new ByteArrayOutputStream();
 		try {
 			// Use the format converter to convert .obj to .jme
@@ -190,10 +192,10 @@ public class ModelLoader {
 		}
 		catch(Exception e){ e.printStackTrace(); }
 	}
-	
+
 	private void finishSetup(Design design){
 		GeometryUtilities.setMaterialFaceApplication(model, true, true);
-		
+
 		//GeometryUtilities.printModelOrigins(model);
 		if(!((ModeledDesign)design).isTextured()){
 			model.clearRenderState(StateType.Texture);
@@ -235,7 +237,7 @@ public class ModelLoader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void loadJME(File file) throws IOException{
@@ -252,12 +254,12 @@ public class ModelLoader {
 					model.setLocalScale(1f/SceneScape.SceneScale);
 				}
 			}
-			*/
+			 */
 			if(!SettingsPreferences.isTextured()) GeometryUtilities.removeRenderState(model, StateType.Texture);
 			GeometryUtilities.setMaterialFaceApplication(model, true, true);
 		}
 	}
-	
+
 	public Node getModel(){
 		return model;
 	}
