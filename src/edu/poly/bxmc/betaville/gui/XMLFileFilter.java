@@ -55,7 +55,7 @@ public class XMLFileFilter extends FileExtensionFileFilter {
 	 */
 	@Override
 	public boolean accept(File f) {
-		if(f.toString().endsWith(".xml")||f.isDirectory()) return true;
+		if(f.toString().toLowerCase().endsWith(".xml")||f.isDirectory()) return true;
 		else return false;
 	}
 

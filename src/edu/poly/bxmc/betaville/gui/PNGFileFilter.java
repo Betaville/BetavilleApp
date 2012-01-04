@@ -55,7 +55,7 @@ public class PNGFileFilter extends FileExtensionFileFilter {
 	 */
 	@Override
 	public boolean accept(File f) {
-		if(f.toString().endsWith(".png")||f.isDirectory()) return true;
+		if(f.toString().toLowerCase().endsWith(".png")||f.isDirectory()) return true;
 		else return false;
 	}
 

@@ -55,7 +55,7 @@ public class JARFileFilter extends FileExtensionFileFilter {
 	 */
 	@Override
 	public boolean accept(File f) {
-		if(f.toString().endsWith(".jar")||f.isDirectory()) return true;
+		if(f.toString().toLowerCase().endsWith(".jar")||f.isDirectory()) return true;
 		else return false;
 	}
 
