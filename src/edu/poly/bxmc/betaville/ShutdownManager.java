@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
-import edu.poly.bxmc.betaville.jme.loaders.util.LocalExporter;
-import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.NetPool;
 
 /**
@@ -48,7 +46,6 @@ public class ShutdownManager {
 		BetavilleNoCanvas.getUpdater().shutdown();
 		logger.info("Doing Safe Shutdown");
 		NetPool.getPool().getSecureConnection().endSession(SettingsPreferences.getSessionToken());
-		saveLocalDesigns();
 		logger.info("Shutting down network connections");
 		NetPool.getPool().cleanAll();
 		logger.info("Cleaning up Main Thread Pool");
@@ -56,14 +53,6 @@ public class ShutdownManager {
 		logger.info("Cleaning up GUI Thread Pool");
 		SettingsPreferences.getGUIThreadPool().shutdownNow();
 		System.exit(0);
-	}
-	
-	public static void saveLocalDesigns(){
-		for(Design d : SceneScape.getCity().getDesigns()){
-			if(d.getFullIdentifier().endsWith("$local")){
-				SettingsPreferences.getThreadPool().submit(new LocalExporter(d));
-			}
-		}
 	}
 	
 	/**

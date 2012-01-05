@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.FloatBuffer;
@@ -373,9 +374,9 @@ public class GeometryUtilities {
 	 * @param textureFiles - used for recursion; pass in null
 	 * @return The locations of all located textures
 	 */
-	public static List<File> setupTextureStorage(Spatial s, List<File> textureFiles){
+	public static List<URL> setupTextureStorage(Spatial s, List<URL> textureFiles){
 		if(textureFiles==null){
-			textureFiles = new ArrayList<File>();
+			textureFiles = new ArrayList<URL>();
 		}
 
 		if(s instanceof Node){
@@ -385,7 +386,11 @@ public class GeometryUtilities {
 				for(int i=0; i<ts.getNumberOfSetTextures(); i++){
 					Texture tex = ts.getTexture(i);
 					if(tex!=null){
-						textureFiles.add(new File(tex.getImageLocation()));
+						try {
+							textureFiles.add(new URL(tex.getImageLocation()));
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						}
 						tex.setStoreTexture(true);
 					}
 				}
@@ -404,7 +409,11 @@ public class GeometryUtilities {
 				for(int i=0; i<ts.getNumberOfSetTextures(); i++){
 					Texture tex = ts.getTexture(i);
 					if(tex!=null){
-						textureFiles.add(new File(tex.getImageLocation()));
+						try {
+							textureFiles.add(new URL(tex.getImageLocation()));
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						}
 						tex.setStoreTexture(true);
 					}
 				}

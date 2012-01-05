@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,12 @@
  */
 package edu.poly.bxmc.betaville.jme.loaders;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -59,6 +57,10 @@ import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.Rotator;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.ModeledDesign;
+import edu.poly.bxmc.betaville.net.HTTPDownloader;
+import edu.poly.bxmc.betaville.util.Crypto;
+import edu.poly.bxmc.betaville.util.FileUtils;
+import edu.poly.bxmc.betaville.util.ZipUtils;
 
 /**
  * @author Skye Book
@@ -193,19 +195,61 @@ public class ModelLoader {
 		catch(Exception e){ e.printStackTrace(); }
 	}
 
+	private void packSourceFiles(List<URL> textureFiles){
+		String id = Crypto.createUniqueIDFromTime(System.currentTimeMillis());
+		try {
+			// this is the folder where we will place the assets to be copied
+			File packFolder = new File(new URL(SettingsPreferences.getDataFolder()+"tmp/"+id+"/").toURI());
+			packFolder.mkdirs();
+			
+			logger.info("Source files will be packed into " + packFolder.toString());
+
+			File modelSourceFile = new File(modelURL.toURI());
+			FileUtils.copyFile(modelSourceFile, new File(packFolder.toString()+"/"+modelSourceFile.getName()));
+
+			if(textureFiles!=null){
+				for(URL textureFile : textureFiles){
+					File file = new File(textureFile.toURI());
+					HTTPDownloader.download(textureFile, new File(packFolder.toString()+"/"+file.getName()), null, null);
+					//FileUtils.copyFile(textureFile, new File(packFolder.toString()+"/"+textureFile.getName()));
+				}
+			}
+			
+			logger.info("Zipping files");
+
+			// files are copied, now pack folder
+			ZipUtils.zip(packFolder, new File(packFolder.toString()+".zip"));
+			
+			logger.info("Files zipped");
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// file copy failed!
+			e.printStackTrace();
+		}
+	}
+
 	private void finishSetup(Design design){
 		GeometryUtilities.setMaterialFaceApplication(model, true, true);
+
+		List<URL> textureFiles = null;
 
 		//GeometryUtilities.printModelOrigins(model);
 		if(!((ModeledDesign)design).isTextured()){
 			model.clearRenderState(StateType.Texture);
 		}
 		else{
-			List<File> textureFiles = GeometryUtilities.setupTextureStorage(model, null);
-			for(File textureFile : textureFiles){
-				logger.info("TEXTURE: " + textureFile.toString());
+			// hold onto the texture files so they can be zipped with the source model later
+			textureFiles = GeometryUtilities.setupTextureStorage(model, null);
+			for(URL textureFile : textureFiles){
+				logger.debug("SOURCE TEXTURE: " + textureFile.toString());
 			}
 		}
+
+		packSourceFiles(textureFiles);
+
 		File fileout;
 		try {
 			if(replacement){
