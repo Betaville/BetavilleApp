@@ -80,6 +80,7 @@ public class HTTPDownloader {
 			}
 			outputStream.write(readBuffer, 0, n);
 		}
+		is.close();
 		outputStream.close();
 		
 		if(downloadCompleteCallback!=null) downloadCompleteCallback.downloadComplete(url, fileSaveLocation, (System.currentTimeMillis()-startTime));
