@@ -199,15 +199,17 @@ public class SwingLoginWindow extends JFrame{
 	}
 
 	private boolean authenticate(){
-		String pass="";
+		StringBuilder passBuilder=new StringBuilder();
 		for(int i=0; i<passField.getPassword().length; i++){
-			pass+=passField.getPassword()[i];
+			passBuilder.append(passField.getPassword()[i]);
 			passField.getPassword()[i]=0;
 		}
 
 		if(manager==null){
 			manager = NetPool.getPool().getSecureConnection();
 		}
+		
+		String pass = passBuilder.toString();
 
 		boolean response = manager.startSession(userField.getText(), pass);
 		if(response){
@@ -221,6 +223,7 @@ public class SwingLoginWindow extends JFrame{
 			flashDialog("Please try again!", false);
 			passField.setText("");
 		}
+		passBuilder = null;
 		pass = null;
 		return response;
 	}

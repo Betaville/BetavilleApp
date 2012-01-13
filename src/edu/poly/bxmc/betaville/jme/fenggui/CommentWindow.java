@@ -215,7 +215,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 		//sc.setInnerWidget(intermediary);
 		sc.layout();
 		
-		String content = "";
+		StringBuilder content = new StringBuilder();
 		
 		// create new content
 		logger.info("getting comments for " + currentDesign);
@@ -229,10 +229,9 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 		for(int i=0; i<comments.size(); i++){
 			logger.info("doing comment " + i);
 			Comment c = comments.get(i);
-			//commentText.addContentAtEnd("\n"+c.getUser()+" ("+c.getDate()+")\n"+c.getComment()+"\n");
-			content+=("\n"+c.getUser()+" ("+c.getDate()+")\n"+c.getComment()+"\n");
+			content.append("\n"+c.getUser()+" ("+c.getDate()+")\n"+c.getComment()+"\n");
 		}
-		commentText.setText(content);
+		commentText.setText(content.toString());
 		//sc.setInnerWidget(commentText);
 		sc.layout();
 		if(designID==currentDesign) sc.getVerticalScrollBar().getSlider().setValue(rememberedPosition);
