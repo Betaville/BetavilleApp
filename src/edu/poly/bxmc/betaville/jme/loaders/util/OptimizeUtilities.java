@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ public class OptimizeUtilities {
 			}
 			else{
 				for(Spatial child : ((Node)s).getChildren()){
-					return minimizeHierarchy(s);
+					return minimizeHierarchy(child);
 				}
 			}
 		}
