@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,6 @@
 package edu.poly.bxmc.betaville.jme.gamestates;
 
 import java.awt.Font;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,7 +38,6 @@ import java.util.concurrent.ExecutionException;
 import org.apache.log4j.Logger;
 
 import com.jme.bounding.BoundingBox;
-import com.jme.image.Image;
 import com.jme.image.Texture;
 import com.jme.image.Texture.MagnificationFilter;
 import com.jme.image.Texture.MinificationFilter;
@@ -63,14 +61,11 @@ import com.jme.scene.state.CullState;
 import com.jme.scene.state.FogState;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.MaterialState;
-import com.jme.scene.state.TextureState;
 import com.jme.scene.state.ZBufferState;
-import com.jme.scene.state.RenderState.StateType;
 import com.jme.system.DisplaySystem;
 import com.jme.util.GameTaskQueueManager;
 import com.jme.util.TextureManager;
 import com.jmex.effects.LensFlare;
-import com.jmex.effects.LensFlareFactory;
 import com.jmex.font3d.Font3D;
 import com.jmex.font3d.Text3D;
 import com.jmex.game.state.BasicGameState;
@@ -86,8 +81,8 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.aesthetics.ColorValues;
 import edu.poly.bxmc.betaville.jme.controllers.SceneController;
-import edu.poly.bxmc.betaville.jme.foliage.Foliage;
 import edu.poly.bxmc.betaville.jme.loaders.ModelLoader;
+import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
 import edu.poly.bxmc.betaville.jme.map.CardinalDirections;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
@@ -136,7 +131,7 @@ public class SceneGameState extends BasicGameState {
 	private final static int MOVE_MODE_SPEED_JET_MAX = 2000;
 
 	private static double MOVE_ACCELERATION_TIME = 5000.0;
-	
+
 	public static final float NEAR_FRUSTUM = Scale.fromMeter(1f);
 	public static final float FAR_FRUSTUM = (int) Scale.fromMeter(35000);
 
@@ -159,7 +154,6 @@ public class SceneGameState extends BasicGameState {
 	private Renderer renderer = DisplaySystem.getDisplaySystem().getRenderer();
 
 	private LightState lightState;
-	private LensFlare lensFlare;
 	private Node designNode;
 	private Node terrainNode;
 	private Node groundBoxNode;
@@ -174,10 +168,8 @@ public class SceneGameState extends BasicGameState {
 	private LoadingGameState transitionGameState;
 	/** Controls movement of the camera within the scene*/
 	private SceneController sceneController;
-	
-	private ILocation startingLocation;
 
-	private Foliage foliage;
+	private ILocation startingLocation;
 
 	private Font3D verdanaFont;
 
@@ -200,7 +192,7 @@ public class SceneGameState extends BasicGameState {
 	private float lastAltitude = 100;
 	private int lastAltitudeSpeedLevel = MOVE_MODE_ALTITUDE_BIRD_MAX;
 	private boolean constantSpeed = false;
-	
+
 	private boolean framerateOptimizationEnabled = false;
 
 	/*
@@ -217,9 +209,9 @@ public class SceneGameState extends BasicGameState {
 		else{
 			this.startingLocation=startingLocation;
 		}
-		
+
 		JME2MapManager.instance.adjustOffsets(this.startingLocation);
-		
+
 		modules = new ArrayList<Module>();
 
 		ExtraPluginManager.registerExtraPlugin("GOOGLEEARTH", new GoogleEarthPlugin());
@@ -297,11 +289,8 @@ public class SceneGameState extends BasicGameState {
 
 		// build lighting
 		buildLights();
-		//setupLensFlare();
 
 		transitionGameState.setProgress(0.10f, "Loading Terrain");
-
-		//loadFoliage();
 
 		//designNode.lockBounds();
 		//designNode.lockTransforms();
@@ -383,12 +372,6 @@ public class SceneGameState extends BasicGameState {
 		singleQuad.updateRenderState();
 	}
 
-	private void loadFoliage(){
-		foliage = new Foliage();
-		foliage.addObjectToCache(new File("data/foliage/ONE_TREE_Deciduous.dae"), "tree");
-		foliage.addObjectToCache(new File("data/foliage/bush.dae"), "bush");
-	}
-
 	private void buildLights(){
 		// Set up a directional light
 		DirectionalLight directionalLight = new DirectionalLight();
@@ -406,28 +389,6 @@ public class SceneGameState extends BasicGameState {
 		fillLight.setShadowCaster(false);
 		fillLight.setEnabled(true);
 
-		/*
-		SpotLight sl = new SpotLight();
-		sl.setLocation(MapManager.utmToBetaville(new UTMCoordinate(2500, DecimalDegreeConverter.dmsToDD(40, 42, 4.07),
-				DecimalDegreeConverter.dmsToDD(-74, 0, 31.28))));
-		Vector3f direction = CardinalDirections.NW;
-		direction.setY(-.75f);
-		sl.setDirection(direction);
-		sl.setEnabled(true);
-		sl.setShadowCaster(true);
-		sl.setDiffuse(diffuseLightColor);
-		sl.setAmbient(ambientLightColor);
-		sl.setAngle(90);
-
-		PointLight pl = new PointLight();
-		pl.setEnabled(true);
-		pl.setDiffuse(new ColorRGBA(.7f, .7f, .7f, 1.0f));
-		pl.setAmbient(new ColorRGBA(.25f, .25f, .25f, .25f));
-		pl.setLocation(MapManager.utmToBetaville(new UTMCoordinate(2500, DecimalDegreeConverter.dmsToDD(40, 42, 4.07),
-				DecimalDegreeConverter.dmsToDD(-74, 0, 31.28))));
-		pl.setShadowCaster(true);
-		 */
-
 		// Attach the light to a lightState and the lightState to rootNode.
 		lightState = DisplaySystem.getDisplaySystem().getRenderer().createLightState();
 		lightState.detachAll();
@@ -436,21 +397,9 @@ public class SceneGameState extends BasicGameState {
 		lightState.attach(fillLight);
 		//lightState.attach(sl);
 
-		/*
-		designNode.setRenderState(lightState);
-		designNode.updateRenderState();
-
-		groundBoxNode.setRenderState(lightState);
-		groundBoxNode.updateRenderState();
-
-		terrainNode.setRenderState(lightState);
-		terrainNode.updateRenderState();
-		 */
-
-
 		rootNode.setRenderState(lightState);
 		rootNode.updateRenderState();
-		
+
 		/*
 		try {
 			SunSyncModule lsm = new SunSyncModule("LightSync");
@@ -461,35 +410,7 @@ public class SceneGameState extends BasicGameState {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
-	}
-
-	private void setupLensFlare(){
-		TextureState[] tex = new TextureState[4];
-		tex[0] = renderer.createTextureState();
-		tex[0].setTexture(TextureManager.loadTexture(ResourceLoader.loadResource("/data/sky/flare1.png"),
-				Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear, Image.Format.RGBA8,
-				0.0f, true));
-		tex[0].setEnabled(true);
-
-		tex[1] = renderer.createTextureState();
-		tex[1].setTexture(TextureManager.loadTexture(ResourceLoader.loadResource("/data/sky/flare2.png"),
-				Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear));
-		tex[1].setEnabled(true);
-
-		tex[2] = renderer.createTextureState();
-		tex[2].setTexture(TextureManager.loadTexture(ResourceLoader.loadResource("/data/sky/flare3.png"),
-				Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear));
-		tex[2].setEnabled(true);
-
-		tex[3] = renderer.createTextureState();
-		tex[3].setTexture(TextureManager.loadTexture(ResourceLoader.loadResource("/data/sky/flare4.png"),
-				Texture.MinificationFilter.Trilinear, Texture.MagnificationFilter.Bilinear));
-		tex[3].setEnabled(true);
-
-		lensFlare = LensFlareFactory.createBasicLensFlare("flare", tex);
-		lensFlare.setRootNode(designNode);
-		lensFlare.setIntensity(1);
+		 */
 	}
 
 	/**
@@ -530,7 +451,7 @@ public class SceneGameState extends BasicGameState {
 		//skybox.setCullHint(Spatial.CullHint.Dynamic);
 		skybox.setTextureCombineMode(TextureCombineMode.Replace);
 		skybox.updateRenderState();
-		
+
 		//skybox.lockBounds();
 		//skybox.lockMeshes();
 
@@ -610,24 +531,11 @@ public class SceneGameState extends BasicGameState {
 	}
 
 	public void applyColor(Spatial spatial, ColorRGBA color){
-		colorStripper(spatial);
+		GeometryUtilities.completeColorStripper(spatial);
 		MaterialState targetMaterial = DisplaySystem.getDisplaySystem().getRenderer().createMaterialState();
 		targetMaterial.setDiffuse(color);
 		spatial.setRenderState(targetMaterial);
 		spatial.updateRenderState();
-	}
-
-	private void colorStripper(Spatial spatial){
-		spatial.clearRenderState(StateType.Material);
-		spatial.clearRenderState(StateType.Texture);
-		spatial.clearRenderState(StateType.Shade);
-		spatial.clearRenderState(StateType.Light);
-		spatial.updateRenderState();
-		if(spatial instanceof Node && ((Node)spatial).getChildren()!= null){
-			for(int i=0; i<((Node)spatial).getChildren().size(); i++){
-				colorStripper(((Node)spatial).getChildren().get(i));
-			}
-		}
 	}
 
 	/**
@@ -791,12 +699,12 @@ public class SceneGameState extends BasicGameState {
 	public Node getDesignNode() {
 		return designNode;
 	}
-	
+
 	public Node getBlockNodeFor(ILocation location){
-		
+
 		return designNode;
 	}
-	
+
 	/**
 	 * @legacy
 	 * @return
@@ -863,20 +771,20 @@ public class SceneGameState extends BasicGameState {
 
 	public void addToFlagNode(Vector3f location, List<Integer> baseIDs){
 		//Pyramid p = new Pyramid("flagPyramid", Scale.fromMeter(5), Scale.fromMeter(5));
-		
+
 		Node thisFlagNode = new Node(""+location.hashCode());
 		thisFlagNode.setLocalTranslation(location);
-		
+
 		SharedMesh p = new SharedMesh(flagPyramid);
 		p.updateRenderState();
 		p.setLocalRotation(Rotator.ROLL180);
-		
+
 		// clear the spatial's name first
 		p.setName("");
 		for(Integer baseID : baseIDs){
 			p.setName(p.getName()+baseID+";");
 		}
-		
+
 		p.setModelBound(new BoundingBox());
 		p.updateModelBound();
 		thisFlagNode.attachChild(p);
@@ -895,7 +803,7 @@ public class SceneGameState extends BasicGameState {
 		proposalText.setName("$text"+baseIDs.get(0));
 		thisFlagNode.attachChild(proposalText);
 		proposalText.updateRenderState();
-		
+
 		thisFlagNode.setLocalRotation(Rotator.angleY(180));
 		flagNode.attachChild(thisFlagNode);
 		flagNode.updateRenderState();
@@ -936,11 +844,11 @@ public class SceneGameState extends BasicGameState {
 			groundBoxNode.detachChild(singleQuad);
 		}
 	}
-	
+
 	public Node getGISNode() {
 		return gisNode;
 	}
-	
+
 	public Node getEditorWidgetNode() {
 		return editorWidgetNode;
 	}
@@ -956,7 +864,7 @@ public class SceneGameState extends BasicGameState {
 				throw new ModuleNameException("Module '" + module.getName() + "' requires a unique name");
 			}
 		}
-		
+
 		if(module instanceof LocalSceneModule) {
 			((LocalSceneModule) module).initialize(designNode);
 		}
@@ -964,7 +872,7 @@ public class SceneGameState extends BasicGameState {
 		else if(module instanceof GlobalSceneModule) {
 			((GlobalSceneModule) module).initialize(rootNode);
 		}
-		
+
 		modules.add(module);
 	}
 
@@ -981,9 +889,9 @@ public class SceneGameState extends BasicGameState {
 	}
 	public void update(float tpf) {
 		super.update(tpf);
-		
+
 		if(framerateOptimizationEnabled) optimizeFramerate(tpf);
-		
+
 		//logger.info(SceneGameState.getInstance().getDesignNode().getChild("$1357"));
 
 		//dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)d).getRotationX(), ((ModeledDesign)d).getRotationY(), ((ModeledDesign)d).getRotationZ()));
@@ -1240,17 +1148,17 @@ public class SceneGameState extends BasicGameState {
 			s.updateRenderState();
 		}
 	}
-	
+
 	private void optimizeFramerate(float tpf){
 		float target = 20f; // fps
-		
+
 		if(1f/tpf > target){
 			// ADD
 			for(Design d : SceneScape.getCity().getDesigns()){
 				if(!d.getClassification().equals(Classification.BASE)) continue;
-				
+
 				boolean isInScene=false;
-				
+
 				if(designNode.getQuantity()==0) continue;
 				for(Spatial design : designNode.getChildren()){
 					if(design.getName().equals(d.getFullIdentifier())){
@@ -1258,7 +1166,7 @@ public class SceneGameState extends BasicGameState {
 						break;
 					}
 				}
-				
+
 				/*
 				// add the object here
 				try {
@@ -1270,21 +1178,21 @@ public class SceneGameState extends BasicGameState {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				*/
+				 */
 			}
 		}
 		else{
 			// REMOVE
 			if(designNode.getQuantity()==0) return;
-			
+
 			SettingsPreferences.getThreadPool().submit(new Runnable() {
-				
+
 				public void run() {
 					Vector3f cameraLoc = camera.getLocation();
 					Spatial farthestObject=null;
 					float distance=0;
 					float tempDistance;
-					
+
 					logger.info("designNode has " + designNode.getQuantity() + " children");
 					// remove buildings
 					for(Spatial design : designNode.getChildren()){
@@ -1294,19 +1202,19 @@ public class SceneGameState extends BasicGameState {
 							distance=tempDistance;
 						}
 					}
-					
+
 					Vector3f locationOfObject = farthestObject.getLocalTranslation();
 					if(camera.contains(farthestObject.getWorldBound()).equals(FrustumIntersect.Inside)){
 						logger.info("is inside");
 						designNode.detachChild(farthestObject);
 					}
-					
+
 					//logger.info("Angle Between camera and object: " + (180f-Math.toDegrees(cameraLoc.normalize().angleBetween(locationOfObject.normalize()))));
 				}
 			});
 		}
 	}
-	
+
 	public void setFramerateOptimizationEnabled(boolean enabled){
 		framerateOptimizationEnabled=enabled;
 	}
@@ -1341,12 +1249,12 @@ public class SceneGameState extends BasicGameState {
 
 		public void deconstruct() {}
 	}
-	
+
 	private class FramerateOptimizer implements Runnable{
 
 		public void run() {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
 }

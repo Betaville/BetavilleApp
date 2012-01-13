@@ -124,7 +124,7 @@ public class GeometryUtilities {
 		spatial.updateRenderState();
 	}
 
-	private static void colorStripper(Spatial spatial){
+	public static void colorStripper(Spatial spatial){
 		// exception for the nodes used for building edit function
 		if(spatial.getName().startsWith("$editorWidget")) {
 			//logger.info(spatial.getName() + " is a editor widget");
@@ -862,6 +862,19 @@ public class GeometryUtilities {
 				buffer.put(i*3, tempX-pointClosestToOrigin.x);
 				buffer.put((i*3)+1, tempY-pointClosestToOrigin.y);
 				buffer.put((i*3)+2, tempZ-pointClosestToOrigin.z);
+			}
+		}
+	}
+
+	public static void completeColorStripper(Spatial spatial){
+		spatial.clearRenderState(StateType.Material);
+		spatial.clearRenderState(StateType.Texture);
+		spatial.clearRenderState(StateType.Shade);
+		spatial.clearRenderState(StateType.Light);
+		spatial.updateRenderState();
+		if(spatial instanceof Node && ((Node)spatial).getChildren()!= null){
+			for(int i=0; i<((Node)spatial).getChildren().size(); i++){
+				colorStripper(((Node)spatial).getChildren().get(i));
 			}
 		}
 	}
