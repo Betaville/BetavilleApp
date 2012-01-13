@@ -25,6 +25,8 @@
 */
 package edu.poly.bxmc.betaville.jme.fenggui.extras;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.fenggui.Label;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
@@ -41,7 +43,7 @@ public class UpdatingLabel extends Label {
 	private int repetitions = 3;
 	private long time = 500;
 
-	private boolean run = false;
+	private AtomicBoolean run = new AtomicBoolean(false);
 
 	public UpdatingLabel() {
 		super();
@@ -66,8 +68,8 @@ public class UpdatingLabel extends Label {
 	 */
 	public synchronized void start(){
 		// only start running the updater if it isn't currently working
-		if(!run){
-			run = true;
+		if(!run.get()){
+			run.set(true);
 			SettingsPreferences.getGUIThreadPool().execute(new Updater());
 		}
 	}
@@ -76,22 +78,22 @@ public class UpdatingLabel extends Label {
 	 * Stops updating this label
 	 */
 	public synchronized void stop(){
-		run = false;
+		run.set(false);
 	}
 
 	private class Updater implements Runnable{
 
 		@Override
 		public void run() {
-			while(run){
+			while(run.get()){
 				for(int i=0; i<repetitions; i++){
 					try {
-						if(!run){
+						if(!run.get()){
 							directlySetText(originalText);
 							return;
 						}
 						Thread.sleep(time);
-						if(!run){
+						if(!run.get()){
 							directlySetText(originalText);
 							return;
 						}
