@@ -48,8 +48,8 @@ public class ProposalUtils {
 		
 		// For as long as the list is valid, continue reading the values
 		while(validateRemovableList(removables)){
-			list.add(Integer.parseInt(removables.substring(0, removables.indexOf(";"))));
-			removables = removables.substring(removables.indexOf(";")+1, removables.length());
+			list.add(Integer.parseInt(new String(removables.substring(0, removables.indexOf(";")))));
+			removables = new String(removables.substring(removables.indexOf(";")+1, removables.length()));
 		}
 		return list;
 	}

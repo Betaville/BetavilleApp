@@ -126,6 +126,6 @@ public class UTMView extends Container implements LocationView{
 	
 	private String toDecimal(short cm){
 		String value = Float.toString(((float)cm)/100f);
-		return value.substring(1, value.length());
+		return new String(value.substring(1, value.length()));
 	}
 }

@@ -642,7 +642,7 @@ public class SceneGameState extends BasicGameState {
 			// create new filename and 
 			String newFilename;
 			if(currentFile.contains("_")){
-				int currentIteration = Integer.parseInt(currentFile.substring(currentFile.lastIndexOf("_")+1, currentFile.lastIndexOf(".")));
+				int currentIteration = Integer.parseInt(new String(currentFile.substring(currentFile.lastIndexOf("_")+1, currentFile.lastIndexOf("."))));
 				newFilename = design.getID()+"_"+(currentIteration+1)+".jme";
 			}
 			else{

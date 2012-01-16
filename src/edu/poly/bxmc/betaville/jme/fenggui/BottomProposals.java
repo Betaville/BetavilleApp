@@ -222,7 +222,7 @@ public class BottomProposals extends Window {
 
 		// If the name is too long, reduce it to something manageable
 		if(textToUse.length()>proposalNameCharLimit){
-			textToUse = textToUse.substring(0, proposalNameCharLimit)+"...";
+			textToUse = new String(textToUse.substring(0, proposalNameCharLimit))+"...";
 		}
 		propLabel.setText(textToUse);
 

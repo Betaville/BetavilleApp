@@ -102,7 +102,7 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 		for(File thumbnail : thumbStorage.listFiles()){
 			// get the design ID
 			thumbnail.getName();
-			int designID = Integer.parseInt(thumbnail.getName().substring(0, thumbnail.getName().indexOf("-")));
+			int designID = Integer.parseInt(new String(thumbnail.getName().substring(0, thumbnail.getName().indexOf("-"))));
 			Design design = SceneScape.getCity().findDesignByID(designID);
 			
 			

@@ -75,7 +75,7 @@ public class UnlockFromTerrain extends PanelAction {
 				//logger.info("Looking for ID from design named: " + SceneScape.getSelectedTerrain().getName());
 				int itemToLock = SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getSelectedTerrain().getName()).getID();
 				String name = SceneScape.getCity().findDesignByID(itemToLock).getName();
-				name = name.substring(0, name.indexOf("$TERRAIN"));
+				name = new String(name.substring(0, name.indexOf("$TERRAIN")));
 				if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, SettingsPreferences.getUser(), SettingsPreferences.getPass(), name)){
 					FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
 				}

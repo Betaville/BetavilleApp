@@ -112,7 +112,7 @@ public class LightTweaker extends Window implements IBetavilleWindow, IPanelOnSc
 					SelectionChangedEvent selectionChangedEvent) {
 				try{
 					logger.info("Selected: " + lightSelector.getSelectedValue());
-				int lightToShow = Integer.parseInt(lightSelector.getSelectedValue().substring(lightSelector.getSelectedValue().length()-1));
+				int lightToShow = Integer.parseInt(new String(lightSelector.getSelectedValue().substring(lightSelector.getSelectedValue().length()-1)));
 				logger.info("Light " + lightToShow + " selected");
 				displayLight(lightToShow);
 				}catch(NumberFormatException e){

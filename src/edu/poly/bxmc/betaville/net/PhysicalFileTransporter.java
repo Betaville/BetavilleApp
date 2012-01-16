@@ -79,7 +79,7 @@ public class PhysicalFileTransporter implements Serializable{
 			return false;
 		} catch (IOException e) {
 			logger.fatal("IOException encountered.  Ensure that the following location is writable" +
-					fileToWrite.toString().substring(0, fileToWrite.toString().lastIndexOf("/")), e);
+					new String(fileToWrite.toString().substring(0, fileToWrite.toString().lastIndexOf("/"))), e);
 			e.printStackTrace();
 			return false;
 		}

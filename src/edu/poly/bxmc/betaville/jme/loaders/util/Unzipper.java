@@ -47,7 +47,7 @@ public class Unzipper {
 	 */
 	public static void unzip(File file, File destinationFolder){
 		try {
-			if(destinationFolder==null) destinationFolder = new File(file.toString().substring(0, file.toString().indexOf(".")));
+			if(destinationFolder==null) destinationFolder = new File(new String(file.toString().substring(0, file.toString().indexOf("."))));
 			System.out.println("folder: " + destinationFolder);
 			if(!destinationFolder.exists()){
 				destinationFolder.mkdirs();
@@ -62,7 +62,7 @@ public class Unzipper {
 
 				// write the files to the disk
 				if(!entry.getName().endsWith(".DS_Store") && !entry.getName().startsWith("__MACOSX")){
-					File localFolder = new File(destinationFolder+"/"+entry.getName().substring(0, entry.getName().indexOf("/")+1));
+					File localFolder = new File(destinationFolder+"/"+new String(entry.getName().substring(0, entry.getName().indexOf("/")+1)));
 					localFolder.mkdirs();
 					FileOutputStream fos = new FileOutputStream(destinationFolder+"/"+entry.getName());
 
@@ -85,10 +85,10 @@ public class Unzipper {
 	private static String getFilename(File file){
 		if(file.toString().contains("\\")){
 			System.out.println("Uses backslashes");
-			return file.toString().substring(file.toString().lastIndexOf("\\")+1, file.toString().length());
+			return new String(file.toString().substring(file.toString().lastIndexOf("\\")+1, file.toString().length()));
 		}
 		else{
-			return file.toString().substring(file.toString().lastIndexOf("/")+1, file.toString().length());
+			return new String(file.toString().substring(file.toString().lastIndexOf("/")+1, file.toString().length()));
 		}
 	}
 }

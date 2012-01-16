@@ -806,10 +806,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 						String pathToDisplay = file.toString();
 						if(pathToDisplay.contains("/")){
-							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("/")+1);
+							pathToDisplay = new String(pathToDisplay.substring(pathToDisplay.lastIndexOf("/")+1));
 						}
 						else if(pathToDisplay.contains("\\")){
-							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("\\")+1);
+							pathToDisplay = new String(pathToDisplay.substring(pathToDisplay.lastIndexOf("\\")+1));
 						}
 						SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
 						logger.info("path "+pathToDisplay);
@@ -823,50 +823,6 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				});
 			}
 		});
-
-		// FENGGUI FILE BROWSER
-		/*
-		browseButton.addButtonPressedListener(new IButtonPressedListener(){
-			public void buttonPressed(Object source, ButtonPressedEvent e){
-				final FileDialogWindow fileDiag = new FileDialogWindow(true, false, false, true);
-				fileDiag.getDialog().setCurrentDirectory(SettingsPreferences.BROWSER_LOCATION);
-
-				// populate the drop down list of locations
-				Iterator<File> it = DriveFinder.getPartitions().iterator();
-				while(it.hasNext()){
-					fileDiag.getDialog().addToRoots(it.next());
-				}
-
-
-				fileDiag.setSize((GUIGameState.getInstance().getDisp().getWidth() / 4)*3, (GUIGameState.getInstance().getDisp().getHeight() / 4)*3);
-				GUIGameState.getInstance().getDisp().addWidget(fileDiag);
-
-				fileDiag.getDialog().addListener(new FileDialogListener(){
-
-					public void cancel() {
-						logger.info("File dialog cancel button hit");
-					}
-
-					public void fileSelected(File file) {
-						String pathToDisplay = file.toString();
-						if(pathToDisplay.contains("/")){
-							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("/")+1);
-						}
-						else if(pathToDisplay.contains("\\")){
-							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("\\")+1);
-						}
-						SettingsPreferences.BROWSER_LOCATION = fileDiag.getDialog().getCurrentDirectory();
-						mediaPath.setText(pathToDisplay);
-						try {
-							mediaURL = file.toURI().toURL();
-						} catch (MalformedURLException e) {
-							logger.warn("Problem occured when selecting from file browser", e);
-						}
-					}
-				});
-			}
-		});
-		 */
 
 		textureSelector = FengGUI.createWidget(ComboBox.class);
 		textureSelector.addItem("Textured");
@@ -1205,7 +1161,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				if(modelIdentifier==null) return;
 				SoundGameState.getInstance().playSound(SOUNDS.CAMERA, SceneGameState.getInstance().getCamera().getLocation());
 				try {
-					imageFile = new File(new URL(SettingsPreferences.getDataFolder()+"local/"+modelIdentifier.substring(0, modelIdentifier.indexOf("$")).replaceAll(" ", "")+".png").toURI());
+					imageFile = new File(new URL(SettingsPreferences.getDataFolder()+"local/"+new String(modelIdentifier.substring(0, modelIdentifier.indexOf("$"))).replaceAll(" ", "")+".png").toURI());
 				} catch (MalformedURLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -2162,7 +2118,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						try {
 							// display three dots and then start the sequence over
 							if(progressLabel.getText().endsWith("...")){
-								progressLabel.setText(progressLabel.getText().substring(0, progressLabel.getText().length()-3));
+								progressLabel.setText(new String(progressLabel.getText().substring(0, progressLabel.getText().length()-3)));
 							}
 							else{
 								progressLabel.setText(progressLabel.getText()+".");

@@ -125,10 +125,10 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 
 						String pathToDisplay = file.toString();
 						if(pathToDisplay.contains("/")){
-							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("/")+1);
+							pathToDisplay = new String(pathToDisplay.substring(pathToDisplay.lastIndexOf("/")+1));
 						}
 						else if(pathToDisplay.contains("\\")){
-							pathToDisplay = pathToDisplay.substring(pathToDisplay.lastIndexOf("\\")+1);
+							pathToDisplay = new String(pathToDisplay.substring(pathToDisplay.lastIndexOf("\\")+1));
 						}
 						SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
 						logger.info("path "+pathToDisplay);

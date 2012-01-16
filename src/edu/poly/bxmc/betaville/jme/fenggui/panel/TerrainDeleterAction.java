@@ -73,7 +73,7 @@ new IButtonPressedListener() {
 				},
 				new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
-						int designID = Integer.parseInt(SceneScape.getSelectedTerrain().getName().substring(1));
+						int designID = Integer.parseInt(new String(SceneScape.getSelectedTerrain().getName().substring(1)));
 						int removed = NetPool.getPool().getSecureConnection().removeDesign(designID, SettingsPreferences.getUser(), SettingsPreferences.getPass());
 						if(removed==0){
 							SceneGameState.getInstance().removeTerrainFromDisplay(designID);

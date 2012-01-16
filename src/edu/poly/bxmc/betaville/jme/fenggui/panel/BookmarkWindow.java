@@ -243,7 +243,7 @@ public class BookmarkWindow extends Window implements IBetavilleWindow {
 		
 		private void setupInfo(String title, String description, long date){
 			String displayableDescription=description;
-			if(displayableDescription.length()>20)displayableDescription=displayableDescription.substring(0, 15)+"...";
+			if(displayableDescription.length()>20)displayableDescription=new String(displayableDescription.substring(0, 15))+"...";
 			info.setText(title+" - "+DateFormat.getDateTimeInstance().format(new Date(date))+" - "+displayableDescription);
 		}
 	}

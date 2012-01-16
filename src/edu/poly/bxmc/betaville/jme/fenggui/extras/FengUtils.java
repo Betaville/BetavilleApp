@@ -77,7 +77,7 @@ public class FengUtils {
 
 			// remove the decimal point and any trailing numbers
 			if(toUse.contains(".")){
-				toUse = toUse.substring(0, toUse.indexOf("."));
+				toUse = new String(toUse.substring(0, toUse.indexOf(".")));
 			}
 			return Integer.parseInt(toUse);
 		}
@@ -168,7 +168,7 @@ public class FengUtils {
 	public static void pasteAction(TextEditor te){
 		try {
 			// remove the inserted v and paste
-			te.setText(te.getText().substring(0, te.getText().length()-1)+Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor));
+			te.setText(new String(te.getText().substring(0, te.getText().length()-1))+Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor));
 		} catch (HeadlessException e) {
 			e.printStackTrace();
 		} catch (UnsupportedFlavorException e) {
