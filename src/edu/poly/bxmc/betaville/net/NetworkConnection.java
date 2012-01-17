@@ -36,6 +36,7 @@ public class NetworkConnection {
 	protected Object readResponse() throws UnexpectedServerResponse, IOException{
 		try {
 			Object obj = input.readObject();
+			//input.reset();
 			
 			// check for errors
 			

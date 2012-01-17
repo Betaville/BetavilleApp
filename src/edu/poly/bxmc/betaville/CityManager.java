@@ -29,8 +29,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
 
+import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
+import edu.poly.bxmc.betaville.flags.FlagProducer;
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
+import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.net.NetModelLoader;
 import edu.poly.bxmc.betaville.net.NetModelLoader.LookupRoutine;
 import edu.poly.bxmc.betaville.updater.BaseUpdater;
@@ -44,7 +47,7 @@ import edu.poly.bxmc.betaville.updater.BetavilleTask;
 public class CityManager {
 	private static final Logger logger = Logger.getLogger(CityManager.class);
 
-	public static void swapCities(final int oldCity, final int newCity){
+	public static void swapCities(final int oldCity, final int newCity, final ILocation cityPoint){
 		// make sure there is no update in process
 		for(BetavilleTask task : BetavilleNoCanvas.getUpdater().getTasks()){
 			if(task.getUpdater() instanceof BaseUpdater){
@@ -62,7 +65,7 @@ public class CityManager {
 			public void run() {
 				deconstructCurrentCity(oldCity);
 				oldCityIsUnloaded.set(true);
-				constructCity(newCity);
+				constructCity(newCity, cityPoint);
 				newCityIsLoaded.set(true);
 			}
 		});
@@ -86,9 +89,14 @@ public class CityManager {
 		SceneGameState.getInstance().getTerrainNode().detachAllChildren();
 	}
 
-	public static void constructCity(int cityID){
+	public static void constructCity(int cityID, ILocation cityPoint){
 		NetModelLoader.loadCityTerrain(cityID);
 		NetModelLoader.loadCity(LookupRoutine.ALL_IN_CITY, NetModelLoader.NO_LIMIT, cityID);
+		
+		// load proposals
+		FlagProducer testFlagger = new FlagProducer(cityPoint.getUTM(), new DesktopFlagPositionStrategy());
+		testFlagger.getProposals(30000);
+		testFlagger.placeFlags();
 	}
 
 }

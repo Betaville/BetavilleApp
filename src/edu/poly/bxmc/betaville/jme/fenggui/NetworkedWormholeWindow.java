@@ -129,7 +129,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 
 				logger.info("Wormhole to "+w.getName()+" selected.");
 				SceneScape.setUTMZone(w.getLocation().getLonZone(), w.getLocation().getLatZone());
-				CityManager.swapCities(SceneScape.getCurrentCityID(), w.getCityID());
+				CityManager.swapCities(SceneScape.getCurrentCityID(), w.getCityID(), w.getLocation());
 
 				// finally we move the camera
 				SceneGameState.getInstance().getCamera().setLocation(JME2MapManager.instance.locationToBetaville(w.getLocation()));
