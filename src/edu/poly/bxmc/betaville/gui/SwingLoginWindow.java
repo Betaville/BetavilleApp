@@ -661,7 +661,9 @@ public class SwingLoginWindow extends JFrame{
 		else{
 			loginInProgress.set(true);
 		}
+		System.out.println("Checking version");
 		int versionCheck = checkVersion();
+		System.out.println("Version check returned " + versionCheck);
 		if(versionCheck==-2){
 			// can't connect
 			loginInProgress.set(false);

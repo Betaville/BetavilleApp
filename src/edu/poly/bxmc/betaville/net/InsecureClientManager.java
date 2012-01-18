@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.ProgressMonitorInputStream;
 
 import org.apache.log4j.Logger;
 
@@ -66,9 +65,11 @@ public class InsecureClientManager extends ClientManager{
 		try {
 			clientSocket = new Socket(serverIP, PORT_SERVER);
 			logger.info("Client application : "+ clientSocket.toString());
-			output = new ObjectOutputStream(clientSocket.getOutputStream());
-			progressMonitor = new ProgressMonitorInputStream(null, "Progress", clientSocket.getInputStream());
-			input = new ObjectInputStream(progressMonitor);
+			progressOutput = new ProgressOutputStream(clientSocket.getOutputStream());
+			output = new ObjectOutputStream(progressOutput);
+			
+			progressInput = new ProgressInputStream(clientSocket.getInputStream());
+			input = new ObjectInputStream(progressInput);
 		} catch (UnknownHostException e) {
 			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
 			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());

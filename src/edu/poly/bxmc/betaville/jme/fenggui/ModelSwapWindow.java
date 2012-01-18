@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -170,7 +170,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 				try {
 					Design thisDesign = SceneScape.getPickedDesign();
 					int designID = thisDesign.getID();
-					SceneGameState.getInstance().replaceModelFile(designID, model, textureOnOff);
+					File packedFile = SceneGameState.getInstance().replaceModelFile(designID, model, textureOnOff);
 
 					File designFile = new File(new URL(SettingsPreferences.getDataFolder()+SceneScape.getCity().findDesignByID(designID).getFilepath()).toURI());
 					FileInputStream fis;
@@ -179,7 +179,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 					fis.read(b);
 					fis.close();
 					PhysicalFileTransporter transport = new PhysicalFileTransporter(b);
-					boolean netResponse = NetPool.getPool().getSecureConnection().changeDesignFile(designID, SettingsPreferences.getUser(), SettingsPreferences.getPass(), transport, textureOnOff);
+					boolean netResponse = NetPool.getPool().getSecureConnection().changeDesignFile(designID, SettingsPreferences.getUser(), SettingsPreferences.getPass(), transport,PhysicalFileTransporter.readFromFileSystem(packedFile), textureOnOff);
 					if(netResponse){
 						logger.info("Design " + designID + " model swap successful");
 						FengUtils.showNewDismissableWindow("Betaville", "Model Swap Successful!", "ok", true);

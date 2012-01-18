@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -102,13 +102,16 @@ public interface ProtectedManager extends UnprotectedManager{
 	 * is improving on.  Using the value 0 here signifies that this is not an
 	 * iteration on a previously existing <code>Design</code>.
 	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
+	 * @param thumbTransporter A <code>PhysicalFileTransporter</code> to carry relevant media data.
+	 * @param sourceMediaTransporter A <code>PhysicalFileTransporter</code> to carry relevant media data.
+	 * @param permission A set of proposal permissions
 	 * @return The ID of the new <code>Design</code>.
 	 * @see Design
 	 * @see PhysicalFileTransporter
 	 */
 	public abstract int addProposal(Design design, String removables,
 			String user, String pass, PhysicalFileTransporter pft,
-			PhysicalFileTransporter thumbTransporter,
+			PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter,
 			ProposalPermission permission);
 
 	/**
@@ -120,13 +123,15 @@ public interface ProtectedManager extends UnprotectedManager{
 	 * is improving on.  Using the value 0 here signifies that this is not an
 	 * iteration on a previously existing <code>Design</code>.
 	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
+	 * @param thumbTransporter A <code>PhysicalFileTransporter</code> to carry relevant media data.
+	 * @param sourceMediaTransporter A <code>PhysicalFileTransporter</code> to carry relevant media data.
 	 * @return The ID of the new <code>Design</code>.
 	 * @see Design
 	 * @see PhysicalFileTransporter
 	 */
 	public abstract int addVersion(Design design, String removables,
 			String user, String pass, PhysicalFileTransporter pft,
-			PhysicalFileTransporter thumbTransporter);
+			PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter);
 
 	/**
 	 * Adds a design to the server.
@@ -137,12 +142,14 @@ public interface ProtectedManager extends UnprotectedManager{
 	 * is improving on.  Using the value 0 here signifies that this is not an
 	 * iteration on a previously existing <code>Design</code>.
 	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
+	 * @param thumbTransporter A <code>PhysicalFileTransporter</code> to carry relevant media data.
+	 * @param sourceMediaTransporter A <code>PhysicalFileTransporter</code> to carry relevant media data.
 	 * @return The ID of the new <code>Design</code>.
 	 * @see Design
 	 * @see PhysicalFileTransporter
 	 */
 	public abstract int addBase(Design design, String user, String pass,
-			PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter);
+			PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter);
 	
 	/**
 	 * Sets a thumbnail for an object
@@ -175,8 +182,18 @@ public interface ProtectedManager extends UnprotectedManager{
 	public abstract boolean changeDesignName(int designID, String user,
 			String pass, String newName);
 
+	/**
+	 * 
+	 * @param designID
+	 * @param user
+	 * @param pass
+	 * @param pft
+	 * @param sourceMedia
+	 * @param textureOnOff
+	 * @return
+	 */
 	public abstract boolean changeDesignFile(int designID, String user,
-			String pass, PhysicalFileTransporter pft, boolean textureOnOff);
+			String pass, PhysicalFileTransporter pft, PhysicalFileTransporter sourceMedia, boolean textureOnOff);
 
 	/**
 	 * Changes the stored description of a <code>Design</code>

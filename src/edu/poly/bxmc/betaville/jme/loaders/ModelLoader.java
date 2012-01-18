@@ -72,6 +72,7 @@ public class ModelLoader {
 	private Node model = null;
 	private boolean replacement;
 	private String originalFile;
+	private File packedFile;
 
 	/**
 	 * @throws IOException 
@@ -216,11 +217,13 @@ public class ModelLoader {
 			}
 			
 			logger.info("Zipping files");
+			
+			packedFile = new File(packFolder.toString()+".zip");
 
 			// files are copied, now pack folder
-			ZipUtils.zip(packFolder, new File(packFolder.toString()+".zip"));
+			ZipUtils.zip(packFolder, packedFile);
 			
-			logger.info("Files zipped");
+			logger.info("Files zipped to " + packedFile.toString());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
@@ -229,6 +232,7 @@ public class ModelLoader {
 			// file copy failed!
 			e.printStackTrace();
 		}
+		
 	}
 
 	private void finishSetup(Design design){
@@ -306,5 +310,13 @@ public class ModelLoader {
 
 	public Node getModel(){
 		return model;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public File getPackedFile(){
+		return packedFile;
 	}
 }

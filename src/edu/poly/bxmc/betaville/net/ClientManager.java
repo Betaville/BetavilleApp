@@ -834,7 +834,9 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			output.writeObject(new Object[]{"softwareversion", "getdesign"});
+			System.out.println("written");
 			long response =  Long.parseLong((String) readResponse());
+			System.out.println("read");
 			busy.getAndSet(false);
 			touchLastUsed();
 			return response;

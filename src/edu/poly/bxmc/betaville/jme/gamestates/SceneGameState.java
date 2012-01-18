@@ -26,6 +26,7 @@
 package edu.poly.bxmc.betaville.jme.gamestates;
 
 import java.awt.Font;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -65,7 +66,6 @@ import com.jme.scene.state.ZBufferState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.GameTaskQueueManager;
 import com.jme.util.TextureManager;
-import com.jmex.effects.LensFlare;
 import com.jmex.font3d.Font3D;
 import com.jmex.font3d.Text3D;
 import com.jmex.game.state.BasicGameState;
@@ -619,7 +619,7 @@ public class SceneGameState extends BasicGameState {
 		}
 	}
 
-	public void replaceModelFile(int designID, URL newModel, boolean textureOnOff) throws IOException, URISyntaxException{
+	public File replaceModelFile(int designID, URL newModel, boolean textureOnOff) throws IOException, URISyntaxException{
 		// Only do this if we're working with a network design
 		if(designID>0){
 
@@ -650,19 +650,22 @@ public class SceneGameState extends BasicGameState {
 			}
 			SceneScape.getCity().findDesignByID(designID).setFilepath(newFilename);
 			((ModeledDesign)SceneScape.getCity().findDesignByID(designID)).setTextured(textureOnOff);
+			return ml.getPackedFile();
 		}
+		else return null;
 	}
 
-	public void addDesignToCity(Design design, URL modelURL, URL textureURL, int sourceID) throws IOException, URISyntaxException{
+	public File addDesignToCity(Design design, URL modelURL, URL textureURL, int sourceID) throws IOException, URISyntaxException{
 		if(design instanceof SketchedDesign){}
 		else if(design instanceof ModeledDesign){
-			loadModeledDesign((ModeledDesign) design);
+			return loadModeledDesign((ModeledDesign) design);
 		}
 		else if(design instanceof AudibleDesign){}
 		else if(design instanceof VideoDesign){}
+		return null;
 	}
 
-	private void loadModeledDesign(ModeledDesign design) throws IOException, URISyntaxException{
+	private File loadModeledDesign(ModeledDesign design) throws IOException, URISyntaxException{
 		ModelLoader ml = new ModelLoader(design, false, null);
 		if(design.getName().equals("TERRAIN")){
 			terrainNode.attachChild(ml.getModel());
@@ -676,6 +679,8 @@ public class SceneGameState extends BasicGameState {
 			SceneScape.getCity().addDesign(design);
 			logger.debug("Model Added");
 		}
+		
+		return ml.getPackedFile();
 	}
 
 	public Spatial getSpecificDesign(int designID){

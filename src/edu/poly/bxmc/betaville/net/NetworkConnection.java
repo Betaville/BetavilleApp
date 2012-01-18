@@ -7,8 +7,6 @@ import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.ProgressMonitorInputStream;
-
 import org.apache.log4j.Logger;
 
 public class NetworkConnection {
@@ -22,20 +20,21 @@ public class NetworkConnection {
 	 * Attribute <input> - input of the socket
 	 */
 	protected ObjectInputStream input;
-	/**
-	 * 
-	 */
-	protected ProgressMonitorInputStream progressMonitor;
+	protected ProgressInputStream progressInput;
+
 	/**
 	 * Attribute <output> - output of the socket
 	 */
 	protected ObjectOutputStream output;
+	protected ProgressOutputStream progressOutput;
+	
 	protected List<Integer> modules;
 	protected AtomicBoolean busy = new AtomicBoolean(false);
 	
 	protected Object readResponse() throws UnexpectedServerResponse, IOException{
 		try {
 			Object obj = input.readObject();
+			progressInput.resetCounter();
 			//input.reset();
 			
 			// check for errors
@@ -45,6 +44,11 @@ public class NetworkConnection {
 			logger.error("the server returned a bad class", e);
 			throw new UnexpectedServerResponse("An unexpected class was encountered");
 		}
+	}
+	
+	protected void writeToStream(Object[] data) throws IOException{
+		output.writeObject(data);
+		//progressOutput.resetCounter();
 	}
 
 	public synchronized boolean isBusy() {
@@ -68,11 +72,9 @@ public class NetworkConnection {
 	public boolean isAlive() {
 		return clientSocket.isConnected();
 	}
-
-	/**
-	 * @return the progressMonitor
-	 */
-	public ProgressMonitorInputStream getProgressMonitor() {
-		return progressMonitor;
+	
+	public ProgressInputStream getProgressInputStream(){
+		return progressInput;
 	}
+
 }

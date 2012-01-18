@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  */
 public class Monitor implements Runnable {
 	private static final Logger logger = Logger.getLogger(Monitor.class);
-	private ProgressMonitorInputStream monitor;
+	private ProgressInputStream monitor;
 	private int maximum=0;
 	private int available=0;
 	private int lastAvailable=0;
@@ -24,7 +24,7 @@ public class Monitor implements Runnable {
 	 * 
 	 */
 	public Monitor(ClientManager manager) {
-		this.monitor=manager.getProgressMonitor();
+		this.monitor=manager.getProgressInputStream();
 	}
 
 	/* (non-Javadoc)

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -217,6 +217,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	private boolean modelIsLoaded=false;
 
 	private ModeledDesign designCreatedInThisWindow;
+	private File packedFile = null;
 
 
 	// Step Three
@@ -891,7 +892,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					designCreatedInThisWindow.setClassification(stepOneSelection);
 
 					try {
-						SceneGameState.getInstance().addDesignToCity(designCreatedInThisWindow, mediaURL, mediaURL, designCreatedInThisWindow.getSourceID());
+						packedFile = SceneGameState.getInstance().addDesignToCity(designCreatedInThisWindow, mediaURL, mediaURL, designCreatedInThisWindow.getSourceID());
 						modelIdentifier=designCreatedInThisWindow.getFullIdentifier();
 						logger.info("modelIdentifier"+modelIdentifier);
 						/*
@@ -1368,7 +1369,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 								
 								// Attempt to get a thumbnail
 								PhysicalFileTransporter thumbTransporter=packThumbnail();
-								response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter);
+								response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile));
 							}
 							else if(stepOneSelection.equals(Classification.VERSION)){
 
@@ -1403,12 +1404,12 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 										thumbTransporter = new PhysicalFileTransporter(b);
 									}
 								}
-								response = manager.addVersion(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter);
+								response = manager.addVersion(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile));
 
 							}
 							else if(stepOneSelection.equals(Classification.PROPOSAL)){
 								PhysicalFileTransporter thumbTransporter=packThumbnail();
-								response = manager.addProposal(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, permission);
+								response = manager.addProposal(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile), permission);
 							}
 							
 

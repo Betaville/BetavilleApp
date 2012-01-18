@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -75,8 +75,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		try {
 			clientSocket = new Socket(serverIP, PORT_SERVER);
 			logger.info("Client application : "+ clientSocket.toString());
-			output = new ObjectOutputStream(clientSocket.getOutputStream());
-			input = new ObjectInputStream(clientSocket.getInputStream());
+			progressOutput = new ProgressOutputStream(clientSocket.getOutputStream());
+			output = new ObjectOutputStream(progressOutput);
+			
+			progressInput = new ProgressInputStream(clientSocket.getInputStream());
+			input = new ObjectInputStream(progressInput);
 		} catch (UnknownHostException e) {
 			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
 			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
@@ -254,7 +257,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addProposal(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.model.ProposalPermission)
 	 */
-	public int addProposal(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, ProposalPermission permission){
+	public int addProposal(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter, ProposalPermission permission){
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a proposal");
@@ -276,7 +279,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addVersion(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
-	public int addVersion(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter){
+	public int addVersion(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a design");
@@ -299,7 +302,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addBase(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
-	public int addBase(Design design, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter){
+	public int addBase(Design design, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a base design");
@@ -394,7 +397,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignFile(int, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, boolean)
 	 */
-	public boolean changeDesignFile(int designID, String user, String pass, PhysicalFileTransporter pft, boolean textureOnOff){
+	public boolean changeDesignFile(int designID, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter sourceMedia, boolean textureOnOff){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the file for design " + designID);
