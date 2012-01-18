@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -22,10 +22,11 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.net;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class PhysicalFileTransporter implements Serializable{
 		this.length = b.length;
 		bytes = b;
 	}
-	
+
 	/**
 	 * Gets the raw data packed in this transporter
 	 * @return The raw data as it was supplied
@@ -62,7 +63,7 @@ public class PhysicalFileTransporter implements Serializable{
 	public byte[] getData(){
 		return bytes;
 	}
-	
+
 	public boolean writeToFileSystem(File fileToWrite){
 		if(!fileToWrite.getParentFile().exists()){
 			fileToWrite.getParentFile().mkdirs();
@@ -83,5 +84,20 @@ public class PhysicalFileTransporter implements Serializable{
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	/**
+	 * Supports a maximum file of 2 GB
+	 * @param file
+	 * @return
+	 * @throws IOException 
+	 */
+	public static PhysicalFileTransporter readFromFileSystem(File file) throws IOException{
+		FileInputStream fis = new FileInputStream(file);
+		byte[] contents = new byte[(int)file.length()];
+		fis.read(contents);
+		fis.close();
+		PhysicalFileTransporter pft = new PhysicalFileTransporter(contents);
+		return pft;
 	}
 }
