@@ -77,7 +77,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 			logger.info("Client application : "+ clientSocket.toString());
 			progressOutput = new ProgressOutputStream(clientSocket.getOutputStream());
 			output = new ObjectOutputStream(progressOutput);
-			
+
 			progressInput = new ProgressInputStream(clientSocket.getInputStream());
 			input = new ObjectInputStream(progressInput);
 		} catch (UnknownHostException e) {
@@ -261,7 +261,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a proposal");
-			output.writeObject(new Object[]{"design", "addproposal", design, user, pass, pft, removables, thumbTransporter, permission});
+			output.writeObject(new Object[]{"design", "addproposal", design, user, pass, pft, removables, thumbTransporter, sourceMediaTransporter, permission});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -282,8 +282,8 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	public int addVersion(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
 		busy.getAndSet(true);
 		try {
-			logger.info("Adding a design");
-			output.writeObject(new Object[]{"proposal", "addversion", design, user, pass, pft, removables, thumbTransporter});
+			logger.info("Adding a version of a proposal");
+			output.writeObject(new Object[]{"proposal", "addversion", design, user, pass, pft, removables, thumbTransporter, sourceMediaTransporter});
 			logger.info("Data transmission complete for design addition");
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -306,13 +306,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a base design");
-			// send the thumbnail along as well if its transporter isn't null
-			if(thumbTransporter==null){
-				output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft});
-			}
-			else{
-				output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft, thumbTransporter});
-			}
+			output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft, thumbTransporter, sourceMediaTransporter});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
