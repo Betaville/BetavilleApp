@@ -78,22 +78,6 @@ public interface ProtectedManager extends UnprotectedManager{
 	public abstract boolean changeBio(String name, String pass, String newBio);
 
 	/**
-	 * Adds a design to the server.
-	 * @param design The <code>Design</code> object describing the new entity.
-	 * @param user The user proposing this new <code>Design</code>.
-	 * @param pass The password supplied by the user.
-	 * @param sourceID The ID of the design that this <code>Design</code>
-	 * is improving on.  Using the value 0 here signifies that this is not an
-	 * iteration on a previously existing <code>Design</code>.
-	 * @param pft A <code>PhysicalFileTransporter</code> to carry relevant media data.
-	 * @return The ID of the new <code>Design</code>.
-	 * @see Design
-	 * @see PhysicalFileTransporter
-	 */
-	public abstract int addDesign(Design design, String user, String pass,
-			PhysicalFileTransporter pft);
-
-	/**
 	 * Adds an EmptyDesign to the server.
 	 * @param design The <code>Design</code> object describing the new entity.
 	 * @param user The user proposing this new <code>Design</code>.

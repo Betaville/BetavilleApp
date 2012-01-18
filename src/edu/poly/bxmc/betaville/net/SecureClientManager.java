@@ -230,29 +230,6 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addDesign(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
-	 */
-	public int addDesign(Design design, String user, String pass, PhysicalFileTransporter pft){
-		busy.getAndSet(true);
-		try {
-			logger.info("Adding a design");
-			output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft});
-			logger.info("Data transmission complete for design addition");
-			busy.getAndSet(false);
-			touchLastUsed();
-			return Integer.parseInt((String)readResponse());
-		} catch (IOException e) {
-			logger.error("Network issue detected", e);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (UnexpectedServerResponse e) {
-			e.printStackTrace();
-		}
-		busy.getAndSet(false);
-		return -3;
-	}
-
-	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addEmptyDesign(edu.poly.bxmc.betaville.model.EmptyDesign, java.lang.String, java.lang.String)
 	 */
 	public int addEmptyDesign(EmptyDesign design, String user, String pass){
