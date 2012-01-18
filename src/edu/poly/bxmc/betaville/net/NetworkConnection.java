@@ -58,6 +58,7 @@ public class NetworkConnection {
 	public void close() {
 		try {
 			output.writeObject(ConnectionCodes.CLOSE);
+			clientSocket.close();
 			//output.close();
 			//clientSocket.close();
 		} catch (IOException e) {
