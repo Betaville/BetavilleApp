@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -76,12 +76,14 @@ public class NetPool extends AbstractUpdater{
 			logger.debug("No " + InsecureClientManager.class.getName() + " was found.. creating one");
 			InsecureClientManager icm = new InsecureClientManager(modules);
 			managers.add(icm);
+			icm.busy.set(true);
 			return icm;
 		}
 
 		// Where there is a list of managers, find an idle manager and return it
 		for(ClientManager m : managers){
 			if(!m.isBusy() && m instanceof InsecureClientManager){
+				((InsecureClientManager)m).busy.set(true);
 				return (InsecureClientManager)m;
 			}
 		}
@@ -90,6 +92,7 @@ public class NetPool extends AbstractUpdater{
 		logger.debug("No idle " + InsecureClientManager.class.getName() + " was found.. creating one");
 		InsecureClientManager icm = new InsecureClientManager(modules);
 		managers.add(icm);
+		icm.busy.set(true);
 		return icm;
 	}
 
@@ -104,12 +107,14 @@ public class NetPool extends AbstractUpdater{
 			if(SettingsPreferences.useSSL()) scm = new SSLClientManager(modules);
 			else scm = new SecureClientManager(modules, true);
 			managers.add(scm);
+			scm.busy.set(true);
 			return scm;
 		}
 
 		// Where there is a list of managers, find an idle manager and return it
 		for(UnprotectedManager m : managers){
 			if(!m.isBusy() && m instanceof SecureClientManager){
+				((SecureClientManager)m).busy.set(true);
 				return (SecureClientManager)m;
 			}
 		}
@@ -120,6 +125,7 @@ public class NetPool extends AbstractUpdater{
 		if(SettingsPreferences.useSSL()) scm = new SSLClientManager(modules);
 		else scm = new SecureClientManager(modules, true);
 		managers.add(scm);
+		scm.busy.set(true);
 		return scm;
 	}
 
