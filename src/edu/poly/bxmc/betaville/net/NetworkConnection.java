@@ -48,7 +48,7 @@ public class NetworkConnection {
 	
 	protected void writeToStream(Object[] data) throws IOException{
 		output.writeObject(data);
-		//progressOutput.resetCounter();
+		progressOutput.resetCounter();
 	}
 
 	public synchronized boolean isBusy() {
@@ -75,6 +75,10 @@ public class NetworkConnection {
 	
 	public ProgressInputStream getProgressInputStream(){
 		return progressInput;
+	}
+	
+	public ProgressOutputStream getProgressOutputStream(){
+		return progressOutput;
 	}
 
 }

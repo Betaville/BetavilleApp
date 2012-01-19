@@ -96,7 +96,7 @@ public class ProgressInputStream extends FilterInputStream {
 		bytesRead+=incrementValue;
 		granularityCount+=incrementValue;
 		if(granularityCount>granularity){
-			listener.readProgressUpdate(bytesRead);
+			if(listener!=null) listener.readProgressUpdate(bytesRead);
 			while(granularityCount>granularity){
 				granularityCount = granularityCount-granularity;
 			}

@@ -106,7 +106,9 @@ import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.model.ProposalPermission.Type;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
+import edu.poly.bxmc.betaville.net.ProgressOutputStream.ProgressOutputListener;
 import edu.poly.bxmc.betaville.net.ProtectedManager;
+import edu.poly.bxmc.betaville.net.SecureClientManager;
 
 /**
  * The window used to create new proposals, or versions of proposals.
@@ -1363,7 +1365,41 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							}
 
 							// open connection and send design
-							ProtectedManager manager = NetPool.getPool().getSecureConnection();
+							SecureClientManager manager = NetPool.getPool().getSecureConnection();
+							final Window progressWindow = FengGUI.createWidget(Window.class);
+							progressWindow.setTitle("Progress");
+							final Label progressLabel = FengGUI.createWidget(Label.class);
+							progressLabel.setText("Progress: N/A");
+							progressWindow.getContentContainer().addWidget(progressLabel);
+							manager.getProgressOutputStream().setListener(new ProgressOutputListener() {
+								
+								@Override
+								public void writeProgressUpdate(int bytesWritten) {
+									// remove the window if the counter has been reset to zero
+									if(bytesWritten==0){
+										if(progressWindow.getParent()!=null){
+											((Container)progressWindow.getParent()).removeWidget(progressWindow);
+										}
+									}
+									
+									String updateString = "";
+									if(bytesWritten<1000){
+										updateString = bytesWritten+" bytes";
+									}
+									if(bytesWritten<1000000){
+										updateString = (bytesWritten/1000)+"KB";
+									}
+									else{
+										int numberMB = bytesWritten/1000000;
+										int leftoverKB = bytesWritten%1000000;
+										updateString = numberMB+"."+leftoverKB+"MB";
+									}
+									progressLabel.setText("Progress: "+updateString);
+								}
+							});
+							StaticLayout.center(progressWindow, GUIGameState.getInstance().getDisp());
+							GUIGameState.getInstance().getDisp().addWidget(progressWindow);
+							
 							int response=-4;
 							if(stepOneSelection.equals(Classification.BASE)){
 								

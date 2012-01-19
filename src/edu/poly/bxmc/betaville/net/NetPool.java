@@ -67,7 +67,7 @@ public class NetPool extends AbstractUpdater{
 		modules = new ArrayList<Module>();
 	}
 
-	public UnprotectedManager getConnection(){
+	public InsecureClientManager getConnection(){
 
 		if(stopAcceptingRequests.get()) return null;
 
@@ -96,7 +96,7 @@ public class NetPool extends AbstractUpdater{
 		return icm;
 	}
 
-	public ProtectedManager getSecureConnection(){
+	public SecureClientManager getSecureConnection(){
 
 		if(stopAcceptingRequests.get()) return null;
 

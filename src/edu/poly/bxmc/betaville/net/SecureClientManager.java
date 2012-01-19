@@ -95,7 +95,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Authenticating User");
-			output.writeObject(new Object[]{"user", "auth", name, pass});
+			writeToStream(new Object[]{"user", "auth", name, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -115,7 +115,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Starting User Session");
-			output.writeObject(new Object[]{"user", "startsession", name, pass});
+			writeToStream(new Object[]{"user", "startsession", name, pass});
 			Object[] response = (Object[])readResponse();
 			int sessionID = Integer.parseInt((String)response[0]);
 			String sessionToken = (String)response[1];
@@ -150,7 +150,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Ending user session");
-			output.writeObject(new Object[]{"user", "endsession", sessionToken});
+			writeToStream(new Object[]{"user", "endsession", sessionToken});
 			int response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -175,7 +175,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding User");
-			output.writeObject(new Object[]{"user", "add", name, pass, email, twitter, bio});
+			writeToStream(new Object[]{"user", "add", name, pass, email, twitter, bio});
 			String response = (String)readResponse();
 			if(Boolean.parseBoolean(response)){
 				System.out.println("bool read correctly");
@@ -199,7 +199,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing user password");
-			output.writeObject(new Object[]{"user", "changepass", name, pass, newPass});
+			writeToStream(new Object[]{"user", "changepass", name, pass, newPass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -219,7 +219,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing user information");
-			output.writeObject(new Object[]{"user", "changebio", name, pass, newBio});
+			writeToStream(new Object[]{"user", "changebio", name, pass, newBio});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -239,7 +239,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding an empty design");
-			output.writeObject(new Object[]{"design", "addempty", design, user, pass});
+			writeToStream(new Object[]{"design", "addempty", design, user, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -261,7 +261,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a proposal");
-			output.writeObject(new Object[]{"design", "addproposal", design, user, pass, pft, removables, thumbTransporter, sourceMediaTransporter, permission});
+			writeToStream(new Object[]{"design", "addproposal", design, user, pass, pft, removables, thumbTransporter, sourceMediaTransporter, permission});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -283,7 +283,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a version of a proposal");
-			output.writeObject(new Object[]{"proposal", "addversion", design, user, pass, pft, removables, thumbTransporter, sourceMediaTransporter});
+			writeToStream(new Object[]{"proposal", "addversion", design, user, pass, pft, removables, thumbTransporter, sourceMediaTransporter});
 			logger.info("Data transmission complete for design addition");
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -306,7 +306,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a base design");
-			output.writeObject(new Object[]{"design", "addbase", design, user, pass, pft, thumbTransporter, sourceMediaTransporter});
+			writeToStream(new Object[]{"design", "addbase", design, user, pass, pft, thumbTransporter, sourceMediaTransporter});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -331,7 +331,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		try {
 			logger.info("Adding a base design");
 			// send the thumbnail along as well if its transporter isn't null
-			output.writeObject(new Object[]{"design", "setthumb", designID, pft, user, pass});
+			writeToStream(new Object[]{"design", "setthumb", designID, pft, user, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -353,7 +353,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Removing a design");
-			output.writeObject(new Object[]{"design", "remove", designID, user, pass});
+			writeToStream(new Object[]{"design", "remove", designID, user, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -375,7 +375,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing name of design " + designID + " to \""+newName+"\"");
-			output.writeObject(new Object[]{"design", "changename", designID, newName, user, pass});
+			writeToStream(new Object[]{"design", "changename", designID, newName, user, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -395,7 +395,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the file for design " + designID);
-			output.writeObject(new Object[]{"design", "changefile", designID, user, pass, textureOnOff, pft});
+			writeToStream(new Object[]{"design", "changefile", designID, user, pass, textureOnOff, pft});
 			logger.info("Data transmission complete for file change");
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -416,7 +416,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing description for design " + designID);
-			output.writeObject(new Object[]{"design", "changedescription", designID, newDescription, user, pass});
+			writeToStream(new Object[]{"design", "changedescription", designID, newDescription, user, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -436,7 +436,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the address of design " + designID);
-			output.writeObject(new Object[]{"design", "changeaddress", designID, newAddress, user, pass});
+			writeToStream(new Object[]{"design", "changeaddress", designID, newAddress, user, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -456,7 +456,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the URL for design " + designID);
-			output.writeObject(new Object[]{"design", "changeurl", designID, newURL, user, pass});
+			writeToStream(new Object[]{"design", "changeurl", designID, newURL, user, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -476,7 +476,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the location for design " + designID);
-			output.writeObject(new Object[]{"design", "changemodellocation", designID, newLocation, rotY, user, pass});
+			writeToStream(new Object[]{"design", "changemodellocation", designID, newLocation, rotY, user, pass});
 			String response = (String)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -496,7 +496,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	public int faveDesign(int designID, String user, String pass){
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"fave", "add", user, pass, designID});
+			writeToStream(new Object[]{"fave", "add", user, pass, designID});
 			String response = (String)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -517,7 +517,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Inserting a comment for design " + comment.getDesignID());
-			output.writeObject(new Object[]{"comment", "add", comment, pass});
+			writeToStream(new Object[]{"comment", "add", comment, pass});
 			boolean response = Boolean.parseBoolean((String)readResponse());
 			System.out.println("received net response");
 			busy.getAndSet(false);
@@ -539,7 +539,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		busy.getAndSet(true);
 		try {
 			logger.info("Deleting comment " + commentID);
-			output.writeObject(new Object[]{"comment", "delete", commentID, user, pass});
+			writeToStream(new Object[]{"comment", "delete", commentID, user, pass});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -559,7 +559,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		Integer response = null;
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"wormhole", "add", location.getUTM(), name, cityID, SettingsPreferences.getSessionToken()});
+			writeToStream(new Object[]{"wormhole", "add", location.getUTM(), name, cityID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -582,7 +582,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		Integer response = null;
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"wormhole", "delete", wormholeID, SettingsPreferences.getSessionToken()});
+			writeToStream(new Object[]{"wormhole", "delete", wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -605,7 +605,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		Integer response = null;
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"wormhole", "editname", newName, wormholeID, SettingsPreferences.getSessionToken()});
+			writeToStream(new Object[]{"wormhole", "editname", newName, wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -628,7 +628,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		Integer response = null;
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"wormhole", "editname", newLocation, wormholeID, SettingsPreferences.getSessionToken()});
+			writeToStream(new Object[]{"wormhole", "editname", newLocation, wormholeID, SettingsPreferences.getSessionToken()});
 			response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
 			touchLastUsed();

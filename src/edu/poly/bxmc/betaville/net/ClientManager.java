@@ -76,7 +76,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Checking if a name is available");
-			output.writeObject(new Object[]{"user", "available", name});
+			writeToStream(new Object[]{"user", "available", name});
 			String response = (String)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -99,7 +99,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Getting user email");
-			output.writeObject(new Object[]{"user", "getmail", user});
+			writeToStream(new Object[]{"user", "getmail", user});
 			String response = (String)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -122,7 +122,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.debug("Finding design " + designID);
-			output.writeObject(new Object[]{"design", "findbyid", designID});
+			writeToStream(new Object[]{"design", "findbyid", designID});
 			Object response = readResponse();
 			if(response instanceof Design){
 				CacheManager.getCacheManager().requestFile(((Design)response).getID(), ((Design)response).getFilepath());
@@ -156,7 +156,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs named \""+name+"\"");
-			output.writeObject(new Object[]{"design", "findbyname", name});
+			writeToStream(new Object[]{"design", "findbyname", name});
 			Object response = readResponse();
 			if(response instanceof List<?>){
 				if(((List<?>)(response)).get(0) instanceof Design){
@@ -194,7 +194,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs by \""+user+"\"");
-			output.writeObject(new Object[]{"design", "findbyuser", user});
+			writeToStream(new Object[]{"design", "findbyuser", user});
 			Object response = readResponse();
 			if(response instanceof List<?>){
 				logger.info("returning");
@@ -227,7 +227,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs dates \""+date+"\"");
-			output.writeObject(new Object[]{"design", "findbydate", date.getTime()});
+			writeToStream(new Object[]{"design", "findbydate", date.getTime()});
 			Object response = readResponse();
 			if(response instanceof List<?>){
 				logger.info("returning");
@@ -278,7 +278,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs from city " + cityID);
-			output.writeObject(new Object[]{"design", "findbycity", cityID, onlyBase});
+			writeToStream(new Object[]{"design", "findbycity", cityID, onlyBase});
 			Object response = readResponse();
 			if(response instanceof List<?>){
 				if(((List<?>)response).size()>0){
@@ -329,7 +329,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs from city " + cityID);
-			output.writeObject(new Object[]{"design", "findbycitysetstartend", cityID, onlyBase, start, end});
+			writeToStream(new Object[]{"design", "findbycitysetstartend", cityID, onlyBase, start, end});
 			Object response = readResponse();
 			if(response instanceof List<?>){
 				if(((List<?>)response).size()>0){
@@ -369,7 +369,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs from city " + cityID);
-			output.writeObject(new Object[]{"design", "findbymodellimitedcity", cityID, onlyBase, limit});
+			writeToStream(new Object[]{"design", "findbymodellimitedcity", cityID, onlyBase, limit});
 			byte[] response = (byte[])readResponse();
 			busy.set(false);
 			touchLastUsed();
@@ -401,7 +401,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding designs from city " + cityID);
-			output.writeObject(new Object[]{"design", "terrainbycity", cityID});
+			writeToStream(new Object[]{"design", "terrainbycity", cityID});
 			Object response = readResponse();
 			if(response instanceof List<?>){
 				if(((List<?>)response).size()>0){
@@ -444,7 +444,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 	public int[] findVersionsOfProposal(int proposalDesignID){
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"version", "versionsofproposal", proposalDesignID});
+			writeToStream(new Object[]{"version", "versionsofproposal", proposalDesignID});
 			Object response = readResponse();
 			if(response!=null){
 				if(response instanceof int[]){
@@ -471,7 +471,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 	public ProposalPermission getProposalPermissions(int designID){
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"proposal", "getpermissions", designID});
+			writeToStream(new Object[]{"proposal", "getpermissions", designID});
 			ProposalPermission response = (ProposalPermission) readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -495,7 +495,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 	public int[] findAllProposals(int designID){
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"design", "allproposals", designID});
+			writeToStream(new Object[]{"design", "allproposals", designID});
 			int[] response = (int[]) readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -520,7 +520,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding proposals within " + meterRadius + " of " + coordinate.toString());
-			output.writeObject(new Object[]{"proposal", "findinradius", coordinate, meterRadius});
+			writeToStream(new Object[]{"proposal", "findinradius", coordinate, meterRadius});
 			Object response = readResponse();
 			if(response instanceof List){
 				busy.getAndSet(false);
@@ -544,7 +544,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try{
 			logger.debug("Requesting thumbnail for design " + designID);
-			output.writeObject(new Object[]{"design", "requestthumb", designID});
+			writeToStream(new Object[]{"design", "requestthumb", designID});
 			PhysicalFileTransporter response = (PhysicalFileTransporter)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -575,7 +575,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.debug("Requesting file for design " + designID);
-			output.writeObject(new Object[]{"design", "requestfile", designID});
+			writeToStream(new Object[]{"design", "requestfile", designID});
 			Object object = readResponse();
 			PhysicalFileTransporter response = null;
 			if(object instanceof PhysicalFileTransporter){
@@ -606,7 +606,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a city [if it doesn't already exist]: " + name + ", " + state + ", " + country);
-			output.writeObject(new Object[]{"city", "add", name, state, country});
+			writeToStream(new Object[]{"city", "add", name, state, country});
 			int response = Integer.parseInt((String)readResponse());
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -630,7 +630,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 	public List<City> findAllCities(){
 		try {
 			busy.getAndSet(true);
-			output.writeObject(new String[]{"city", "getall"});
+			writeToStream(new String[]{"city", "getall"});
 			List<City> response = (List<City>)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -654,7 +654,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding cities named \""+name+"\"");
-			output.writeObject(new Object[]{"city", "findbyname", name});
+			writeToStream(new Object[]{"city", "findbyname", name});
 			List<Integer> response = (List<Integer>)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -678,7 +678,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding cities located in \""+state+"\"");
-			output.writeObject(new Object[]{"city", "findbystate", state});
+			writeToStream(new Object[]{"city", "findbystate", state});
 			List<Integer> response = (List<Integer>)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -702,7 +702,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding cities located in \""+country+"\"");
-			output.writeObject(new Object[]{"city", "findbycountry", country});
+			writeToStream(new Object[]{"city", "findbycountry", country});
 			List<Integer> response = (List<Integer>)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -725,7 +725,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding city with ID: "+cityID);
-			output.writeObject(new Object[]{"city", "findbyid", cityID});
+			writeToStream(new Object[]{"city", "findbyid", cityID});
 			String[] response = (String[])readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -748,7 +748,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding city: \""+name+"\", \""+state+"\", \""+country+"\"");
-			output.writeObject(new Object[]{"city", "findbyall", name, state, country});
+			writeToStream(new Object[]{"city", "findbyall", name, state, country});
 			String[] response = (String[])readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -771,7 +771,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Reporting comment " + commentID + " as spam");
-			output.writeObject(new Object[]{"comment", "reportspam", commentID});
+			writeToStream(new Object[]{"comment", "reportspam", commentID});
 			busy.getAndSet(false);
 			touchLastUsed();
 		} catch (IOException e) {
@@ -788,7 +788,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Retrieving comments for design " + designID);
-			output.writeObject(new Object[]{"comment", "getforid", designID});
+			writeToStream(new Object[]{"comment", "getforid", designID});
 			List<Comment> response = (List<Comment>)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -810,7 +810,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 	public int checkUserLevel(String user, 	UserType userType){
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"user", "checklevel", user, userType});
+			writeToStream(new Object[]{"user", "checklevel", user, userType});
 			int response =  Integer.parseInt((String) readResponse());
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -833,7 +833,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 	public long getDesignVersion(){
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"softwareversion", "getdesign"});
+			writeToStream(new Object[]{"softwareversion", "getdesign"});
 			System.out.println("written");
 			long response =  Long.parseLong((String) readResponse());
 			System.out.println("read");
@@ -858,7 +858,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 	public UserType getUserLevel(String user){
 		busy.getAndSet(true);
 		try {
-			output.writeObject(new Object[]{"user", "getlevel", user});
+			writeToStream(new Object[]{"user", "getlevel", user});
 			UserType response = (UserType)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -882,7 +882,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		List<Wormhole> wormholes = null;
 		busy.getAndSet(true);
 		try{
-			output.writeObject(new Object[]{"wormhole", "getwithin", location, extentNorth, extentEast});
+			writeToStream(new Object[]{"wormhole", "getwithin", location, extentNorth, extentEast});
 			wormholes = (List<Wormhole>)readResponse();
 		} catch (IOException e){
 			logger.error("Network issue detected", e);
@@ -902,7 +902,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		List<Wormhole> wormholes = null;
 		busy.getAndSet(true);
 		try{
-			output.writeObject(new Object[]{"wormhole", "getall"});
+			writeToStream(new Object[]{"wormhole", "getall"});
 			wormholes = (List<Wormhole>)readResponse();
 		} catch (IOException e){
 			logger.error("Network issue detected", e);
@@ -923,7 +923,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		List<Wormhole> wormholes = null;
 		busy.getAndSet(true);
 		try{
-			output.writeObject(new Object[]{"wormhole", "getallincity", cityID});
+			writeToStream(new Object[]{"wormhole", "getallincity", cityID});
 			wormholes = (List<Wormhole>)readResponse();
 		} catch (IOException e){
 			logger.error("Network issue detected", e);
@@ -943,7 +943,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		List<Design> designs = null;
 		busy.getAndSet(true);
 		try{
-			output.writeObject(new Object[]{"design", "synchronizedata", hashMap});
+			writeToStream(new Object[]{"design", "synchronizedata", hashMap});
 			designs = (List<Design>)readResponse();
 		} catch (IOException e){
 			logger.error("Network issue detected", e);

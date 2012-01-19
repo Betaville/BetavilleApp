@@ -95,7 +95,7 @@ public class ProgressOutputStream extends FilterOutputStream {
 		bytesWritten+=incrementValue;
 		granularityCount+=incrementValue;
 		if(granularityCount>granularity){
-			listener.writeProgressUpdate(bytesWritten);
+			if(listener!=null) listener.writeProgressUpdate(bytesWritten);
 			while(granularityCount>granularity){
 				granularityCount = granularityCount-granularity;
 			}
