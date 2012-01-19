@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -95,8 +95,11 @@ public class SSLClientManager extends SecureClientManager{
 			clientSocket = (SSLSocket)sslFactory.createSocket();
 
 			clientSocket.connect(new InetSocketAddress(SettingsPreferences.getServerIP(), PORT_SERVER));
-			output = new ObjectOutputStream(clientSocket.getOutputStream());
-			input = new ObjectInputStream(clientSocket.getInputStream());
+			progressOutput = new ProgressOutputStream(clientSocket.getOutputStream());
+			output = new ObjectOutputStream(progressOutput);
+			
+			progressInput = new ProgressInputStream(clientSocket.getInputStream());
+			input = new ObjectInputStream(progressInput);
 		}catch(KeyStoreException e){
 			logger.fatal("Java KeyStore Issue", e);
 		} catch (NoSuchAlgorithmException e) {

@@ -41,7 +41,6 @@ import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.ClientManager;
-import edu.poly.bxmc.betaville.net.Monitor;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
 import edu.poly.bxmc.betaville.net.UnprotectedManager;
@@ -216,7 +215,6 @@ public class CacheManager {
 
 	private boolean doRequestFile(int designID, String filename, UnprotectedManager manager, boolean keepAlive){
 		if(!findFile(filename)){
-			SettingsPreferences.getThreadPool().submit(new Monitor((ClientManager)manager));
 			PhysicalFileTransporter pft = manager.requestFile(designID);
 			if(!keepAlive){
 				manager.close();
