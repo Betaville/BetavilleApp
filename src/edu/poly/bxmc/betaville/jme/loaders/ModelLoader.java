@@ -207,6 +207,15 @@ public class ModelLoader {
 
 			File modelSourceFile = new File(modelURL.toURI());
 			FileUtils.copyFile(modelSourceFile, new File(packFolder.toString()+"/"+modelSourceFile.getName()));
+			
+			// if this is an OBJ file, we also need to pack the MTL file
+			if(modelSourceFile.toString().toLowerCase().endsWith("obj")){
+				File mtlFile = new File(modelSourceFile.toString().toString().substring(0, modelSourceFile.toString().length()-3)+"mtl");
+				if(!mtlFile.exists()) logger.warn("MTL file does not seem to exist.");
+				else{
+					FileUtils.copyFile(mtlFile, new File(packFolder.toString()+"/"+mtlFile.getName()));
+				}
+			}
 
 			if(textureFiles!=null){
 				for(URL textureFile : textureFiles){
