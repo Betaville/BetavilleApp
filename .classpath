@@ -67,7 +67,6 @@
 			<attribute name="javadoc_location" value="http://developer.apple.com/library/mac/documentation/Java/Reference/JavaSE6_AppleExtensionsRef/api/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="inspector"/>
 	<classpathentry kind="lib" path="lib/geotools/commons-pool-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/geotools/gt-api-2.7.0.1.jar">
 		<attributes>
