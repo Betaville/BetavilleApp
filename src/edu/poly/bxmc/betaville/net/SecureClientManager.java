@@ -89,26 +89,6 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#authenticateUser(java.lang.String, java.lang.String)
-	 */
-	public boolean authenticateUser(String name, String pass){
-		busy.getAndSet(true);
-		try {
-			logger.info("Authenticating User");
-			writeToStream(new Object[]{"user", "auth", name, pass});
-			busy.getAndSet(false);
-			touchLastUsed();
-			return Boolean.parseBoolean((String)readResponse());
-		} catch (IOException e) {
-			logger.error("Network issue detected", e);
-		} catch (UnexpectedServerResponse e) {
-			e.printStackTrace();
-		}
-		busy.getAndSet(false);
-		return false;
-	}
-
-	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#startSession(java.lang.String, java.lang.String)
 	 */
 	public boolean startSession(String name, String pass){

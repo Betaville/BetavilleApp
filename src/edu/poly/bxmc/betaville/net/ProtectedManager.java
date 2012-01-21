@@ -39,8 +39,6 @@ import edu.poly.bxmc.betaville.model.ProposalPermission;
  */
 public interface ProtectedManager extends UnprotectedManager{
 
-	public abstract boolean authenticateUser(String name, String pass);
-
 	public abstract boolean startSession(String name, String pass);
 
 	public abstract boolean endSession(String sessionToken);
