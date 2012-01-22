@@ -88,9 +88,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#startSession(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public boolean startSession(String name, String pass){
 		busy.getAndSet(true);
 		try {
@@ -123,9 +125,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#endSession(java.lang.String)
 	 */
+	@Override
 	public boolean endSession(String sessionToken){
 		busy.getAndSet(true);
 		try {
@@ -148,9 +152,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public boolean addUser(String name, String pass, String email, String twitter, String bio){
 		busy.getAndSet(true);
 		try {
@@ -172,9 +178,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changePassword(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public boolean changePassword(String name, String pass, String newPass){
 		busy.getAndSet(true);
 		try {
@@ -192,9 +200,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeBio(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeBio(java.lang.String)
 	 */
+	@Override
 	public boolean changeBio(String newBio){
 		busy.getAndSet(true);
 		try {
@@ -212,9 +222,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addEmptyDesign(edu.poly.bxmc.betaville.model.EmptyDesign, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addEmptyDesign(edu.poly.bxmc.betaville.model.EmptyDesign)
 	 */
+	@Override
 	public int addEmptyDesign(EmptyDesign design){
 		busy.getAndSet(true);
 		try {
@@ -234,9 +246,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return -3;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addProposal(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.model.ProposalPermission)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addProposal(edu.poly.bxmc.betaville.model.Design, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.model.ProposalPermission)
 	 */
+	@Override
 	public int addProposal(Design design, String removables, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter, ProposalPermission permission){
 		busy.getAndSet(true);
 		try {
@@ -256,9 +270,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return -3;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addVersion(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addVersion(edu.poly.bxmc.betaville.model.Design, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
+	@Override
 	public int addVersion(Design design, String removables, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
 		busy.getAndSet(true);
 		try {
@@ -279,9 +295,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return -3;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addBase(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addBase(edu.poly.bxmc.betaville.model.Design, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
+	@Override
 	public int addBase(Design design, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
 		busy.getAndSet(true);
 		try {
@@ -301,8 +319,9 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return -3;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#setThumbnailForObject(int, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#setThumbnailForObject(int, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
 	@Override
 	public int setThumbnailForObject(int designID, PhysicalFileTransporter pft) {
@@ -325,9 +344,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return -1;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#removeDesign(int, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#removeDesign(int)
 	 */
+	@Override
 	public int removeDesign(int designID){
 		busy.getAndSet(true);
 		try {
@@ -347,9 +368,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return -2;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignName(int, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignName(int, java.lang.String)
 	 */
+	@Override
 	public boolean changeDesignName(int designID, String newName){
 		busy.getAndSet(true);
 		try {
@@ -367,9 +390,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignFile(int, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, boolean)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignFile(int, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, boolean)
 	 */
+	@Override
 	public boolean changeDesignFile(int designID, PhysicalFileTransporter pft, PhysicalFileTransporter sourceMedia, boolean textureOnOff){
 		busy.getAndSet(true);
 		try {
@@ -388,9 +413,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignDescription(int, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignDescription(int, java.lang.String)
 	 */
+	@Override
 	public boolean changeDesignDescription(int designID, String newDescription){
 		busy.getAndSet(true);
 		try {
@@ -408,9 +435,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignAddress(int, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignAddress(int, java.lang.String)
 	 */
+	@Override
 	public boolean changeDesignAddress(int designID, String newAddress){
 		busy.getAndSet(true);
 		try {
@@ -428,9 +457,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignURL(int, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignURL(int, java.lang.String)
 	 */
+	@Override
 	public boolean changeDesignURL(int designID, String newURL){
 		busy.getAndSet(true);
 		try {
@@ -448,9 +479,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeModeledDesignLocation(int, float, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.jme.map.UTMCoordinate)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeModeledDesignLocation(int, float, edu.poly.bxmc.betaville.jme.map.UTMCoordinate)
 	 */
+	@Override
 	public boolean changeModeledDesignLocation(int designID, float rotY, UTMCoordinate newLocation){
 		busy.getAndSet(true);
 		try {
@@ -469,9 +502,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#faveDesign(int, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#faveDesign(int)
 	 */
+	@Override
 	public int faveDesign(int designID){
 		busy.getAndSet(true);
 		try {
@@ -489,9 +524,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return -4;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addComment(edu.poly.bxmc.betaville.model.Comment, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addComment(edu.poly.bxmc.betaville.model.Comment)
 	 */
+	@Override
 	public boolean addComment(Comment comment){
 		busy.getAndSet(true);
 		try {
@@ -511,9 +548,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#deleteComment(int, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#deleteComment(int)
 	 */
+	@Override
 	public boolean deleteComment(int commentID){
 		busy.getAndSet(true);
 		try {
@@ -531,9 +570,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addWormhole(edu.poly.bxmc.betaville.jme.map.ILocation, java.lang.String, int)
 	 */
+	@Override
 	public int addWormhole(ILocation location, String name, int cityID){
 		Integer response = null;
 		busy.getAndSet(true);
@@ -554,9 +595,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return response;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#deleteWormhole(int)
 	 */
+	@Override
 	public int deleteWormhole(int wormholeID){
 		Integer response = null;
 		busy.getAndSet(true);
@@ -577,9 +620,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return response;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#editWormholeName(int, java.lang.String)
 	 */
+	@Override
 	public int editWormholeName(int wormholeID, String newName){
 		Integer response = null;
 		busy.getAndSet(true);
@@ -600,9 +645,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 		return response;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#editWormholeLocation(int, edu.poly.bxmc.betaville.jme.map.UTMCoordinate)
 	 */
+	@Override
 	public int editWormholeLocation(int wormholeID, UTMCoordinate newLocation){
 		Integer response = null;
 		busy.getAndSet(true);
