@@ -29,8 +29,6 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import edu.poly.bxmc.betaville.net.ProgressInputStream.ProgressInputListener;
-
 /**
  * @author Skye Book
  *
