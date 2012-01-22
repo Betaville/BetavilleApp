@@ -369,8 +369,7 @@ public class AdminModelMover extends Window {
 		logger.info("Rotation will be: " + getDesign().getRotationY());
 		
 		if(!NetPool.getPool().getSecureConnection().changeModeledDesignLocation(getDesign().getID(),
-				getDesign().getRotationY(), SettingsPreferences.getUser(), SettingsPreferences.getPass(),
-				getDesign().getCoordinate())){
+				getDesign().getRotationY(), getDesign().getCoordinate())){
 			logger.error("Network save failed");
 		}
 		else logger.info("Network Save Success");

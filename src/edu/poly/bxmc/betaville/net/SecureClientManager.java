@@ -195,11 +195,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeBio(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean changeBio(String name, String pass, String newBio){
+	public boolean changeBio(String newBio){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing user information");
-			writeToStream(new Object[]{"user", "changebio", name, pass, newBio});
+			writeToStream(new Object[]{"user", "changebio", SettingsPreferences.getSessionToken(), newBio});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -215,11 +215,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addEmptyDesign(edu.poly.bxmc.betaville.model.EmptyDesign, java.lang.String, java.lang.String)
 	 */
-	public int addEmptyDesign(EmptyDesign design, String user, String pass){
+	public int addEmptyDesign(EmptyDesign design){
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding an empty design");
-			writeToStream(new Object[]{"design", "addempty", design, user, pass});
+			writeToStream(new Object[]{"design", "addempty", design, SettingsPreferences.getSessionToken()});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -237,11 +237,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addProposal(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.model.ProposalPermission)
 	 */
-	public int addProposal(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter, ProposalPermission permission){
+	public int addProposal(Design design, String removables, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter, ProposalPermission permission){
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a proposal");
-			writeToStream(new Object[]{"design", "addproposal", design, user, pass, pft, removables, thumbTransporter, sourceMediaTransporter, permission});
+			writeToStream(new Object[]{"design", "addproposal", design, null, SettingsPreferences.getSessionToken(), pft, removables, thumbTransporter, sourceMediaTransporter, permission});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -259,11 +259,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addVersion(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
-	public int addVersion(Design design, String removables, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
+	public int addVersion(Design design, String removables, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a version of a proposal");
-			writeToStream(new Object[]{"proposal", "addversion", design, user, pass, pft, removables, thumbTransporter, sourceMediaTransporter});
+			writeToStream(new Object[]{"proposal", "addversion", design, null, SettingsPreferences.getSessionToken(), pft, removables, thumbTransporter, sourceMediaTransporter});
 			logger.info("Data transmission complete for design addition");
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -282,11 +282,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addBase(edu.poly.bxmc.betaville.model.Design, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter)
 	 */
-	public int addBase(Design design, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
+	public int addBase(Design design, PhysicalFileTransporter pft, PhysicalFileTransporter thumbTransporter, PhysicalFileTransporter sourceMediaTransporter){
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a base design");
-			writeToStream(new Object[]{"design", "addbase", design, user, pass, pft, thumbTransporter, sourceMediaTransporter});
+			writeToStream(new Object[]{"design", "addbase", design, null, SettingsPreferences.getSessionToken(), pft, thumbTransporter, sourceMediaTransporter});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -305,13 +305,12 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#setThumbnailForObject(int, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public int setThumbnailForObject(int designID,
-			PhysicalFileTransporter pft, String user, String pass) {
+	public int setThumbnailForObject(int designID, PhysicalFileTransporter pft) {
 		busy.getAndSet(true);
 		try {
 			logger.info("Adding a base design");
 			// send the thumbnail along as well if its transporter isn't null
-			writeToStream(new Object[]{"design", "setthumb", designID, pft, user, pass});
+			writeToStream(new Object[]{"design", "setthumb", designID, pft, SettingsPreferences.getSessionToken()});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -329,11 +328,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#removeDesign(int, java.lang.String, java.lang.String)
 	 */
-	public int removeDesign(int designID, String user, String pass){
+	public int removeDesign(int designID){
 		busy.getAndSet(true);
 		try {
 			logger.info("Removing a design");
-			writeToStream(new Object[]{"design", "remove", designID, user, pass});
+			writeToStream(new Object[]{"design", "remove", designID, SettingsPreferences.getSessionToken()});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Integer.parseInt((String)readResponse());
@@ -351,11 +350,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignName(int, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean changeDesignName(int designID, String user, String pass, String newName){
+	public boolean changeDesignName(int designID, String newName){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing name of design " + designID + " to \""+newName+"\"");
-			writeToStream(new Object[]{"design", "changename", designID, newName, user, pass});
+			writeToStream(new Object[]{"design", "changename", designID, newName, SettingsPreferences.getSessionToken()});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -371,11 +370,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignFile(int, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.net.PhysicalFileTransporter, boolean)
 	 */
-	public boolean changeDesignFile(int designID, String user, String pass, PhysicalFileTransporter pft, PhysicalFileTransporter sourceMedia, boolean textureOnOff){
+	public boolean changeDesignFile(int designID, PhysicalFileTransporter pft, PhysicalFileTransporter sourceMedia, boolean textureOnOff){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the file for design " + designID);
-			writeToStream(new Object[]{"design", "changefile", designID, user, pass, textureOnOff, pft});
+			writeToStream(new Object[]{"design", "changefile", designID, null, SettingsPreferences.getSessionToken(), textureOnOff, pft});
 			logger.info("Data transmission complete for file change");
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -392,11 +391,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignDescription(int, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean changeDesignDescription(int designID, String user, String pass, String newDescription){
+	public boolean changeDesignDescription(int designID, String newDescription){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing description for design " + designID);
-			writeToStream(new Object[]{"design", "changedescription", designID, newDescription, user, pass});
+			writeToStream(new Object[]{"design", "changedescription", designID, newDescription, SettingsPreferences.getSessionToken()});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -412,11 +411,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignAddress(int, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean changeDesignAddress(int designID, String user, String pass, String newAddress){
+	public boolean changeDesignAddress(int designID, String newAddress){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the address of design " + designID);
-			writeToStream(new Object[]{"design", "changeaddress", designID, newAddress, user, pass});
+			writeToStream(new Object[]{"design", "changeaddress", designID, newAddress, SettingsPreferences.getSessionToken()});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -432,11 +431,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeDesignURL(int, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public boolean changeDesignURL(int designID, String user, String pass, String newURL){
+	public boolean changeDesignURL(int designID, String newURL){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the URL for design " + designID);
-			writeToStream(new Object[]{"design", "changeurl", designID, newURL, user, pass});
+			writeToStream(new Object[]{"design", "changeurl", designID, newURL, SettingsPreferences.getSessionToken()});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());
@@ -452,11 +451,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#changeModeledDesignLocation(int, float, java.lang.String, java.lang.String, edu.poly.bxmc.betaville.jme.map.UTMCoordinate)
 	 */
-	public boolean changeModeledDesignLocation(int designID, float rotY, String user, String pass, UTMCoordinate newLocation){
+	public boolean changeModeledDesignLocation(int designID, float rotY, UTMCoordinate newLocation){
 		busy.getAndSet(true);
 		try {
 			logger.info("Changing the location for design " + designID);
-			writeToStream(new Object[]{"design", "changemodellocation", designID, newLocation, rotY, user, pass});
+			writeToStream(new Object[]{"design", "changemodellocation", designID, newLocation, rotY, SettingsPreferences.getSessionToken()});
 			String response = (String)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -473,10 +472,10 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#faveDesign(int, java.lang.String, java.lang.String)
 	 */
-	public int faveDesign(int designID, String user, String pass){
+	public int faveDesign(int designID){
 		busy.getAndSet(true);
 		try {
-			writeToStream(new Object[]{"fave", "add", user, pass, designID});
+			writeToStream(new Object[]{"fave", "add", SettingsPreferences.getSessionToken(), designID});
 			String response = (String)readResponse();
 			busy.getAndSet(false);
 			touchLastUsed();
@@ -493,11 +492,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#addComment(edu.poly.bxmc.betaville.model.Comment, java.lang.String)
 	 */
-	public boolean addComment(Comment comment, String pass){
+	public boolean addComment(Comment comment){
 		busy.getAndSet(true);
 		try {
 			logger.info("Inserting a comment for design " + comment.getDesignID());
-			writeToStream(new Object[]{"comment", "add", comment, pass});
+			writeToStream(new Object[]{"comment", "add", comment, SettingsPreferences.getSessionToken()});
 			boolean response = Boolean.parseBoolean((String)readResponse());
 			System.out.println("received net response");
 			busy.getAndSet(false);
@@ -515,11 +514,11 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.ProtectedManager#deleteComment(int, java.lang.String, java.lang.String)
 	 */
-	public boolean deleteComment(int commentID, String user, String pass){
+	public boolean deleteComment(int commentID){
 		busy.getAndSet(true);
 		try {
 			logger.info("Deleting comment " + commentID);
-			writeToStream(new Object[]{"comment", "delete", commentID, user, pass});
+			writeToStream(new Object[]{"comment", "delete", commentID, SettingsPreferences.getSessionToken()});
 			busy.getAndSet(false);
 			touchLastUsed();
 			return Boolean.parseBoolean((String)readResponse());

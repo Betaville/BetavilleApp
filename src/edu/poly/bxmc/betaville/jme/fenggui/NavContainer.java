@@ -178,8 +178,7 @@ public class NavContainer extends Container {
 					}
 					
 					if(!SceneScape.getTargetSpatial().getName().endsWith("$empty")){
-						int response = NetPool.getPool().getSecureConnection().faveDesign(SceneScape.getPickedDesign().getID(),
-								SettingsPreferences.getUser(), SettingsPreferences.getPass());
+						int response = NetPool.getPool().getSecureConnection().faveDesign(SceneScape.getPickedDesign().getID());
 						if(response==0){
 							FengUtils.showNewDismissableWindow("Betaville",
 									"Faved!", "ok", true);

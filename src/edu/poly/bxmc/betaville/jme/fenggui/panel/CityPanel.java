@@ -199,7 +199,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 				new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 						int designID = SceneScape.getPickedDesign().getID();
-						int removed = NetPool.getPool().getSecureConnection().removeDesign(designID, SettingsPreferences.getUser(), SettingsPreferences.getPass());
+						int removed = NetPool.getPool().getSecureConnection().removeDesign(designID);
 						if(removed==0){
 							SceneGameState.getInstance().removeDesignFromDisplay(designID);
 							logger.info("Design successfully removed");
@@ -237,7 +237,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				int itemToLock = SceneScape.getPickedDesign().getID();
 				SceneGameState.getInstance().getTerrainNode().attachChild(SceneGameState.getInstance().getSpecificDesign(itemToLock));
-				if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, SettingsPreferences.getUser(), SettingsPreferences.getPass(), SceneScape.getCity().findDesignByID(itemToLock).getName()+"$TERRAIN")){
+				if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, SceneScape.getCity().findDesignByID(itemToLock).getName()+"$TERRAIN")){
 					FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
 				}
 				else{

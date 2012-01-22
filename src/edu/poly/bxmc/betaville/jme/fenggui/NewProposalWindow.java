@@ -1405,7 +1405,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 								
 								// Attempt to get a thumbnail
 								PhysicalFileTransporter thumbTransporter=packThumbnail();
-								response = manager.addBase(design, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile));
+								response = manager.addBase(design, GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile));
 							}
 							else if(stepOneSelection.equals(Classification.VERSION)){
 
@@ -1440,12 +1440,12 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 										thumbTransporter = new PhysicalFileTransporter(b);
 									}
 								}
-								response = manager.addVersion(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile));
+								response = manager.addVersion(design, removables, GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile));
 
 							}
 							else if(stepOneSelection.equals(Classification.PROPOSAL)){
 								PhysicalFileTransporter thumbTransporter=packThumbnail();
-								response = manager.addProposal(design, removables, SettingsPreferences.getUser(), SettingsPreferences.getPass(), GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile), permission);
+								response = manager.addProposal(design, removables, GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile), permission);
 							}
 							
 

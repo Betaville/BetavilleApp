@@ -115,8 +115,7 @@ public class SwingCommentWindow extends JFrame {
 								currentDesignCommentThread,
 								SettingsPreferences.getUser(),
 								commentEditor.getText(),
-								0),
-								SettingsPreferences.getPass()
+								0)
 						);
 				
 				// if the comment submission succeeded, we can clear the text editor

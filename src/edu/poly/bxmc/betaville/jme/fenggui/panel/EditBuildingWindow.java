@@ -1125,7 +1125,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 						int designID = SceneScape.getPickedDesign().getID();
-						int removed = NetPool.getPool().getSecureConnection().removeDesign(designID, SettingsPreferences.getUser(), SettingsPreferences.getPass());
+						int removed = NetPool.getPool().getSecureConnection().removeDesign(designID);
 						if(removed==0){
 							SceneGameState.getInstance().removeDesignFromDisplay(designID);
 							logger.info("Design successfully removed");
@@ -1157,7 +1157,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 					// check if the rotation has been updated
 					
 					if(NetPool.getPool().getSecureConnection().changeModeledDesignLocation(SceneScape.getPickedDesign().getID(),
-							((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), SettingsPreferences.getUser(), SettingsPreferences.getPass(),
+							((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(),
 							SceneScape.getPickedDesign().getCoordinate())){
 						changeFallbacks.remove(SceneScape.getPickedDesign().getID());
 						logger.error("Network Save Success");

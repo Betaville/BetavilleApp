@@ -260,7 +260,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 				SettingsPreferences.getUser(),
 				newComment,
 				0);
-		boolean response = NetPool.getPool().getSecureConnection().addComment(comment, SettingsPreferences.getPass());
+		boolean response = NetPool.getPool().getSecureConnection().addComment(comment);
 		if(response) refresh(true);
 		else{
 			logger.error("Comment submission failed");

@@ -220,8 +220,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 					// check if the rotation has been updated
 
 					if(NetPool.getPool().getSecureConnection().changeModeledDesignLocation(SceneScape.getPickedDesign().getID(),
-							((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), SettingsPreferences.getUser(), SettingsPreferences.getPass(),
-							SceneScape.getPickedDesign().getCoordinate())){
+							((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), SceneScape.getPickedDesign().getCoordinate())){
 						changeFallbacks.remove(SceneScape.getPickedDesign().getID());
 						logger.error("Network Save Success");
 						GUIGameState.getInstance().getDisp().addWidget(

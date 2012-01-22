@@ -179,7 +179,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 					fis.read(b);
 					fis.close();
 					PhysicalFileTransporter transport = new PhysicalFileTransporter(b);
-					boolean netResponse = NetPool.getPool().getSecureConnection().changeDesignFile(designID, SettingsPreferences.getUser(), SettingsPreferences.getPass(), transport,PhysicalFileTransporter.readFromFileSystem(packedFile), textureOnOff);
+					boolean netResponse = NetPool.getPool().getSecureConnection().changeDesignFile(designID, transport,PhysicalFileTransporter.readFromFileSystem(packedFile), textureOnOff);
 					if(netResponse){
 						logger.info("Design " + designID + " model swap successful");
 						FengUtils.showNewDismissableWindow("Betaville", "Model Swap Successful!", "ok", true);

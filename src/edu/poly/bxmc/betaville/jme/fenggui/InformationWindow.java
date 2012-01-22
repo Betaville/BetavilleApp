@@ -215,28 +215,28 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		
 		String newName = FengUtils.getText(nameEditor);
 		if(changeQuery(newName, d.getName())){
-			nameResponse = NetPool.getPool().getSecureConnection().changeDesignName(d.getID(), SettingsPreferences.getUser(), SettingsPreferences.getPass(), newName);
+			nameResponse = NetPool.getPool().getSecureConnection().changeDesignName(d.getID(), newName);
 			if(!updateString.isEmpty()) updateString += ", ";
 			updateString += "name";
 		}
 		
 		String newAddress = FengUtils.getText(addressEditor);
 		if(changeQuery(newAddress, d.getAddress())){
-			addressResponse = NetPool.getPool().getSecureConnection().changeDesignAddress(d.getID(), SettingsPreferences.getUser(), SettingsPreferences.getPass(), newAddress);
+			addressResponse = NetPool.getPool().getSecureConnection().changeDesignAddress(d.getID(), newAddress);
 			if(!updateString.isEmpty()) updateString += ", ";
 			updateString += "address";
 		}
 		
 		String newDescription = FengUtils.getText(descriptionEditor);
 		if(changeQuery(newDescription, d.getDescription())){
-			descriptionResponse = NetPool.getPool().getSecureConnection().changeDesignDescription(d.getID(), SettingsPreferences.getUser(), SettingsPreferences.getPass(), newDescription);
+			descriptionResponse = NetPool.getPool().getSecureConnection().changeDesignDescription(d.getID(), newDescription);
 			if(!updateString.isEmpty()) updateString += ", ";
 			updateString += "description";
 		}
 		
 		String newURL = FengUtils.getText(urlEditor);
 		if(changeQuery(newURL, d.getURL())){
-			urlResponse = NetPool.getPool().getSecureConnection().changeDesignURL(d.getID(), SettingsPreferences.getUser(), SettingsPreferences.getPass(), newURL);
+			urlResponse = NetPool.getPool().getSecureConnection().changeDesignURL(d.getID(), newURL);
 			if(!updateString.isEmpty()) updateString += ", ";
 			updateString += "url";
 		}
