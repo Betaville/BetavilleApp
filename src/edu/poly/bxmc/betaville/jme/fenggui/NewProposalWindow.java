@@ -591,7 +591,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		versionNoGo.setText("At its creator\'s request, the currently\n" +
 				"selected model is read-only.  You can\n" +
 				"make suggestions through its forum,\n" +
-		"or make a new proposal.");
+				"or make a new proposal.");
 		versionNoGo.setWidth(stepOne.getWidth()-10);
 		versionNoGo.setXY(FengUtils.midWidth(stepOne, versionNoGo), newVersion.getY()-versionNoGo.getHeight()-heightOffset);
 
@@ -662,7 +662,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		setItUpAdvisor = FengGUI.createWidget(Label.class);
 		setItUpAdvisor.setMultiline(true);
 		setItUpAdvisor.setText("[Click on a building or the ground\n" +
-		"to automatically set coordinates]");
+				"to automatically set coordinates]");
 		applyAdvisorAppearance(setItUpAdvisor);
 		setItUpAdvisor.setXY(stepTwo.getWidth()/2-setItUpAdvisor.getWidth()/2, setItUp.getY()-setItUpAdvisor.getHeight()-heightOffset);
 
@@ -796,15 +796,15 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						fileChooser.setFileFilter(modelFilter);
 						fileChooser.showOpenDialog(dialog);
 						File file = fileChooser.getSelectedFile();
-						
+
 						// flash an error if the file is larger than 5mb
 						if(file.length()>5000000){
 							logger.warn(file.toString()+" is "+file.length()+"bytes.  This is rather large");
-							
+
 							GUIGameState.getInstance().getDisp().addWidget(
 									FengUtils.createDismissableWindow("Betaville", "The selected file is rather large, at "+
 											(file.length()/1000000f)+"MB, why don't you see if you can't get that down a bit?", "ok", false));
-							
+
 						}
 
 						String pathToDisplay = file.toString();
@@ -1150,7 +1150,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		snapItAdvisor = FengGUI.createWidget(Label.class);
 		snapItAdvisor.setMultiline(true);
 		snapItAdvisor.setText("[Move this panel to frame a view,\n" +
-		"save it as the proposal menu icon]");
+				"save it as the proposal menu icon]");
 		applyAdvisorAppearance(snapItAdvisor);
 		snapItAdvisor.setXY(FengUtils.midWidth(stepFour, snapItAdvisor), snapIt.getY()-snapItAdvisor.getHeight()-offset);
 
@@ -1191,8 +1191,8 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 								int index = 3 * ((height- y - 1) * width + x);
 								int argb = (((int) (buff.get(index+0)) & 0xFF) << 16) //r
-								| (((int) (buff.get(index+1)) & 0xFF) << 8)  //g
-								| (((int) (buff.get(index+2)) & 0xFF));      //b
+										| (((int) (buff.get(index+1)) & 0xFF) << 8)  //g
+										| (((int) (buff.get(index+2)) & 0xFF));      //b
 
 								img.setRGB(x, y, argb);
 							}
@@ -1372,7 +1372,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							progressLabel.setText("Progress: N/A");
 							progressWindow.getContentContainer().addWidget(progressLabel);
 							manager.getProgressOutputStream().setListener(new ProgressOutputListener() {
-								
+
 								@Override
 								public void writeProgressUpdate(int bytesWritten) {
 									// remove the window if the counter has been reset to zero
@@ -1381,7 +1381,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 											((Container)progressWindow.getParent()).removeWidget(progressWindow);
 										}
 									}
-									
+
 									String updateString = "";
 									if(bytesWritten<1000){
 										updateString = bytesWritten+" bytes";
@@ -1399,10 +1399,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							});
 							StaticLayout.center(progressWindow, GUIGameState.getInstance().getDisp());
 							GUIGameState.getInstance().getDisp().addWidget(progressWindow);
-							
+
 							int response=-4;
 							if(stepOneSelection.equals(Classification.BASE)){
-								
+
 								// Attempt to get a thumbnail
 								PhysicalFileTransporter thumbTransporter=packThumbnail();
 								response = manager.addBase(design, GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile));
@@ -1447,7 +1447,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 								PhysicalFileTransporter thumbTransporter=packThumbnail();
 								response = manager.addProposal(design, removables, GeometryUtilities.getPFT(design.getFullIdentifier()), thumbTransporter, PhysicalFileTransporter.readFromFileSystem(packedFile), permission);
 							}
-							
+
 
 							// interpret responses
 							if(response>0){
@@ -1490,28 +1490,34 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		stepFive.addWidget(shareIt, groupList, permissionsCombo, upload);
 		//stepFive.addWidget(permissionsClosed, permissionsOpen, permissionsGroup);
 	}
-	
+
 	/**
 	 * Packs the saved thumbnail, if it was taken, into a file transporter
 	 * @return A {@link PhysicalFileTransporter} containing the image data
 	 * or null if there was no thumbnail saved.
-	 * @throws IOException 
-	 * @throws FileNotFoundException 
 	 */
-	private PhysicalFileTransporter packThumbnail() throws FileNotFoundException, IOException{
-		if(atLeastOnePictureTaken){
-			if(imageFile.isFile()){
-				FileInputStream fis = new FileInputStream(imageFile.getCanonicalFile());
+	private PhysicalFileTransporter packThumbnail(){
+		try {
+			if(atLeastOnePictureTaken){
+				if(imageFile.isFile()){
+					FileInputStream fis;
 
-				// Read the contents and pack it into a PFT
-				byte[] b = new byte[fis.available()];
-				fis.read(b);
-				fis.close();
-				return new PhysicalFileTransporter(b);
+					fis = new FileInputStream(imageFile.getCanonicalFile());
+
+
+					// Read the contents and pack it into a PFT
+					byte[] b = new byte[fis.available()];
+					fis.read(b);
+					fis.close();
+					return new PhysicalFileTransporter(b);
+				}
 			}
+			return null;
+		} catch (FileNotFoundException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
 		}
-		
-		return null;
 	}
 
 	private void applyAdvisorAppearance(Label label){
@@ -1624,7 +1630,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					yRotationSlider.setValue((1f/360f)*designCreatedInThisWindow.getRotationY());
 					zRotationSlider.setValue((1f/360f)*designCreatedInThisWindow.getRotationZ());
 				}
-				
+
 				statusThree.setPixmap(yellow);
 				break;
 			case 4:
