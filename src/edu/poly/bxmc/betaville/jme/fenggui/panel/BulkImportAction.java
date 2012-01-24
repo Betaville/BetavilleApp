@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,8 @@ package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
 import java.awt.Dialog.ModalityType;
 import java.io.File;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.JDialog;
@@ -108,7 +110,15 @@ public class BulkImportAction extends PanelAction {
 									for(File f : files){
 										fileList.add(f);
 									}
-									bl.load(fileList);	
+									try {
+										bl.load(fileList);
+									} catch (UnknownHostException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (IOException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}	
 								}
 							});			
 						}

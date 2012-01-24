@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.flags;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,7 +67,7 @@ public class FlagProducer {
 		this.flagPositionStrategy=flagPositionStrategy;
 	}
 
-	public void getProposals(int meterRadius){
+	public void getProposals(int meterRadius) throws UnknownHostException, IOException{
 
 		proposalDesigns = NetPool.getPool().getConnection().findAllProposalsNearLocation(currentLocation, meterRadius);
 		logger.info(proposalDesigns.size() + " proposals retrieved");

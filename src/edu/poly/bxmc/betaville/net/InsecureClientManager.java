@@ -32,8 +32,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
@@ -56,13 +54,14 @@ public class InsecureClientManager extends ClientManager{
 	
 	/**
 	 * Constructor - Creation of the client manager
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public InsecureClientManager(List<Module> modules){
+	public InsecureClientManager(List<Module> modules) throws UnknownHostException, IOException{
 		this(modules, SettingsPreferences.getServerIP());
 	}
 	
-	public InsecureClientManager(List<Module> modules, String serverIP){
-		try {
+	public InsecureClientManager(List<Module> modules, String serverIP) throws UnknownHostException, IOException{
 			clientSocket = new Socket(serverIP, PORT_SERVER);
 			logger.info("Client application : "+ clientSocket.toString());
 			progressOutput = new ProgressOutputStream(clientSocket.getOutputStream());
@@ -70,11 +69,5 @@ public class InsecureClientManager extends ClientManager{
 			
 			progressInput = new ProgressInputStream(clientSocket.getInputStream());
 			input = new ObjectInputStream(progressInput);
-		} catch (UnknownHostException e) {
-			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
-			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

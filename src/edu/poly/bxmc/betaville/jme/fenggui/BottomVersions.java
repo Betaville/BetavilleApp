@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -154,7 +155,7 @@ public class BottomVersions extends Window {
 		});
 	}
 	
-	public void loadVersions(Design proposalDesign){
+	public void loadVersions(Design proposalDesign) throws UnknownHostException, IOException{
 		if(proposalDesign.getID()==loadedDesignID) return;
 		else{
 			// if the proposal has changed, clear what is currently displayed

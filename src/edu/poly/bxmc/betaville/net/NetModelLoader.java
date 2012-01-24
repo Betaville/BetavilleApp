@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.net;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -97,8 +98,10 @@ public class NetModelLoader{
 		/**
 		 * 
 		 * @param lookupRoutine
+		 * @throws IOException 
+		 * @throws UnknownHostException 
 		 */
-		public static void loadCurrentCity(LookupRoutine lookupRoutine){
+		public static void loadCurrentCity(LookupRoutine lookupRoutine) throws UnknownHostException, IOException{
 			loadCity(lookupRoutine, NO_LIMIT, SceneScape.getCity().getCityID());
 		}
 
@@ -106,8 +109,10 @@ public class NetModelLoader{
 		 * 
 		 * @param lookupRoutine The {@link LookupRoutine} to use when loading models.
 		 * @param limit The maximum number of models to be loaded
+		 * @throws IOException 
+		 * @throws UnknownHostException 
 		 */
-		public static void loadCurrentCity(LookupRoutine lookupRoutine, int limit){
+		public static void loadCurrentCity(LookupRoutine lookupRoutine, int limit) throws UnknownHostException, IOException{
 			loadCity(lookupRoutine, limit, SceneScape.getCity().getCityID());
 		}
 
@@ -117,9 +122,11 @@ public class NetModelLoader{
 		 * @param limit Sets a numeric limit on how many models to load
 		 * from the network.  Helpful for testing purposes. {@link NetModelLoader#NO_LIMIT} for no limit,
 		 * otherwise, use the number of models desired.
+		 * @throws IOException 
+		 * @throws UnknownHostException 
 		 * @see NetModelLoader#NO_LIMIT
 		 */
-		public static void loadCity(LookupRoutine lookupRoutine, int limit, final int cityID){
+		public static void loadCity(LookupRoutine lookupRoutine, int limit, final int cityID) throws UnknownHostException, IOException{
 			logger.info("Loading City " + cityID);
 			List<Design> designs = null;
 			final AtomicInteger itemsToLoad = new AtomicInteger(0);
@@ -259,9 +266,9 @@ public class NetModelLoader{
 
 								// optimize the hierarchy
 
-								int originalSpatialCount = GeometryUtilities.countAllChildren(dNode);
+								//int originalSpatialCount = GeometryUtilities.countAllChildren(dNode);
 								//GeometryUtilities.collapseToSingleLevel(dNode, new ArrayList<Spatial>(), new ArrayList<Spatial>());
-								int newSpatialCount = GeometryUtilities.countAllChildren(dNode);
+								//int newSpatialCount = GeometryUtilities.countAllChildren(dNode);
 
 								// let's see the difference
 								//logger.info(dNode.getName()+"\tOLD COUNT:\t" + originalSpatialCount +"\tNEW COUNT:\t"+newSpatialCount);
@@ -328,15 +335,19 @@ public class NetModelLoader{
 
 		/**
 		 * Loads the terrain for the current city
+		 * @throws IOException 
+		 * @throws UnknownHostException 
 		 */
-		public static void loadCurrentCityTerrain(){
+		public static void loadCurrentCityTerrain() throws UnknownHostException, IOException{
 			loadCityTerrain(SceneScape.getCurrentCityID());
 		}
 
 		/**
 		 * Loads the terrain for the current city
+		 * @throws IOException 
+		 * @throws UnknownHostException 
 		 */
-		public static void loadCityTerrain(int cityID){
+		public static void loadCityTerrain(int cityID) throws UnknownHostException, IOException{
 			logger.info("Loading City Terrain " + cityID);
 			List<Design> designs = NetPool.getPool().getConnection().findTerrainByCity(cityID);
 			if(designs==null){

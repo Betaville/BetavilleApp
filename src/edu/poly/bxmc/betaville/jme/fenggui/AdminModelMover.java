@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,9 @@
 */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
 import org.fenggui.FengGUI;
@@ -48,7 +51,6 @@ import org.fenggui.layout.StaticLayout;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.panel.ModelMover;
@@ -158,7 +160,15 @@ public class AdminModelMover extends Window {
 		save.setText("Save");
 		save.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
-				saveAction();
+				try {
+					saveAction();
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				savedLabel.setText(getDesign().getName()+" was saved.");
 //				close();
 			}
@@ -357,7 +367,7 @@ public class AdminModelMover extends Window {
 		}
 	}
 	
-	private void saveAction(){
+	private void saveAction() throws UnknownHostException, IOException{
 		if(SceneScape.isTargetSpatialLocal()){
 			logger.warn("Can't change the location of a local design!");
 			return;
@@ -413,7 +423,15 @@ public class AdminModelMover extends Window {
 		save.setXY(errorWindow.getWidth()-save.getWidth()-5, 5);
 		save.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				saveAction();
+				try {
+					saveAction();
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				errorWindow.close();
 			}
 		});

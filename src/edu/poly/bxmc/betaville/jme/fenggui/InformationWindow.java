@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -24,6 +24,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package edu.poly.bxmc.betaville.jme.fenggui;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
@@ -151,7 +154,15 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		update.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				logger.info("Information should be updating now");
-				commitChanges();
+				try {
+					commitChanges();
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -203,7 +214,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		return c;
 	}
 	
-	private void commitChanges(){
+	private void commitChanges() throws UnknownHostException, IOException{
 		Design d = SceneScape.getCity().findDesignByID(currentDesignID);
 		
 		String updateString = "";

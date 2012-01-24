@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -29,15 +29,20 @@ import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+
+import org.apache.log4j.Logger;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.jme.scene.Spatial;
@@ -56,6 +61,8 @@ import edu.poly.bxmc.betaville.net.NetPool;
  *
  */
 public class SwingCommentWindow extends JFrame {
+	private static final Logger logger = Logger.getLogger(SwingCommentWindow.class);
+
 	private static final long serialVersionUID = 1L;
 
 	private int currentDesignCommentThread = -1;
@@ -105,30 +112,39 @@ public class SwingCommentWindow extends JFrame {
 			{
 				// do nothing if there is no content
 				if(commentEditor.getText().length()==0) return;
-				
+
 				commentEditor.setEditable(false);
 				submit.setText("...");
 				submit.setEnabled(false);
 
-				boolean result = NetPool.getPool().getSecureConnection().addComment(
-						new Comment(0,
-								currentDesignCommentThread,
-								SettingsPreferences.getUser(),
-								commentEditor.getText(),
-								0)
-						);
-				
-				// if the comment submission succeeded, we can clear the text editor
-				if(result) commentEditor.setText("");
-				else{
-					// if it didn't, we should flash the error
+				try {
+					boolean result = NetPool.getPool().getSecureConnection().addComment(
+							new Comment(0,
+									currentDesignCommentThread,
+									SettingsPreferences.getUser(),
+									commentEditor.getText(),
+									0)
+							);
+
+
+					// if the comment submission succeeded, we can clear the text editor
+					if(result) commentEditor.setText("");
+					else{
+						// if it didn't, we should flash the error
+					}
+
+					updateCommentDisplay(currentDesignCommentThread);
+
+					commentEditor.setEditable(true);
+					submit.setText("Submit");
+					submit.setEnabled(true);
+				} catch (UnknownHostException e1) {
+					logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);
+					JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
+				} catch (IOException e1) {
+					logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);
+					JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
 				}
-				
-				updateCommentDisplay(currentDesignCommentThread);
-				
-				commentEditor.setEditable(true);
-				submit.setText("Submit");
-				submit.setEnabled(true);
 			}
 		});
 
@@ -173,26 +189,35 @@ public class SwingCommentWindow extends JFrame {
 			}
 		});
 	}
-	
+
 	private synchronized void updateCommentDisplay(int designID){
-		List<Comment> comments = NetPool.getPool().getConnection().getComments(designID);
+		try {
+			List<Comment> comments = NetPool.getPool().getConnection().getComments(designID);
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("<style> type=\"text/css\" font-family: verdana, sans-serif;</style>");
 
-		for(int i=0; i<comments.size(); i++){
-			Comment comment = comments.get(i);
-			sb.append("<b><a href=http://betaville.net/profile.php?uName="+comment.getUser()+"\">"+comment.getUser()+"</a> ("+comment.getDate()+")</b> - ");
-			sb.append(comment.getComment());
-			sb.append("<br>");
-			
-			// add a horizontal rule if this is not the last comment
-			if(i<comments.size()-1) sb.append("<hr>");
+			StringBuilder sb = new StringBuilder();
+			sb.append("<style> type=\"text/css\" font-family: verdana, sans-serif;</style>");
+
+			for(int i=0; i<comments.size(); i++){
+				Comment comment = comments.get(i);
+				sb.append("<b><a href=http://betaville.net/profile.php?uName="+comment.getUser()+"\">"+comment.getUser()+"</a> ("+comment.getDate()+")</b> - ");
+				sb.append(comment.getComment());
+				sb.append("<br>");
+
+				// add a horizontal rule if this is not the last comment
+				if(i<comments.size()-1) sb.append("<hr>");
+			}
+
+			commentPane.setText(sb.toString());
+			validate();
+
+			currentDesignCommentThread = designID;
+		} catch (UnknownHostException e1) {
+			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);
+			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
+		} catch (IOException e1) {
+			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);
+			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
 		}
-
-		commentPane.setText(sb.toString());
-		validate();
-		
-		currentDesignCommentThread = designID;
 	}
 }

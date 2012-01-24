@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@ import java.awt.BorderLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -91,7 +93,15 @@ public class SwingProposalWindow extends JFrame{
 					public void run() {
 						updateListButton.setEnabled(false);
 						updateListButton.setText("Updating");
-						updateTree();
+						try {
+							updateTree();
+						} catch (UnknownHostException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						updateListButton.setEnabled(true);
 						updateListButton.setText("Update List");
 					}
@@ -132,7 +142,7 @@ public class SwingProposalWindow extends JFrame{
 
 	}
 	
-	private synchronized void updateTree(){
+	private synchronized void updateTree() throws UnknownHostException, IOException{
 		// clear any pre-existing children from the tree
 		topTreeNode.removeAllChildren();
 		

@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -90,8 +91,10 @@ public class BulkLoader {
 	 * Loads the specified files into Betaville.  Uses Filenames as the model's
 	 * names
 	 * @param files The files to load
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public void load(final List<File> files){
+	public void load(final List<File> files) throws UnknownHostException, IOException{
 		UpdaterPreferences.setBaseEnabled(false);
 		manager = new SecureClientManager(new ArrayList<Module>(), true);
 		while(currentCounter.get()<(files.size())){

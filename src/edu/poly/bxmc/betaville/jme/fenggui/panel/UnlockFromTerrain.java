@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,9 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import org.apache.log4j.Logger;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
@@ -32,7 +35,6 @@ import org.fenggui.event.IButtonPressedListener;
 import com.jme.scene.Node;
 
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.intersections.ITerrainSelectionListener;
@@ -72,17 +74,25 @@ public class UnlockFromTerrain extends PanelAction {
 		getButton().addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-				//logger.info("Looking for ID from design named: " + SceneScape.getSelectedTerrain().getName());
-				int itemToLock = SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getSelectedTerrain().getName()).getID();
-				String name = SceneScape.getCity().findDesignByID(itemToLock).getName();
-				name = new String(name.substring(0, name.indexOf("$TERRAIN")));
-				if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, name)){
-					FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
-				}
-				else{
-					FengUtils.showNewDismissableWindow("Betaville", "Success!", "ok", true);
-					SceneGameState.getInstance().getDesignNode().attachChild(SceneScape.getSelectedTerrain());
-					SceneScape.clearTerrainSelection();
+				try {
+					//logger.info("Looking for ID from design named: " + SceneScape.getSelectedTerrain().getName());
+					int itemToLock = SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getSelectedTerrain().getName()).getID();
+					String name = SceneScape.getCity().findDesignByID(itemToLock).getName();
+					name = new String(name.substring(0, name.indexOf("$TERRAIN")));
+					if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, name)){
+						FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
+					}
+					else{
+						FengUtils.showNewDismissableWindow("Betaville", "Success!", "ok", true);
+						SceneGameState.getInstance().getDesignNode().attachChild(SceneScape.getSelectedTerrain());
+						SceneScape.clearTerrainSelection();
+					}
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		});

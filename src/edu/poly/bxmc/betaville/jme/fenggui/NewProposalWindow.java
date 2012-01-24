@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -107,7 +108,6 @@ import edu.poly.bxmc.betaville.model.ProposalPermission.Type;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
 import edu.poly.bxmc.betaville.net.ProgressOutputStream.ProgressOutputListener;
-import edu.poly.bxmc.betaville.net.ProtectedManager;
 import edu.poly.bxmc.betaville.net.SecureClientManager;
 
 /**
@@ -288,7 +288,8 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		currentNewProposalWindow = this;
 
 		if(SettingsPreferences.getUser()!=null){
-			UserType ut = NetPool.getPool().getConnection().getUserLevel(SettingsPreferences.getUser());
+
+			UserType ut = SettingsPreferences.getUserType();
 
 			// check if the user is a base committer or higher
 			if(ut.compareTo(UserType.BASE_COMMITTER)>=0){
@@ -1325,39 +1326,41 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				SettingsPreferences.getThreadPool().submit(new Runnable(){
 					public void run() {
+						try {
+							// handle permissions
+							ProposalPermission permission=null;
+							if(stepOneSelection.equals(Classification.PROPOSAL)){
+								if(permissionsCombo.getSelectedValue().equals("editable by these users:")){
 
-						// handle permissions
-						ProposalPermission permission=null;
-						if(stepOneSelection.equals(Classification.PROPOSAL)){
-							if(permissionsCombo.getSelectedValue().equals("editable by these users:")){
-								if(!verifyGroupNames()){
-									return;
+									if(!verifyGroupNames()){
+										return;
+									}
+									else{
+										ArrayList<String> names = getGroupNamesList(FengUtils.getText(groupList));
+										if(names!=null){
+											logger.info("Creating the Proposal Permission");
+											permission = new ProposalPermission(Type.GROUP, names);
+											logger.info("Group permissions created");
+										}
+									}
+
+								}
+								else if (permissionsCombo.getSelectedValue().equals("editable by anyone")){
+									permission = new ProposalPermission(Type.ALL, null);
 								}
 								else{
-									ArrayList<String> names = getGroupNamesList(FengUtils.getText(groupList));
-									if(names!=null){
-										logger.info("Creating the Proposal Permission");
-										permission = new ProposalPermission(Type.GROUP, names);
-										logger.info("Group permissions created");
-									}
+									permission = new ProposalPermission(Type.CLOSED, null);
 								}
-							}
-							else if (permissionsCombo.getSelectedValue().equals("editable by anyone")){
-								permission = new ProposalPermission(Type.ALL, null);
-							}
-							else{
-								permission = new ProposalPermission(Type.CLOSED, null);
+
+
+								if(permission!=null) logger.info("Permissions created");
+								else logger.error("Problem creating permissions!");
 							}
 
 
-							if(permission!=null) logger.info("Permissions created");
-							else logger.error("Problem creating permissions!");
-						}
 
-
-						// Get the imported model's data
-						Design design = SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier);
-						try {
+							// Get the imported model's data
+							Design design = SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier);
 
 							// Check if the user has supplied their credentials yet
 							if(!SettingsPreferences.isAuthenticated()){
@@ -1482,8 +1485,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						} catch (IOException e1) {
 							logger.error("Error uploading file", e1);
 							showSimpleError("File could not be uploaded");
-						}
-					}});
+						}}});
 			}
 		});
 
@@ -2132,7 +2134,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		return modelIsLoaded;
 	}
 
-	private boolean verifyGroupNames(){
+	private boolean verifyGroupNames() throws UnknownHostException, IOException{
 		String groupListText = FengUtils.getText(groupList);
 
 		if(!groupListText.equals(defaultGroupListText)){

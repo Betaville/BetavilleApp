@@ -25,6 +25,8 @@
 */
 package edu.poly.bxmc.betaville;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -45,7 +47,13 @@ public class ShutdownManager {
 		BetavilleNoCanvas.getGame().shutdown();
 		BetavilleNoCanvas.getUpdater().shutdown();
 		logger.info("Doing Safe Shutdown");
-		NetPool.getPool().getSecureConnection().endSession(SettingsPreferences.getSessionToken());
+		try {
+			NetPool.getPool().getSecureConnection().endSession(SettingsPreferences.getSessionToken());
+		} catch (UnknownHostException e) {
+			logger.error("Could not reach server during shutdown", e);
+		} catch (IOException e) {
+			logger.error("Could not log out during shutdown", e);
+		}
 		logger.info("Shutting down network connections");
 		NetPool.getPool().cleanAll();
 		logger.info("Cleaning up Main Thread Pool");

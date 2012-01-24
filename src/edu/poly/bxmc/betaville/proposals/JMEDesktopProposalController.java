@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.proposals;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 
 import com.jme.scene.Node;
 
@@ -55,7 +56,16 @@ public class JMEDesktopProposalController implements SceneProposalController {
 	public boolean addDesignToScene(Design versionToAdd) {
 		
 		if(versionToAdd instanceof ModeledDesign){
-			boolean fileResponse = CacheManager.getCacheManager().requestFile(versionToAdd.getID(), versionToAdd.getFilepath());
+			boolean fileResponse = false;
+			try {
+				fileResponse = CacheManager.getCacheManager().requestFile(versionToAdd.getID(), versionToAdd.getFilepath());
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			if(fileResponse){
 				ModelLoader loader = null;

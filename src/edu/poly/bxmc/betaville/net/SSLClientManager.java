@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -70,8 +71,10 @@ public class SSLClientManager extends SecureClientManager{
 
 	/**
 	 * Constructor - Creation of the client manager
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public SSLClientManager(List<Module> modules){
+	public SSLClientManager(List<Module> modules) throws UnknownHostException, IOException{
 		super(modules, false);
 		try{
 			KeyStore keyStore = KeyStore.getInstance("JKS");
@@ -85,8 +88,6 @@ public class SSLClientManager extends SecureClientManager{
 			TrustManagerFactory trustManager = TrustManagerFactory.getInstance("SunX509");
 			trustManager.init(trustStore);
 			
-			TrustManager[] trustAll = createTrustAll();
-
 			SSLContext context = SSLContext.getInstance("TLS");
 			context.init(keyManager.getKeyManagers(), trustManager.getTrustManagers(), null);
 			//context.init(keyManager.getKeyManagers(), trustAll, null);
@@ -118,7 +119,7 @@ public class SSLClientManager extends SecureClientManager{
 		}
 	}
 
-	private TrustManager[] createTrustAll() {
+	public static TrustManager[] createTrustAll() {
 		// Create a trust manager that does not validate certificate chains
 		return new TrustManager[] { new X509TrustManager() {
 

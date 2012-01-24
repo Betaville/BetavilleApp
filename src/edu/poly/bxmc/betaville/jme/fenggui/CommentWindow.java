@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,22 +68,22 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 	private static Logger logger = Logger.getLogger(CommentWindow.class);
 	private int targetWidth = 400;
 	private int targetHeight = 500;
-	
+
 	private int currentDesign;
-	
+
 	List<ITextFilter> contentFilters;
-	
+
 	private AbstractUpdater commentUpdater;
-	
+
 	private Container entryContainer;
 	private TextEditor newCommentEditor;
 	private FixedButton postComment;
-	
+
 	private BlockingScrollContainer sc;
 	private double rememberedPosition=0;
 	private TextEditor commentText;
 	private Label intermediary;
-	
+
 	private boolean latestOnBottom=true;
 	private int commentCount=0;
 
@@ -93,14 +95,14 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 		contentFilters = new ArrayList<ITextFilter>();
 		//getContentContainer().setSize(targetWidth, targetHeight);
 		getContentContainer().setLayoutManager(new StaticLayout());
-		
+
 		intermediary = FengGUI.createWidget(Label.class);
 		intermediary.setText("Getting Comments");
-		
+
 		createEntryContainer();
 		createCommentContainer();
 		getContentContainer().layout();
-		
+
 		SceneScape.addSelectionListener(new ISpatialSelectionListener(){
 			/*
 			 * (non-Javadoc)
@@ -118,10 +120,10 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 				if(isInWidgetTree()) setCurrentDesign(design.getID());
 			}
 		});
-		
+
 		createCommentUpdater();
 	}
-	
+
 	private void createCommentContainer(){
 		sc = FengGUI.createWidget(BlockingScrollContainer.class);
 		sc.setSize(targetWidth, targetHeight-titleBar.getHeight()-newCommentEditor.getHeight()-postComment.getHeight()-20);
@@ -138,12 +140,12 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 		getContentContainer().addWidget(sc);
 		sc.layout();
 	}
-	
+
 	private void createEntryContainer(){
 		entryContainer = FengGUI.createWidget(Container.class);
 		entryContainer.setLayoutManager(new StaticLayout());
 		entryContainer.setSize(targetWidth-10, 50);
-		
+
 		postComment = FengGUI.createWidget(FixedButton.class);
 		postComment.setText("post");
 		//postComment.setWidth(postComment.getWidth()+10);
@@ -154,7 +156,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 				postComment();
 			}
 		});
-		
+
 		newCommentEditor = FengGUI.createWidget(TextEditor.class);
 		newCommentEditor.setMultiline(true);
 		newCommentEditor.setWordWarping(true);
@@ -164,33 +166,33 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 		newCommentEditor.setText(" ");
 		newCommentEditor.layout();
 		newCommentEditor.addSizeChangedListener(new ISizeChangedListener() {
-			
+
 			public void sizeChanged(Object sender, SizeChangedEvent event) {
 				int deltaY = event.getNewSize().getHeight()-event.getOldSize().getHeight();
-				
+
 				// shuffle and shift the scroll container
 				sc.setHeight(sc.getHeight()-deltaY);
 				sc.layout();
 				sc.setY(sc.getY()+deltaY);
 			}
 		});
-		
+
 		if(!SettingsPreferences.guestMode()) getContentContainer().addWidget(newCommentEditor, postComment);
 		//entryContainer.addWidget(postComment, newCommentEditor);
 		//getContentContainer().addWidget(entryContainer);
 	}
-	
+
 	private void createCommentUpdater(){
-		
+
 		commentUpdater = new AbstractUpdater(15000) {
 			private boolean isInUpdate=false;
-			
+
 			public void doUpdate(){
 				isInUpdate=true;
 				refresh(false);
 				isInUpdate=false;
 			}
-			
+
 			public boolean isUpdateRequired() {
 				return isInWidgetTree();
 			}
@@ -200,74 +202,90 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 				return isInUpdate;
 			}
 		};
-		
+
 		BetavilleNoCanvas.getUpdater().addTask(new BetavilleTask(commentUpdater));
 	}
-	
+
 	public void finishSetup(){
 		setTitle("Comments");
 		setSize(targetWidth, targetHeight);
 	}
-	
-	
+
+
 	public void setCurrentDesign(final int designID){
 		rememberedPosition=sc.getVerticalScrollBar().getSlider().getValue();
 		//sc.setInnerWidget(intermediary);
 		sc.layout();
-		
+
 		StringBuilder content = new StringBuilder();
-		
+
 		// create new content
 		logger.info("getting comments for " + currentDesign);
-		List<Comment> comments = NetPool.getPool().getConnection().getComments(designID);
-		if(designID==currentDesign) if(comments.size()==commentCount){
-			logger.info("Comments don't need updating");
-			return;
+		try {
+			List<Comment> comments = NetPool.getPool().getConnection().getComments(designID);
+			if(designID==currentDesign) if(comments.size()==commentCount){
+				logger.info("Comments don't need updating");
+				return;
+			}
+
+			if(!latestOnBottom)Collections.reverse(comments);
+			for(int i=0; i<comments.size(); i++){
+				logger.info("doing comment " + i);
+				Comment c = comments.get(i);
+				content.append("\n"+c.getUser()+" ("+c.getDate()+")\n"+c.getComment()+"\n");
+			}
+			commentText.setText(content.toString());
+			//sc.setInnerWidget(commentText);
+			sc.layout();
+			if(designID==currentDesign) sc.getVerticalScrollBar().getSlider().setValue(rememberedPosition);
+			currentDesign = designID;
+			commentCount=comments.size();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		if(!latestOnBottom)Collections.reverse(comments);
-		for(int i=0; i<comments.size(); i++){
-			logger.info("doing comment " + i);
-			Comment c = comments.get(i);
-			content.append("\n"+c.getUser()+" ("+c.getDate()+")\n"+c.getComment()+"\n");
-		}
-		commentText.setText(content.toString());
-		//sc.setInnerWidget(commentText);
-		sc.layout();
-		if(designID==currentDesign) sc.getVerticalScrollBar().getSlider().setValue(rememberedPosition);
-		currentDesign = designID;
-		commentCount=comments.size();
 	}
 
 	private void postComment(){
 		String newComment = FengUtils.getText(newCommentEditor);
-		
+
 		// check for invalid comment
 		if(newComment.isEmpty() || newComment.equals(" ")){
 			logger.info("Cannot add empty comment");
 			return;
 		}
-		
+
 		// Scan for dirty content
 		for(ITextFilter filter : contentFilters){
 			if(!filter.isClean(newComment)){
 				// flash problem
 			}
 		}
-		
+
 		Comment comment = new Comment(0,
 				currentDesign,
 				SettingsPreferences.getUser(),
 				newComment,
 				0);
-		boolean response = NetPool.getPool().getSecureConnection().addComment(comment);
-		if(response) refresh(true);
-		else{
-			logger.error("Comment submission failed");
-			// darn!
+		try {
+			boolean response = NetPool.getPool().getSecureConnection().addComment(comment);
+			if(response) refresh(true);
+			else{
+				logger.error("Comment submission failed");
+				// darn!
+			}
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-	
+
 	private void refresh(boolean clearNewText){
 		setCurrentDesign(currentDesign);
 		if(clearNewText){
@@ -275,7 +293,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 			newCommentEditor.setHeight(entryContainer.getHeight()-postComment.getHeight());
 		}
 	}
-	
+
 	public void close(){
 		super.close();
 	}	

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,34 +81,34 @@ public class CityPanel extends Window implements IBetavilleWindow{
 	private static Logger logger = Logger.getLogger(CityPanel.class);
 	private int targetWidth= 180;
 	private int targetHeight = 400;
-	
+
 	private BlockingScrollContainer sc;
 	private Container isc;
-	
+
 	private FixedButton delete;
 	private FixedButton terrain;
 	private FixedButton swap;
 	private FixedButton lockToTerrain;
-	
+
 	private TerrainLoader terrainWindow;
 	private ModelSwapWindow modelSwapper;
-	
+
 	private List<PanelAction> panelActions;
-	
+
 
 	public CityPanel(){
 		super(true, true);
 		panelActions = new ArrayList<PanelAction>();
 		internalSetup();
 	}
-	
+
 	private void internalSetup(){
 		//getContentContainer().setLayoutManager(new RowExLayout(false));
 		//getContentContainer().setLayoutManager(new StaticLayout());
 		//getContentContainer().setSize(targetWidth, targetHeight-getTitleBar().getHeight());
-		
-		
-		
+
+
+
 		sc = FengGUI.createWidget(BlockingScrollContainer.class);
 		sc.setSize(targetWidth, targetHeight);
 		getContentContainer().addWidget(sc);
@@ -115,8 +117,8 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		isc.setLayoutManager(new RowExLayout(false));
 		sc.setInnerWidget(isc);
 		sc.layout();
-		
-		
+
+
 		addAction(new TerrainDeleterAction());
 		addAction(new VolumeControl());
 		addAction(new WireframePanelAction());
@@ -124,7 +126,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new BulkImportAction());
 		//addAction(new VertexEditorPanelAction());
 		//addAction(new BookmarkPanel());
-		
+
 		addAction(new OnOffPanelAction("Upload Thumbnail", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailUploadWindow.class, false));
 		addAction(new SwingOnOffPanelAction("Comments in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingCommentWindow.class));
 		addAction(new SwingOnOffPanelAction("Proposals in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingProposalWindow.class));
@@ -153,23 +155,23 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new OnOffPanelAction("Plugin Manager", "Install Plugins", AvailabilityRule.ALWAYS, UserType.MEMBER, false, PluginManagerUI.class, false));
 		addAction(new PerformancePanelAction());
 		addAction(new PanelAction("Toggle Shadows", "Shadows", new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				ShadowPassState.getInstance().toggleMapPass();
 				//ShadowPassState.getInstance().getShadowPass().setRenderShadows(!ShadowPassState.getInstance().getShadowPass().getRenderShadows());
 			}
 		}));
-		
+
 		addAction(new OnOffPanelAction("Light Angles", "Light Angle Modifier", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightAngleModifier.class, false));
 		/*
 		addAction(new PanelAction("Toggle Shadow Volumes", "Volumes", new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				ShadowPassState.getInstance().getShadowPass().setRenderVolume(!ShadowPassState.getInstance().getShadowPass().getRenderVolume());
 			}
 		}));
-		*/
-		
+		 */
+
 		terrainWindow = FengGUI.createWidget(TerrainLoader.class);
 		terrainWindow.finishSetup();
 		terrain = FengGUI.createWidget(FixedButton.class);
@@ -180,43 +182,52 @@ public class CityPanel extends Window implements IBetavilleWindow{
 				if(!terrainWindow.isInWidgetTree()) GUIGameState.getInstance().getDisp().addWidget(terrainWindow);
 			}
 		});
-		
+
 		delete = FengGUI.createWidget(FixedButton.class);
 		delete.setText("Delete");
 		delete.setWidth(delete.getWidth()+10);
 		delete.setEnabled(false);
 		delete.addButtonPressedListener(new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				Window window = FengUtils.createTwoOptionWindow("Delete", "Are you sure that you would like to delete this design?",
 						"no", "yes",
 						new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
-						
+
 						logger.info("b1 pressed");
 					}
 				},
 				new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
-						int designID = SceneScape.getPickedDesign().getID();
-						int removed = NetPool.getPool().getSecureConnection().removeDesign(designID);
-						if(removed==0){
-							SceneGameState.getInstance().removeDesignFromDisplay(designID);
-							logger.info("Design successfully removed");
-						}
-						else if(removed==-3){
-							logger.warn("You are either not the owner of this design or not authorized to remove designs");
+						try{
+							int designID = SceneScape.getPickedDesign().getID();
+							int removed = NetPool.getPool().getSecureConnection().removeDesign(designID);
+
+							if(removed==0){
+								SceneGameState.getInstance().removeDesignFromDisplay(designID);
+								logger.info("Design successfully removed");
+							}
+							else if(removed==-3){
+								logger.warn("You are either not the owner of this design or not authorized to remove designs");
+							}
+						} catch (UnknownHostException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
 					}
 				},
 				true, true
-				);
-				
+						);
+
 				window.setXY(FengUtils.midWidth(GUIGameState.getInstance().getDisp(), window),FengUtils.midHeight(GUIGameState.getInstance().getDisp(), window));
 				GUIGameState.getInstance().getDisp().addWidget(window);
 			}
 		});
-		
+
 
 		modelSwapper = FengGUI.createWidget(ModelSwapWindow.class);
 		modelSwapper.finishSetup();
@@ -229,44 +240,52 @@ public class CityPanel extends Window implements IBetavilleWindow{
 				if(!modelSwapper.isInWidgetTree()) GUIGameState.getInstance().getDisp().addWidget(modelSwapper);
 			}
 		});
-		
+
 		lockToTerrain = FengGUI.createWidget(FixedButton.class);
 		lockToTerrain.setText("Lock to Terrain");
 		lockToTerrain.setEnabled(false);
 		lockToTerrain.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				int itemToLock = SceneScape.getPickedDesign().getID();
-				SceneGameState.getInstance().getTerrainNode().attachChild(SceneGameState.getInstance().getSpecificDesign(itemToLock));
-				if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, SceneScape.getCity().findDesignByID(itemToLock).getName()+"$TERRAIN")){
-					FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
-				}
-				else{
-					SceneScape.clearTargetSpatial();
-					FengUtils.showNewDismissableWindow("Betaville", "Success!", "ok", true);
+				try{
+					int itemToLock = SceneScape.getPickedDesign().getID();
+					SceneGameState.getInstance().getTerrainNode().attachChild(SceneGameState.getInstance().getSpecificDesign(itemToLock));
+					if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, SceneScape.getCity().findDesignByID(itemToLock).getName()+"$TERRAIN")){
+						FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
+					}
+					else{
+						SceneScape.clearTargetSpatial();
+						FengUtils.showNewDismissableWindow("Betaville", "Success!", "ok", true);
+					}
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
-		
-		
+
+
 		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
 			public void selectionCleared(Design previousDesign) {
 				delete.setEnabled(false);
 				swap.setEnabled(false);
 				lockToTerrain.setEnabled(false);
 			}
-			
+
 			public void designSelected(Spatial spatial, Design design) {
 				delete.setEnabled(true);
 				swap.setEnabled(true);
 				lockToTerrain.setEnabled(true);
 			}
 		});
-		
+
 		if(SettingsPreferences.getUserType().compareTo(UserType.MODERATOR)>=0)isc.addWidget(delete);
 		if(SettingsPreferences.getUserType().compareTo(UserType.MODERATOR)>=0)isc.addWidget(swap);
 		//if(SettingsPreferences.getUserType().compareTo(UserType.MODERATOR)>=0)getContentContainer().addWidget(terrain);
 		if(SettingsPreferences.getUserType().compareTo(UserType.MODERATOR)>=0)isc.addWidget(lockToTerrain);
-		
+
 		addWindowClosedListener(new IWindowClosedListener() {
 			public void windowClosed(WindowClosedEvent windowClosedEvent) {
 				for(PanelAction action : panelActions){
@@ -277,20 +296,20 @@ public class CityPanel extends Window implements IBetavilleWindow{
 			}
 		});
 	}
-	
+
 	public void addAction(PanelAction action){
 		if(SettingsPreferences.getUserType().compareTo(action.getRequiredUserLevel())>=0){
 			panelActions.add(action);
 			isc.addWidget(action.getButton());
 		}
 	}
-	
+
 	public void removeAction(PanelAction action){
 		if(action.getButton().isInWidgetTree()){
 			isc.removeWidget(action.getButton());
 		}
 	}
-	
+
 	/**
 	 * Retrieves a panel action
 	 * @param name The name of the panel action to retrieve
@@ -301,10 +320,10 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		for(PanelAction action : panelActions){
 			if(action.getName().equals(name)) return action;
 		}
-		
+
 		return null;
 	}
-	
+
 	public Window getWindow(Class<?> windowClass){
 		for(PanelAction action : panelActions){
 			logger.info("action: "+action.getClass().getName());
@@ -316,12 +335,12 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		}
 		return null;
 	}
-	
+
 	public void finishSetup(){
 		setTitle("City Panel");
 		setSize(targetWidth, targetHeight);
 	}
-	
+
 	/**
 	 * Triggers some action when the city panel is closed.
 	 * @author Skye Book

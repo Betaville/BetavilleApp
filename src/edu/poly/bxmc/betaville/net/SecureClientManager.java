@@ -32,8 +32,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.SettingsPreferences;
@@ -60,32 +58,27 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 
 	/**
 	 * Constructor - Creation of the client manager
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public SecureClientManager(List<Module> modules, boolean createSocketHere){
+	public SecureClientManager(List<Module> modules, boolean createSocketHere) throws UnknownHostException, IOException{
 		this(modules, createSocketHere, SettingsPreferences.getServerIP());
 	}
 
 	/**
 	 * Constructor - Creation of the client manager
 	 */
-	public SecureClientManager(List<Module> modules, boolean createSocketHere, String serverIP){
+	public SecureClientManager(List<Module> modules, boolean createSocketHere, String serverIP) throws UnknownHostException, IOException{
 
 		if(!createSocketHere) return;
 
-		try {
-			clientSocket = new Socket(serverIP, PORT_SERVER);
-			logger.info("Client application : "+ clientSocket.toString());
-			progressOutput = new ProgressOutputStream(clientSocket.getOutputStream());
-			output = new ObjectOutputStream(progressOutput);
+		clientSocket = new Socket(serverIP, PORT_SERVER);
+		logger.info("Client application : "+ clientSocket.toString());
+		progressOutput = new ProgressOutputStream(clientSocket.getOutputStream());
+		output = new ObjectOutputStream(progressOutput);
 
-			progressInput = new ProgressInputStream(clientSocket.getInputStream());
-			input = new ObjectInputStream(progressInput);
-		} catch (UnknownHostException e) {
-			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e);
-			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		progressInput = new ProgressInputStream(clientSocket.getInputStream());
+		input = new ObjectInputStream(progressInput);
 	}
 
 	/*

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,10 @@
  */
 package edu.poly.bxmc.betaville.jme;
 
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -315,24 +317,35 @@ public class BetavilleNoCanvas {
 		if(!SettingsPreferences.guestMode()) SwingLoginWindow.prompt();
 		else SettingsPreferences.setUserType(UserType.GUEST);
 
-		
-		CitySelector citySelector = new CitySelector();
-		citySelector.setCitySelectedCallback(new CitySelectedCallback() {
 
-			@Override
-			public void onSelection(Wormhole wormhole) {
-				SceneScape.setUTMZone(wormhole.getLocation().getLonZone(), wormhole.getLocation().getLatZone());
-				SettingsPreferences.setStartupCity(wormhole.getCityID());
-				cameraStartPosition = wormhole.getLocation();
+		try {
+			CitySelector citySelector = new CitySelector();
+			citySelector.setCitySelectedCallback(new CitySelectedCallback() {
+
+				@Override
+				public void onSelection(Wormhole wormhole) {
+					SceneScape.setUTMZone(wormhole.getLocation().getLonZone(), wormhole.getLocation().getLatZone());
+					SettingsPreferences.setStartupCity(wormhole.getCityID());
+					cameraStartPosition = wormhole.getLocation();
+				}
+			});
+
+			citySelector.setVisible(true);
+
+			while(citySelector.isVisible()){
+				Thread.sleep(25);
 			}
-		});
-
-		citySelector.setVisible(true);
-
-		while(citySelector.isVisible()){
-			Thread.sleep(25);
+		} catch (HeadlessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		
+
 
 		if(game.getSettings().isFullscreen()){
 			// setup for undecorated window
@@ -351,15 +364,23 @@ public class BetavilleNoCanvas {
 
 		transitionGameState.setProgress(0.03f, "Loading Preferences");
 
-		List<City> cities = NetPool.getPool().getConnection().findAllCities();
-		int startupCity = SettingsPreferences.getStartupCity();
-		for (City c : cities) {
-			if (c.getCityID() == startupCity)
-				SceneScape.addCityAndSetToCurrent(c);
-			else
-				SceneScape.addCity(c);
+		try {
+			List<City> cities = NetPool.getPool().getConnection().findAllCities();
+			int startupCity = SettingsPreferences.getStartupCity();
+			for (City c : cities) {
+				if (c.getCityID() == startupCity)
+					SceneScape.addCityAndSetToCurrent(c);
+				else
+					SceneScape.addCity(c);
+			}
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		// TODO: City selection window on startup
+
 
 		transitionGameState.setProgress(0.05f, "Initializing Scene");
 
@@ -367,7 +388,15 @@ public class BetavilleNoCanvas {
 		GameStateManager.getInstance().attachChild(sceneGameState);
 		sceneGameState.setActive(false);
 		if (!SettingsPreferences.useGeneratedTerrainEnabled())
-			NetModelLoader.loadCurrentCityTerrain();
+			try {
+				NetModelLoader.loadCurrentCityTerrain();
+			} catch (UnknownHostException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		else {
 			SettingsPreferences.getThreadPool().submit(new Runnable() {
 				public void run() {
@@ -427,7 +456,7 @@ public class BetavilleNoCanvas {
 		soundGameState.setActive(true);
 		// if(SettingsPreferences.isWaterOn()) waterGameState.setActive(true);
 		guiGameState.setActive(true);
-		
+
 		// now that the application is loaded, we can run the completion
 		// listeners
 		for (IAppInitializationCompleteListener listener : listeners) {
@@ -438,14 +467,23 @@ public class BetavilleNoCanvas {
 			SettingsPreferences.getThreadPool().submit(new Runnable() {
 				public void run() {
 					long startTime = System.currentTimeMillis();
+					try {
+						// load the base model
+						NetModelLoader.loadCurrentCity(LookupRoutine.ALL_IN_CITY);
+
+						// load proposals
+						FlagProducer testFlagger = new FlagProducer(cameraStartPosition.getUTM(), new DesktopFlagPositionStrategy());
+
+						testFlagger.getProposals(30000);
+						testFlagger.placeFlags();
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
-					// load the base model
-					NetModelLoader.loadCurrentCity(LookupRoutine.ALL_IN_CITY);
-					
-					// load proposals
-					FlagProducer testFlagger = new FlagProducer(cameraStartPosition.getUTM(), new DesktopFlagPositionStrategy());
-					testFlagger.getProposals(30000);
-					testFlagger.placeFlags();
 
 					// enable framerate optimization
 					//sceneGameState.setFramerateOptimizationEnabled(true);

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -22,10 +22,11 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Button;
@@ -64,7 +65,7 @@ import edu.poly.bxmc.betaville.net.NetPool;
  */
 public class NavContainer extends Container {
 	private static final Logger logger = Logger.getLogger(NavContainer.class);
-	
+
 	private ITexture post;
 	private ITexture postOver;
 	private ITexture info;
@@ -85,7 +86,7 @@ public class NavContainer extends Container {
 		loadTextures();
 		createContext();
 	}
-	
+
 	private void loadTextures(){
 		try {
 			post		=	Binding.getInstance().getTexture("data/uiAssets/menu/NavPost.png");
@@ -100,7 +101,7 @@ public class NavContainer extends Container {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void createContext(){
 		try{
 			// BUTTONS
@@ -171,21 +172,29 @@ public class NavContainer extends Container {
 					SoundGameState.getInstance().playSound(SOUNDS.TOGGLE, DisplaySystem.getDisplaySystem().getRenderer().getCamera().getLocation());
 					GUIGameState.getInstance().removeNavMenu();
 					GUIGameState.getInstance().setContextOn(false);
-					
+
 					if(SettingsPreferences.guestMode()){
 						GUIGameState.getInstance().getDisp().addWidget(
 								FengUtils.createDismissableWindow("Betaville", "You cannot fave an object in guest mode!", "ok", true));
 					}
-					
+
 					if(!SceneScape.getTargetSpatial().getName().endsWith("$empty")){
-						int response = NetPool.getPool().getSecureConnection().faveDesign(SceneScape.getPickedDesign().getID());
-						if(response==0){
-							FengUtils.showNewDismissableWindow("Betaville",
-									"Faved!", "ok", true);
-						}
-						else if(response == -2){
-							FengUtils.showNewDismissableWindow("Betaville",
-									"You have already favorited this item!", "ok", true);
+						try {
+							int response = NetPool.getPool().getSecureConnection().faveDesign(SceneScape.getPickedDesign().getID());
+							if(response==0){
+								FengUtils.showNewDismissableWindow("Betaville",
+										"Faved!", "ok", true);
+							}
+							else if(response == -2){
+								FengUtils.showNewDismissableWindow("Betaville",
+										"You have already favorited this item!", "ok", true);
+							}
+						} catch (UnknownHostException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 				}
@@ -223,7 +232,7 @@ public class NavContainer extends Container {
 					// If the window is already on, stop here
 					if(GUIGameState.getInstance().isProposalWindowOn()) 
 						return;
-					
+
 					// If it isn't, put it there
 					GUIGameState.getInstance().resetProposalWindow();
 				}
@@ -253,9 +262,9 @@ public class NavContainer extends Container {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void showComments(){
 		GUIGameState.getInstance().showCommentWindow();
-		
-    }
+
+	}
 }

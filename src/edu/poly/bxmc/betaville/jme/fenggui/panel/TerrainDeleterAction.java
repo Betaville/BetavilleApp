@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -22,8 +22,11 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
+
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 import org.fenggui.composite.Window;
@@ -33,7 +36,6 @@ import org.fenggui.event.IButtonPressedListener;
 import com.jme.scene.Node;
 
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -60,46 +62,55 @@ public class TerrainDeleterAction extends PanelAction {
 	 */
 	public TerrainDeleterAction() {
 		super("Delete Terrain", "Deletes the selected terrain", "Delete Terrain", AvailabilityRule.IGNORE, UserType.MODERATOR,
-new IButtonPressedListener() {
-			
+				new IButtonPressedListener() {
+
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				Window window = FengUtils.createTwoOptionWindow("Delete", "Are you sure that you would like to delete this terrain?",
 						"no", "yes",
 						new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
-						
+
 						logger.info("b1 pressed");
 					}
 				},
 				new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 						int designID = Integer.parseInt(new String(SceneScape.getSelectedTerrain().getName().substring(1)));
-						int removed = NetPool.getPool().getSecureConnection().removeDesign(designID);
-						if(removed==0){
-							SceneGameState.getInstance().removeTerrainFromDisplay(designID);
-							logger.info("Terrain successfully removed");
-						}
-						else if(removed==-3){
-							logger.warn("You are not authorized to remove terrain!");
+						try {
+							int removed = NetPool.getPool().getSecureConnection().removeDesign(designID);
+
+							if(removed==0){
+								SceneGameState.getInstance().removeTerrainFromDisplay(designID);
+								logger.info("Terrain successfully removed");
+							}
+							else if(removed==-3){
+								logger.warn("You are not authorized to remove terrain!");
+							}
+						} catch (UnknownHostException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
 					}
 				},
 				true, true
-				);
-				
+						);
+
 				window.setXY(FengUtils.midWidth(GUIGameState.getInstance().getDisp(), window),FengUtils.midHeight(GUIGameState.getInstance().getDisp(), window));
 				GUIGameState.getInstance().getDisp().addWidget(window);
 			}
 		});
-		
+
 		button.setEnabled(false);
-		
+
 		SceneScape.addTerrainSelectionListener(new ITerrainSelectionListener() {
-			
+
 			public void terrainSelectionCleared() {
 				button.setEnabled(false);
 			}
-			
+
 			public void terrainSelected(Node selectedTerrain) {
 				button.setEnabled(true);
 			}

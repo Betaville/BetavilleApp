@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Logger;
@@ -63,10 +65,16 @@ public class CityManager {
 		SettingsPreferences.getThreadPool().execute(new Runnable() {
 
 			public void run() {
-				deconstructCurrentCity(oldCity);
-				oldCityIsUnloaded.set(true);
-				constructCity(newCity, cityPoint);
-				newCityIsLoaded.set(true);
+				try{
+					deconstructCurrentCity(oldCity);
+					oldCityIsUnloaded.set(true);
+					constructCity(newCity, cityPoint);
+					newCityIsLoaded.set(true);
+				}catch (UnknownHostException e) {
+					logger.fatal("Could not reach server", e);
+				} catch (IOException e) {
+					logger.fatal("Could not retrieve city data", e);
+				}
 			}
 		});
 
@@ -89,10 +97,10 @@ public class CityManager {
 		SceneGameState.getInstance().getTerrainNode().detachAllChildren();
 	}
 
-	public static void constructCity(int cityID, ILocation cityPoint){
+	public static void constructCity(int cityID, ILocation cityPoint) throws UnknownHostException, IOException{
 		NetModelLoader.loadCityTerrain(cityID);
 		NetModelLoader.loadCity(LookupRoutine.ALL_IN_CITY, NetModelLoader.NO_LIMIT, cityID);
-		
+
 		// load proposals
 		FlagProducer testFlagger = new FlagProducer(cityPoint.getUTM(), new DesktopFlagPositionStrategy());
 		testFlagger.getProposals(30000);

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@ import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -57,8 +59,10 @@ public class CitySelector extends JFrame {
 	
 	/**
 	 * @throws HeadlessException
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public CitySelector() throws HeadlessException {
+	public CitySelector() throws HeadlessException, UnknownHostException, IOException {
 		setLayout(new BorderLayout());
 		setTitle("Select Starting Location");
 		final List<Wormhole> locations = NetPool.getPool().getConnection().getAllWormholes();

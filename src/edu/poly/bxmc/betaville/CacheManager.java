@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,11 @@
 package edu.poly.bxmc.betaville;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,7 +42,6 @@ import org.apache.log4j.Logger;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.Design;
-import edu.poly.bxmc.betaville.net.ClientManager;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.PhysicalFileTransporter;
 import edu.poly.bxmc.betaville.net.UnprotectedManager;
@@ -255,8 +256,10 @@ public class CacheManager {
 	 * @param designID
 	 * @param filename
 	 * @return
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public boolean requestFile(int designID, String filename){
+	public boolean requestFile(int designID, String filename) throws UnknownHostException, IOException{
 		if(findFile(filename)) return true;
 		else return doRequestFile(designID, filename, NetPool.getPool().getConnection(), true);
 	}
@@ -265,8 +268,10 @@ public class CacheManager {
 	 * Requests the thumbnail for the specified design id
 	 * @param designID
 	 * @return
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	public boolean requestThumbnail(int designID){
+	public boolean requestThumbnail(int designID) throws UnknownHostException, IOException{
 		if(!findThumb(designID)){
 			logger.debug("Requesting a thumbnail for design "+designID);
 			PhysicalFileTransporter pft = NetPool.getPool().getConnection().requestThumbnail(designID);

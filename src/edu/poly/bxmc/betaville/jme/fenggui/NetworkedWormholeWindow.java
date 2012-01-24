@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -48,6 +50,7 @@ import edu.poly.bxmc.betaville.CityManager;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FindCityWindow.ISelectionDeselectionListener;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -77,7 +80,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 	private Button createCity;
 
 	private FindCityWindow fcw;
-	
+
 	private AtomicBoolean currentlySearching = new AtomicBoolean(false);
 
 	/**
@@ -94,19 +97,28 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 
 	private void createCityList(){
 		citySelector = FengGUI.createWidget(ComboBox.class);
-		List<City> cities = NetPool.getPool().getConnection().findAllCities();
-		for(City c : cities){
-			citySelector.addItem(new CityItem(c));
-		}
 
-		citySelector.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			public void selectionChanged(Object sender,
-					SelectionChangedEvent selectionChangedEvent){
-				logger.debug("selection changed");
-				updateWormholeList(((CityItem)citySelector.getSelectedItem()).getCity().getCityID());
+		try {
+			List<City> cities = NetPool.getPool().getConnection().findAllCities();
+			for(City c : cities){
+				citySelector.addItem(new CityItem(c));
 			}
-		});
+
+			citySelector.addSelectionChangedListener(new ISelectionChangedListener() {
+
+				public void selectionChanged(Object sender,
+						SelectionChangedEvent selectionChangedEvent){
+					logger.debug("selection changed");
+					updateWormholeList(((CityItem)citySelector.getSelectedItem()).getCity().getCityID());
+				}
+			});
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void createWormholeSelector(){
@@ -143,8 +155,16 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		createHere.setText("Create Here");
 		createHere.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				int response = NetPool.getPool().getSecureConnection().addWormhole(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), "test", SceneScape.getCurrentCityID());
-				logger.info("New Wormhole created (response: "+response+")");
+				try {
+					int response = NetPool.getPool().getSecureConnection().addWormhole(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), "test", SceneScape.getCurrentCityID());
+					logger.info("New Wormhole created (response: "+response+")");
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -178,9 +198,24 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		createCity.setEnabled(false);
 		createCity.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				GeoNamesSearchResult city = fcw.getSelectedCity();
-				int newCityID = NetPool.getPool().getConnection().addCity(city.getToponym().getCountryCode(), "", "");
-				int response = NetPool.getPool().getSecureConnection().addWormhole(city.getLocation(), city.getMainTitle(), newCityID);
+				try {
+					GeoNamesSearchResult city = fcw.getSelectedCity();
+					int newCityID = NetPool.getPool().getConnection().addCity(city.getToponym().getCountryCode(), "", "");
+					int response = NetPool.getPool().getSecureConnection().addWormhole(city.getLocation(), city.getMainTitle(), newCityID);
+					if(response>0){
+						// Success!
+						FengUtils.showNewDismissableWindow("Betaville", "Wormhole successfully created", "ok", true);
+					}
+					else{
+						FengUtils.showNewDismissableWindow("Betaville", "Wormhole could not be created, server returned error code " + response, "ok", true);
+					}
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -199,23 +234,31 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 				if(currentlySearching.get()) return;
 				currentlySearching.set(true);
 				logger.info("Looking for wormholes in city " + cityID);
-				List<Wormhole> wormholes = NetPool.getPool().getConnection().getAllWormholesInCity(cityID);
-				if(wormholes!=null){
-					logger.info(wormholes.size()+" wormholes found");
-					wormholeSelector.getList().clear();
-					for(Wormhole w : wormholes){
-						wormholeSelector.addItem(new WormholeItem(w));
+				try {
+					List<Wormhole> wormholes = NetPool.getPool().getConnection().getAllWormholesInCity(cityID);
+					if(wormholes!=null){
+						logger.info(wormholes.size()+" wormholes found");
+						wormholeSelector.getList().clear();
+						for(Wormhole w : wormholes){
+							wormholeSelector.addItem(new WormholeItem(w));
+						}
 					}
+					else{
+						logger.warn("Wormhole response was null");
+						wormholeSelector.getList().clear();
+						wormholeSelector.addItem("No Wormholes");
+					}
+					// go back to normal status
+					//citySelector.setEnabled(true);
+					setTitle(title);
+					currentlySearching.set(false);
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				else{
-					logger.warn("Wormhole response was null");
-					wormholeSelector.getList().clear();
-					wormholeSelector.addItem("No Wormholes");
-				}
-				// go back to normal status
-				//citySelector.setEnabled(true);
-				setTitle(title);
-				currentlySearching.set(false);
 			}
 		});
 	}

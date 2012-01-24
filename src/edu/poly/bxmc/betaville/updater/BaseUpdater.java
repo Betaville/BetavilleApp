@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.updater;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,7 +42,7 @@ import edu.poly.bxmc.betaville.net.NetPool;
  */
 public class BaseUpdater extends AbstractUpdater {
 	private static Logger logger = Logger.getLogger(BaseUpdater.class);
-	
+
 	private boolean updating=false;
 
 	/**
@@ -62,28 +64,28 @@ public class BaseUpdater extends AbstractUpdater {
 	 */
 	public void doUpdate(){
 		updating=true;
-		
-		
-		
-		long startTime = System.currentTimeMillis();
-		
-		HashMap<Integer, Integer> hashMap = new HashMap<Integer, Integer>();
-		for(Design d : SceneScape.getCity().getDesigns()){
-			hashMap.put(d.getID(), d.hashCode());
-		}
-		
-		List<Design> updated = NetPool.getPool().getConnection().synchronizeData(hashMap);
-		
-		logger.info(updated.size()+" designs changed (took "+(System.currentTimeMillis()-startTime)+"ms)");
-		
-		
-		startTime = System.currentTimeMillis();
-		List<Design> updatedDesigns = NetPool.getPool().getConnection().findBaseDesignsByCity(SceneScape.getCity().getCityID());
-		logger.info("full payload city design request ("+updatedDesigns.size()+" objects) took "+(System.currentTimeMillis()-startTime)+"ms");
-		
-		
-		
-		/*
+
+		try {
+			long startTime = System.currentTimeMillis();
+
+			HashMap<Integer, Integer> hashMap = new HashMap<Integer, Integer>();
+			for(Design d : SceneScape.getCity().getDesigns()){
+				hashMap.put(d.getID(), d.hashCode());
+			}
+
+			List<Design> updated = NetPool.getPool().getConnection().synchronizeData(hashMap);
+
+
+			logger.info(updated.size()+" designs changed (took "+(System.currentTimeMillis()-startTime)+"ms)");
+
+
+			startTime = System.currentTimeMillis();
+			List<Design> updatedDesigns = NetPool.getPool().getConnection().findBaseDesignsByCity(SceneScape.getCity().getCityID());
+			logger.info("full payload city design request ("+updatedDesigns.size()+" objects) took "+(System.currentTimeMillis()-startTime)+"ms");
+
+
+
+			/*
 		if(SceneGameState.getInstance()==null){
 			// If the graphics layer has shutdown or otherwise crashed, shutdown the application.
 			ShutdownManager.doSafeShutdown();
@@ -122,7 +124,7 @@ public class BaseUpdater extends AbstractUpdater {
 					}
 				}
 			}
-			
+
 			updating=false;
 		} catch (IOException e) {
 			logger.error("Dearie me!  File not found!", e);
@@ -131,7 +133,16 @@ public class BaseUpdater extends AbstractUpdater {
 			logger.error("URI exception, this really shouldn't happen", e);
 			updating=false;
 		}
-		*/
+			 */
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		updating = false;
 	}
 
 	@Override

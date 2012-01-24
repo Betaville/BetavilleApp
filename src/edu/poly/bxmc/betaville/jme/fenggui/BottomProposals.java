@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -83,7 +84,7 @@ public class BottomProposals extends Window {
 	 * as direct children.
 	 */
 	//private Container proposalContainer;
-	
+
 	private BlockingScrollContainer sc;
 	private Container isc;
 
@@ -130,8 +131,8 @@ public class BottomProposals extends Window {
 		proposalContainer.setXY(0, 0);
 		proposalContainer.setSize(targetWidth-30, targetHeight-15);
 		getContentContainer().addWidget(proposalContainer);
-		*/
-		
+		 */
+
 		sc = FengGUI.createWidget(BlockingScrollContainer.class);
 		sc.setSize(targetWidth-30, targetHeight-15);
 		getContentContainer().addWidget(sc);
@@ -154,27 +155,33 @@ public class BottomProposals extends Window {
 					logger.info("Processing " + counter + " of " + rootDesigns.size());
 					counter++;
 					item.update(counter);
-					final int[] proposalList = NetPool.getPool().getConnection().findAllProposals(rootDesign.getSourceID());
-					if(proposalList == null){
-						logger.error("Finding the proposals returned a null int[]");
-						return;
-					}
-					else{
 
-					}
+					try {
+						int[] proposalList = NetPool.getPool().getConnection().findAllProposals(rootDesign.getSourceID());
+						if(proposalList == null){
+							logger.error("Finding the proposals returned a null int[]");
+							return;
+						}
 
-					slideInToScene();
+						slideInToScene();
 
-					int heightToUse=0;
-					for(int i=0; i<proposalList.length; i++){
-						Design p = NetPool.getPool().getConnection().findDesignByID(proposalList[i]);
-						if(p==null) continue;
-						SceneScape.getCity().addDesign(p);
-						Container c = createClickableContainer(p);
-						c.setXY(0, heightToUse);
-						//heightToUse+=c.getHeight();
-						isc.addWidget(c);
-						sc.layout();
+						int heightToUse=0;
+						for(int i=0; i<proposalList.length; i++){
+							Design p = NetPool.getPool().getConnection().findDesignByID(proposalList[i]);
+							if(p==null) continue;
+							SceneScape.getCity().addDesign(p);
+							Container c = createClickableContainer(p);
+							c.setXY(0, heightToUse);
+							//heightToUse+=c.getHeight();
+							isc.addWidget(c);
+							sc.layout();
+						}
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 
@@ -205,7 +212,15 @@ public class BottomProposals extends Window {
 					clickableContainer.getAppearance().setEnabled(rollOverDecoratorKey, false);
 				}
 				else if(event instanceof MouseReleasedEvent){
-					GUIGameState.getInstance().getVersionsWindow().loadVersions(proposalDesign);
+					try {
+						GUIGameState.getInstance().getVersionsWindow().loadVersions(proposalDesign);
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					GUIGameState.getInstance().getVersionsWindow().slideInToScene();
 
 					// change the background to black

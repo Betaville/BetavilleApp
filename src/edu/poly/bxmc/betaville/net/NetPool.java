@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.net;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -67,7 +69,7 @@ public class NetPool extends AbstractUpdater{
 		modules = new ArrayList<Module>();
 	}
 
-	public InsecureClientManager getConnection(){
+	public InsecureClientManager getConnection() throws UnknownHostException, IOException{
 
 		if(stopAcceptingRequests.get()) return null;
 
@@ -96,7 +98,7 @@ public class NetPool extends AbstractUpdater{
 		return icm;
 	}
 
-	public SecureClientManager getSecureConnection(){
+	public SecureClientManager getSecureConnection() throws UnknownHostException, IOException{
 
 		if(stopAcceptingRequests.get()) return null;
 

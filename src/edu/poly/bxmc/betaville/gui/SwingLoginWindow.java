@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -47,6 +48,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -198,7 +200,7 @@ public class SwingLoginWindow extends JFrame{
 		return loggedIn;
 	}
 
-	private boolean authenticate(){
+	private boolean authenticate() throws UnknownHostException, IOException{
 		StringBuilder passBuilder=new StringBuilder();
 		for(int i=0; i<passField.getPassword().length; i++){
 			passBuilder.append(passField.getPassword()[i]);
@@ -208,7 +210,7 @@ public class SwingLoginWindow extends JFrame{
 		if(manager==null){
 			manager = NetPool.getPool().getSecureConnection();
 		}
-		
+
 		String pass = passBuilder.toString();
 
 		boolean response = manager.startSession(userField.getText(), pass);
@@ -259,18 +261,20 @@ public class SwingLoginWindow extends JFrame{
 	 * 1 if the client is newer than the server
 	 * -1 if the client is older than the server
 	 * -2 if a network connection couldn't be made
+	 * @throws IOException 
+	 * @throws UnknownHostException 
 	 */
-	private int checkVersion(){
+	private int checkVersion() throws UnknownHostException, IOException{
 		try{
-		long serverVersion = NetPool.getPool().getSecureConnection().getDesignVersion();
-		logger.info("Server is version " + serverVersion);
-		if(Design.serialVersionUID==serverVersion) return 0;
-		else if(Design.serialVersionUID>serverVersion) return 1;
-		else if(Design.serialVersionUID<serverVersion) return -1;
-		else if(serverVersion==-2){
-			logger.error("server error");
-		}
-		return -1;
+			long serverVersion = NetPool.getPool().getSecureConnection().getDesignVersion();
+			logger.info("Server is version " + serverVersion);
+			if(Design.serialVersionUID==serverVersion) return 0;
+			else if(Design.serialVersionUID>serverVersion) return 1;
+			else if(Design.serialVersionUID<serverVersion) return -1;
+			else if(serverVersion==-2){
+				logger.error("server error");
+			}
+			return -1;
 		}catch (NullPointerException e) {
 			// can't connect? Throw a special error
 			return -2;
@@ -357,7 +361,7 @@ public class SwingLoginWindow extends JFrame{
 		login.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				//login.setEnabled(false);
-				
+
 				// check that the terms have been accepted first
 				if(!Boolean.parseBoolean(System.getProperty("betaville.license.content.agree"))){
 					// agree to the license
@@ -367,7 +371,7 @@ public class SwingLoginWindow extends JFrame{
 							"Betaville Content License");
 					contentLicenseWindow.setVisible(true);
 					contentLicenseWindow.addTermsAcceptedListener(new TermsAcceptedListener() {
-						
+
 						@Override
 						public void termsAccepted() {
 							doAuthAction();
@@ -377,7 +381,7 @@ public class SwingLoginWindow extends JFrame{
 				else{
 					doAuthAction();
 				}
-				
+
 				//login.setEnabled(true);
 			}
 		});
@@ -495,9 +499,17 @@ public class SwingLoginWindow extends JFrame{
 				if(registerAccountUserField.isFocusOwner() && !registerAccountUserField.getText().isEmpty() && !currentUsernameRegistrationInputHasBeenChecked){
 					// if we've now waited longer than the delay value, check if the username is available
 					if((System.currentTimeMillis()-lastInputInUserRegistrationWindow)>delayForCheckingAvailability){
-						if(!NetPool.getPool().getSecureConnection().checkNameAvailability(registerAccountUserField.getText())){
-							logger.info("The username: "+registerAccountUserField.getText() +" is not available");
-							flashDialog("The username "+registerAccountUserField.getText()+" is not available", false);
+						try {
+							if(!NetPool.getPool().getSecureConnection().checkNameAvailability(registerAccountUserField.getText())){
+								logger.info("The username: "+registerAccountUserField.getText() +" is not available");
+								flashDialog("The username "+registerAccountUserField.getText()+" is not available", false);
+							}
+						} catch (UnknownHostException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 						currentUsernameRegistrationInputHasBeenChecked=true;
 					}
@@ -596,13 +608,21 @@ public class SwingLoginWindow extends JFrame{
 					flashDialog("Please ensure that your passwords match!", false);
 					return;
 				}
-				if(NetPool.getPool().getSecureConnection().addUser(registerAccountUserField.getText(), registerAccountPasswordField.getText(), registerAccountEmailField.getText(), "", "")){
-					flashDialog("Cool!  You're good to go!", false);
-					setContentPane(loginPanel);
-					validate();
-				}
-				else{
-					flashDialog("You couldn't be registered!", false);
+				try {
+					if(NetPool.getPool().getSecureConnection().addUser(registerAccountUserField.getText(), registerAccountPasswordField.getText(), registerAccountEmailField.getText(), "", "")){
+						flashDialog("Cool!  You're good to go!", false);
+						setContentPane(loginPanel);
+						validate();
+					}
+					else{
+						flashDialog("You couldn't be registered!", false);
+					}
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -654,47 +674,55 @@ public class SwingLoginWindow extends JFrame{
 	}
 
 	private void doAuthAction() {
-		if(loginInProgress.get()){
-			logger.info("Login already in progress, please be patient!");
-			return;
-		}
-		else{
-			loginInProgress.set(true);
-		}
-		System.out.println("Checking version");
-		int versionCheck = checkVersion();
-		System.out.println("Version check returned " + versionCheck);
-		if(versionCheck==-2){
-			// can't connect
-			loginInProgress.set(false);
-			return;
-		}
-		if(versionCheck<0){
-			flashDialog("Update your Betaville Client!", true);
-			return;
-		}
-		else if(versionCheck>0){
-			flashDialog("Your Client is to new for your server!", true);
-			return;
-		}
-
-
-		if(passField.getPassword()!=null){
-			if(userField.getText()!=null && !userField.getText().isEmpty()){
-				if(!StringVerifier.isValidUsername(userField.getText())&&
-						!StringVerifier.isValidEmail(userField.getText())){
-					flashDialog("This is not a valid username!", false);
-					return;
-				}
-				authenticate();
-				loginInProgress.set(false);
+		try{
+			if(loginInProgress.get()){
+				logger.info("Login already in progress, please be patient!");
+				return;
 			}
 			else{
-				flashDialog("Please enter a username", false);
+				loginInProgress.set(true);
 			}
-		}
-		else{
-			flashDialog("Please enter a password", false);
+			System.out.println("Checking version");
+			int versionCheck = checkVersion();
+			System.out.println("Version check returned " + versionCheck);
+			if(versionCheck==-2){
+				// can't connect
+				loginInProgress.set(false);
+				return;
+			}
+			if(versionCheck<0){
+				flashDialog("Update your Betaville Client!", true);
+				return;
+			}
+			else if(versionCheck>0){
+				flashDialog("Your Client is to new for your server!", true);
+				return;
+			}
+
+
+			if(passField.getPassword()!=null){
+				if(userField.getText()!=null && !userField.getText().isEmpty()){
+					if(!StringVerifier.isValidUsername(userField.getText())&&
+							!StringVerifier.isValidEmail(userField.getText())){
+						flashDialog("This is not a valid username!", false);
+						return;
+					}
+					authenticate();
+					loginInProgress.set(false);
+				}
+				else{
+					flashDialog("Please enter a username", false);
+				}
+			}
+			else{
+				flashDialog("Please enter a password", false);
+			}
+		} catch (UnknownHostException e1) {
+			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);
+			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
+		} catch (IOException e1) {
+			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);
+			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
 		}
 	}
 
@@ -709,7 +737,7 @@ public class SwingLoginWindow extends JFrame{
 
 		public void insertString
 		(int offset, String  str, AttributeSet attr)
-		throws BadLocationException {
+				throws BadLocationException {
 			if (str == null) return;
 
 			if ((getLength() + str.length()) <= limit) {
@@ -721,15 +749,24 @@ public class SwingLoginWindow extends JFrame{
 	public static boolean prompt() throws InterruptedException{
 		SwingLoginWindow loginWindow = new SwingLoginWindow(new IAuthenticationListener(){
 			public void onAuthentication(String user, String pass) {
-				SettingsPreferences.setUserPass(user, pass);
-				SettingsPreferences.setAuthenticated(true);
-				UserType ut = NetPool.getPool().getConnection().getUserLevel(user);
-				if(ut==null){
-					logger.error(UserType.class.getName()+" is null");
-				}
-				else{
-					SettingsPreferences.setUserType(ut);
-					logger.info(user + " is " + ut.name());
+				try {
+					SettingsPreferences.setUserPass(user, pass);
+					SettingsPreferences.setAuthenticated(true);
+					UserType ut = NetPool.getPool().getConnection().getUserLevel(user);
+
+					if(ut==null){
+						logger.error(UserType.class.getName()+" is null");
+					}
+					else{
+						SettingsPreferences.setUserType(ut);
+						logger.info(user + " is " + ut.name());
+					}
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}});
 		loginWindow.setVisible(true);

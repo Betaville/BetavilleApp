@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import org.apache.log4j.Logger;
@@ -47,7 +49,6 @@ import org.fenggui.layout.RowExLayoutData;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
-import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -219,19 +220,27 @@ public class ModelMover extends Window implements IBetavilleWindow {
 
 					// check if the rotation has been updated
 
-					if(NetPool.getPool().getSecureConnection().changeModeledDesignLocation(SceneScape.getPickedDesign().getID(),
-							((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), SceneScape.getPickedDesign().getCoordinate())){
-						changeFallbacks.remove(SceneScape.getPickedDesign().getID());
-						logger.error("Network Save Success");
-						GUIGameState.getInstance().getDisp().addWidget(
-								FengUtils.createDismissableWindow("Betaville",
-										"This object's location has been saved", "ok", true));
-					}
-					else{
-						logger.info("Network Save Failed");
-						GUIGameState.getInstance().getDisp().addWidget(
-								FengUtils.createDismissableWindow("Betaville",
-										"This object's location could not be saved", "ok", true));
+					try {
+						if(NetPool.getPool().getSecureConnection().changeModeledDesignLocation(SceneScape.getPickedDesign().getID(),
+								((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), SceneScape.getPickedDesign().getCoordinate())){
+							changeFallbacks.remove(SceneScape.getPickedDesign().getID());
+							logger.error("Network Save Success");
+							GUIGameState.getInstance().getDisp().addWidget(
+									FengUtils.createDismissableWindow("Betaville",
+											"This object's location has been saved", "ok", true));
+						}
+						else{
+							logger.info("Network Save Failed");
+							GUIGameState.getInstance().getDisp().addWidget(
+									FengUtils.createDismissableWindow("Betaville",
+											"This object's location could not be saved", "ok", true));
+						}
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 				else{
