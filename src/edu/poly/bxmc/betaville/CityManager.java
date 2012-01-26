@@ -86,7 +86,7 @@ public class CityManager {
 			}
 		}
 		try {
-			SceneScape.setCurrentCity(newCity);
+			SettingsPreferences.setCurrentCity(newCity);
 		} catch (Exception e) {
 			logger.error("City " + newCity + " could not be found", e);
 		}

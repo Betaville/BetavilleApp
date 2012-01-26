@@ -49,6 +49,7 @@ import org.fenggui.layout.RowExLayoutData;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -264,7 +265,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 				// If a set of fallbacks has been stored for this object, then we can put things back
 				if(fallbacks!=null){
 					SceneScape.getTargetSpatial().setLocalTranslation(JME2MapManager.instance.locationToBetaville(fallbacks.fallbackLocation));
-					SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).setCoordinate((UTMCoordinate)fallbacks.fallbackLocation);
+					SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).setCoordinate((UTMCoordinate)fallbacks.fallbackLocation);
 
 					SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleY((int)fallbacks.fallbackRotation));
 					SceneScape.getTargetSpatial().setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SceneScape.getPickedDesign()).getRotationX(), (int)fallbacks.fallbackRotation, ((ModeledDesign)SceneScape.getPickedDesign()).getRotationZ()));
@@ -363,27 +364,27 @@ public class ModelMover extends Window implements IBetavilleWindow {
 			switch (direction) {
 			case NORTH:
 				Translator.moveNorth(SceneScape.getTargetSpatial(), moveAmount);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, moveAmount, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, moveAmount, 0);
 				break;
 			case SOUTH:
 				Translator.moveSouth(SceneScape.getTargetSpatial(), moveAmount);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, -moveAmount, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, -moveAmount, 0);
 				break;
 			case EAST:
 				Translator.moveEast(SceneScape.getTargetSpatial(), moveAmount);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(moveAmount, 0, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(moveAmount, 0, 0);
 				break;
 			case WEST:
 				Translator.moveWest(SceneScape.getTargetSpatial(), moveAmount);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(-moveAmount, 0, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(-moveAmount, 0, 0);
 				break;
 			case UP:
 				Translator.moveUp(SceneScape.getTargetSpatial(), moveAmount);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, moveAmount);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, moveAmount);
 				break;
 			case DOWN:
 				Translator.moveDown(SceneScape.getTargetSpatial(), moveAmount);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, -moveAmount);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, -moveAmount);
 				break;
 			}
 		}

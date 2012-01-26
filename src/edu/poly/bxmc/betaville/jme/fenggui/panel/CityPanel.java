@@ -249,7 +249,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 				try{
 					int itemToLock = SceneScape.getPickedDesign().getID();
 					SceneGameState.getInstance().getTerrainNode().attachChild(SceneGameState.getInstance().getSpecificDesign(itemToLock));
-					if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, SceneScape.getCity().findDesignByID(itemToLock).getName()+"$TERRAIN")){
+					if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, SettingsPreferences.getCity().findDesignByID(itemToLock).getName()+"$TERRAIN")){
 						FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
 					}
 					else{

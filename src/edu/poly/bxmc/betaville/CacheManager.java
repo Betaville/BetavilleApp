@@ -195,7 +195,7 @@ public class CacheManager {
 	 * determine which UTM zone's files <em>not</em> to delete.
 	 */
 	public void maintain(UTMCoordinate currentLocation){
-		Iterator<Design> it = SceneScape.getCity().getDesigns().iterator();
+		Iterator<Design> it = SettingsPreferences.getCity().getDesigns().iterator();
 		while(it.hasNext()){
 			Design design = it.next();
 			if(design.getCoordinate().getLatZone()!=currentLocation.getLatZone()

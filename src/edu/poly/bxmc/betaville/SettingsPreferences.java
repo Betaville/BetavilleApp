@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,10 +30,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.Logger;
+
 import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
+import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
 
@@ -44,8 +48,62 @@ import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
  *
  */
 public class SettingsPreferences {
+	private static final Logger logger = Logger.getLogger(SettingsPreferences.class);
+	
 	private static int sessionID=0;
 	private static String sessionToken="";
+	
+	private static int currentCity;
+	private static ArrayList<City> cities = new ArrayList<City>();
+	
+	/**
+	 * Adds a city to the city list and sets it as the current city.
+	 * @param newCity The city to add.
+	 */
+	public static void addCityAndSetToCurrent(City newCity){
+		cities.add(newCity);
+		try {
+			setCurrentCity(newCity.getCityID());
+		} catch (Exception e) {
+			logger.error("Adding city apparently failed as it could not be found in the city list", e);
+		}
+	}
+
+	/**
+	 * Adds a city to the city list
+	 * @param newCity The city to add.
+	 */
+	public static void addCity(City newCity){
+		cities.add(newCity);
+	}
+
+	public static void setCurrentCity(int cityID) throws Exception{
+		boolean cityFound=false;
+		for(City c : cities){
+			if(c.getCityID()==cityID) cityFound=true;
+		}
+		if(!cityFound) logger.warn("City not found in local list of cities");
+		currentCity=cityID;
+		logger.info("Current City ID Set To: " + cityID);
+	}
+
+	public static int getCurrentCityID(){
+		return currentCity;
+	}
+
+	public static City getCity(){
+		for(City c : cities){
+			if(c.getCityID()==currentCity) return c;
+		}
+		return null;
+	}
+
+	public static City getCity(int cityID){
+		for(City c : cities){
+			if(c.getCityID()==cityID) return c;
+		}
+		return null;
+	}
 	
 	public static void setSessionID(int id){
 		sessionID=id;

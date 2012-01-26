@@ -32,7 +32,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.net.NetPool;
 
@@ -69,7 +69,7 @@ public class BaseUpdater extends AbstractUpdater {
 			long startTime = System.currentTimeMillis();
 
 			HashMap<Integer, Integer> hashMap = new HashMap<Integer, Integer>();
-			for(Design d : SceneScape.getCity().getDesigns()){
+			for(Design d : SettingsPreferences.getCity().getDesigns()){
 				hashMap.put(d.getID(), d.hashCode());
 			}
 
@@ -80,7 +80,7 @@ public class BaseUpdater extends AbstractUpdater {
 
 
 			startTime = System.currentTimeMillis();
-			List<Design> updatedDesigns = NetPool.getPool().getConnection().findBaseDesignsByCity(SceneScape.getCity().getCityID());
+			List<Design> updatedDesigns = NetPool.getPool().getConnection().findBaseDesignsByCity(SettingsPreferences.getCity().getCityID());
 			logger.info("full payload city design request ("+updatedDesigns.size()+" objects) took "+(System.currentTimeMillis()-startTime)+"ms");
 
 

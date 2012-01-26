@@ -172,7 +172,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 					int designID = thisDesign.getID();
 					File packedFile = SceneGameState.getInstance().replaceModelFile(designID, model, textureOnOff);
 
-					File designFile = new File(new URL(SettingsPreferences.getDataFolder()+SceneScape.getCity().findDesignByID(designID).getFilepath()).toURI());
+					File designFile = new File(new URL(SettingsPreferences.getDataFolder()+SettingsPreferences.getCity().findDesignByID(designID).getFilepath()).toURI());
 					FileInputStream fis;
 					fis = new FileInputStream(designFile);
 					byte[] b = new byte[fis.available()];

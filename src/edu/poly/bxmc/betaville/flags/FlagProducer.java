@@ -35,7 +35,7 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
-import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
@@ -76,7 +76,7 @@ public class FlagProducer {
 		while(proposalIt.hasNext()){
 			Design design = proposalIt.next();
 			if(design.getClassification().equals(Classification.PROPOSAL)){
-				SceneScape.getCity().addDesign(design);
+				SettingsPreferences.getCity().addDesign(design);
 				bases.add(design.getSourceID());
 			}
 		}

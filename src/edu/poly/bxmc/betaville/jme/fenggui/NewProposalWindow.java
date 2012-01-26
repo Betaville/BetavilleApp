@@ -891,7 +891,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					boolean textured = textureSelector.getSelectedValue().equals("Textured");
 
 					// create a design from the supplied information, it will initialize with an ID and sourceID of zero
-					designCreatedInThisWindow = new ModeledDesign(title, coordinate, address, SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), description, mediaURL.toString(), url, true, 0, 0, 0, textured);
+					designCreatedInThisWindow = new ModeledDesign(title, coordinate, address, SettingsPreferences.getCity().getCityID(), SettingsPreferences.getUser(), description, mediaURL.toString(), url, true, 0, 0, 0, textured);
 					designCreatedInThisWindow.setClassification(stepOneSelection);
 
 					try {
@@ -944,7 +944,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 
 				Translator.moveX(SceneGameState.getInstance().getDesignNodeChild(modelIdentifier), moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, moveSpeed, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, moveSpeed, 0);
 			}
 		});
 
@@ -957,7 +957,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 
 				Translator.moveX(SceneGameState.getInstance().getDesignNodeChild(modelIdentifier), -moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, -moveSpeed, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, -moveSpeed, 0);
 			}
 		});
 
@@ -971,7 +971,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 
 				Translator.moveZ(SceneGameState.getInstance().getDesignNodeChild(modelIdentifier), moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(moveSpeed, 0, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(moveSpeed, 0, 0);
 
 				//final Node dNode = (Node)SceneGameState.getInstance().getDesignNode().getChild("$1357");
 				//dNode.setLocalTranslation(MapManager.utmToBetaville(new UTMCoordinate(583558,4506150,18,'T',10)));
@@ -999,7 +999,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 
 				Translator.moveZ(SceneGameState.getInstance().getDesignNodeChild(modelIdentifier), -moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(-moveSpeed, 0, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(-moveSpeed, 0, 0);
 			}
 		});
 
@@ -1013,7 +1013,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 
 				Translator.moveY(SceneGameState.getInstance().getDesignNodeChild(modelIdentifier), moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, 0, moveSpeed);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, 0, moveSpeed);
 			}
 		});
 
@@ -1027,7 +1027,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 
 				Translator.moveY(SceneGameState.getInstance().getDesignNodeChild(modelIdentifier), -moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, 0, -moveSpeed);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier).getCoordinate().move(0, 0, -moveSpeed);
 			}
 		});
 
@@ -1088,9 +1088,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				xRotationLabel.setText(xRotationPrefix + newValue);
 				if(modelIsLoaded){
 					SceneGameState.getInstance().getDesignNodeChild(modelIdentifier).setLocalRotation(Rotator.fromThreeAngles(newValue,
-							((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationY(),
-							((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationZ()));
-					((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).setRotationX(newValue);
+							((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationY(),
+							((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationZ()));
+					((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).setRotationX(newValue);
 				}
 			}
 		});
@@ -1104,9 +1104,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				int newValue = (int)(yRotationSlider.getValue()*360);
 				yRotationLabel.setText(yRotationPrefix + newValue);
 				if(modelIsLoaded){
-					SceneGameState.getInstance().getDesignNodeChild(modelIdentifier).setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationX(),
-							newValue, ((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationZ()));
-					((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).setRotationY(newValue);
+					SceneGameState.getInstance().getDesignNodeChild(modelIdentifier).setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationX(),
+							newValue, ((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationZ()));
+					((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).setRotationY(newValue);
 				}
 			}
 		});
@@ -1120,9 +1120,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				int newValue = (int)(zRotationSlider.getValue()*360);
 				zRotationLabel.setText(zRotationPrefix + newValue);
 				if(modelIsLoaded){
-					SceneGameState.getInstance().getDesignNodeChild(modelIdentifier).setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationX(),
-							((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationY(), newValue));
-					((ModeledDesign)SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier)).setRotationZ(newValue);
+					SceneGameState.getInstance().getDesignNodeChild(modelIdentifier).setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationX(),
+							((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).getRotationY(), newValue));
+					((ModeledDesign)SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier)).setRotationZ(newValue);
 				}
 			}
 		});
@@ -1360,7 +1360,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 
 							// Get the imported model's data
-							Design design = SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier);
+							Design design = SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier);
 
 							// Check if the user has supplied their credentials yet
 							if(!SettingsPreferences.isAuthenticated()){
@@ -1454,9 +1454,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 							// interpret responses
 							if(response>0){
-								SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier).setID(response);
+								SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier).setID(response);
 								//SceneScape.getTargetSpatial().setName("$"+response);
-								SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier).setName(SceneScape.getCity().findDesignByID(response).getFullIdentifier());
+								SceneGameState.getInstance().getDesignNode().getChild(modelIdentifier).setName(SettingsPreferences.getCity().findDesignByID(response).getFullIdentifier());
 
 								// we need to reset or clearthe target spatial here in accordance with its new name
 								SceneScape.clearTargetSpatial();
@@ -2091,7 +2091,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		if(modelIdentifier==null)
 			return;
 
-		Design design = SceneScape.getCity().findDesignByFullIdentifier(modelIdentifier);
+		Design design = SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier);
 		design.setClassification(stepOneSelection);
 
 		if(stepOneSelection.equals(Classification.BASE)){

@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,6 @@ import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.jme.intersections.ITerrainSelectionListener;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
-import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Design;
 
 /**
@@ -60,9 +59,6 @@ import edu.poly.bxmc.betaville.model.Design;
 public class SceneScape {
 	private static Logger logger = Logger.getLogger(SceneScape.class);
 	public static final float SceneScale = 100f;
-
-	private static int currentCity;
-	private static ArrayList<City> cities = new ArrayList<City>();
 
 	public static final ColorRGBA DefaultAmbientColor = new ColorRGBA(1f,1f,1f,.5f);
 	public static final ColorRGBA DefaultDiffuseColor = new ColorRGBA(0.5f, 0.5f, 0.5f, .5f);
@@ -104,55 +100,6 @@ public class SceneScape {
 	 */
 	public static void setMinimumHeight(int height){
 		minimumHeight=height;
-	}
-
-	/**
-	 * Adds a city to the city list and sets it as the current city.
-	 * @param newCity The city to add.
-	 */
-	public static void addCityAndSetToCurrent(City newCity){
-		cities.add(newCity);
-		try {
-			setCurrentCity(newCity.getCityID());
-		} catch (Exception e) {
-			logger.error("Adding city apparently failed as it could not be found in the city list", e);
-		}
-	}
-
-	/**
-	 * Adds a city to the city list
-	 * @param newCity The city to add.
-	 */
-	public static void addCity(City newCity){
-		cities.add(newCity);
-	}
-
-	public static void setCurrentCity(int cityID) throws Exception{
-		boolean cityFound=false;
-		for(City c : cities){
-			if(c.getCityID()==cityID) cityFound=true;
-		}
-		if(!cityFound) logger.warn("City not found in local list of cities");
-		currentCity=cityID;
-		logger.info("Current City ID Set To: " + cityID);
-	}
-
-	public static int getCurrentCityID(){
-		return currentCity;
-	}
-
-	public static City getCity(){
-		for(City c : cities){
-			if(c.getCityID()==currentCity) return c;
-		}
-		return null;
-	}
-
-	public static City getCity(int cityID){
-		for(City c : cities){
-			if(c.getCityID()==cityID) return c;
-		}
-		return null;
 	}
 
 	public static void setTargetSpatial(Spatial s){
@@ -274,7 +221,7 @@ public class SceneScape {
 	}
 
 	public static Design getPickedDesign(){
-		return getCity().findDesignByFullIdentifier(targetSpatial.getName());
+		return SettingsPreferences.getCity().findDesignByFullIdentifier(targetSpatial.getName());
 	}
 
 	public static void addSelectionListener(ISpatialSelectionListener listener){

@@ -168,7 +168,7 @@ public class BottomVersions extends Window {
 		slideScrollController.setValue(0);
 		slideScrollController.addSliderMovedListener(sliderListener);
 		
-		SceneScape.getCity().addDesign(proposalDesign);
+		SettingsPreferences.getCity().addDesign(proposalDesign);
 		Container firstC = createVersionContainer(proposalDesign);
 		slideScrollContainer.addToSlideScroller(firstC);
 		
@@ -180,7 +180,7 @@ public class BottomVersions extends Window {
 		for(int i=0; i<versionList.length; i++){
 			Design version = NetPool.getPool().getConnection().findDesignByID(versionList[i]);
 			if(version==null) continue;
-			SceneScape.getCity().addDesign(version);
+			SettingsPreferences.getCity().addDesign(version);
 			Container c = createVersionContainer(version);
 			slideScrollContainer.addToSlideScroller(c);
 		}

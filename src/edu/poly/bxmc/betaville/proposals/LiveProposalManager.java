@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.Design;
 import edu.poly.bxmc.betaville.model.Design.Classification;
@@ -128,7 +129,7 @@ public class LiveProposalManager {
 
 
 			// Add the design to SceneScape and then set the target spatial
-			SceneScape.getCity().addDesign(design);
+			SettingsPreferences.getCity().addDesign(design);
 			Spatial s = SceneGameState.getInstance().getSpecificDesign(design.getID());
 			if(s!=null){
 				SceneScape.setTargetSpatial(s);
@@ -157,7 +158,7 @@ public class LiveProposalManager {
 		Node designNode = SceneGameState.getInstance().getDesignNode();
 		for(int i=0; i<designNode.getQuantity(); i++){
 			Spatial s = designNode.getChild(i);
-			Design d = SceneScape.getCity().findDesignByFullIdentifier(s.getName());
+			Design d = SettingsPreferences.getCity().findDesignByFullIdentifier(s.getName());
 			if(d!=null){
 				if(!d.isClassification(Classification.BASE)){
 					logger.info("Removing " + d.getName());
@@ -187,7 +188,7 @@ public class LiveProposalManager {
 
 	public synchronized void turnVersionOff(int versionID){
 		if(proposals.containsValue(versionID)){
-			Design remove = SceneScape.getCity().findDesignByID(versionID);
+			Design remove = SettingsPreferences.getCity().findDesignByID(versionID);
 			proposalController.removeDesignFromScene(remove);
 			proposals.remove(versionID);
 			SceneScape.clearTargetSpatial();
@@ -204,7 +205,7 @@ public class LiveProposalManager {
 
 	public synchronized void turnProposalOff(int proposalID, boolean removeFromMapNow){
 		if(proposals.containsKey(proposalID)){
-			Design remove = SceneScape.getCity().findDesignByID(proposals.get(proposalID));
+			Design remove = SettingsPreferences.getCity().findDesignByID(proposals.get(proposalID));
 			proposalController.removeDesignFromScene(remove);
 			if(removeFromMapNow) proposals.remove(proposalID);
 			SceneScape.clearTargetSpatial();

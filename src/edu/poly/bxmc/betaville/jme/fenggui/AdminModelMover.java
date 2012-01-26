@@ -51,6 +51,7 @@ import org.fenggui.layout.StaticLayout;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.panel.ModelMover;
@@ -217,7 +218,7 @@ public class AdminModelMover extends Window {
 		north.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveX(SceneScape.getTargetSpatial(), moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, moveSpeed, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, moveSpeed, 0);
 			}
 		});
 
@@ -226,7 +227,7 @@ public class AdminModelMover extends Window {
 		south.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveX(SceneScape.getTargetSpatial(), -moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, -moveSpeed, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, -moveSpeed, 0);
 				
 			}
 		});
@@ -236,7 +237,7 @@ public class AdminModelMover extends Window {
 		east.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveZ(SceneScape.getTargetSpatial(), moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(moveSpeed, 0, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(moveSpeed, 0, 0);
 			}
 		});
 
@@ -245,7 +246,7 @@ public class AdminModelMover extends Window {
 		west.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveZ(SceneScape.getTargetSpatial(), -moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(-moveSpeed, 0, 0);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(-moveSpeed, 0, 0);
 			}
 		});
 
@@ -263,7 +264,7 @@ public class AdminModelMover extends Window {
 		up.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveY(SceneScape.getTargetSpatial(), moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, moveSpeed);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, moveSpeed);
 			}
 		});
 
@@ -272,7 +273,7 @@ public class AdminModelMover extends Window {
 		down.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveY(SceneScape.getTargetSpatial(), -moveSpeed);
-				SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, -moveSpeed);
+				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, -moveSpeed);
 			}
 		});
 
@@ -386,7 +387,7 @@ public class AdminModelMover extends Window {
 	}
 
 	private ModeledDesign getDesign(){
-		return (ModeledDesign) SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName());
+		return (ModeledDesign) SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName());
 	}
 
 	private void revert(int idToRevertTo){

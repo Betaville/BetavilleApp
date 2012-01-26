@@ -169,7 +169,7 @@ public class BottomProposals extends Window {
 						for(int i=0; i<proposalList.length; i++){
 							Design p = NetPool.getPool().getConnection().findDesignByID(proposalList[i]);
 							if(p==null) continue;
-							SceneScape.getCity().addDesign(p);
+							SettingsPreferences.getCity().addDesign(p);
 							Container c = createClickableContainer(p);
 							c.setXY(0, heightToUse);
 							//heightToUse+=c.getHeight();

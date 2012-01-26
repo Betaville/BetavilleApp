@@ -585,7 +585,7 @@ public class SceneGameState extends BasicGameState {
 	 * @throws IOException 
 	 */
 	public void addDesignToDisplay(int designID) throws IOException, URISyntaxException{
-		Design d = SceneScape.getCity().findDesignByID(designID);
+		Design d = SettingsPreferences.getCity().findDesignByID(designID);
 		if(d!=null){
 			// Remove required designs first
 			for(int r : d.getDesignsToRemove()){
@@ -623,7 +623,7 @@ public class SceneGameState extends BasicGameState {
 		// Only do this if we're working with a network design
 		if(designID>0){
 
-			Design design = SceneScape.getCity().findDesignByID(designID);
+			Design design = SettingsPreferences.getCity().findDesignByID(designID);
 			((ModeledDesign)design).setTextured(textureOnOff);
 
 			// hold in to the location in cache
@@ -648,8 +648,8 @@ public class SceneGameState extends BasicGameState {
 			else{
 				newFilename=design.getID()+"_"+1+".jme";
 			}
-			SceneScape.getCity().findDesignByID(designID).setFilepath(newFilename);
-			((ModeledDesign)SceneScape.getCity().findDesignByID(designID)).setTextured(textureOnOff);
+			SettingsPreferences.getCity().findDesignByID(designID).setFilepath(newFilename);
+			((ModeledDesign)SettingsPreferences.getCity().findDesignByID(designID)).setTextured(textureOnOff);
 			return ml.getPackedFile();
 		}
 		else return null;
@@ -676,7 +676,7 @@ public class SceneGameState extends BasicGameState {
 			designNode.attachChild(ml.getModel());
 			designNode.getChild(design.getFullIdentifier()).setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 			designNode.getChild(design.getFullIdentifier()).updateRenderState();
-			SceneScape.getCity().addDesign(design);
+			SettingsPreferences.getCity().addDesign(design);
 			logger.debug("Model Added");
 		}
 		
@@ -1159,7 +1159,7 @@ public class SceneGameState extends BasicGameState {
 
 		if(1f/tpf > target){
 			// ADD
-			for(Design d : SceneScape.getCity().getDesigns()){
+			for(Design d : SettingsPreferences.getCity().getDesigns()){
 				if(!d.getClassification().equals(Classification.BASE)) continue;
 
 				boolean isInScene=false;

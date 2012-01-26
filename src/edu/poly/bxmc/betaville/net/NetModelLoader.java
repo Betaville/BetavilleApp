@@ -41,7 +41,6 @@ import com.jme.scene.Node;
 import com.jme.util.GameTaskQueueManager;
 
 import edu.poly.bxmc.betaville.CacheManager;
-import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -102,7 +101,7 @@ public class NetModelLoader{
 		 * @throws UnknownHostException 
 		 */
 		public static void loadCurrentCity(LookupRoutine lookupRoutine) throws UnknownHostException, IOException{
-			loadCity(lookupRoutine, NO_LIMIT, SceneScape.getCity().getCityID());
+			loadCity(lookupRoutine, NO_LIMIT, SettingsPreferences.getCity().getCityID());
 		}
 
 		/**
@@ -113,7 +112,7 @@ public class NetModelLoader{
 		 * @throws UnknownHostException 
 		 */
 		public static void loadCurrentCity(LookupRoutine lookupRoutine, int limit) throws UnknownHostException, IOException{
-			loadCity(lookupRoutine, limit, SceneScape.getCity().getCityID());
+			loadCity(lookupRoutine, limit, SettingsPreferences.getCity().getCityID());
 		}
 
 		/**
@@ -283,7 +282,7 @@ public class NetModelLoader{
 
 								dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 
-								SceneScape.getCity(cityID).addDesign(design);
+								SettingsPreferences.getCity(cityID).addDesign(design);
 
 								while(listLock.get()){
 									try {
@@ -311,7 +310,7 @@ public class NetModelLoader{
 
 							}
 							else if(design instanceof EmptyDesign){
-								SceneScape.getCity(cityID).addDesign(design);
+								SettingsPreferences.getCity(cityID).addDesign(design);
 								//itemsLoaded.incrementAndGet();
 								//item.update(itemsLoaded.get());
 							} 
@@ -339,7 +338,7 @@ public class NetModelLoader{
 		 * @throws UnknownHostException 
 		 */
 		public static void loadCurrentCityTerrain() throws UnknownHostException, IOException{
-			loadCityTerrain(SceneScape.getCurrentCityID());
+			loadCityTerrain(SettingsPreferences.getCurrentCityID());
 		}
 
 		/**
@@ -382,11 +381,11 @@ public class NetModelLoader{
 							dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)design).getRotationX(),
 									((ModeledDesign)design).getRotationY(), ((ModeledDesign)design).getRotationZ()));
 							if(design.getName().contains("$TERRAIN")){
-								SceneScape.getCity(cityID).addDesign(design);
+								SettingsPreferences.getCity(cityID).addDesign(design);
 								SceneGameState.getInstance().getTerrainNode().attachChild(dNode);
 							}
 							else{
-								SceneScape.getCity(cityID).addDesign(design);
+								SettingsPreferences.getCity(cityID).addDesign(design);
 								SceneGameState.getInstance().getDesignNode().attachChild(dNode);
 							}
 							dNode.updateRenderState();
@@ -399,7 +398,7 @@ public class NetModelLoader{
 							});
 						}
 						else if(design instanceof EmptyDesign){
-							SceneScape.getCity(cityID).addDesign(design);
+							SettingsPreferences.getCity(cityID).addDesign(design);
 						}
 					}
 				}

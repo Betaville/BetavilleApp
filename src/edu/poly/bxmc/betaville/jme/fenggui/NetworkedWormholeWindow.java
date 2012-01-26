@@ -47,7 +47,6 @@ import org.fenggui.layout.StaticLayout;
 import com.jme.math.Vector3f;
 
 import edu.poly.bxmc.betaville.CityManager;
-import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FindCityWindow.ISelectionDeselectionListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -142,7 +141,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 
 				logger.info("Wormhole to "+w.getName()+" selected.");
 				MapManager.setUTMZone(w.getLocation().getLonZone(), w.getLocation().getLatZone());
-				CityManager.swapCities(SceneScape.getCurrentCityID(), w.getCityID(), w.getLocation());
+				CityManager.swapCities(SettingsPreferences.getCurrentCityID(), w.getCityID(), w.getLocation());
 
 				// finally we move the camera
 				SceneGameState.getInstance().getCamera().setLocation(JME2MapManager.instance.locationToBetaville(w.getLocation()));
@@ -157,7 +156,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		createHere.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				try {
-					int response = NetPool.getPool().getSecureConnection().addWormhole(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), "test", SceneScape.getCurrentCityID());
+					int response = NetPool.getPool().getSecureConnection().addWormhole(JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()), "test", SettingsPreferences.getCurrentCityID());
 					logger.info("New Wormhole created (response: "+response+")");
 				} catch (UnknownHostException e1) {
 					// TODO Auto-generated catch block

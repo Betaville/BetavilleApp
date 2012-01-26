@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,7 @@ import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
@@ -322,7 +323,7 @@ public class DuplicateWindow extends Window {
 	}
 
 	private ModeledDesign getDesign(){
-		return (ModeledDesign) SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName());
+		return (ModeledDesign) SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName());
 	}
 
 

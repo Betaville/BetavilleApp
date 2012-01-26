@@ -215,7 +215,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 	}
 	
 	private void commitChanges() throws UnknownHostException, IOException{
-		Design d = SceneScape.getCity().findDesignByID(currentDesignID);
+		Design d = SettingsPreferences.getCity().findDesignByID(currentDesignID);
 		
 		String updateString = "";
 		

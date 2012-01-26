@@ -39,8 +39,6 @@ import org.apache.log4j.Logger;
 import com.jme.scene.Spatial;
 import com.jme.util.export.binary.BinaryExporter;
 
-
-import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
@@ -165,7 +163,7 @@ public class BulkLoader {
 			logger.error("Improperly formatted file name: "+fileString);
 		}
 
-		ModeledDesign design = new ModeledDesign(nameToUse, origin.getUTM().clone(), "Not Supplied By Bulk Model", SceneScape.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", file.toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
+		ModeledDesign design = new ModeledDesign(nameToUse, origin.getUTM().clone(), "Not Supplied By Bulk Model", SettingsPreferences.getCity().getCityID(), SettingsPreferences.getUser(), "Not Supplied By Bulk Model", file.toURI().toURL().toString(), "Not Supplied By Bulk Model", true, 0, 0, 0, true);
 		logger.info("Entering ModelLoader");
 		ModelLoader ml = new ModelLoader(design, false, null);
 		logger.info("ModelLoader created (COLLADA has been parsed at this point)");
@@ -246,7 +244,7 @@ public class BulkLoader {
 
 		SceneGameState.getInstance().getDesignNode().attachChild(ml.getModel());
 		logger.info("model added to scene");
-		SceneScape.getCity().addDesign(design);
+		SettingsPreferences.getCity().addDesign(design);
 		logger.info("model design object added to city");
 		SceneGameState.getInstance().getDesignNode().getChild(design.getFullIdentifier()).setLocalTranslation(JME2MapManager.instance.locationToBetaville(design.getCoordinate()));
 		logger.info("object moved to correct orientation");

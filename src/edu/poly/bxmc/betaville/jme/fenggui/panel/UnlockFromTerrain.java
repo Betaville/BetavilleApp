@@ -35,6 +35,7 @@ import org.fenggui.event.IButtonPressedListener;
 import com.jme.scene.Node;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.intersections.ITerrainSelectionListener;
@@ -76,8 +77,8 @@ public class UnlockFromTerrain extends PanelAction {
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				try {
 					//logger.info("Looking for ID from design named: " + SceneScape.getSelectedTerrain().getName());
-					int itemToLock = SceneScape.getCity().findDesignByFullIdentifier(SceneScape.getSelectedTerrain().getName()).getID();
-					String name = SceneScape.getCity().findDesignByID(itemToLock).getName();
+					int itemToLock = SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getSelectedTerrain().getName()).getID();
+					String name = SettingsPreferences.getCity().findDesignByID(itemToLock).getName();
 					name = new String(name.substring(0, name.indexOf("$TERRAIN")));
 					if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, name)){
 						FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);

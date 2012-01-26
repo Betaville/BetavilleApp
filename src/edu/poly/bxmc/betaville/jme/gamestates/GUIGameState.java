@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,7 @@ import com.jmex.game.state.GameState;
 import com.jmex.game.state.GameStateManager;
 
 import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.IFlagSelectionListener;
 import edu.poly.bxmc.betaville.jme.fenggui.BottomProposals;
 import edu.poly.bxmc.betaville.jme.fenggui.BottomVersions;
@@ -358,7 +359,7 @@ public class GUIGameState extends GameState {
 			
 			List<Design> designs = new ArrayList<Design>();
 			for(String rootDesignID : flagIDs){
-				Design d = SceneScape.getCity().findDesignByID(Integer.parseInt(rootDesignID));
+				Design d = SettingsPreferences.getCity().findDesignByID(Integer.parseInt(rootDesignID));
 				if(d!=null) designs.add(d);
 				else logger.error(rootDesignID+" could not be found");
 			}

@@ -370,9 +370,9 @@ public class BetavilleNoCanvas {
 			int startupCity = SettingsPreferences.getStartupCity();
 			for (City c : cities) {
 				if (c.getCityID() == startupCity)
-					SceneScape.addCityAndSetToCurrent(c);
+					SettingsPreferences.addCityAndSetToCurrent(c);
 				else
-					SceneScape.addCity(c);
+					SettingsPreferences.addCity(c);
 			}
 		} catch (UnknownHostException e1) {
 			// TODO Auto-generated catch block

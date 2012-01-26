@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 import com.jme.system.DisplaySystem;
 
-import edu.poly.bxmc.betaville.SceneScape;
+import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.Design;
 
@@ -67,7 +67,7 @@ public class PickUtils {
 		if(results.getNumber()>0){
 			Spatial picked = results.getPickData(0).getTargetMesh();
 			Node pickedDesignNode = findSelectedDesignNode(picked);
-			return SceneScape.getCity().findDesignByFullIdentifier(pickedDesignNode.getName());
+			return SettingsPreferences.getCity().findDesignByFullIdentifier(pickedDesignNode.getName());
 		}
 		else{
 			return null;
