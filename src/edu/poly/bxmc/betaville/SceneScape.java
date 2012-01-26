@@ -63,8 +63,6 @@ public class SceneScape {
 
 	private static int currentCity;
 	private static ArrayList<City> cities = new ArrayList<City>();
-	private static int lonZone=18;
-	private static char latZone='T';
 
 	public static final ColorRGBA DefaultAmbientColor = new ColorRGBA(1f,1f,1f,.5f);
 	public static final ColorRGBA DefaultDiffuseColor = new ColorRGBA(0.5f, 0.5f, 0.5f, .5f);
@@ -155,19 +153,6 @@ public class SceneScape {
 			if(c.getCityID()==cityID) return c;
 		}
 		return null;
-	}
-
-	public static void setUTMZone(int newLonZone, char newLatZone){
-		lonZone = newLonZone;
-		latZone = newLatZone;
-	}
-
-	public static int getLonZone(){
-		return lonZone;
-	}
-
-	public static char getLatZone(){
-		return latZone;
 	}
 
 	public static void setTargetSpatial(Spatial s){

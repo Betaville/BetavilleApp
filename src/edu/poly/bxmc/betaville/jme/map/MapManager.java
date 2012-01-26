@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,9 @@ import edu.poly.bxmc.betaville.SceneScape;
 public abstract class MapManager<T>{
 	private static final Logger logger = Logger.getLogger(MapManager.class);
 	
+	protected static int lonZone=18;
+	protected static char latZone='T';
+	
 	/**
 	 * The size of a block node in meters
 	 */
@@ -97,6 +100,19 @@ public abstract class MapManager<T>{
 		else zOffset = location.z;
 		
 		logger.info("New MapManager offset set to ("+xOffset+","+zOffset+")");
+	}
+	
+	public static void setUTMZone(int newLonZone, char newLatZone){
+		lonZone = newLonZone;
+		latZone = newLatZone;
+	}
+
+	public static int getLonZone(){
+		return lonZone;
+	}
+
+	public static char getLatZone(){
+		return latZone;
 	}
 
 	public static double findCircumferenceAtLatitude(double lat){
@@ -265,15 +281,15 @@ public abstract class MapManager<T>{
 		float mNorthOfZoneStart = vec.x*SceneScape.SceneScale;
 		float mEastOfZoneStart = -1*vec.z*SceneScape.SceneScale;
 
-		double zoneWidth = findZoneWidth(SceneScape.getLonZone(), SceneScape.getLonZone()+1);
+		double zoneWidth = findZoneWidth(lonZone, lonZone+1);
 		double median = zoneWidth/2;
 		int realEasting = (int)(500000-(median+mEastOfZoneStart));
 
-		int realNorthing = getNorthingStartOfZone(SceneScape.getLatZone())+(int)mNorthOfZoneStart;
+		int realNorthing = getNorthingStartOfZone(latZone)+(int)mNorthOfZoneStart;
 
 		int altitude = (int)(vec.y*SceneScape.SceneScale);
 
-		return new UTMCoordinate(realEasting, realNorthing, SceneScape.getLonZone(), SceneScape.getLatZone(), altitude);
+		return new UTMCoordinate(realEasting, realNorthing, lonZone, latZone, altitude);
 	}
 
 	/**

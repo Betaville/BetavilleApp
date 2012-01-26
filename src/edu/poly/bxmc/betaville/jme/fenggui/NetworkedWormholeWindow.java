@@ -56,6 +56,7 @@ import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
+import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
@@ -140,7 +141,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 				Wormhole w = ((WormholeItem)wormholeSelector.getSelectedItem()).getWormhole();
 
 				logger.info("Wormhole to "+w.getName()+" selected.");
-				SceneScape.setUTMZone(w.getLocation().getLonZone(), w.getLocation().getLatZone());
+				MapManager.setUTMZone(w.getLocation().getLonZone(), w.getLocation().getLatZone());
 				CityManager.swapCities(SceneScape.getCurrentCityID(), w.getCityID(), w.getLocation());
 
 				// finally we move the camera

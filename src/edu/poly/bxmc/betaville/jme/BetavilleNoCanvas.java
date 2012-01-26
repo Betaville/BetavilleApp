@@ -67,6 +67,7 @@ import edu.poly.bxmc.betaville.jme.gamestates.SoundGameState;
 import edu.poly.bxmc.betaville.jme.loaders.util.DriveFinder;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
+import edu.poly.bxmc.betaville.jme.map.MapManager;
 import edu.poly.bxmc.betaville.logging.LogManager;
 import edu.poly.bxmc.betaville.model.City;
 import edu.poly.bxmc.betaville.model.Wormhole;
@@ -324,7 +325,7 @@ public class BetavilleNoCanvas {
 
 				@Override
 				public void onSelection(Wormhole wormhole) {
-					SceneScape.setUTMZone(wormhole.getLocation().getLonZone(), wormhole.getLocation().getLatZone());
+					MapManager.setUTMZone(wormhole.getLocation().getLonZone(), wormhole.getLocation().getLatZone());
 					SettingsPreferences.setStartupCity(wormhole.getCityID());
 					cameraStartPosition = wormhole.getLocation();
 				}
