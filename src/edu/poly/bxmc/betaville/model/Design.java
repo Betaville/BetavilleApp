@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -77,23 +77,23 @@ public class Design implements Serializable{
 		TRACKED_DUPLICATION
 	}
 	
-	protected String name;
-	protected Classification classification;
-	protected DuplicationFunction duplicationFunction;
+	protected String name = null;
+	protected Classification classification = null;
+	protected DuplicationFunction duplicationFunction = null;
 	protected int id=0;
 	protected int sourceID=0;
-	protected UTMCoordinate coordinate;
-	protected String address;
-	protected int cityID;
-	protected String user;
-	protected String description;
-	protected String filepath;
-	protected String url;
-	protected String dateAdded;
-	protected boolean isPublic;
+	protected UTMCoordinate coordinate = null;
+	protected String address = null;
+	protected int cityID = 0;
+	protected String user = null;
+	protected String description = null;
+	protected String filepath = null;
+	protected String url = null;
+	protected String dateAdded = null;
+	protected boolean isPublic = true;
 	protected int[] designsToRemove = new int[]{};
-	protected List<String> favedBy;
-	protected ProposalPermission proposalPermission;
+	protected List<String> favedBy = null;
+	protected ProposalPermission proposalPermission = null;
 	
 	public Design(){}
 	

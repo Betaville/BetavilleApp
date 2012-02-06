@@ -34,13 +34,13 @@ import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
 public class VideoDesign extends Design {
 	private static final long serialVersionUID = 1L;
 	
-	private float directionX;
-	private float directionY;
-	private float directionZ;
-	private int volume;
-	private int length;
+	private float directionX = 0;
+	private float directionY = 0;
+	private float directionZ = 0;
+	private int volume = 0;
+	private int length = 0;
 	public enum Format{AVI, MPG, WMV, FLV};
-	private Format format;
+	private Format format = null;
 	
 	public VideoDesign(){};
 
