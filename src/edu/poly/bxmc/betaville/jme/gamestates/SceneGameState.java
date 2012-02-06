@@ -103,7 +103,6 @@ import edu.poly.bxmc.betaville.module.ModuleNameException;
 import edu.poly.bxmc.betaville.module.SceneModule;
 import edu.poly.bxmc.betaville.proposals.JMEDesktopProposalController;
 import edu.poly.bxmc.betaville.proposals.LiveProposalManager;
-import edu.poly.bxmc.betaville.weather.SunSyncModule;
 
 /**
  * Creates the Betaville application's 3D content layer.
@@ -137,7 +136,7 @@ public class SceneGameState extends BasicGameState {
 
 
 	//stick to ground when below Drive altitude
-	private GroundMagnet groundMagnet;
+	//private GroundMagnet groundMagnet;
 	//private AltitudeUpdater altitudeUpdater;
 
 
@@ -333,7 +332,7 @@ public class SceneGameState extends BasicGameState {
 			e.printStackTrace();
 		}
 
-		groundMagnet = new GroundMagnet("Ground Magnet", "Forces the camera to be glued to the ground");
+		//groundMagnet = new GroundMagnet("Ground Magnet", "Forces the camera to be glued to the ground");
 		//altitudeUpdater = new AltitudeUpdater("Altitude Updater", "Retrieves the altitude on every udpate");
 	}
 
@@ -584,39 +583,46 @@ public class SceneGameState extends BasicGameState {
 	 * @throws URISyntaxException 
 	 * @throws IOException 
 	 */
-	public void addDesignToDisplay(int designID) throws IOException, URISyntaxException{
-		Design d = SettingsPreferences.getCity().findDesignByID(designID);
-		if(d!=null){
-			// Remove required designs first
-			for(int r : d.getDesignsToRemove()){
-				designNode.getChild("$"+r).removeFromParent();
-			}
+	public void addDesignToDisplay(final int designID) throws IOException, URISyntaxException{
+		GameTaskQueueManager.getManager().update(new Callable<Object>() {
 
-			if(d instanceof ModeledDesign){
-				boolean fileResponse = CacheManager.getCacheManager().requestFile(d.getID(), d.getFilepath());
+			@Override
+			public Object call() throws Exception {
+				Design d = SettingsPreferences.getCity().findDesignByID(designID);
+				if(d!=null){
+					// Remove required designs first
+					for(int r : d.getDesignsToRemove()){
+						designNode.getChild("$"+r).removeFromParent();
+					}
 
-				if(fileResponse){
-					ModelLoader loader = null;
-					try {
-						loader = new ModelLoader((ModeledDesign)d, true, null);
-						final Node dNode = loader.getModel();
-						dNode.setName(d.getFullIdentifier());
-						dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(d.getCoordinate()));
-						dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)d).getRotationX(),
-								((ModeledDesign)d).getRotationY(), ((ModeledDesign)d).getRotationZ()));
+					if(d instanceof ModeledDesign){
+						boolean fileResponse = CacheManager.getCacheManager().requestFile(d.getID(), d.getFilepath());
 
-						designNode.attachChild(dNode);
-						designNode.updateRenderState();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (URISyntaxException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						if(fileResponse){
+							ModelLoader loader = null;
+							try {
+								loader = new ModelLoader((ModeledDesign)d, true, null);
+								final Node dNode = loader.getModel();
+								dNode.setName(d.getFullIdentifier());
+								dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(d.getCoordinate()));
+								dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)d).getRotationX(),
+										((ModeledDesign)d).getRotationY(), ((ModeledDesign)d).getRotationZ()));
+
+								designNode.attachChild(dNode);
+								designNode.updateRenderState();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (URISyntaxException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
 					}
 				}
+				return null;
 			}
-		}
+		});
 	}
 
 	public File replaceModelFile(int designID, URL newModel, boolean textureOnOff) throws IOException, URISyntaxException{

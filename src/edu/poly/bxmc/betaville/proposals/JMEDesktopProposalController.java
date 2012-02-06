@@ -28,8 +28,11 @@ package edu.poly.bxmc.betaville.proposals;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import com.jme.scene.Node;
+import com.jme.util.GameTaskQueueManager;
 
 import edu.poly.bxmc.betaville.CacheManager;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -72,13 +75,23 @@ public class JMEDesktopProposalController implements SceneProposalController {
 				try {
 					loader = new ModelLoader((ModeledDesign)versionToAdd, true, null);
 					final Node dNode = loader.getModel();
+					Future<Object> future = GameTaskQueueManager.getManager().update(new Callable<Object>() {
+
+						@Override
+						public Object call() throws Exception {
+							SceneGameState.getInstance().getDesignNode().attachChild(dNode);
+							SceneGameState.getInstance().getDesignNode().updateRenderState();
+							return null;
+						}
+					});
 					dNode.setName(versionToAdd.getFullIdentifier());
 					dNode.setLocalTranslation(JME2MapManager.instance.locationToBetaville(versionToAdd.getCoordinate()));
 					dNode.setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)versionToAdd).getRotationX(),
 							((ModeledDesign)versionToAdd).getRotationY(), ((ModeledDesign)versionToAdd).getRotationZ()));
 
-					SceneGameState.getInstance().getDesignNode().attachChild(dNode);
-					SceneGameState.getInstance().getDesignNode().updateRenderState();
+					while(!future.isDone()){
+						// waiting for this to finish
+					}
 					return true;
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
