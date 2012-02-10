@@ -322,6 +322,10 @@ public class SceneController extends Controller {
 	 */
 	public void setTurnSpeed(float turnSpeed) {
 		this.turnSpeed = turnSpeed;
+		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "lookUp");
+		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "lookDown");
+		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "turnRight");
+		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "turnLeft");
 	}
 
 	public MouseZoomAction getMouseZoom() {

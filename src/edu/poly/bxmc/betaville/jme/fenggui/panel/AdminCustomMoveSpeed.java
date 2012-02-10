@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2010, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ import edu.poly.bxmc.betaville.module.ModuleNameException;
 
 /**
  * A City Panel component to allow for the manipulation of movement
- * speeds.
+ * and rotation speeds.
  * @author Skye Book
  *
  */
@@ -74,6 +74,10 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	
 	private AltitudeUpdater altitudeUpdater;
 	private GroundMagnet groundMagnet;
+	
+	private Label rotateSpeedLabel;
+	private String rotateSpeedLabelPrefix = "Rotate Speed: ";
+	private Slider rotateSpeedSlider;
 	
 	private Label speedLabel;
 	private String labelPrefix = "Move Speed: ";
@@ -100,6 +104,20 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	public AdminCustomMoveSpeed(){
 		super(true, true);
 		getContentContainer().setLayoutManager(new RowExLayout(false));
+		
+		rotateSpeedLabel = FengGUI.createWidget(Label.class);
+		rotateSpeedLabel.setText(rotateSpeedLabelPrefix);
+		
+		rotateSpeedSlider = FengGUI.createSlider(true);
+		rotateSpeedSlider.addSliderMovedListener(new ISliderMovedListener() {
+			
+			@Override
+			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
+				// The default rotate speed is .5f, so we can scale from 0f-1f by using the default slider range
+				SceneGameState.getInstance().getSceneController().setTurnSpeed((float)rotateSpeedSlider.getValue());
+				rotateSpeedLabel.setText(rotateSpeedLabelPrefix+(float)rotateSpeedSlider.getValue());
+			}
+		});
 		
 		speedContainer = FengGUI.createWidget(Container.class);
 		speedContainer.setLayoutManager(new StaticLayout());
@@ -194,7 +212,7 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 		
 		bottomContainer.addWidget(altitude, speedLock);
 		
-		getContentContainer().addWidget(speedContainer, minMaxContainer, bottomContainer);
+		getContentContainer().addWidget(rotateSpeedLabel, rotateSpeedSlider, speedContainer, minMaxContainer, bottomContainer);
 		
 		try {
 			speedSlider.setValue(calculateRange()/SceneGameState.getInstance().getSceneController().getMoveSpeed());
