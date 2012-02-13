@@ -488,6 +488,32 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(false);
 		return null;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see edu.poly.bxmc.betaville.net.UnprotectedManager#findAllProposalsInCity(int)
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Design> findAllProposalsInCity(int cityID){
+		busy.getAndSet(true);
+		try {
+			logger.info("Finding proposals in city "+cityID);
+			writeToStream(new Object[]{"proposal", "findproposalsbycity", cityID});
+			Object response = readResponse();
+			if(response instanceof List){
+				busy.getAndSet(false);
+				touchLastUsed();
+				return (List<Design>)response;
+			}
+		} catch (IOException e) {
+			logger.error("Network issue detected", e);
+		} catch (UnexpectedServerResponse e) {
+			e.printStackTrace();
+			busy.getAndSet(false);
+		}
+		busy.getAndSet(false);
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.poly.bxmc.betaville.net.UnprotectedManager#findAllProposals(int)

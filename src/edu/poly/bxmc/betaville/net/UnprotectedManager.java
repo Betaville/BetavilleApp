@@ -147,6 +147,13 @@ public interface UnprotectedManager {
 	 * @see #findDesignByID(int)
 	 */
 	public abstract int[] findAllProposals(int designID);
+	
+	/**
+	 * Finds all proposals in a city
+	 * @param cityID The ID of the city to find proposals in
+	 * @return A list of all of the proposal roots in the requested city
+	 */
+	public abstract List<Design> findAllProposalsInCity(int cityID);
 
 	/**
 	 * Gets the proposals located in a specific area
