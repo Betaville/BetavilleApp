@@ -137,6 +137,13 @@ public interface UnprotectedManager {
 	public abstract List<Design> findTerrainByCity(int cityID);
 
 	public abstract int[] findVersionsOfProposal(int proposalDesignID);
+	
+	/**
+	 * Retrieve the versions of a proposal
+	 * @param proposalRootDesignID
+	 * @return The versions of the specified proposal
+	 */
+	public abstract List<Design> getVersionsOfProposal(int proposalRootDesignID);
 
 	public abstract ProposalPermission getProposalPermissions(int designID);
 
