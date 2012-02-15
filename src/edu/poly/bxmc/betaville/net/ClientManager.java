@@ -520,7 +520,7 @@ public abstract class ClientManager extends NetworkConnection implements Unprote
 		busy.getAndSet(true);
 		try {
 			logger.info("Finding proposals in city "+cityID);
-			writeToStream(new Object[]{"proposal", "findproposalsbycity", cityID});
+			writeToStream(new Object[]{"design", "findproposalsbycity", cityID});
 			Object response = readResponse();
 			if(response instanceof List){
 				busy.getAndSet(false);
