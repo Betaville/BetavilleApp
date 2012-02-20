@@ -119,6 +119,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		sc.layout();
 
 
+		addAction(new TurnSkyboxOnOffAction());
 		addAction(new TerrainDeleterAction());
 		addAction(new VolumeControl());
 		addAction(new WireframePanelAction());

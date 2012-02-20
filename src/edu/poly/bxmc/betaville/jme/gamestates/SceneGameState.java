@@ -775,9 +775,10 @@ public class SceneGameState extends BasicGameState {
 	}
 
 	public void render(float tpf){
-		DisplaySystem.getDisplaySystem().getRenderer().draw(skybox);
-		DisplaySystem.getDisplaySystem().getRenderer().renderQueue();
-		DisplaySystem.getDisplaySystem().getRenderer().clearZBuffer();
+		// ... Magic?  Why do we need this call?
+		if(skybox.getParent()!=null) DisplaySystem.getDisplaySystem().getRenderer().draw(skybox);
+		//DisplaySystem.getDisplaySystem().getRenderer().renderQueue();
+		//DisplaySystem.getDisplaySystem().getRenderer().clearZBuffer();
 	}
 
 	public void addToFlagNode(Vector3f location, List<Integer> baseIDs){
