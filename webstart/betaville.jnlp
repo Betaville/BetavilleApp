@@ -100,15 +100,15 @@
 <property key="java.library.path" value="." />
 
 <resources os="Windows">
-  	<j2se version="1.5+" max-heap-size="768M"/>
+  	<j2se version="1.6+" max-heap-size="768M"/>
     <nativelib href="windows-native.jar"/>
   </resources>
   <resources os="Mac OS">
-    <j2se version="1.5+" max-heap-size="768M"/>
+    <j2se version="1.6+" max-heap-size="768M"/>
     <nativelib href="mac-native.jar"/>
   </resources>
   <resources os="Linux" arch="i386">
-    <j2se version="1.5+" max-heap-size="768M"/>
+    <j2se version="1.6+" max-heap-size="768M"/>
     <nativelib href="linux-native.jar"/>
   </resources>
 
