@@ -75,7 +75,7 @@ public class QuickBuilder extends PanelAction {
 					public void run() {
 						try {
 							
-							UTMCoordinate[] box = JME2MapManager.createBox(5000, 5000, SquareCorner.CENTER,
+							UTMCoordinate[] box = JME2MapManager.createBox(2500, 2500, SquareCorner.CENTER,
 									JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()));
 							
 							GPSCoordinate bottomLeft = box[2].getGPS();
@@ -87,7 +87,7 @@ public class QuickBuilder extends PanelAction {
 							String request = "/api/0.6/map?bbox="+left+","+bottom+","+right+","+top;
 							logger.info("REQUEST:\t" + request);
 							OSMReader reader = new OSMReader();
-							//eader.loadFile(new File(System.getProperty("user.home")+"/Downloads/map.osm"));
+							//reader.loadFile(new File(System.getProperty("user.home")+"/Downloads/map.osm"));
 							URL url = new URL("http://api.openstreetmap.org"+request);
 							reader.loadFile(url);
 							reader.parse();
