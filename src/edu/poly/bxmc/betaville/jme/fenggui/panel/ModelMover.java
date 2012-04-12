@@ -216,7 +216,15 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		save.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-				if(changeFallbacks.get(SceneScape.getPickedDesign().getID())!=null){
+				
+				Design design = SceneScape.getPickedDesign();
+				
+				if(design == null){
+					logger.error("No design selected");
+					return;
+				}
+				
+				if(changeFallbacks.get(design.getID())!=null){
 					// check if the location has been changed
 
 					// check if the rotation has been updated
@@ -231,7 +239,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 											"This object's location has been saved", "ok", true));
 						}
 						else{
-							logger.info("Network Save Failed");
+							logger.error("Network Save Failed");
 							GUIGameState.getInstance().getDisp().addWidget(
 									FengUtils.createDismissableWindow("Betaville",
 											"This object's location could not be saved", "ok", true));
@@ -342,11 +350,26 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		}
 
 		public void buttonPressed(Object arg0, ButtonPressedEvent arg1){
+			
+			Design design = SceneScape.getPickedDesign();
+			Spatial targetSpatial = SceneScape.getTargetSpatial();
+
+			if(design == null || targetSpatial == null){
+				logger.error("No design selected");
+				return;
+			}
+			else if(!design.getFullIdentifier().equals(targetSpatial.getName())){
+				logger.error("Design and Spatial selection are not in agreement\t("+design.getFullIdentifier()+" vs "+targetSpatial.getName()+")");
+				return;
+			}
+			
+			logger.info("Moving object " + design.getID());
+
 			// has the object already been moved?
-			if(changeFallbacks.get(SceneScape.getPickedDesign().getID())==null){
+			if(changeFallbacks.get(design.getID())==null){
 				logger.info("A fallback was not previously created for this object, creating one");
-				FallbackSet newSet = new FallbackSet(SceneScape.getPickedDesign().getCoordinate(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY());
-				changeFallbacks.put(SceneScape.getPickedDesign().getID(), newSet);
+				FallbackSet newSet = new FallbackSet(design.getCoordinate(), ((ModeledDesign)design).getRotationY());
+				changeFallbacks.put(design.getID(), newSet);
 			}
 
 			float moveAmount = 0;
@@ -363,28 +386,28 @@ public class ModelMover extends Window implements IBetavilleWindow {
 
 			switch (direction) {
 			case NORTH:
-				Translator.moveNorth(SceneScape.getTargetSpatial(), moveAmount);
-				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, moveAmount, 0);
+				Translator.moveNorth(targetSpatial, moveAmount);
+				design.getCoordinate().move(0, moveAmount, 0);
 				break;
 			case SOUTH:
-				Translator.moveSouth(SceneScape.getTargetSpatial(), moveAmount);
-				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, -moveAmount, 0);
+				Translator.moveSouth(targetSpatial, moveAmount);
+				design.getCoordinate().move(0, -moveAmount, 0);
 				break;
 			case EAST:
-				Translator.moveEast(SceneScape.getTargetSpatial(), moveAmount);
-				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(moveAmount, 0, 0);
+				Translator.moveEast(targetSpatial, moveAmount);
+				design.getCoordinate().move(moveAmount, 0, 0);
 				break;
 			case WEST:
-				Translator.moveWest(SceneScape.getTargetSpatial(), moveAmount);
-				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(-moveAmount, 0, 0);
+				Translator.moveWest(targetSpatial, moveAmount);
+				design.getCoordinate().move(-moveAmount, 0, 0);
 				break;
 			case UP:
-				Translator.moveUp(SceneScape.getTargetSpatial(), moveAmount);
-				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, moveAmount);
+				Translator.moveUp(targetSpatial, moveAmount);
+				design.getCoordinate().move(0, 0, moveAmount);
 				break;
 			case DOWN:
-				Translator.moveDown(SceneScape.getTargetSpatial(), moveAmount);
-				SettingsPreferences.getCity().findDesignByFullIdentifier(SceneScape.getTargetSpatial().getName()).getCoordinate().move(0, 0, -moveAmount);
+				Translator.moveDown(targetSpatial, moveAmount);
+				design.getCoordinate().move(0, 0, -moveAmount);
 				break;
 			}
 		}
