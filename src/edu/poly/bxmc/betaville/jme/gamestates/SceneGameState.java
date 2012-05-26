@@ -480,7 +480,8 @@ public class SceneGameState extends BasicGameState {
 	public void cameraPerspectiveProjection() {
 		camera.setParallelProjection(false);
 		camera.setLocation(JME2MapManager.instance.locationToBetaville(startingLocation));
-		camera.getLocation().setY(Scale.fromMeter(200));
+		System.out.println("Camera placed at: " + camera.getLocation());
+		//camera.getLocation().setY(Scale.fromMeter(200));
 		float aspect = (float) DisplaySystem.getDisplaySystem().getWidth() / DisplaySystem.getDisplaySystem().getHeight();
 		// Parameters of the frustum for perspective : field of view (angle of view in the Y direction), aspect, near, far
 		camera.setFrustumPerspective( 45.0f, aspect, NEAR_FRUSTUM, FAR_FRUSTUM);
