@@ -54,6 +54,7 @@ import edu.poly.bxmc.betaville.jme.fenggui.LightTweaker;
 import edu.poly.bxmc.betaville.jme.fenggui.ModelSwapWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.MyLocationWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.NetworkedWormholeWindow;
+import edu.poly.bxmc.betaville.jme.fenggui.OnScreenController;
 import edu.poly.bxmc.betaville.jme.fenggui.TerrainLoader;
 import edu.poly.bxmc.betaville.jme.fenggui.ThumbnailCaptureWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.ThumbnailUploadWindow;
@@ -129,6 +130,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		//addAction(new VertexEditorPanelAction());
 		//addAction(new BookmarkPanel());
 
+		addAction(new OSCOnOffPanelAction());
 		addAction(new OnOffPanelAction("Upload Thumbnail", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailUploadWindow.class, false));
 		addAction(new SwingOnOffPanelAction("Comments in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingCommentWindow.class));
 		addAction(new SwingOnOffPanelAction("Proposals in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingProposalWindow.class));

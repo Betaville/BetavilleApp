@@ -53,7 +53,7 @@ import edu.poly.bxmc.betaville.jme.gamestates.SoundGameState.SOUNDS;
 
 /**
  * @author Skye Book
- * @deprecated - This menu context has been superceded
+ * @deprecated - This menu context has been superseded
  */
 public class EditContainer extends Container {
 	private ITexture move;
