@@ -40,6 +40,7 @@ import org.fenggui.event.IButtonPressedListener;
 import com.jme.input.FirstPersonHandler;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
+import com.jme.input.action.KeyForwardAction;
 import com.jme.input.controls.GameControlManager;
 import com.jme.input.controls.binding.KeyboardBinding;
 import com.jme.math.Vector3f;
@@ -51,6 +52,7 @@ import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.jme.fenggui.KioskQuitPrompt;
+import edu.poly.bxmc.betaville.jme.fenggui.OnScreenController;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -102,6 +104,8 @@ public class SceneController extends Controller {
 
 	private RemoteInputAction remoteInputAction;
 	
+	private OnScreenController onScreenController;
+	
 	/**
 	 * Attribute <manager> - Game Control's manager
 	 */
@@ -121,6 +125,8 @@ public class SceneController extends Controller {
 	private long cameraLastMoved=-1;
 
 	// private Compass compass = new Compass();
+
+	private KeyForwardAction forwardAction;
 
 
 	/**
@@ -339,6 +345,10 @@ public class SceneController extends Controller {
 	public long getCameraLastMoved(){
 		return cameraLastMoved;
 	}
+	
+	public void setOnScreenController (OnScreenController onScreenController) {
+		this.onScreenController = onScreenController;
+	}
 
 	private void setRemoteInputEnabled(boolean enabled){
 		remoteInputAction.setEnabled(enabled);
@@ -348,6 +358,10 @@ public class SceneController extends Controller {
 	public void update(float time) {
 		// firstPersonHandler.getKeyboardLookHandler().setMoveSpeed(DisplaySystem.getDisplaySystem().getRenderer().getCamera().getLocation().getY());
 		firstPersonHandler.update(time);
+		
+		if ( onScreenController != null ) {
+			onScreenController.update(time);
+		}
 		
 		if(remoteInputAction.isEnabled()) remoteInputAction.update(time);
 

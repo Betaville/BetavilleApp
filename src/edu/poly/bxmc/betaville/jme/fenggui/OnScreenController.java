@@ -26,43 +26,87 @@
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
-import org.fenggui.FengGUI;
 import org.fenggui.Label;
 import org.fenggui.binding.render.Binding;
 import org.fenggui.binding.render.Pixmap;
 import org.fenggui.event.Event;
 import org.fenggui.event.IGenericEventListener;
+import org.fenggui.event.mouse.MouseExitedEvent;
+import org.fenggui.event.mouse.MousePressedEvent;
+import org.fenggui.event.mouse.MouseReleasedEvent;
 import org.fenggui.layout.StaticLayout;
 
-import com.jme.math.Matrix3f;
+import com.jme.input.action.InputActionEvent;
+import com.jme.input.action.KeyBackwardAction;
+import com.jme.input.action.KeyForwardAction;
+import com.jme.input.action.KeyInputAction;
+import com.jme.input.action.KeyLookDownAction;
+import com.jme.input.action.KeyLookUpAction;
+import com.jme.input.action.KeyRotateLeftAction;
+import com.jme.input.action.KeyRotateRightAction;
+import com.jme.input.action.KeyStrafeDownAction;
+import com.jme.input.action.KeyStrafeLeftAction;
+import com.jme.input.action.KeyStrafeRightAction;
+import com.jme.input.action.KeyStrafeUpAction;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 
 import edu.poly.bxmc.betaville.jme.controllers.SceneController;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
-import edu.poly.bxmc.betaville.jme.map.Scale;
 
 /**
  * An on screen controller (OSC) for moving the camera.
  * @author Skye Book
+ * @author Johannes Lier
  */
 public class OnScreenController extends Container {
 	private static final Logger logger = Logger.getLogger(OnScreenController.class);
 
-	private Vector3f temp = new Vector3f();
-	private Matrix3f incr = new Matrix3f();
-
+	private static final int CONTROLLER_WIDTH = 246;
+	private static final int CONTROLLER_HEIGHT = 246;
+	
 	private static final String textureBasePath = "data/uiAssets/osc/";
+	
+	private enum KeyAction {FORWARD, BACK, LEFT, RIGHT, TURN_LEFT, TURN_RIGHT, LOOK_UP, LOOK_DOWN, UP, DOWN};
+	
+	private Map<KeyAction, KeyInputAction> actionsMap;
+	private Map<KeyAction, KeyInputAction> activeActionsMap;
+	
+	InputActionEvent event = new InputActionEvent();
 
 	public OnScreenController() {
 		super();
-		this.setSize(161, 161);
+		this.setSize(CONTROLLER_WIDTH, CONTROLLER_HEIGHT);
 		this.setLayoutManager(new StaticLayout());
-
+		
+		Camera camera = SceneGameState.getInstance().getCamera();
+        SceneController sceneController = SceneGameState.getInstance().getSceneController();
+        float moveSpeed = sceneController.getMoveSpeed();
+        
+        activeActionsMap = new HashMap<KeyAction, KeyInputAction>();
+        actionsMap = new HashMap<KeyAction, KeyInputAction>();
+        
+		actionsMap.put(KeyAction.FORWARD, new KeyForwardAction(camera, moveSpeed));
+		actionsMap.put(KeyAction.BACK, new KeyBackwardAction(camera, moveSpeed));
+		actionsMap.put(KeyAction.LEFT, new KeyStrafeLeftAction(camera, moveSpeed));
+		actionsMap.put(KeyAction.RIGHT, new KeyStrafeRightAction(camera, moveSpeed));
+		KeyRotateLeftAction ratateLeftAction = new KeyRotateLeftAction(camera, moveSpeed);
+		ratateLeftAction.setLockAxis(new Vector3f(0, 1, 0));
+		actionsMap.put(KeyAction.TURN_LEFT, ratateLeftAction);
+		KeyRotateRightAction ratateRightAction = new KeyRotateRightAction(camera, moveSpeed);
+		ratateRightAction.setLockAxis(new Vector3f(0, 1, 0));
+		actionsMap.put(KeyAction.TURN_RIGHT, ratateRightAction);
+		actionsMap.put(KeyAction.DOWN, new KeyStrafeDownAction(camera, moveSpeed));
+		actionsMap.put(KeyAction.UP, new KeyStrafeUpAction(camera, moveSpeed));
+		actionsMap.put(KeyAction.LOOK_UP, new KeyLookUpAction(camera, moveSpeed));
+		actionsMap.put(KeyAction.LOOK_DOWN, new KeyLookDownAction(camera, moveSpeed));
+		
 		try {
 			createBackgroundElement();
 			createMovementElements();
@@ -71,11 +115,12 @@ public class OnScreenController extends Container {
 		} catch (IOException e) {
 			logger.error("Could not locate find On Screen Controller textures", e);
 		}
-
+		
+		sceneController.setOnScreenController(this);
 	}
 
 	private Label createLabelWithTexture(String texturePath) throws IOException{
-		Label label = FengGUI.createWidget(Label.class);
+		Label label = new Label();
 		label.setPixmap( new Pixmap(Binding.getInstance().getTexture(texturePath)));
 		return label;
 	}
@@ -88,29 +133,29 @@ public class OnScreenController extends Container {
 	private void createMovementElements() throws IOException{
 		Label forward = createLabelWithTexture(textureBasePath+"forward.png");
 		addWidget(forward);
-		forward.setX(FengUtils.midWidth(this, forward));
-		forward.setY(getHeight()-forward.getHeight());
+		forward.setX((this.getWidth() / 4) - (forward.getWidth() / 2) );
+		forward.setY( this.getHeight() / 4 - forward.getHeight() / 2 );
 		forward.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
 			@Override
 			public void processEvent(Object source, Event event) {
-				moveCameraForwardBackward(true);
+				setMovementDirection(event, KeyAction.FORWARD);
 			}
 		});
 
 		Label backward = createLabelWithTexture(textureBasePath+"backward.png");
 		addWidget(backward);
-		backward.setX(FengUtils.midWidth(this, backward));
-		backward.setY(0);
+		backward.setX((this.getWidth() / 4) * 3 - (backward.getWidth() / 2) );
+		backward.setY( this.getHeight() / 4 - backward.getHeight() / 2 );
 		backward.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
 			@Override
 			public void processEvent(Object source, Event event) {
-				moveCameraForwardBackward(false);
+				setMovementDirection(event, KeyAction.BACK);
 			}
 		});
 
-		Label strafeLeft = createLabelWithTexture(textureBasePath+"strafe_left.png");
+		Label strafeLeft = createLabelWithTexture(textureBasePath+"left.png");
 		addWidget(strafeLeft);
 		strafeLeft.setX(0);
 		strafeLeft.setY(FengUtils.midHeight(this, strafeLeft));
@@ -118,11 +163,11 @@ public class OnScreenController extends Container {
 
 			@Override
 			public void processEvent(Object source, Event event) {
-				strafeCameraLeftRight(true);
+				setMovementDirection(event, KeyAction.LEFT);
 			}
 		});
 
-		Label strafeRight = createLabelWithTexture(textureBasePath+"strafe_right.png");
+		Label strafeRight = createLabelWithTexture(textureBasePath+"right.png");
 		addWidget(strafeRight);
 		strafeRight.setX(getWidth()-strafeRight.getWidth());
 		strafeRight.setY(FengUtils.midHeight(this, strafeLeft));
@@ -130,140 +175,101 @@ public class OnScreenController extends Container {
 
 			@Override
 			public void processEvent(Object source, Event event) {
-				strafeCameraLeftRight(false);
+				setMovementDirection(event, KeyAction.RIGHT);
 			}
 		});
 	}
-
+	
 	private void createRotationElements() throws IOException{
+		Label rotateUp = createLabelWithTexture(textureBasePath+"rotate_up.png");
+		addWidget(rotateUp);
+		rotateUp.setX(FengUtils.midWidth(this, rotateUp));
+		rotateUp.setY(this.getHeight() / 2);
+		rotateUp.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
+
+			@Override
+			public void processEvent(Object source, Event event) {
+				setMovementDirection(event, KeyAction.LOOK_UP);
+			}
+		});
+		
 		Label rotateDown = createLabelWithTexture(textureBasePath+"rotate_down.png");
 		addWidget(rotateDown);
 		rotateDown.setX(FengUtils.midWidth(this, rotateDown));
-		rotateDown.setY(FengUtils.midHeight(this, rotateDown)+rotateDown.getHeight());
+		rotateDown.setY(this.getHeight() / 2 - rotateDown.getHeight());
 		rotateDown.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
 			@Override
 			public void processEvent(Object source, Event event) {
-				rotateCameraUpDown(false);
+				setMovementDirection(event, KeyAction.LOOK_DOWN);
 			}
 		});
 
+		Label rotateRight = createLabelWithTexture(textureBasePath+"rotate_right.png");
+		addWidget(rotateRight);
+		rotateRight.setX(this.getWidth() / 2);
+		rotateRight.setY(FengUtils.midHeight(this, rotateRight));
+		rotateRight.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
+
+			@Override
+			public void processEvent(Object source, Event event) {
+				setMovementDirection(event, KeyAction.TURN_RIGHT);
+			}
+		});
+		
 		Label rotateLeft = createLabelWithTexture(textureBasePath+"rotate_left.png");
 		addWidget(rotateLeft);
-		rotateLeft.setX(FengUtils.midWidth(this, rotateLeft)-rotateLeft.getWidth());
+		rotateLeft.setX(this.getWidth() / 2 - rotateLeft.getWidth());
 		rotateLeft.setY(FengUtils.midHeight(this, rotateLeft));
 		rotateLeft.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
 			@Override
 			public void processEvent(Object source, Event event) {
-				rotateCameraLeftRight(true);
-			}
-		});
-
-		Label rotateUp = createLabelWithTexture(textureBasePath+"rotate_up.png");
-		addWidget(rotateUp);
-		rotateUp.setX(FengUtils.midWidth(this, rotateUp));
-		rotateUp.setY(FengUtils.midHeight(this, rotateUp)-rotateUp.getHeight());
-		rotateUp.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-
-			@Override
-			public void processEvent(Object source, Event event) {
-				rotateCameraUpDown(true);
-			}
-		});
-
-		Label rotateRight = createLabelWithTexture(textureBasePath+"rotate_right.png");
-		addWidget(rotateUp);
-		rotateRight.setX(FengUtils.midWidth(this, rotateRight)+rotateRight.getWidth());
-		rotateRight.setY(FengUtils.midHeight(this, rotateRight));
-		rotateLeft.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-
-			@Override
-			public void processEvent(Object source, Event event) {
-				rotateCameraLeftRight(false);
+				setMovementDirection(event, KeyAction.TURN_LEFT);
 			}
 		});
 	}
 
 	private void createElevationElements() throws IOException{
-		Label elevateUp = createLabelWithTexture(textureBasePath+"elevate_up.png");
+		Label elevateUp = createLabelWithTexture(textureBasePath+"up.png");
 		addWidget(elevateUp);
 		elevateUp.setX(FengUtils.midWidth(this, elevateUp));
-		elevateUp.setY(FengUtils.midHeight(this, elevateUp) + (elevateUp.getHeight()/2));
+		elevateUp.setY(getHeight() - elevateUp.getHeight());
 		elevateUp.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
 			@Override
 			public void processEvent(Object source, Event event) {
-				moveCameraUpDown(true);
+				setMovementDirection(event, KeyAction.UP);
 			}
 		});
 
-		Label elevateDown = createLabelWithTexture(textureBasePath+"elevate_down.png");
+		Label elevateDown = createLabelWithTexture(textureBasePath+"down.png");
 		addWidget(elevateDown);
 		elevateDown.setX(FengUtils.midWidth(this, elevateDown));
-		elevateDown.setY(FengUtils.midHeight(this, elevateDown) - (elevateDown.getHeight()/2));
+		elevateDown.setY(0);
 		elevateDown.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
 			@Override
 			public void processEvent(Object source, Event event) {
-				moveCameraUpDown(false);
+				setMovementDirection(event, KeyAction.DOWN);
 			}
 		});
 	}
-
-	private void moveCameraForwardBackward(boolean forward){
-		Camera camera = SceneGameState.getInstance().getCamera();
-		SceneController sc = SceneGameState.getInstance().getSceneController();
-		Vector3f loc = camera.getLocation();
-		if ( !camera.isParallelProjection() ) {
-			loc.addLocal(camera.getDirection().mult(sc.getMoveSpeed()*(forward?1:-1), temp));
-		} else {
-			// move up instead of forward if in parallel mode
-			loc.addLocal(camera.getUp().mult(sc.getMoveSpeed()*(forward?1:-1), temp));
+	
+	private void setMovementDirection(Event event, KeyAction key) {
+		if(event instanceof MousePressedEvent){
+			activeActionsMap.put(key, actionsMap.get(key));
 		}
-		camera.update();
-	}
-
-	private void strafeCameraLeftRight(boolean left){
-		Camera camera = SceneGameState.getInstance().getCamera();
-		SceneController sc = SceneGameState.getInstance().getSceneController();
-		Vector3f loc = camera.getLocation();
-		if(left){
-			loc.addLocal(camera.getLeft().mult(sc.getMoveSpeed(), temp));
+		else if (event instanceof MouseReleasedEvent || event instanceof MouseExitedEvent ) {
+			activeActionsMap.remove(key);
 		}
-		else{
-			loc.subtractLocal(camera.getLeft().mult(sc.getMoveSpeed(), temp));
+	}
+	
+	public void update(float time) {
+		event.setTime(time);
+		
+		for (KeyInputAction keyInputAction : activeActionsMap.values()) {
+			keyInputAction.performAction(event);
 		}
-		camera.update();
-	}
-
-	private void rotateCameraUpDown(boolean up){
-		Camera camera = SceneGameState.getInstance().getCamera();
-		SceneController sc = SceneGameState.getInstance().getSceneController();
-		incr.fromAngleNormalAxis(sc.getTurnSpeed()*(up?-1:1), camera.getLeft());
-		incr.mult(camera.getLeft(), camera.getLeft());
-		incr.mult(camera.getDirection(), camera.getDirection());
-		incr.mult(camera.getUp(), camera.getUp());
-		camera.normalize();
-		camera.update();
-	}
-
-	private void rotateCameraLeftRight(boolean left){
-		Camera camera = SceneGameState.getInstance().getCamera();
-		SceneController sc = SceneGameState.getInstance().getSceneController();
-		incr.fromAngleNormalAxis(sc.getTurnSpeed()*(left?1:-1), camera.getUp());
-		incr.mult(camera.getUp(), camera.getUp());
-		incr.mult(camera.getLeft(), camera.getLeft());
-		incr.mult(camera.getDirection(), camera.getDirection());
-		camera.normalize();
-		camera.update();
-	}
-
-	private void moveCameraUpDown(boolean up){
-		Camera cam = SceneGameState.getInstance().getCamera();
-		SceneController sc = SceneGameState.getInstance().getSceneController();
-		Vector3f location = SceneGameState.getInstance().getCamera().getLocation();
-		location.y+=Scale.fromMeter(sc.getMoveSpeed()*(up?1:-1));
-		cam.update();
 	}
 }
