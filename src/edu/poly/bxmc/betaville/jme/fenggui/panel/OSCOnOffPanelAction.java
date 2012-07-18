@@ -26,9 +26,13 @@
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
 import org.apache.log4j.Logger;
+import org.fenggui.FengGUI;
+import org.fenggui.binding.render.Binding;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
-import edu.poly.bxmc.betaville.jme.fenggui.OnScreenController;
+
+import edu.poly.bxmc.betaville.jme.fenggui.OnScreenControllerPanel;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
@@ -40,17 +44,20 @@ import edu.poly.bxmc.betaville.module.PanelAction;
  */
 public class OSCOnOffPanelAction extends PanelAction{
 	private static final Logger logger = Logger.getLogger(OSCOnOffPanelAction.class);
-	protected OnScreenController osc;
+	protected OSCPanel oscWindow;
 
 	public OSCOnOffPanelAction(){
 		super("On Screen Controller", "Blerg!", "On Screen Controller", AvailabilityRule.ALWAYS, UserType.MEMBER, null);
-		osc = new OnScreenController();
+		oscWindow = FengGUI.createWidget(OSCPanel.class);
+		oscWindow.finishSetup();
+		oscWindow.setY( (Binding.getInstance().getCanvasHeight() - oscWindow.getHeight()) / 2);
+		
 		button.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				if(osc.isInWidgetTree()) GUIGameState.getInstance().getDisp().removeWidget(osc);
+				if(oscWindow.isInWidgetTree()) GUIGameState.getInstance().getDisp().removeWidget(oscWindow);
 				else{
-					GUIGameState.getInstance().getDisp().addWidget(osc);
+					GUIGameState.getInstance().getDisp().addWidget(oscWindow);
 				}
 			}
 		});

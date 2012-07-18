@@ -51,8 +51,10 @@ import com.jme.system.DisplaySystem;
 import edu.poly.bxmc.betaville.KioskMode;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.ShutdownManager;
+import edu.poly.bxmc.betaville.jme.fenggui.IOnScreenController;
 import edu.poly.bxmc.betaville.jme.fenggui.KioskQuitPrompt;
 import edu.poly.bxmc.betaville.jme.fenggui.OnScreenController;
+import edu.poly.bxmc.betaville.jme.fenggui.OnScreenControllerPanel;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -104,7 +106,7 @@ public class SceneController extends Controller {
 
 	private RemoteInputAction remoteInputAction;
 	
-	private OnScreenController onScreenController;
+	private IOnScreenController onScreenController;
 	
 	/**
 	 * Attribute <manager> - Game Control's manager
@@ -346,7 +348,7 @@ public class SceneController extends Controller {
 		return cameraLastMoved;
 	}
 	
-	public void setOnScreenController (OnScreenController onScreenController) {
+	public void setOnScreenController (IOnScreenController onScreenController) {
 		this.onScreenController = onScreenController;
 	}
 
