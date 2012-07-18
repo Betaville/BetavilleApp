@@ -110,8 +110,6 @@ public class OnScreenController extends Container implements IOnScreenController
 		try {
 			createBackgroundElement();
 			createMovementElements();
-			createRotationElements();
-			createElevationElements();
 		} catch (IOException e) {
 			logger.error("Could not locate find On Screen Controller textures", e);
 		}
@@ -119,142 +117,70 @@ public class OnScreenController extends Container implements IOnScreenController
 		sceneController.setOnScreenController(this);
 	}
 
-	private Label createLabelWithTexture(String texturePath) throws IOException{
+	private Label createLabelWithTexture(String texturePath, final KeyAction key) throws IOException{
 		Label label = new Label();
-		label.setPixmap( new Pixmap(Binding.getInstance().getTexture(texturePath)));
+		label.setPixmap( new Pixmap(Binding.getInstance().getTexture(textureBasePath + texturePath)));
+		addWidget(label);
+		
+		label.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
+
+			@Override
+			public void processEvent(Object source, Event event) {
+				setMovementDirection(event, key);
+			}
+		});
+		
 		return label;
 	}
 
 	private void createBackgroundElement() throws IOException{
-		Label bg = createLabelWithTexture(textureBasePath+"background.png");
+		Label bg =  new Label();
+		bg.setPixmap( new Pixmap(Binding.getInstance().getTexture(textureBasePath+"background.png")));
 		addWidget(bg);
 	}
 
 	private void createMovementElements() throws IOException{
-		Label forward = createLabelWithTexture(textureBasePath+"forward.png");
-		addWidget(forward);
+		Label forward = createLabelWithTexture("forward.png", KeyAction.FORWARD);
 		forward.setX((this.getWidth() / 4) - (forward.getWidth() / 2) );
 		forward.setY( this.getHeight() / 4 - forward.getHeight() / 2 );
-		forward.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.FORWARD);
-			}
-		});
-
-		Label backward = createLabelWithTexture(textureBasePath+"backward.png");
-		addWidget(backward);
+		Label backward = createLabelWithTexture("backward.png", KeyAction.BACK);
 		backward.setX((this.getWidth() / 4) * 3 - (backward.getWidth() / 2) );
 		backward.setY( this.getHeight() / 4 - backward.getHeight() / 2 );
-		backward.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.BACK);
-			}
-		});
-
-		Label strafeLeft = createLabelWithTexture(textureBasePath+"left.png");
-		addWidget(strafeLeft);
+		Label strafeLeft = createLabelWithTexture("left.png", KeyAction.LEFT);
 		strafeLeft.setX(0);
 		strafeLeft.setY(FengUtils.midHeight(this, strafeLeft));
-		strafeLeft.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.LEFT);
-			}
-		});
-
-		Label strafeRight = createLabelWithTexture(textureBasePath+"right.png");
-		addWidget(strafeRight);
+		Label strafeRight = createLabelWithTexture("right.png", KeyAction.RIGHT);
 		strafeRight.setX(getWidth()-strafeRight.getWidth());
 		strafeRight.setY(FengUtils.midHeight(this, strafeLeft));
-		strafeRight.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.RIGHT);
-			}
-		});
-	}
-	
-	private void createRotationElements() throws IOException{
-		Label rotateUp = createLabelWithTexture(textureBasePath+"rotate_up.png");
-		addWidget(rotateUp);
+		
+		Label rotateUp = createLabelWithTexture("rotate_up.png", KeyAction.LOOK_UP);
 		rotateUp.setX(FengUtils.midWidth(this, rotateUp));
 		rotateUp.setY(this.getHeight() / 2);
-		rotateUp.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.LOOK_UP);
-			}
-		});
 		
-		Label rotateDown = createLabelWithTexture(textureBasePath+"rotate_down.png");
-		addWidget(rotateDown);
+		Label rotateDown = createLabelWithTexture("rotate_down.png", KeyAction.LOOK_DOWN);
 		rotateDown.setX(FengUtils.midWidth(this, rotateDown));
 		rotateDown.setY(this.getHeight() / 2 - rotateDown.getHeight());
-		rotateDown.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.LOOK_DOWN);
-			}
-		});
-
-		Label rotateRight = createLabelWithTexture(textureBasePath+"rotate_right.png");
-		addWidget(rotateRight);
+		Label rotateRight = createLabelWithTexture("rotate_right.png", KeyAction.TURN_RIGHT);
 		rotateRight.setX(this.getWidth() / 2);
 		rotateRight.setY(FengUtils.midHeight(this, rotateRight));
-		rotateRight.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.TURN_RIGHT);
-			}
-		});
 		
-		Label rotateLeft = createLabelWithTexture(textureBasePath+"rotate_left.png");
-		addWidget(rotateLeft);
+		Label rotateLeft = createLabelWithTexture("rotate_left.png", KeyAction.TURN_LEFT);
 		rotateLeft.setX(this.getWidth() / 2 - rotateLeft.getWidth());
 		rotateLeft.setY(FengUtils.midHeight(this, rotateLeft));
-		rotateLeft.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.TURN_LEFT);
-			}
-		});
-	}
-
-	private void createElevationElements() throws IOException{
-		Label elevateUp = createLabelWithTexture(textureBasePath+"up.png");
-		addWidget(elevateUp);
+		
+		Label elevateUp = createLabelWithTexture("up.png", KeyAction.UP);
 		elevateUp.setX(FengUtils.midWidth(this, elevateUp));
 		elevateUp.setY(getHeight() - elevateUp.getHeight());
-		elevateUp.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.UP);
-			}
-		});
-
-		Label elevateDown = createLabelWithTexture(textureBasePath+"down.png");
-		addWidget(elevateDown);
+		Label elevateDown = createLabelWithTexture("down.png", KeyAction.DOWN);
 		elevateDown.setX(FengUtils.midWidth(this, elevateDown));
 		elevateDown.setY(0);
-		elevateDown.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-
-			@Override
-			public void processEvent(Object source, Event event) {
-				setMovementDirection(event, KeyAction.DOWN);
-			}
-		});
 	}
+	
 	
 	private void setMovementDirection(Event event, KeyAction key) {
 		if(event instanceof MousePressedEvent){
