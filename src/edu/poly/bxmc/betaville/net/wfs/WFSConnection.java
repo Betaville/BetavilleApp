@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
@@ -53,7 +52,7 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class WFSConnection {
 	
-	private final String getCapabilitiesSuffix ="wfs?REQUEST=GetCapabilities";
+	private final String getCapabilitiesSuffix ="wfs?service=wfs&version=1.1.0&request=GetCapabilities";
 	
 	private DataStore capabilities;
 
@@ -94,7 +93,7 @@ public class WFSConnection {
 		Intersects filter = ff.intersects(ff.property(geomName), ff.literal(polygon));
 
 		//Query query = new DefaultQuery(typeName, filter, new String[]{geomName});
-		Query query = new DefaultQuery(layer);
+		Query query = new Query(layer);
 		FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures(query);
 		return features;
 	}
