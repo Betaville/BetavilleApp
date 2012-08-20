@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
@@ -114,7 +113,7 @@ public class WFSClient {
 		Intersects filter = ff.intersects(ff.property(geomName), ff.literal(polygon));
 
 		//Query query = new DefaultQuery(typeName, filter, new String[]{geomName});
-		Query query = new DefaultQuery(typeName);
+		Query query = new Query(typeName);
 		FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures(query);
 		
 		ReferencedEnvelope bounds = new ReferencedEnvelope();
