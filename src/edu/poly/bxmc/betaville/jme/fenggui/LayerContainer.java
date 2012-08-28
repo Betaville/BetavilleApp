@@ -189,7 +189,7 @@ public class LayerContainer extends Container{
 									primitiveWindow.reset();
 								}
 								logger.info("Getting features");
-								features = addLayersWindow.getWFSConnection().requestSomething(thisLayerName);
+								features = addLayersWindow.getWFSConnection().requestSomething(thisLayerName, null);
 								logger.info("Got " + features.size() + " features");
 								FeatureIterator<SimpleFeature> it = features.features();
 								logger.info("features obtained");

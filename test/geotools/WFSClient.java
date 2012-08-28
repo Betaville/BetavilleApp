@@ -43,9 +43,11 @@ public class WFSClient {
 		long start = System.currentTimeMillis();
 		//new WFSClient();
 		WFSConnection wfsc = new WFSConnection("http://betaville.net:8080/geoserver/");
-		for(String typeName : wfsc.getAvailableLayers("Betaville")){
+		for(String typeName : wfsc.getAvailableLayers("")){
 			System.out.println(typeName);
 		}
+		
+		wfsc.requestSomething("", null);
 		
 		/*
 		FeatureCollection<SimpleFeatureType, SimpleFeature> features = wfsc.requestSomething("Betaville:DOITT_SUBWAY_ENTRANCE_01_13SEPT2010");

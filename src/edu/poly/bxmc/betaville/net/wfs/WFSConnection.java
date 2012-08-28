@@ -38,11 +38,11 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureTypeImpl;
+import org.geotools.filter.Filter;
 import org.geotools.geometry.jts.JTS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory2;
-import org.opengis.filter.spatial.Intersects;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -74,7 +74,7 @@ public class WFSConnection {
 		return typeNames;
 	}
 	
-	public FeatureCollection<SimpleFeatureType, SimpleFeature> requestSomething(String layer) throws IOException{
+	public FeatureCollection<SimpleFeatureType, SimpleFeature> requestSomething(String layer, Filter filter) throws IOException{
 		SimpleFeatureTypeImpl schema = (SimpleFeatureTypeImpl) capabilities.getSchema(layer);
 
 		// Step 4 - target
@@ -90,10 +90,11 @@ public class WFSConnection {
 
 		FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 		Object polygon = JTS.toGeometry(bbox);
-		Intersects filter = ff.intersects(ff.property(geomName), ff.literal(polygon));
+		//Intersects filter = ff.intersects(ff.property(geomName), ff.literal(polygon));
 
 		//Query query = new DefaultQuery(typeName, filter, new String[]{geomName});
 		Query query = new Query(layer);
+		if(filter!=null)query.setFilter(filter);
 		FeatureCollection<SimpleFeatureType, SimpleFeature> features = source.getFeatures(query);
 		return features;
 	}
