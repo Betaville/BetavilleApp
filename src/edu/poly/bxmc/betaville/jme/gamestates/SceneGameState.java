@@ -941,7 +941,7 @@ public class SceneGameState extends BasicGameState {
 		}
 		else{
 			// do jonas and radu movement
-			automaticMovementCalculation();
+			//automaticMovementCalculation();
 		}
 
 
