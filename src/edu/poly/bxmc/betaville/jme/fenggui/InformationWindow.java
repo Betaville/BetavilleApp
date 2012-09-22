@@ -215,6 +215,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 	}
 	
 	private void commitChanges() throws UnknownHostException, IOException{
+		update.setEnabled(false);
 		Design d = SettingsPreferences.getCity().findDesignByID(currentDesignID);
 		
 		String updateString = "";
@@ -264,6 +265,8 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 			GUIGameState.getInstance().forceSelectionWindowUpdate();
 		}
 		else showSimpleDialog("You are not authorized to change this");
+		
+		update.setEnabled(true);
 	}
 	
 	private boolean changeQuery(String editorText, String originalText){
