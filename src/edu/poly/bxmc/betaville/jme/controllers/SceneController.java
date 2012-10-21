@@ -1,4 +1,4 @@
-/** Copyright (c) 2008-2011, Brooklyn eXperimental Media Center
+/** Copyright (c) 2008-2012, Brooklyn eXperimental Media Center
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,6 @@ import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.jme.fenggui.IOnScreenController;
 import edu.poly.bxmc.betaville.jme.fenggui.KioskQuitPrompt;
-import edu.poly.bxmc.betaville.jme.fenggui.OnScreenController;
-import edu.poly.bxmc.betaville.jme.fenggui.OnScreenControllerPanel;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -126,14 +124,6 @@ public class SceneController extends Controller {
 
 	private long cameraLastMoved=-1;
 
-	// private Compass compass = new Compass();
-
-	private KeyForwardAction forwardAction;
-
-
-	/**
-	 * 
-	 */
 	public SceneController(SceneGameState sceneGameState) {
 		// set up the basic movement controls
 		firstPersonHandler = new FirstPersonHandler(DisplaySystem

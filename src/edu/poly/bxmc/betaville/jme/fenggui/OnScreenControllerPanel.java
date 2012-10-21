@@ -85,7 +85,8 @@ public class OnScreenControllerPanel extends Container implements IOnScreenContr
 		
 		Camera camera = SceneGameState.getInstance().getCamera();
         SceneController sceneController = SceneGameState.getInstance().getSceneController();
-        float moveSpeed = sceneController.getMoveSpeed();
+        // Use half the scene's move speed per Carl's request
+        float moveSpeed = sceneController.getMoveSpeed()/2f;
         
         activeActionsMap = new HashMap<KeyAction, KeyInputAction>();
         actionsMap = new HashMap<KeyAction, KeyInputAction>();
