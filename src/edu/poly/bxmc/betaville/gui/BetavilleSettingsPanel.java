@@ -300,6 +300,8 @@ public class BetavilleSettingsPanel extends JFrame{
 				resolutions.add(new Dimension(640,480));
 				resolutions.add(new Dimension(800,600));
 				resolutions.add(new Dimension(1024,768));
+				// Alternative SXGA resolution (1280x960)
+				resolutions.add(new Dimension(1280,960));
 				resolutions.add(new Dimension(1280,1024));
 				resolutions.add(new Dimension(1600,1200));
 			}
