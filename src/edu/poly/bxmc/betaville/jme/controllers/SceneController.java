@@ -125,8 +125,7 @@ public class SceneController extends Controller {
 
 	private long cameraLastMoved=-1;
 
-	private List<MoveSpeedUpdateListener> moveSpeedListeners;
-	private List<TurnSpeedUpdateListener> turnSpeedListeners;
+	private List<SpeedUpdateListener> speedListeners;
 
 	public SceneController(SceneGameState sceneGameState) {
 		// set up the basic movement controls
@@ -142,8 +141,7 @@ public class SceneController extends Controller {
 				.getDisplaySystem().getRenderer().getCamera());
 
 		// Move and turn speed listeners
-		moveSpeedListeners = new ArrayList<SceneController.MoveSpeedUpdateListener>();
-		turnSpeedListeners = new ArrayList<SceneController.TurnSpeedUpdateListener>();
+		speedListeners = new ArrayList<SceneController.SpeedUpdateListener>();
 
 		// remote server setup
 		SettingsPreferences.getThreadPool().submit(new Runnable() {
@@ -314,8 +312,8 @@ public class SceneController extends Controller {
 		firstPersonHandler.getKeyboardLookHandler().setMoveSpeed(moveSpeed);
 		this.moveSpeed = moveSpeed;
 
-		for(MoveSpeedUpdateListener listener : moveSpeedListeners){
-			listener.moveSpeedUpdated(moveSpeed);
+		for(SpeedUpdateListener listener : speedListeners){
+			listener.speedUpdated(moveSpeed, turnSpeed);
 		}
 	}
 
@@ -337,8 +335,8 @@ public class SceneController extends Controller {
 		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "turnRight");
 		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "turnLeft");
 
-		for(TurnSpeedUpdateListener listener : turnSpeedListeners){
-			listener.turnSpeedUpdated(turnSpeed);
+		for(SpeedUpdateListener listener : speedListeners){
+			listener.speedUpdated(moveSpeed, turnSpeed);
 		}
 	}
 
@@ -385,20 +383,12 @@ public class SceneController extends Controller {
 		}
 	}
 
-	public void addMoveSpeedListener(MoveSpeedUpdateListener moveSpeedListener){
-		moveSpeedListeners.add(moveSpeedListener);
+	public void addMoveSpeedListener(SpeedUpdateListener moveSpeedListener){
+		speedListeners.add(moveSpeedListener);
 	}
 
-	public void addTurnSpeedListener(TurnSpeedUpdateListener turnSpeedUpdateListener){
-		turnSpeedListeners.add(turnSpeedUpdateListener);
-	}
-
-	public void removeMoveSpeedListener(MoveSpeedUpdateListener moveSpeedListener){
-		moveSpeedListeners.remove(moveSpeedListener);
-	}
-
-	public void removeTurnSpeedListener(TurnSpeedUpdateListener turnSpeedUpdateListener){
-		turnSpeedListeners.remove(turnSpeedUpdateListener);
+	public void removeMoveSpeedListener(SpeedUpdateListener moveSpeedListener){
+		speedListeners.remove(moveSpeedListener);
 	}
 
 	/**
@@ -406,24 +396,12 @@ public class SceneController extends Controller {
 	 * @author Skye Book
 	 *
 	 */
-	public interface MoveSpeedUpdateListener{
+	public interface SpeedUpdateListener{
 		/**
 		 * Called when the camera's move speed is changed in {@link SceneController}
 		 * @param newSpeed
 		 */
-		public void moveSpeedUpdated(float newSpeed);
+		public void speedUpdated(float newSpeed, float turnSpeed);
 	}
 
-	/**
-	 * Notifies of updates to the turn speed in {@link SceneController}
-	 * @author Skye Book
-	 *
-	 */
-	public interface TurnSpeedUpdateListener{
-		/**
-		 * Called when the camera's turn speed is changed in {@link SceneController}
-		 * @param newSpeed
-		 */
-		public void turnSpeedUpdated(float newSpeed);
-	}
 }

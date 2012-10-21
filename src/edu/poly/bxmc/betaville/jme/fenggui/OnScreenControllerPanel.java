@@ -57,7 +57,7 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 
 import edu.poly.bxmc.betaville.jme.controllers.SceneController;
-import edu.poly.bxmc.betaville.jme.controllers.SceneController.MoveSpeedUpdateListener;
+import edu.poly.bxmc.betaville.jme.controllers.SceneController.SpeedUpdateListener;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 
 /**
@@ -79,7 +79,8 @@ public class OnScreenControllerPanel extends Container implements IOnScreenContr
 	
 	private InputActionEvent event = new InputActionEvent();
 	
-	private float moveSpeedDivisor = 2f;
+	// Use half the scene's move speed per Carl's request
+	private float speedDivisor = 2f;
 
 	public OnScreenControllerPanel() {
 		super();
@@ -87,22 +88,19 @@ public class OnScreenControllerPanel extends Container implements IOnScreenContr
 		this.setLayoutManager(new GridLayout(5, 2));
 		
         SceneController sceneController = SceneGameState.getInstance().getSceneController();
-        // Use half the scene's move speed per Carl's request
-        float moveSpeed = sceneController.getMoveSpeed()/moveSpeedDivisor;
-        
-        sceneController.addMoveSpeedListener(new MoveSpeedUpdateListener() {
+        sceneController.addMoveSpeedListener(new SpeedUpdateListener() {
 			
 			@Override
-			public void moveSpeedUpdated(float newSpeed) {
+			public void speedUpdated(float newSpeed, float turnSpeed) {
 				// Update the on screen controller speed
-				setSpeed(SceneGameState.getInstance().getCamera(), newSpeed/moveSpeedDivisor);
+				setSpeed(SceneGameState.getInstance().getCamera(), newSpeed/speedDivisor, turnSpeed/speedDivisor);
 			}
 		});
         
         activeActionsMap = new HashMap<KeyAction, KeyInputAction>();
         actionsMap = new HashMap<KeyAction, KeyInputAction>();
         
-		setSpeed(SceneGameState.getInstance().getCamera(), moveSpeed);
+		setSpeed(SceneGameState.getInstance().getCamera(), sceneController.getMoveSpeed()/speedDivisor, sceneController.getTurnSpeed()/speedDivisor);
 		
 		try {
 			createButtons();
@@ -113,26 +111,26 @@ public class OnScreenControllerPanel extends Container implements IOnScreenContr
 		sceneController.setOnScreenController(this);
 	}
 	
-	private void setSpeed(Camera camera, float moveSpeed){
+	private void setSpeed(Camera camera, float moveSpeed, float turnSpeed){
 		actionsMap.clear();
 		
 		actionsMap.put(KeyAction.FORWARD, new KeyForwardAction(camera, moveSpeed));
 		actionsMap.put(KeyAction.BACK, new KeyBackwardAction(camera, moveSpeed));
 		actionsMap.put(KeyAction.LEFT, new KeyStrafeLeftAction(camera, moveSpeed));
 		actionsMap.put(KeyAction.RIGHT, new KeyStrafeRightAction(camera, moveSpeed));
-		KeyRotateLeftAction ratateLeftAction = new KeyRotateLeftAction(camera, moveSpeed);
+		
+		KeyRotateLeftAction ratateLeftAction = new KeyRotateLeftAction(camera, turnSpeed);
 		ratateLeftAction.setLockAxis(new Vector3f(0, 1, 0));
 		actionsMap.put(KeyAction.TURN_LEFT, ratateLeftAction);
-		KeyRotateRightAction ratateRightAction = new KeyRotateRightAction(camera, moveSpeed);
+		KeyRotateRightAction ratateRightAction = new KeyRotateRightAction(camera, turnSpeed);
 		ratateRightAction.setLockAxis(new Vector3f(0, 1, 0));
 		actionsMap.put(KeyAction.TURN_RIGHT, ratateRightAction);
-		actionsMap.put(KeyAction.DOWN, new KeyStrafeDownAction(camera, moveSpeed));
-		actionsMap.put(KeyAction.UP, new KeyStrafeUpAction(camera, moveSpeed));
-		actionsMap.put(KeyAction.LOOK_UP, new KeyLookUpAction(camera, moveSpeed));
-		actionsMap.put(KeyAction.LOOK_DOWN, new KeyLookDownAction(camera, moveSpeed));
+		actionsMap.put(KeyAction.DOWN, new KeyStrafeDownAction(camera, turnSpeed));
+		actionsMap.put(KeyAction.UP, new KeyStrafeUpAction(camera, turnSpeed));
+		actionsMap.put(KeyAction.LOOK_UP, new KeyLookUpAction(camera, turnSpeed));
+		actionsMap.put(KeyAction.LOOK_DOWN, new KeyLookDownAction(camera, turnSpeed));
 	}
-
-
+	
 	private void createButtons() throws IOException{
 		createButton("up.png", "up_active.png", KeyAction.UP);
 		createButton("down.png", "down_active.png", KeyAction.DOWN);
