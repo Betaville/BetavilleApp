@@ -6,7 +6,6 @@ package edu.poly.bxmc.betaville.jme.fenggui.panel;
 import org.fenggui.Container;
 import org.fenggui.composite.Window;
 
-import edu.poly.bxmc.betaville.jme.fenggui.OnScreenController;
 import edu.poly.bxmc.betaville.jme.fenggui.OnScreenControllerPanel;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 

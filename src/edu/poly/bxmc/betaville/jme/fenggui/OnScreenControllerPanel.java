@@ -57,6 +57,7 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 
 import edu.poly.bxmc.betaville.jme.controllers.SceneController;
+import edu.poly.bxmc.betaville.jme.controllers.SceneController.MoveSpeedUpdateListener;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 
 /**
@@ -76,21 +77,45 @@ public class OnScreenControllerPanel extends Container implements IOnScreenContr
 	private Map<KeyAction, KeyInputAction> actionsMap;
 	private Map<KeyAction, KeyInputAction> activeActionsMap;
 	
-	InputActionEvent event = new InputActionEvent();
+	private InputActionEvent event = new InputActionEvent();
+	
+	private float moveSpeedDivisor = 2f;
 
 	public OnScreenControllerPanel() {
 		super();
 		this.setSize(CONTROLLER_WIDTH, CONTROLLER_HEIGHT);
 		this.setLayoutManager(new GridLayout(5, 2));
 		
-		Camera camera = SceneGameState.getInstance().getCamera();
         SceneController sceneController = SceneGameState.getInstance().getSceneController();
         // Use half the scene's move speed per Carl's request
-        float moveSpeed = sceneController.getMoveSpeed()/2f;
+        float moveSpeed = sceneController.getMoveSpeed()/moveSpeedDivisor;
+        
+        sceneController.addMoveSpeedListener(new MoveSpeedUpdateListener() {
+			
+			@Override
+			public void moveSpeedUpdated(float newSpeed) {
+				// Update the on screen controller speed
+				setSpeed(SceneGameState.getInstance().getCamera(), newSpeed/moveSpeedDivisor);
+			}
+		});
         
         activeActionsMap = new HashMap<KeyAction, KeyInputAction>();
         actionsMap = new HashMap<KeyAction, KeyInputAction>();
         
+		setSpeed(SceneGameState.getInstance().getCamera(), moveSpeed);
+		
+		try {
+			createButtons();
+		} catch (IOException e) {
+			logger.error("Could not locate find On Screen Controller textures", e);
+		}
+		
+		sceneController.setOnScreenController(this);
+	}
+	
+	private void setSpeed(Camera camera, float moveSpeed){
+		actionsMap.clear();
+		
 		actionsMap.put(KeyAction.FORWARD, new KeyForwardAction(camera, moveSpeed));
 		actionsMap.put(KeyAction.BACK, new KeyBackwardAction(camera, moveSpeed));
 		actionsMap.put(KeyAction.LEFT, new KeyStrafeLeftAction(camera, moveSpeed));
@@ -105,14 +130,6 @@ public class OnScreenControllerPanel extends Container implements IOnScreenContr
 		actionsMap.put(KeyAction.UP, new KeyStrafeUpAction(camera, moveSpeed));
 		actionsMap.put(KeyAction.LOOK_UP, new KeyLookUpAction(camera, moveSpeed));
 		actionsMap.put(KeyAction.LOOK_DOWN, new KeyLookDownAction(camera, moveSpeed));
-		
-		try {
-			createButtons();
-		} catch (IOException e) {
-			logger.error("Could not locate find On Screen Controller textures", e);
-		}
-		
-		sceneController.setOnScreenController(this);
 	}
 
 

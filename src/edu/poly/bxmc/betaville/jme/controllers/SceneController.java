@@ -29,6 +29,8 @@ import static com.jme.input.KeyInput.KEY_ESCAPE;
 
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
@@ -40,7 +42,6 @@ import org.fenggui.event.IButtonPressedListener;
 import com.jme.input.FirstPersonHandler;
 import com.jme.input.KeyBindingManager;
 import com.jme.input.KeyInput;
-import com.jme.input.action.KeyForwardAction;
 import com.jme.input.controls.GameControlManager;
 import com.jme.input.controls.binding.KeyboardBinding;
 import com.jme.math.Vector3f;
@@ -103,9 +104,9 @@ public class SceneController extends Controller {
 	private MouseMoveAction mouseMove;
 
 	private RemoteInputAction remoteInputAction;
-	
+
 	private IOnScreenController onScreenController;
-	
+
 	/**
 	 * Attribute <manager> - Game Control's manager
 	 */
@@ -114,7 +115,7 @@ public class SceneController extends Controller {
 	private Window closeWindow;
 
 	private Camera camera = DisplaySystem.getDisplaySystem().getRenderer()
-	.getCamera();
+			.getCamera();
 	private float cameraDirX = 42;
 
 	private Vector3f previousFrameCameraLocation=new Vector3f();
@@ -123,6 +124,9 @@ public class SceneController extends Controller {
 	double t = 1;
 
 	private long cameraLastMoved=-1;
+
+	private List<MoveSpeedUpdateListener> moveSpeedListeners;
+	private List<TurnSpeedUpdateListener> turnSpeedListeners;
 
 	public SceneController(SceneGameState sceneGameState) {
 		// set up the basic movement controls
@@ -133,10 +137,14 @@ public class SceneController extends Controller {
 		firstPersonHandler.getMouseLookHandler().getMouseLook()
 		.setMouseButtonForRequired(2);
 		firstPersonHandler.getMouseLookHandler().getMouseLook().setSpeed(.5f);
-		
+
 		remoteInputAction = new RemoteInputAction(DisplaySystem
 				.getDisplaySystem().getRenderer().getCamera());
-		
+
+		// Move and turn speed listeners
+		moveSpeedListeners = new ArrayList<SceneController.MoveSpeedUpdateListener>();
+		turnSpeedListeners = new ArrayList<SceneController.TurnSpeedUpdateListener>();
+
 		// remote server setup
 		SettingsPreferences.getThreadPool().submit(new Runnable() {
 			public void run() {
@@ -152,7 +160,7 @@ public class SceneController extends Controller {
 				}
 			}
 		});
-		
+
 		mouseZoom = new MouseZoomAction(camera, moveSpeed);
 		mouseMove = new MouseMoveAction(camera, moveSpeed, true, true);
 		mouseMove.setSensitivity(0.005f);
@@ -176,7 +184,7 @@ public class SceneController extends Controller {
 
 	private void adjustPerLocale() {
 		KeyBindingManager keyBindingManager = KeyBindingManager
-		.getKeyBindingManager();
+				.getKeyBindingManager();
 		Locale locale = Locale.getDefault();
 		if (locale.equals(Locale.FRANCE) || locale.equals(Locale.FRENCH)) {
 			keyBindingManager.set("forward", KeyInput.KEY_Z);
@@ -305,6 +313,10 @@ public class SceneController extends Controller {
 	public void setMoveSpeed(float moveSpeed) {
 		firstPersonHandler.getKeyboardLookHandler().setMoveSpeed(moveSpeed);
 		this.moveSpeed = moveSpeed;
+
+		for(MoveSpeedUpdateListener listener : moveSpeedListeners){
+			listener.moveSpeedUpdated(moveSpeed);
+		}
 	}
 
 	/**
@@ -324,6 +336,10 @@ public class SceneController extends Controller {
 		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "lookDown");
 		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "turnRight");
 		firstPersonHandler.getKeyboardLookHandler().setActionSpeed(this.turnSpeed, "turnLeft");
+
+		for(TurnSpeedUpdateListener listener : turnSpeedListeners){
+			listener.turnSpeedUpdated(turnSpeed);
+		}
 	}
 
 	public MouseZoomAction getMouseZoom() {
@@ -337,7 +353,7 @@ public class SceneController extends Controller {
 	public long getCameraLastMoved(){
 		return cameraLastMoved;
 	}
-	
+
 	public void setOnScreenController (IOnScreenController onScreenController) {
 		this.onScreenController = onScreenController;
 	}
@@ -350,11 +366,11 @@ public class SceneController extends Controller {
 	public void update(float time) {
 		// firstPersonHandler.getKeyboardLookHandler().setMoveSpeed(DisplaySystem.getDisplaySystem().getRenderer().getCamera().getLocation().getY());
 		firstPersonHandler.update(time);
-		
+
 		if ( onScreenController != null ) {
 			onScreenController.update(time);
 		}
-		
+
 		if(remoteInputAction.isEnabled()) remoteInputAction.update(time);
 
 		if(!camera.getLocation().equals(previousFrameCameraLocation)){
@@ -367,5 +383,47 @@ public class SceneController extends Controller {
 				|| value(StandardAction.EXIT) > 0) {
 			exitAction();
 		}
+	}
+
+	public void addMoveSpeedListener(MoveSpeedUpdateListener moveSpeedListener){
+		moveSpeedListeners.add(moveSpeedListener);
+	}
+
+	public void addTurnSpeedListener(TurnSpeedUpdateListener turnSpeedUpdateListener){
+		turnSpeedListeners.add(turnSpeedUpdateListener);
+	}
+
+	public void removeMoveSpeedListener(MoveSpeedUpdateListener moveSpeedListener){
+		moveSpeedListeners.remove(moveSpeedListener);
+	}
+
+	public void removeTurnSpeedListener(TurnSpeedUpdateListener turnSpeedUpdateListener){
+		turnSpeedListeners.remove(turnSpeedUpdateListener);
+	}
+
+	/**
+	 * Notifies of updates to the move speed in {@link SceneController}
+	 * @author Skye Book
+	 *
+	 */
+	public interface MoveSpeedUpdateListener{
+		/**
+		 * Called when the camera's move speed is changed in {@link SceneController}
+		 * @param newSpeed
+		 */
+		public void moveSpeedUpdated(float newSpeed);
+	}
+
+	/**
+	 * Notifies of updates to the turn speed in {@link SceneController}
+	 * @author Skye Book
+	 *
+	 */
+	public interface TurnSpeedUpdateListener{
+		/**
+		 * Called when the camera's turn speed is changed in {@link SceneController}
+		 * @param newSpeed
+		 */
+		public void turnSpeedUpdated(float newSpeed);
 	}
 }
