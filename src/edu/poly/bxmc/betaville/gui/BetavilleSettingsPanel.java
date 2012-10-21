@@ -88,17 +88,6 @@ public class BetavilleSettingsPanel extends JFrame{
 	 * textures on/off
 	 */
 
-	public static final int[][] RESOLUTIONS = {
-		{640, 480},
-		{800, 600},
-		{1024, 768},
-		{1280, 1024},
-		{1440, 900},
-		{1600, 1024},
-		{1600, 1200},
-		{1920, 1200}
-	};
-
 	public BetavilleSettingsPanel(final GameSettings settings){
 		enterButtonListener = new KeyListener() {
 
@@ -325,6 +314,7 @@ public class BetavilleSettingsPanel extends JFrame{
 			resolutions.add(new Dimension(1024,768));
 			resolutions.add(new Dimension(1280,720));
 			resolutions.add(new Dimension(1280,800));
+			resolutions.add(new Dimension(1280,960));
 			resolutions.add(new Dimension(1280,1024));
 			resolutions.add(new Dimension(1366,768));
 			resolutions.add(new Dimension(1440,900));
