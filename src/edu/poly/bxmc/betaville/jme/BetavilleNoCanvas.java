@@ -50,7 +50,6 @@ import com.jmex.game.state.load.LoadingGameState;
 
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.KioskMode;
-import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
 import edu.poly.bxmc.betaville.flags.FlagProducer;
@@ -251,9 +250,10 @@ public class BetavilleNoCanvas {
 
 		// Try to load the preferences
 		try {
-			PreferenceReader preferenceReader = new PreferenceReader(new File(
+			File preferencesFile = new File(
 					DriveFinder.getHomeDir().toString()
-					+ "/.betaville/preferences.xml"));
+					+ "/.betaville/preferences.xml");
+			PreferenceReader preferenceReader = new PreferenceReader(preferencesFile);
 			if (preferenceReader.isXMLLoaded()) {
 				preferenceReader.parse();
 				UpdatedPreferenceWriter.writeDefaultPreferences();
@@ -325,6 +325,9 @@ public class BetavilleNoCanvas {
 
 				@Override
 				public void onSelection(Wormhole wormhole) {
+					
+					logger.info("Returned from wormhole selection");
+					
 					MapManager.setUTMZone(wormhole.getLocation().getLonZone(), wormhole.getLocation().getLatZone());
 					SettingsPreferences.setStartupCity(wormhole.getCityID());
 					cameraStartPosition = wormhole.getLocation();
@@ -346,6 +349,8 @@ public class BetavilleNoCanvas {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		
 
 
 		if(game.getSettings().isFullscreen()){
@@ -353,7 +358,10 @@ public class BetavilleNoCanvas {
 			//game.getSettings().setFullscreen(false);
 			//System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
 		}
+		
+		logger.info("Starting GL engine");
 		game.start();
+		logger.info("GL engine started");
 
 		MouseInput.get().setCursorVisible(true);
 
