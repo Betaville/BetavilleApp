@@ -247,4 +247,16 @@
 		<signjar jar="lib/geotools/xpp3-1.1.3.4.O.jar"					alias="betaville" storepass="${keypass}" />
 		<signjar jar="lib/geotools/xsd-2.2.2.jar"						alias="betaville" storepass="${keypass}" />
 	  </target>
+	
+	<!-- Create OS X .app -->
+	<taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask" classpath="lib/appbundler-1.0.jar"/>
+	
+	<target name="bundle-osx-app">
+		<bundleapp outputdirectory="./" name="Betaville" displayname="Betaville"
+		identifier="edu.poly.bxmc.Betaville" mainclassname="edu.poly.bxmc.betaville.jme.BetavilleNoCanvas">
+			<classpath dir="./">
+				<filename name="**/*.jar" />
+			</classpath>
+		</bundleapp>
+	</target>
 </project>
