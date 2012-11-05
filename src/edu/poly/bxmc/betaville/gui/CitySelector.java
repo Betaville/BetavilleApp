@@ -92,7 +92,7 @@ public class CitySelector extends JFrame {
 			}
 		});
 		
-		setSize(375, 210);
+		setSize(375, 230);
 		setResizable(false);
 		setLocation(((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2)-getWidth()/2,
 				((int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2)-getHeight()/2);
