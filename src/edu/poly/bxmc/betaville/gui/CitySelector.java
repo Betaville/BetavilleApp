@@ -38,8 +38,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 
 import org.apache.log4j.Logger;
+
+import sun.org.mozilla.javascript.internal.annotations.JSConstructor;
 
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
@@ -76,6 +79,8 @@ public class CitySelector extends JFrame {
 
 		cityList = new JList(dlm);
 		
+		JScrollPane scrollPane = new JScrollPane(cityList);
+		
 		JButton selectButton = new JButton("Select");
 		selectButton.addActionListener(new ActionListener() {
 			
@@ -96,7 +101,7 @@ public class CitySelector extends JFrame {
 		setResizable(false);
 		setLocation(((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2)-getWidth()/2,
 				((int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2)-getHeight()/2);
-		getContentPane().add(cityList, BorderLayout.NORTH);
+		getContentPane().add(scrollPane, BorderLayout.NORTH);
 		getContentPane().add(selectButton, BorderLayout.SOUTH);
 	}
 	
