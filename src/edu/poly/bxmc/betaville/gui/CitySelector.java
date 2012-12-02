@@ -42,8 +42,6 @@ import javax.swing.JScrollPane;
 
 import org.apache.log4j.Logger;
 
-import sun.org.mozilla.javascript.internal.annotations.JSConstructor;
-
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.UnprotectedManager;
