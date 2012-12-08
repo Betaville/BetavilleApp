@@ -65,7 +65,7 @@ public class QuickBuilder extends PanelAction {
 	 * 
 	 */
 	public QuickBuilder() {
-		super("Build OSM", "Builds an OSM road", "Build OSM", AvailabilityRule.ALWAYS, UserType.MODERATOR,
+		super("Build OSM", "Builds an OSM road", "Build OSM", AvailabilityRule.ALWAYS, UserType.MEMBER,
 				null);
 		getButton().addButtonPressedListener(new IButtonPressedListener() {
 			
