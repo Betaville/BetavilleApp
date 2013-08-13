@@ -129,7 +129,7 @@ public class LogoMenuWindow extends Window implements IBetavilleWindow {
 					FengUtils.setAppearanceTextStyleColor(ourSite, Color.WHITE_HALF_TRANSPARENT);
 				}
 				else if(event instanceof MouseReleasedEvent){
-					BareBonesBrowserLaunch.openURL("http://bxmc.poly.edu/betaville");
+					BareBonesBrowserLaunch.openURL("http://betaville.net");
 					TopSelectionWindow.removeLogoMenu();
 					FengUtils.setAppearanceTextStyleColor(exit, Color.WHITE_HALF_TRANSPARENT);
 					FengUtils.setAppearanceTextStyleColor(about, Color.WHITE_HALF_TRANSPARENT);
