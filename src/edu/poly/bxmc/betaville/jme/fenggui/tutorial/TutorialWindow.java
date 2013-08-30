@@ -153,7 +153,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 				"\n" +
 				"If you're seeing this in \"kiosk\" mode, you'll only be able to fly around, look at, and read information " +
 				"panels and proposal forums as a guest.  When you get home, go to betaville.net to register and get started " +
-				"as a full citizen of your world's next generation, or bxmc.poly.edu/betaville for in-depth information about " +
+				"as a full citizen of your world's next generation, or for in-depth information about " +
 				"the project.\n" +
 				"\n" +
 				"Every living city is in Beta. Let's play.");

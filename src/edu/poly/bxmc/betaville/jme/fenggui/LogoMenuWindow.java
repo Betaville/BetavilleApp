@@ -59,7 +59,7 @@ public class LogoMenuWindow extends Window implements IBetavilleWindow {
 	private Label about;
 	private Label ourSite;
 	private String aboutName = "About Betaville";
-	private String aboutMessage = "Betaville is open-source software. Copyright 2008-2011 Brooklyn eXperimental Media Center.\r\n http://betaville.net | http://bxmc.poly.edu | http://betaville.googlecode.com";
+	private String aboutMessage = "Betaville is open-source software. \r\n http://betaville.net";
 
 	final int height = 72;
 	final int width = 125;

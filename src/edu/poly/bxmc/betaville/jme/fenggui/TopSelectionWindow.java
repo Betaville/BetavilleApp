@@ -155,7 +155,7 @@ public class TopSelectionWindow extends Window{
 		urlLabel = FengGUI.createWidget(Label.class);
 		faveButton=FengGUI.createWidget(FixedButton.class);
 		bugButton = FengGUI.createWidget(FixedButton.class);
-		bugButton.setText("Report Bug!");
+		bugButton.setText("Feedback");
 		bugButton.setWidth(bugButton.getWidth()+10);
 		bugButton.setXY(Binding.getInstance().getCanvasWidth()-bugButton.getWidth(), -1);
 		logoMenuWindow.finishSetup();
@@ -227,7 +227,7 @@ public class TopSelectionWindow extends Window{
 					logoLabel.setPixmap(logoPlain);
 				}
 				else if(event instanceof MouseReleasedEvent){
-					//BareBonesBrowserLaunch.openURL("http://bxmc.poly.edu/betaville");
+					//BareBonesBrowserLaunch.openURL("http://betaville.net");
 					if (!logoMenuWindow.exists()){
 						setLogoMenu();
 					} else{
@@ -347,14 +347,14 @@ public class TopSelectionWindow extends Window{
 	 * @author Peter Schulz
 	 */
 	public void updateCompass(double currentAngle) {
-		// Shift agle by half of the opening angle
+		// Shift angle by half of the opening angle
 		currentAngle -= COMPASS_HALF_OPENING_ANGLE;
 
 		// Convert to absolute angle between 0 and 2PI
 		if (currentAngle < 0) 
 			currentAngle += FastMath.TWO_PI;
 
-		// Calculate offset into textue
+		// Calculate offset into texture
 		int offset = (int)(compassPixFor2PI * ( currentAngle / FastMath.TWO_PI));
 		// Update pixmap with new offset
 		compassLabel.setPixmap(new Pixmap(compassMap.getTexture(), offset, 0, 

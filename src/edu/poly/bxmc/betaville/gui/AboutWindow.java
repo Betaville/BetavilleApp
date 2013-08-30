@@ -56,7 +56,7 @@ public class AboutWindow extends JFrame {
 		c.gridy++;
 		add(new JLabel("Copyright 2008-2011 Brooklyn eXperimental Media Center"), c);
 		c.gridy++;
-		add(new JLabel("http://betaville.net | http://bxmc.poly.edu | http://betaville.googlecode.com"), c);
+		add(new JLabel("http://betaville.net"), c);
 		
 		setSize(500, 275);
 		setLocation((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-getWidth()/2),
