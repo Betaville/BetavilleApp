@@ -168,7 +168,7 @@ public class TopSelectionWindow extends Window{
 		panelButton.setText("City Panel");
 		panelButton.setWidth(panelButton.getWidth()+10);
 		
-		// nudge the cuty panel over if we are not in Kiosk mode
+		// nudge the city panel over if we are not in Kiosk mode
 		if(!KioskMode.isInKioskMode()) panelButton.setXY(bugButton.getX()-5-panelButton.getWidth(), -1);
 		else panelButton.setXY(Binding.getInstance().getCanvasWidth()-bugButton.getWidth(), -1);
 		
