@@ -32,14 +32,14 @@ package edu.poly.bxmc.betaville.aesthetics;
 public class ColorValues {
 	private static int[] fogColor = new int[]{255,255,255,255};
 	private static int[] diffuseLightColor = new int[]{255,255,255,255};
-	private static int[] ambientLightColor = new int[]{255,255,255,255};
+	private static int[] ambientLightColor = new int[]{0,0,0,0};
 	
 	private static float[] waterColorF = new float[]{10f/255f,15f/255f,20f/255f,1f};
 	private static float[] fogColorF = new float[]{.7f,.85f,1,1f};
 	private static float[] light1DiffuseColor = new float[]{1,.94f,.8f,1};
-	private static float[] light1AmbientColor = new float[]{1f,.94f,.7f,1};
+	private static float[] light1AmbientColor = new float[]{0f,0f,0f,0f};
 	private static float[] light2DiffuseColor = new float[]{.3f,.4f,.45f,.3f};
-	private static float[] light2AmbientColor = new float[]{.3f,.4f,.45f,.1f};
+	private static float[] light2AmbientColor = new float[]{0f,0f,0f,0f};
 
 	private static float[] pyramidAmbientColor = new float[]{255/255f, 102/255f, 0/255f, 1};
 	private static float[] pyramidDiffuseColor = new float[]{255/255f, 102/255f, 0/255f, 1};
