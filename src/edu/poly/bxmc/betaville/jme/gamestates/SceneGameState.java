@@ -140,7 +140,7 @@ public class SceneGameState extends BasicGameState {
 	//private AltitudeUpdater altitudeUpdater;
 
 
-	private ColorRGBA ambientLightColor = new ColorRGBA(1f, 1f, 1f, 1f);
+	private ColorRGBA ambientLightColor = new ColorRGBA(0f, 0f, 0f, 0f);
 	private ColorRGBA diffuseLightColor = new ColorRGBA(1f, 1f, 1f, 1f);
 
 	private ColorRGBA ambientLightColor2 = new ColorRGBA(.3f,.4f,.45f,.1f);
