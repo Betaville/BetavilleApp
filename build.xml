@@ -12,7 +12,7 @@
     <property name="target" value="1.5"/>
     <property name="source" value="1.5"/>
 	<property name="keypass" value="..."/>
-	<property name "keystore" value="..."/>
+	<property name="keystore" value="..."/>
     <path id="Persisted container [SWT_CONTAINER for project [BetavilleApp]].libraryclasspath"/>
     <path id="BetavilleApp.classpath">
         <pathelement location="bin"/>
