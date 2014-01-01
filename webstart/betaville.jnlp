@@ -5,15 +5,14 @@
  
   <information>
     <title>Betaville</title>
-    <vendor>BxmC</vendor>
+    <vendor>Gotham Innovation Greenhouse</vendor>
     <homepage href="http://bxmc.poly.edu"/>
     <description>Every living city is in Beta.</description>
-    <icon kind="splash" href="http://bxmc.poly.edu/sites/default/files/inline_images/BetavilleLogoColor.gif"/> 
+    <icon kind="splash" href="http://betaville.net/webstart/BetavilleLogoColor.gif"/> 
     <icon href="http://betaville.net/webstart/BetavilleAppIcon.gif"/> 
     <association extensions="bxb" mime-type="text/plain"/>
     <shortcut online="false">
   	<desktop />
-  	<menu submenu="Brooklyn eXperimental Media Center"/>
   </shortcut>
   </information>
   <security>
