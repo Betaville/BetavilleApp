@@ -5,16 +5,15 @@
  
   <information>
     <title>Betaville Nightly Build</title>
-    <vendor>BxmC</vendor>
-    <homepage href="http://bxmc.poly.edu"/>
+    <vendor>Gotham Innovation Greenhouse</vendor>
+    <homepage href="http://betaville.net"/>
     <description>Every living city is in Beta. (Builds at midnight EST)</description>
-    <icon kind="splash" href="http://bxmc.poly.edu/sites/default/files/inline_images/BetavilleLogoColor.gif"/> 
+    <icon kind="splash" href="http://betaville.net/webstart/BetavilleLogoColor.gif"/> 
     <!-- Moon image taken from http://commons.wikimedia.org/wiki/User:Ozgurmulazimoglu -->
     <icon href="http://betaville.net/nightly/nightly_logo.png"/> 
     <association extensions="bxb" mime-type="text/plain"/>
     <shortcut online="false">
   	<desktop />
-  	<menu submenu="Brooklyn eXperimental Media Center"/>
   </shortcut>
   </information>
   <security>
