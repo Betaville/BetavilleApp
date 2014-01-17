@@ -155,6 +155,8 @@
 		
 		 	<manifest file="MANIFEST.MF">
 				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Permissions" value="all-permissions"/>
+				<attribute name="Codebase" value="*.betaville.net"/>
 			</manifest>
 
 			<jar destfile="BetavilleApp.jar"
