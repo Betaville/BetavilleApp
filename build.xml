@@ -159,7 +159,7 @@
 
 			<jar destfile="BetavilleApp.jar"
 				basedir="bin/"
-				includes="**/*.class"
+				includes="**/*.class APPLICATION.JNLP"
 				manifest="MANIFEST.MF"
 			/>
 		
