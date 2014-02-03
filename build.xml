@@ -152,7 +152,7 @@
 			 <delete file="BetavilleApp.jar"/>
 			 <delete file="BetavilleData.jar"/>
 			 <delete file="MANIFEST.MF"/>
-			 <delete file="webstart/betaville.jnlp"/>
+			 <delete file="src/JNLP-INF/APPLICATION.JNLP"/>
 		
 		 	<manifest file="MANIFEST.MF">
 				<attribute name="Built-By" value="${user.name}"/>
