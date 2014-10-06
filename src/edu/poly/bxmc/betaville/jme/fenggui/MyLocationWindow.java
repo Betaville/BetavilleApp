@@ -38,6 +38,7 @@ import org.fenggui.layout.RowExLayoutData;
 import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.GPSView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.OpenGLView;
@@ -170,7 +171,7 @@ public class MyLocationWindow extends Window implements IBetavilleWindow {
 	 */
 	public void finishSetup(){
 		setSize(targetWidth, getHeight()+35);
-		setTitle("My Location");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 	}
 
 	private class UpdateModule extends Module implements LocalSceneModule{

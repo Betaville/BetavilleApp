@@ -48,6 +48,7 @@ import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowLayout;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.AcceptedModelFilter;
@@ -94,7 +95,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 		modelEditor.setText(modelEditorText);
 
 		browseButton = FengGUI.createWidget(FixedButton.class);
-		browseButton.setText("Browse...");
+		browseButton.setText(Labels.generic("browse")+"..");
 		browseButton.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 
@@ -119,7 +120,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 
 							GUIGameState.getInstance().getDisp().addWidget(
 									FengUtils.createDismissableWindow("Betaville", "The selected file is rather large, at "+
-											(file.length()/1000000f)+"MB, why don't you see if you can't get that down a bit?", "ok", false));
+											(file.length()/1000000f)+"MB, why don't you see if you can't get that down a bit?", Labels.get("Generic.ok"), false));
 
 						}
 
@@ -145,11 +146,11 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 		});
 
 		textureNotifier = FengGUI.createWidget(Label.class);
-		textureNotifier.setText("Texture Info");
+		textureNotifier.setText(Labels.get(this.getClass(), "texture_info"));
 
 		textureSelect = FengGUI.createWidget(ComboBox.class);
-		textureSelect.addItem("Yes");
-		textureSelect.addItem("No");
+		textureSelect.addItem(Labels.get("Generic.yes"));
+		textureSelect.addItem(Labels.get("Generic.no"));
 
 		textureContainer = FengGUI.createWidget(Container.class);
 		textureContainer.setLayoutManager(new RowLayout(false));
@@ -157,16 +158,16 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 		textureContainer.addWidget(textureSelect);
 
 		applyButton = FengGUI.createWidget(FixedButton.class);
-		applyButton.setText("Swap Model");
+		applyButton.setText(Labels.get(this.getClass(), "swap_model"));
 
 		applyButton.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(model==null){
-					modelEditor.setText("MODEL NOT SELECTED!");
+					modelEditor.setText(Labels.get(ModelSwapWindow.class, "not_selected"));
 					return;
 				}
-				boolean textureOnOff = textureSelect.getSelectedValue().equals("Yes");
+				boolean textureOnOff = textureSelect.getSelectedValue().equals(Labels.get("Generic.yes"));
 				try {
 					Design thisDesign = SceneScape.getPickedDesign();
 					int designID = thisDesign.getID();
@@ -182,11 +183,11 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 					boolean netResponse = NetPool.getPool().getSecureConnection().changeDesignFile(designID, transport,PhysicalFileTransporter.readFromFileSystem(packedFile), textureOnOff);
 					if(netResponse){
 						logger.info("Design " + designID + " model swap successful");
-						FengUtils.showNewDismissableWindow("Betaville", "Model Swap Successful!", "ok", true);
+						FengUtils.showNewDismissableWindow("Betaville", "Model Swap Successful!", Labels.get("Generic.ok"), true);
 					}
 					else{
 						logger.error("model file could not be changed");
-						GUIGameState.getInstance().getDisp().addWidget(FengUtils.createTwoOptionWindow("Betaville", "Model Swap Failed", "ok", "report bug",
+						GUIGameState.getInstance().getDisp().addWidget(FengUtils.createTwoOptionWindow("Betaville", "Model Swap Failed", Labels.get("Generic.ok"), "report bug",
 								null, new ReportBugListener(), true, true));
 					}
 
@@ -206,7 +207,7 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Swap Models");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

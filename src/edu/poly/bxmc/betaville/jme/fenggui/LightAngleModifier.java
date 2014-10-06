@@ -45,6 +45,7 @@ import com.jme.light.Light;
 import com.jme.math.Vector3f;
 import com.jme.scene.state.LightState;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.SavableBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.gamestates.ShadowPassState;
@@ -189,7 +190,7 @@ public class LightAngleModifier extends SavableBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Light Angle Modifier");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

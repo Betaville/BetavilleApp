@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
 import com.jme.system.GameSettings;
 import com.jme.system.lwjgl.LWJGLSystemProvider;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.xml.PreferenceWriter;
 
@@ -155,7 +156,7 @@ public class BetavilleSettingsPanel extends JFrame{
 		add(new JLabel("Always Show"), c);
 		c.gridx=1;
 
-		okButton = new JButton("ok");
+		okButton = new JButton(Labels.get("Generic.ok"));
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				okAction(settings);
@@ -163,7 +164,7 @@ public class BetavilleSettingsPanel extends JFrame{
 		});
 		okButton.addKeyListener(enterButtonListener);
 
-		cancelButton = new JButton("cancel");
+		cancelButton = new JButton(Labels.get("Generic.unsaved"));
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				System.exit(0);

@@ -52,6 +52,7 @@ import org.fenggui.util.Color;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -136,7 +137,7 @@ public class MakeRoomWindow extends Window  implements IBetavilleWindow{
 
 	private void createButtonContainer() {
 		removeObstructionButton = FengGUI.createWidget(FixedButton.class);
-		removeObstructionButton.setText("remove");
+		removeObstructionButton.setText(Labels.generic("remove"));
 		removeObstructionButton.setWidth(removeObstructionButton.getWidth()+10);
 		removeObstructionButton.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -202,7 +203,7 @@ public class MakeRoomWindow extends Window  implements IBetavilleWindow{
 	}
 	
 	public void finishSetup(){
-		setTitle("Make Room");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 	
@@ -244,7 +245,7 @@ public class MakeRoomWindow extends Window  implements IBetavilleWindow{
 			label.setText(entry.getKey());
 			
 			replaceButton = FengGUI.createWidget(FixedButton.class);
-			replaceButton.setText("put back");
+			replaceButton.setText(Labels.get(MakeRoomWindow.class, "put_back"));
 			replaceButton.setWidth(replaceButton.getWidth()+10);
 			replaceButton.addButtonPressedListener(new IButtonPressedListener() {
 				public void buttonPressed(Object source, ButtonPressedEvent e) {

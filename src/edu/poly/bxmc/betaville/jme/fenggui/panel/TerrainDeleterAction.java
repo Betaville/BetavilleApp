@@ -35,6 +35,7 @@ import org.fenggui.event.IButtonPressedListener;
 
 import com.jme.scene.Node;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -66,7 +67,7 @@ public class TerrainDeleterAction extends PanelAction {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				Window window = FengUtils.createTwoOptionWindow("Delete", "Are you sure that you would like to delete this terrain?",
-						"no", "yes",
+						Labels.get("Generic.no"), Labels.get("Generic.yes"),
 						new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 

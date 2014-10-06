@@ -6,6 +6,7 @@ package edu.poly.bxmc.betaville.jme.fenggui.panel;
 import org.fenggui.Container;
 import org.fenggui.composite.Window;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.OnScreenControllerPanel;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 
@@ -27,7 +28,7 @@ public class OSCPanel extends Window implements IBetavilleWindow {
 	
 	@Override
 	public void finishSetup() {
-		setTitle("Controls");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(osc.getWidth() + 2, osc.getHeight() + 20);
 	}
 

@@ -48,6 +48,7 @@ import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.util.Color;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.bookmarks.Bookmark;
 import edu.poly.bxmc.betaville.bookmarks.BookmarkManager;
 import edu.poly.bxmc.betaville.bookmarks.IBookmarkChangeListener;
@@ -112,7 +113,7 @@ public class BookmarkWindow extends Window implements IBetavilleWindow {
 	
 	private void setupGoTo(){
 		goTo = FengGUI.createWidget(FixedButton.class);
-		goTo.setText("go!");
+		goTo.setText(Labels.get("Generic.go"));
 		goTo.setWidth(goTo.getWidth()+10);
 		goTo.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -139,7 +140,7 @@ public class BookmarkWindow extends Window implements IBetavilleWindow {
 		bottom.setLayoutManager(new StaticLayout());
 		
 		addBookmark = FengGUI.createWidget(FixedButton.class);
-		addBookmark.setText("Add Bookmark");
+		addBookmark.setText(Labels.get(this.getClass().getSimpleName()+".add_bookmark"));
 		addBookmark.setWidth(addBookmark.getWidth()+10);
 		addBookmark.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -154,7 +155,7 @@ public class BookmarkWindow extends Window implements IBetavilleWindow {
 		});
 		
 		removeBookmark = FengGUI.createWidget(FixedButton.class);
-		removeBookmark.setText("Remove Bookmark");
+		removeBookmark.setText(Labels.get(this.getClass().getSimpleName()+".remove_bookmark"));
 		removeBookmark.setWidth(removeBookmark.getWidth()+10);
 		removeBookmark.setEnabled(false);
 		removeBookmark.addButtonPressedListener(new IButtonPressedListener() {
@@ -167,7 +168,7 @@ public class BookmarkWindow extends Window implements IBetavilleWindow {
 		});
 		
 		editBookmark = FengGUI.createWidget(FixedButton.class);
-		editBookmark.setText("Edit Bookmark");
+		editBookmark.setText(Labels.get(this.getClass().getSimpleName()+".edit_bookmark"));
 		editBookmark.setWidth(editBookmark.getWidth()+10);
 		editBookmark.setEnabled(false);
 		editBookmark.addButtonPressedListener(new IButtonPressedListener() {
@@ -200,7 +201,7 @@ public class BookmarkWindow extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Bookmark Manager");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 	

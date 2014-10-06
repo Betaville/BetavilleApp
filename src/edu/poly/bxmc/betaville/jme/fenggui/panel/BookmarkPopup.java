@@ -35,6 +35,7 @@ import org.fenggui.layout.RowLayout;
 
 import com.jme.math.Vector3f;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.bookmarks.Bookmark;
 import edu.poly.bxmc.betaville.bookmarks.BookmarkManager;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
@@ -42,7 +43,6 @@ import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
-import edu.poly.bxmc.betaville.jme.map.MapManager;
 
 /**
  * 
@@ -64,19 +64,19 @@ public class BookmarkPopup extends Window implements IBetavilleWindow{
 		getContentContainer().setSize(targetWidth, targetHeight);
 		getContentContainer().setLayoutManager(new RowLayout(false));
 		nameLabel = FengGUI.createWidget(Label.class);
-		nameLabel.setText("name");
+		nameLabel.setText(Labels.get("Generic.name"));
 		
 		name = FengGUI.createWidget(TextEditor.class);
 		name.setSize(targetWidth-10, nameLabel.getHeight());
 		
 		descriptionLabel = FengGUI.createWidget(Label.class);
-		descriptionLabel.setText("description");
+		descriptionLabel.setText(Labels.get("Generic.description"));
 		
 		description = FengGUI.createWidget(TextEditor.class);
 		description.setSize(targetWidth-10, descriptionLabel.getHeight());
 		
 		ok = FengGUI.createWidget(FixedButton.class);
-		ok.setText("ok");
+		ok.setText(Labels.get("Generic.ok"));
 		ok.setWidth(ok.getWidth()+10);
 		ok.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -96,7 +96,7 @@ public class BookmarkPopup extends Window implements IBetavilleWindow{
 	}
 
 	public void finishSetup(){
-		setTitle("Create Bookmark");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 }

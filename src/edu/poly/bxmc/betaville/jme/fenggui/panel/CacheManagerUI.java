@@ -46,6 +46,7 @@ import org.fenggui.layout.RowExLayoutData;
 
 import edu.poly.bxmc.betaville.CacheManager;
 import edu.poly.bxmc.betaville.ICacheModifiedListener;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -134,7 +135,7 @@ public class CacheManagerUI extends Window implements IBetavilleWindow, IPanelOn
 				Window deleteConfirmation = FengUtils.createTwoOptionWindow(
 						"Betaville",
 						"Deleting the cache will mean longer startup times the next time you run Betaville. Are you sure you wish to proceed?",
-						"Yes", "No",
+						Labels.get("Generic.yes"), Labels.get("Generic.no"),
 						// The "Yes" listener
 						new IButtonPressedListener() {
 
@@ -144,7 +145,7 @@ public class CacheManagerUI extends Window implements IBetavilleWindow, IPanelOn
 								// clear the cache
 								CacheManager.getCacheManager().deleteAllFiles();
 								// let the user know what just happened
-								FengUtils.showNewDismissableWindow("Betaville", "Model cache has been deleted", "OK", true);
+								FengUtils.showNewDismissableWindow("Betaville", "Model cache has been deleted", Labels.get("Generic.ok"), true);
 							}
 						},
 						// The "No" listener
@@ -210,7 +211,7 @@ public class CacheManagerUI extends Window implements IBetavilleWindow, IPanelOn
 	 */
 	@Override
 	public void finishSetup() {
-		setTitle("Cache Manager");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 	}
 
 	/* (non-Javadoc)

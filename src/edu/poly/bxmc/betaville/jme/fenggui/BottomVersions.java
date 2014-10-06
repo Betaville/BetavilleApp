@@ -54,6 +54,7 @@ import org.fenggui.util.Color;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.CacheManager;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.IFlagSelectionListener;
@@ -110,7 +111,7 @@ public class BottomVersions extends Window {
 		} catch (IOException e){
 			// If we can not load the texture, then just use a plain-text label
 			logger.error("Could not load proposalsLabel texture", e);
-			versionsLabel.setText("PROPOSALS");
+			versionsLabel.setText(Labels.get(this.getClass().getSimpleName()+".proposals"));
 		}
 		versionsLabel.setXY(0, getHeight()-versionsLabel.getHeight());
 		
@@ -221,7 +222,7 @@ public class BottomVersions extends Window {
 				bg = new PixmapBackground(px);
 			} catch (IOException e1) {
 				logger.error("Could not load the default thumbnail image", e);
-				thumbnail.setText("Image Not Found");
+				thumbnail.setText(Labels.get(this.getClass().getSimpleName()+".image_not_found"));
 			}
 		}
 		
@@ -272,7 +273,7 @@ public class BottomVersions extends Window {
 		date.setXY(name.getX(), 0);
 		
 		Label user = FengGUI.createWidget(Label.class);
-		user.setText("by: " + versionDesign.getUser());
+		user.setText(Labels.get("Generic.by")+": " + versionDesign.getUser());
 		user.setXY(name.getX(), date.getHeight());
 		
 		Label description = FengGUI.createWidget(Label.class);
@@ -285,22 +286,22 @@ public class BottomVersions extends Window {
 		final FixedButton show = FengGUI.createWidget(FixedButton.class);
 		show.getAppearance().add("orange", new PlainBackground(new Color(252,58,0)));
 		show.getAppearance().setEnabled("orange", false);
-		if(LiveProposalManager.getInstance().isVersionOn(versionDesign.getID())) show.setText("hide");
-		else show.setText("show");
+		if(LiveProposalManager.getInstance().isVersionOn(versionDesign.getID())) show.setText(Labels.get("Generic.hide"));
+		else show.setText(Labels.get("Generic.show"));
 		show.setWidth(show.getWidth()+5);
 		show.setXY(clickableContainer.getWidth()-show.getWidth(), 0);
 		show.addButtonPressedListener(new IButtonPressedListener() {
 			
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				
-				if(show.getText().equals("show")){
+				if(show.getText().equals(Labels.get("Generic.show"))){
 					//show.removeGreen();
 					//show.getAppearance().setEnabled("orange", true);
 					
 					
 					// Create and start the loading label
 					final UpdatingLabel loading = FengGUI.createWidget(UpdatingLabel.class);
-					loading.setText("Loading");
+					loading.setText(Labels.get("Generic.loading"));
 					clickableContainer.addWidget(loading);
 					loading.setXY(clickableContainer.getWidth()-(loading.getWidth()+10), show.getY()+(show.getHeight()*2));
 					loading.start();
@@ -323,12 +324,12 @@ public class BottomVersions extends Window {
 							LiveProposalManager.getInstance().addProposalChangedListener(new ILiveProposalChangedListener() {
 								
 								public void isChanged(int rootProposalID) {
-									show.setText("show");
+									show.setText(Labels.get("Generic.show"));
 								}
 							});
 							
 							// sets only this show button to say "hide"
-							show.setText("hide");
+							show.setText(Labels.get("Generic.hide"));
 							
 							// change the background to black
 							turnOffBlackBackground();
@@ -345,7 +346,7 @@ public class BottomVersions extends Window {
 					turnOffBlackBackground();
 					//show.replaceGreen();
 					//show.getAppearance().setEnabled("orange", false);
-					show.setText("show");
+					show.setText(Labels.get("Generic.show"));
 				}
 				
 			}

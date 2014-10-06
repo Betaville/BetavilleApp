@@ -34,6 +34,7 @@ import org.fenggui.layout.RowExLayout;
 
 import com.jme.math.Vector3f;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
@@ -68,7 +69,7 @@ public class StreetView extends Container implements LocationView{
 		geocoder = new OpenStreetMapGeocoder();
 
 		title = FengGUI.createWidget(Label.class);
-		title.setText("Street View");
+		title.setText(Labels.get(this.getClass().getSimpleName()+".title"));
 
 		spacer = FengGUI.createWidget(Label.class);
 		spacer.setText("\n                       ");
@@ -76,7 +77,7 @@ public class StreetView extends Container implements LocationView{
 		street = FengGUI.createWidget(Label.class);
 		street.setWordWarping(false);
 		street.setMultiline(true);
-		street.setText("Location not updated");
+		street.setText(Labels.get(this.getClass().getSimpleName()+".location_not_updated"));
 
 		updating = FengGUI.createWidget(UpdatingLabel.class);
 		updating.setText(updatePrefix);
@@ -150,10 +151,10 @@ public class StreetView extends Container implements LocationView{
 							street.setText(streetResponse);
 						}
 						else{
-							street.setText("The nearest street could not be retrieved");
+							street.setText(Labels.get(StreetView.this.getClass().getSimpleName()+".nearest_street_not_retrieved"));
 						}
 					} catch (IOException e) {
-						street.setText("Could not connect to geocoder server");
+						street.setText(Labels.get(StreetView.this.getClass().getSimpleName()+".geocoder_fail_to_connect"));
 					} finally {
 						/* check if the update label is in the widget tree to avoid
 						 * having the label stuck on the screen if someone disabled it

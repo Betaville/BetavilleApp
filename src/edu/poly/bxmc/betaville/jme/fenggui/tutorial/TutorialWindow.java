@@ -47,6 +47,7 @@ import org.jdom.JDOMException;
 import com.centerkey.utils.BareBonesBrowserLaunch;
 
 import edu.poly.bxmc.betaville.KioskMode;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -147,16 +148,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		intro.setMultiline(true);
 		intro.setWordWarping(true);
 		
-		intro.setText("Betaville is a massively participatory open-source platform for new ideas, discussion, and development " +
-				"for the public realm.  New works of outdoor art, buildings, open spaces, or entire districts can be uploaded " +
-				"from your favorite 3D modeling application.\n" +
-				"\n" +
-				"If you're seeing this in \"kiosk\" mode, you'll only be able to fly around, look at, and read information " +
-				"panels and proposal forums as a guest.  When you get home, go to betaville.net to register and get started " +
-				"as a full citizen of your world's next generation, or for in-depth information about " +
-				"the project.\n" +
-				"\n" +
-				"Every living city is in Beta. Let's play.");
+		intro.setText(Labels.get(this.getClass().getSimpleName()+".kiosk_intro"));
 		
 		//introScrollContainer.setSize(width-10, height-getTitleBar().getHeight()-bottomNavigation.getHeight()-splash.getHeight());
 		//intro.setSize(width-10, 100);
@@ -217,7 +209,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 
 		int offset=5;
 		moreInfo = FengGUI.createWidget(FixedButton.class);
-		moreInfo.setText("More Info");
+		moreInfo.setText(Labels.get(this.getClass().getSimpleName()+".more_info"));
 		moreInfo.setWidth(moreInfo.getWidth()+10);
 		moreInfo.setXY(offset, 0);
 		moreInfo.addButtonPressedListener(new IButtonPressedListener() {
@@ -228,7 +220,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		});
 
 		backButton = FengGUI.createWidget(FixedButton.class);
-		backButton.setText("Back");
+		backButton.setText(Labels.get("Generic.back"));
 		backButton.setWidth(backButton.getWidth()+10);
 		backButton.setXY((width/2)-backButton.getWidth()-offset, 0);
 		backButton.addButtonPressedListener(new IButtonPressedListener() {
@@ -243,7 +235,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		});
 
 		nextButton = FengGUI.createWidget(FixedButton.class);
-		nextButton.setText("Next");
+		nextButton.setText(Labels.get("Generic.next"));
 		nextButton.setWidth(nextButton.getWidth()+10);
 		nextButton.setXY((width/2)+offset, 0);
 		nextButton.addButtonPressedListener(new IButtonPressedListener() {
@@ -259,7 +251,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		});
 
 		closeButton = FengGUI.createWidget(FixedButton.class);
-		closeButton.setText("Close");
+		closeButton.setText(Labels.get("Generic.close"));
 		closeButton.setWidth(closeButton.getWidth()+10);
 		closeButton.setXY(width-closeButton.getWidth()-offset, 0);
 		closeButton.addButtonPressedListener(new IButtonPressedListener() {
@@ -279,7 +271,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Welcome to Betaville");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(width, height);
 	}
 

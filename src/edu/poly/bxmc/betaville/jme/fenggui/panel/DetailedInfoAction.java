@@ -39,6 +39,7 @@ import org.fenggui.layout.RowExLayoutData;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.GPSView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -208,7 +209,7 @@ public class DetailedInfoAction extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("More Info");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setHeight(getHeight()+10);
 	}
 }

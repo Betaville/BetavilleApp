@@ -36,6 +36,7 @@ import org.fenggui.layout.RowExLayoutData;
 
 import com.jme.math.Vector3f;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
 import edu.poly.bxmc.betaville.jme.map.GPSCoordinate;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
@@ -63,7 +64,7 @@ public class GPSView extends Container implements LocationView{
 		setLayoutManager(new RowExLayout(false));
 		
 		title = FengGUI.createWidget(Label.class);
-		title.setText("GPS View");
+		title.setText(Labels.get(this.getClass().getSimpleName()+".title"));
 		
 		Container latCon = FengGUI.createWidget(Container.class);
 		latCon.setLayoutManager(new RowExLayout(true));
@@ -71,10 +72,10 @@ public class GPSView extends Container implements LocationView{
 		lonCon.setLayoutManager(new RowExLayout(true));
 		
 		latLabel = FengGUI.createWidget(Label.class);
-		latLabel.setText("Latitude");
+		latLabel.setText(Labels.get(this.getClass().getSimpleName()+".latitude"));
 		latLabel.setLayoutData(new RowExLayoutData(true, true));
 		lonLabel = FengGUI.createWidget(Label.class);
-		lonLabel.setText("Longitude");
+		lonLabel.setText(Labels.get(this.getClass().getSimpleName()+".longitude"));
 		lonLabel.setLayoutData(new RowExLayoutData(true, true));
 		
 		latValue = FengGUI.createWidget(Label.class);
@@ -86,7 +87,7 @@ public class GPSView extends Container implements LocationView{
 		lonCon.addWidget(lonLabel, lonValue);
 		
 		ddDMSOption = FengGUI.createCheckBox();
-		ddDMSOption.setText("Display in Degrees/Minutes/Seconds");
+		ddDMSOption.setText(Labels.get(this.getClass().getSimpleName()+".dd_dms_option"));
 		ddDMSOption.setSelected(false);
 		ddDMSOption.addSelectionChangedListener(new ISelectionChangedListener() {
 			

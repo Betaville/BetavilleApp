@@ -35,6 +35,7 @@ import org.fenggui.layout.RowExLayout;
 
 import com.centerkey.utils.BareBonesBrowserLaunch;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.net.BugzillaOptions;
 
@@ -81,7 +82,7 @@ public class BugReportPanel extends Window implements IBetavilleWindow{
 		components.addItem(componentInteraction);
 		
 		submit = FengGUI.createWidget(FixedButton.class);
-		submit.setText("submit");
+		submit.setText(Labels.get("Generic.submit"));
 		submit.addButtonPressedListener(new IButtonPressedListener() {
 			
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -116,7 +117,7 @@ public class BugReportPanel extends Window implements IBetavilleWindow{
 	}
 
 	public void finishSetup() {
-		setTitle("Report A Bug");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 }

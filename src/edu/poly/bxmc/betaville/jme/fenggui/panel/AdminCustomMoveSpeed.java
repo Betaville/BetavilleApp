@@ -46,6 +46,7 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.system.DisplaySystem;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -76,11 +77,11 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	private GroundMagnet groundMagnet;
 	
 	private Label rotateSpeedLabel;
-	private String rotateSpeedLabelPrefix = "Rotate Speed: ";
+	private String rotateSpeedLabelPrefix = Labels.get(this.getClass().getSimpleName()+".rotate_speed")+": ";
 	private Slider rotateSpeedSlider;
 	
 	private Label speedLabel;
-	private String labelPrefix = "Move Speed: ";
+	private String labelPrefix = Labels.get(this.getClass().getSimpleName()+".move_speed")+": ";
 	private Slider speedSlider;
 	
 	private Container minMaxContainer;
@@ -92,10 +93,9 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	private TextEditor speedMax;
 	
 	private Label altitude;
-	private String altitudePrefix = "Altitude: ";
+	private String altitudePrefix = Labels.get(this.getClass().getSimpleName()+".altitude")+": ";
 	
 	private CheckBox<Boolean> speedLock;
-	private final String speedLockName = "Constant Speed";
 	
 	private boolean speedIsSafe=true;
 	private boolean constantSpeed = false;
@@ -137,7 +137,7 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 				try {
 					if(speedIsSafe){
 						if(!verifyNumberValidity()){
-							FengUtils.showNewDismissableWindow("Betaville", "Maximum speed must be greater than minimum speed!", "ok", true);
+							FengUtils.showNewDismissableWindow("Betaville", "Maximum speed must be greater than minimum speed!", Labels.get("Generic.ok"), true);
 							return;
 						}
 					}
@@ -166,7 +166,7 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 		minMaxContainer.setWidth(targetWidth-10);
 		
 		minLabel = FengGUI.createWidget(Label.class);
-		minLabel.setText("Slider Min");
+		minLabel.setText(Labels.get(this.getClass().getSimpleName()+".slider_min"));
 		minLabel.setXY(0, 0);
 		
 		speedMin = FengGUI.createWidget(TextEditor.class);
@@ -180,7 +180,7 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 		speedMax.setXY(minMaxContainer.getWidth()-speedMax.getWidth(), 0);
 		
 		maxLabel = FengGUI.createWidget(Label.class);
-		maxLabel.setText("Slider Max");
+		maxLabel.setText(Labels.get(this.getClass().getSimpleName()+".slider_max"));
 		maxLabel.setXY(speedMax.getX()-maxLabel.getWidth()-10, 0);
 		
 		minMaxContainer.setHeight(speedMax.getHeight());
@@ -193,7 +193,7 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 		altitude.setText(altitudePrefix);
 		
 		speedLock = FengGUI.createCheckBox();
-		speedLock.setText(speedLockName);
+		speedLock.setText(Labels.get(this.getClass().getSimpleName()+".speed_lock"));
 		speedLock.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(Object sender,
 					SelectionChangedEvent selectionChangedEvent) {
@@ -256,7 +256,7 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	}
 
 	public void finishSetup() {
-		setTitle("speed morpher v0.0.0.3");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 	

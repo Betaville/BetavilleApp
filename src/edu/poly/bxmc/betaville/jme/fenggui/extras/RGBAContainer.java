@@ -35,6 +35,8 @@ import org.fenggui.layout.RowLayout;
 
 import com.jme.renderer.ColorRGBA;
 
+import edu.poly.bxmc.betaville.Labels;
+
 /**
  * @author Skye Book
  *
@@ -61,7 +63,7 @@ public class RGBAContainer extends RGBContainer {
 		aS.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
-				aL.setText("Alpha: " + (int)(aS.getValue()*255));
+				aL.setText(Labels.get(this.getClass().getSimpleName()+".alpha")+": " + (int)(aS.getValue()*255));
 				color.r=(float) aS.getValue();
 				apply();
 			}

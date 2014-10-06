@@ -47,6 +47,7 @@ import org.apache.log4j.Logger;
 import com.centerkey.utils.BareBonesBrowserLaunch;
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.ShutdownManager;
@@ -136,7 +137,7 @@ public class SwingCommentWindow extends JFrame {
 					updateCommentDisplay(currentDesignCommentThread);
 
 					commentEditor.setEditable(true);
-					submit.setText("Submit");
+					submit.setText(Labels.get("Generic.submit"));
 					submit.setEnabled(true);
 				} catch (UnknownHostException e1) {
 					logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);

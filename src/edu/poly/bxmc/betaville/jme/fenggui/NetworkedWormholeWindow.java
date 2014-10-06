@@ -47,6 +47,7 @@ import org.fenggui.layout.StaticLayout;
 import com.jme.math.Vector3f;
 
 import edu.poly.bxmc.betaville.CityManager;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FindCityWindow.ISelectionDeselectionListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -67,8 +68,6 @@ import edu.poly.bxmc.betaville.search.GeoNamesSearchResult;
  */
 public class NetworkedWormholeWindow extends Window implements IBetavilleWindow {
 	private static final Logger logger = Logger.getLogger(NetworkedWormholeWindow.class);
-
-	private String title = "Wormholes";
 
 	private int targetWidth = 250;
 	private int targetHeight = 300;
@@ -131,7 +130,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		buttonContainer.setLayoutManager(new RowExLayout(true));
 
 		Button go = FengGUI.createWidget(Button.class);
-		go.setText("Go!");
+		go.setText(Labels.generic("go")+"!");
 		go.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -152,7 +151,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		});
 
 		Button createHere = FengGUI.createWidget(Button.class);
-		createHere.setText("Create Here");
+		createHere.setText(Labels.get(this.getClass(), "create_here"));
 		createHere.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				try {
@@ -169,7 +168,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		});
 
 		Button findCity = FengGUI.createWidget(Button.class);
-		findCity.setText("Find City");
+		findCity.setText(Labels.get(this.getClass(), "find_city"));
 		findCity.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -194,7 +193,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		});
 
 		createCity = FengGUI.createWidget(Button.class);
-		createCity.setText("Create City");
+		createCity.setText(Labels.get(this.getClass(), "create_city"));
 		createCity.setEnabled(false);
 		createCity.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -204,10 +203,10 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 					int response = NetPool.getPool().getSecureConnection().addWormhole(city.getLocation(), city.getMainTitle(), newCityID);
 					if(response>0){
 						// Success!
-						FengUtils.showNewDismissableWindow("Betaville", "Wormhole successfully created", "ok", true);
+						FengUtils.showNewDismissableWindow("Betaville", "Wormhole successfully created", Labels.get("Generic.ok"), true);
 					}
 					else{
-						FengUtils.showNewDismissableWindow("Betaville", "Wormhole could not be created, server returned error code " + response, "ok", true);
+						FengUtils.showNewDismissableWindow("Betaville", "Wormhole could not be created, server returned error code " + response, Labels.get("Generic.ok"), true);
 					}
 				} catch (UnknownHostException e1) {
 					// TODO Auto-generated catch block
@@ -250,7 +249,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 					}
 					// go back to normal status
 					//citySelector.setEnabled(true);
-					setTitle(title);
+					setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 					currentlySearching.set(false);
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
@@ -267,7 +266,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle(title);
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

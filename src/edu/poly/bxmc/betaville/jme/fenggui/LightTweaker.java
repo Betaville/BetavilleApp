@@ -42,6 +42,7 @@ import org.fenggui.layout.StaticLayout;
 import com.jme.light.Light;
 import com.jme.scene.state.LightState;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.RGBAContainer;
@@ -93,13 +94,13 @@ public class LightTweaker extends Window implements IBetavilleWindow, IPanelOnSc
 		
 		ambientLabel = FengGUI.createWidget(Label.class);
 		ambientLabel.setMultiline(true);
-		ambientLabel.setText("\nAmbient");
+		ambientLabel.setText("\n"+Labels.get(LightTweaker.class, "ambient"));
 		diffuseLabel = FengGUI.createWidget(Label.class);
 		diffuseLabel.setMultiline(true);
-		diffuseLabel.setText("\nDiffuse");
+		diffuseLabel.setText("\n"+Labels.get(LightTweaker.class, "diffuse"));
 		specularLabel = FengGUI.createWidget(Label.class);
 		specularLabel.setMultiline(true);
-		specularLabel.setText("\nSpecular");
+		specularLabel.setText("\n"+Labels.get(LightTweaker.class, "specular"));
 		
 		createBlankSlate();
 	}
@@ -170,7 +171,7 @@ public class LightTweaker extends Window implements IBetavilleWindow, IPanelOnSc
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup(){
-		setTitle("Light Tweaker");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

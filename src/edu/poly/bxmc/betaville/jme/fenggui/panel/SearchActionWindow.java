@@ -25,6 +25,7 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +69,7 @@ import com.jme.input.MouseInput;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -91,7 +93,6 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 	private int targetWidth=400;
 	private int targetHeight=200;
 	private int resultsWidthOffset=15;
-	private final String title = "Feature Search <Beta>";
 
 	private Container typeEditorContainer;
 
@@ -168,7 +169,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 		createGeonamesOptions();
 
 		search = FengGUI.createWidget(FixedButton.class);
-		search.setText("Search");
+		search.setText(Labels.get("Generic.search"));
 		search.setEnabled(false);
 		search.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -177,7 +178,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 		});
 		
 		goHere = FengGUI.createWidget(Button.class);
-		goHere.setText("Go Here!");
+		goHere.setText(Labels.get(this.getClass().getSimpleName()+".go_here"));
 		goHere.setLayoutData(BorderLayoutData.EAST);
 		goHere.addButtonPressedListener(new IButtonPressedListener() {
 
@@ -226,7 +227,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 				SceneGameState.getInstance().clearSearchDisplay();
 				if(searchType.getSelectedValue().equalsIgnoreCase(GeoNamesSearchQuery.SEARCH_IDENTIFIER)){
 					try {
-						search.setText("searching...");
+						search.setText(Labels.get(SearchActionWindow.class.getSimpleName()+".searching")+"...");
 						List<SearchResult> results=new ArrayList<SearchResult>();
 						// process search options and perform searches
 						if(searchAll.isSelected()){
@@ -242,8 +243,8 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 							results = ((GeoNamesSearchQuery)searchQuery).searchNameField((FengUtils.getText(searchEditor)), false);
 						}
 						// search post-processing
-						setTitle(title+"     ("+results.size()+" results)");
-						search.setText("Search");
+						setTitle(MessageFormat.format(Labels.get(this.getClass().getSimpleName()+".results_title"), results.size()));
+						search.setText(Labels.get("Generic.search"));
 
 						resultsContainer.removeAllWidgets();
 						for(SearchResult result : results){
@@ -344,7 +345,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 		geonamesOptions.setLayoutManager(new RowExLayout(true, 5));
 
 		searchAll = FengGUI.createCheckBox();
-		searchAll.setText("Search All Fields");
+		searchAll.setText(Labels.get(this.getClass().getSimpleName()+".search_all"));
 		searchAll.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(Object sender, SelectionChangedEvent selectionChangedEvent) {
 				if(searchAll.isSelected()) exactMatch.setEnabled(false);
@@ -352,7 +353,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 			}
 		});
 		exactMatch = FengGUI.createCheckBox();
-		exactMatch.setText("Exact Match Required");
+		exactMatch.setText(Labels.get(this.getClass().getSimpleName()+".exact_match_required"));
 		searchAll.setSelected(true);
 		geonamesOptions.addWidget(searchAll);
 		// We should rethink the logic of this option a bit, or at least test that it works
@@ -363,7 +364,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle(title);
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 		setExpandable(false);
 	}

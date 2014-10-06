@@ -46,6 +46,7 @@ import org.fenggui.util.Alignment;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
@@ -97,7 +98,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 		getContentContainer().setLayoutManager(new StaticLayout());
 
 		intermediary = FengGUI.createWidget(Label.class);
-		intermediary.setText("Getting Comments");
+		intermediary.setText(Labels.get(this.getClass().getSimpleName()+".intermediary"));
 
 		createEntryContainer();
 		createCommentContainer();
@@ -147,7 +148,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 		entryContainer.setSize(targetWidth-10, 50);
 
 		postComment = FengGUI.createWidget(FixedButton.class);
-		postComment.setText("post");
+		postComment.setText(Labels.get(this.getClass().getSimpleName()+".post"));
 		//postComment.setWidth(postComment.getWidth()+10);
 		//postComment.setXY(FengUtils.midWidth(entryContainer, postComment), 0);
 		postComment.setXY(0, 0);
@@ -207,7 +208,7 @@ public class CommentWindow extends Window implements IBetavilleWindow{
 	}
 
 	public void finishSetup(){
-		setTitle("Comments");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

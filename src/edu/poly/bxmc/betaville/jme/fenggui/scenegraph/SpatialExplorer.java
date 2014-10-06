@@ -36,6 +36,7 @@ import org.fenggui.composite.tab.TabItem;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.util.Alignment;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 
 /**
@@ -86,7 +87,7 @@ public class SpatialExplorer extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Spatial Explorer");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 	    setSize(targetWidth, targetHeight);
 	}
 	

@@ -33,6 +33,7 @@ import org.fenggui.layout.RowExLayoutData;
 
 import com.jme.math.Vector3f;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.map.ILocation;
 import edu.poly.bxmc.betaville.jme.map.JME2MapManager;
 import edu.poly.bxmc.betaville.jme.map.UTMCoordinate;
@@ -59,7 +60,7 @@ public class UTMView extends Container implements LocationView{
 		setLayoutManager(new RowExLayout(false));
 		
 		title = FengGUI.createWidget(Label.class);
-		title.setText("UTM View");
+		title.setText(Labels.get(this.getClass().getSimpleName()+".title"));
 		
 		Container latCon = FengGUI.createWidget(Container.class);
 		latCon.setLayoutManager(new RowExLayout(true));
@@ -71,16 +72,16 @@ public class UTMView extends Container implements LocationView{
 		eastingContainer.setLayoutManager(new RowExLayout(true));
 		
 		latZoneLabel = FengGUI.createWidget(Label.class);
-		latZoneLabel.setText("Latitude Zone");
+		latZoneLabel.setText(Labels.get(this.getClass().getSimpleName()+".lat_zone"));
 		latZoneLabel.setLayoutData(new RowExLayoutData(true, true));
 		lonZoneLabel = FengGUI.createWidget(Label.class);
-		lonZoneLabel.setText("Longitude Zone");
+		lonZoneLabel.setText(Labels.get(this.getClass().getSimpleName()+".lon_zone"));
 		lonZoneLabel.setLayoutData(new RowExLayoutData(true, true));
 		northingLabel = FengGUI.createWidget(Label.class);
-		northingLabel.setText("Northing");
+		northingLabel.setText(Labels.get(this.getClass().getSimpleName()+".northing"));
 		northingLabel.setLayoutData(new RowExLayoutData(true, true));
 		eastingLabel = FengGUI.createWidget(Label.class);
-		eastingLabel.setText("Easting");
+		eastingLabel.setText(Labels.get(this.getClass().getSimpleName()+".easting"));
 		eastingLabel.setLayoutData(new RowExLayoutData(true, true));
 		
 		latZoneValue = FengGUI.createWidget(Label.class);

@@ -35,6 +35,7 @@ import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
 import org.geonames.WebService;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
 
@@ -79,7 +80,7 @@ public class GeoNamesSearchQuery extends SearchQuery implements IConfigurableSea
 			if(e.getMessage().contains("overloaded")){
 				logger.warn(e.getMessage());
 				GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Geonames Search",
-						"The Geonames search servers are currently overloaded!", "ok", true));
+						"The Geonames search servers are currently overloaded!", Labels.get("Generic.ok"), true));
 			}
 		}
 		return results;
@@ -112,7 +113,7 @@ public class GeoNamesSearchQuery extends SearchQuery implements IConfigurableSea
 			if(e.getMessage().contains("overloaded")){
 				logger.warn(e.getMessage());
 				GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Geonames Search",
-						"The Geonames search servers are currently overloaded!", "ok", true));
+						"The Geonames search servers are currently overloaded!", Labels.get("Generic.ok"), true));
 			}
 		}
 		return results;

@@ -35,6 +35,7 @@ import org.fenggui.event.key.KeyPressedEvent;
 import org.fenggui.event.key.KeyReleasedEvent;
 import org.fenggui.event.key.KeyTypedEvent;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 
 /**
@@ -84,7 +85,7 @@ public class ShutdownPasswordPrompt extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Password Required");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

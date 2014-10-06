@@ -52,6 +52,7 @@ import org.fenggui.event.key.KeyTypedEvent;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
@@ -581,7 +582,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								xRotateTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 
 							SceneScape.getTargetSpatial().setLocalTranslation(newLocation, loc.y, loc.z);
@@ -621,7 +622,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								xRotateTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 
 							SceneScape.getTargetSpatial().setLocalTranslation(loc.x, newLocation, loc.y);
@@ -660,7 +661,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								xRotateTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 							SceneScape.getTargetSpatial().setLocalTranslation(loc.x, loc.y, newLocation);
 
@@ -786,7 +787,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								xRotateTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 							System.out.println("float rotation: " + floatRotation);
 							System.out.println("new rotation: " + newRotation);
@@ -826,7 +827,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								yRotateTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 							SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleY(newRotation));
 							SceneScape.getTargetSpatial().setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SceneScape.getPickedDesign()).getRotationX(), newRotation, ((ModeledDesign)SceneScape.getPickedDesign()).getRotationZ()));
@@ -863,7 +864,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								zRotateTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 							SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleZ(newRotation));
 							SceneScape.getTargetSpatial().setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SceneScape.getPickedDesign()).getRotationX(), ((ModeledDesign)SceneScape.getPickedDesign()).getRotationY(), newRotation));
@@ -981,7 +982,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								xScaleTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(newXScale, SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().z));
 
@@ -1021,7 +1022,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								xScaleTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, newYScale, SceneScape.getTargetSpatial().getLocalScale().z));
 
@@ -1061,7 +1062,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 										"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 								zScaleTextEditor.setText("0");
 								GUIGameState.getInstance().getDisp().addWidget(
-										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+										FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 							}
 							SceneScape.getTargetSpatial().setLocalScale(new Vector3f(SceneScape.getTargetSpatial().getLocalScale().x, SceneScape.getTargetSpatial().getLocalScale().y, newZScale));
 						}
@@ -1129,7 +1130,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		});
 
 		delete = FengGUI.createWidget(FixedButton.class);
-		delete.setText("Delete");
+		delete.setText(Labels.get("Generic.delete"));
 		delete.setWidth(delete.getWidth()+10);
 		delete.setEnabled(true);
 		delete.addButtonPressedListener(new IButtonPressedListener() {
@@ -1139,7 +1140,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 				SceneScape.getTargetSpatial().updateRenderState();
 
 				Window window = FengUtils.createTwoOptionWindow("Delete", "Are you sure that you would like to delete this design?",
-						"no", "yes",
+						Labels.get("Generic.no"), Labels.get("Generic.yes"),
 						new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 
@@ -1178,7 +1179,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		// SAVE/REVERT CONTROL
 
 		save = FengGUI.createWidget(FixedButton.class);
-		save.setText("Save");
+		save.setText(Labels.get("Generic.save"));
 		save.setLayoutData(new RowExLayoutData(false, true));
 		save.addButtonPressedListener(new IButtonPressedListener() {
 
@@ -1195,13 +1196,13 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 							logger.error("Network Save Success");
 							GUIGameState.getInstance().getDisp().addWidget(
 									FengUtils.createDismissableWindow("Betaville",
-											"This object's location has been saved", "ok", true));
+											"This object's location has been saved", Labels.get("Generic.ok"), true));
 						}
 						else{
 							logger.info("Network Save Failed");
 							GUIGameState.getInstance().getDisp().addWidget(
 									FengUtils.createDismissableWindow("Betaville",
-											"This object's location could not be saved", "ok", true));
+											"This object's location could not be saved", Labels.get("Generic.ok"), true));
 						}
 					} catch (UnknownHostException e) {
 						// TODO Auto-generated catch block
@@ -1216,13 +1217,13 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 							"reset button really be visible?");
 					GUIGameState.getInstance().getDisp().addWidget(
 							FengUtils.createDismissableWindow("Betaville",
-									"This object does not appear to have been moved", "ok", true));
+									"This object does not appear to have been moved", Labels.get("Generic.ok"), true));
 				}
 			}
 		});
 
 		reset = FengGUI.createWidget(FixedButton.class);
-		reset.setText("Reset");
+		reset.setText(Labels.get("Generic.reset"));
 		reset.setLayoutData(new RowExLayoutData(false, true));
 		reset.addButtonPressedListener(new IButtonPressedListener() {
 
@@ -1243,7 +1244,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 							"reset button really be visible?");
 					GUIGameState.getInstance().getDisp().addWidget(
 							FengUtils.createDismissableWindow("Betaville",
-									"This object does not appear to have been previously moved", "ok", true));
+									"This object does not appear to have been previously moved", Labels.get("Generic.ok"), true));
 				}
 			}
 		});
@@ -1343,7 +1344,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup(){
-		setTitle("Edit Building");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(width, height);
 		setXY(Binding.getInstance().getCanvasWidth() - this.width, 0);
 	}

@@ -36,6 +36,7 @@ import org.fenggui.layout.RowLayout;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -150,7 +151,7 @@ public class PerformanceWindow extends Window  implements IBetavilleWindow{
 	}
 	
 	public void finishSetup(){
-		setTitle("Performance");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setXY(0,32);
 		setWidth(225);
 	}

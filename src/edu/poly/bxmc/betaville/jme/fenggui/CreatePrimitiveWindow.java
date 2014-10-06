@@ -54,6 +54,7 @@ import com.jme.scene.state.MaterialState;
 import com.jme.scene.state.MaterialState.MaterialFace;
 import com.jme.system.DisplaySystem;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.map.Scale;
 
@@ -114,11 +115,11 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		altitudeContainer.setLayoutData(new RowExLayoutData(true, true));
 		
 		sl = FengGUI.createWidget(Label.class);
-		sl.setText("Size");
+		sl.setText(Labels.get(this.getClass().getSimpleName()+".size"));
 		sl.setLayoutData(BorderLayoutData.NORTH);
 		
 		al = FengGUI.createWidget(Label.class);
-		al.setText("Altitude");
+		al.setText(Labels.get(this.getClass().getSimpleName()+".altitude"));
 		al.setLayoutData(BorderLayoutData.NORTH);
 		
 		sizeSlider = FengGUI.createSlider(true);
@@ -131,14 +132,14 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		sizeSlider.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent arg0) {
-				sl.setText("Size: " + ((float)sizeSlider.getValue()*sizeMultiplier));
+				sl.setText(Labels.get(this.getClass().getSimpleName()+".size")+": " + ((float)sizeSlider.getValue()*sizeMultiplier));
 			}
 		});
 		
 		altitudeSlider.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent arg0) {
-				al.setText("Altitude: " + ((float)altitudeSlider.getValue()*altitudeMultiplier));
+				al.setText(Labels.get(this.getClass().getSimpleName()+".altitude")+": " + ((float)altitudeSlider.getValue()*altitudeMultiplier));
 			}
 		});
 		
@@ -156,13 +157,13 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		gc.setLayoutData(new RowExLayoutData(true, true));
 		
 		rl = FengGUI.createWidget(Label.class);
-		rl.setText("Red");
+		rl.setText(Labels.get("Generic.red"));
 		rl.setLayoutData(BorderLayoutData.NORTH);
 		gl = FengGUI.createWidget(Label.class);
-		gl.setText("Green");
+		gl.setText(Labels.get("Generic.green"));
 		gl.setLayoutData(BorderLayoutData.NORTH);
 		bl = FengGUI.createWidget(Label.class);
-		bl.setText("Blue");
+		bl.setText(Labels.get("Generic.blue"));
 		bl.setLayoutData(BorderLayoutData.NORTH);
 		
 		rl.setWidth(gl.getWidth());
@@ -184,9 +185,9 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		
 		updateColorListener = new ISliderMovedListener() {
 			public void sliderMoved(SliderMovedEvent arg0) {
-				rl.setText("Red: " + (float)r.getValue());
-				gl.setText("Green: " + (float)g.getValue());
-				bl.setText("Blue: " + (float)b.getValue());
+				rl.setText(Labels.get("Generic.red")+": " + (float)r.getValue());
+				gl.setText(Labels.get("Generic.green")+": " + (float)g.getValue());
+				bl.setText(Labels.get("Generic.blue")+": " + (float)b.getValue());
 				updateColor();
 			}
 		};
@@ -204,7 +205,7 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 		updateColor();
 		
 		done = FengGUI.createWidget(Button.class);
-		done.setText("ok");
+		done.setText(Labels.get("Generic.ok"));
 		done.setLayoutData(new RowExLayoutData(true, true));
 		done.addButtonPressedListener(new IButtonPressedListener() {
 			
@@ -267,7 +268,7 @@ public class CreatePrimitiveWindow extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Betaville");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 		setup();
 	}

@@ -47,6 +47,7 @@ import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.StaticLayout;
 import org.fenggui.util.Color;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.IFlagSelectionListener;
@@ -104,7 +105,7 @@ public class BottomProposals extends Window {
 		} catch (IOException e){
 			// If we can not load the texture, then just use a plain-text label
 			logger.error("Could not load proposalsLabel texture", e);
-			proposalsLabel.setText("PROPOSALS");
+			proposalsLabel.setText(Labels.get(this.getClass().getSimpleName()+".proposals"));
 		}
 		proposalsLabel.setXY(getWidth()-proposalsLabel.getWidth(), getHeight()-proposalsLabel.getHeight());
 

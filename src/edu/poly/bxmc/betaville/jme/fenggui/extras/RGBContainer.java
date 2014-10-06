@@ -36,6 +36,7 @@ import org.fenggui.layout.RowLayout;
 
 import com.jme.renderer.ColorRGBA;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.IColorChangeApplicator;
 
 /**
@@ -80,7 +81,7 @@ public class RGBContainer extends Container {
 		rS.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
-				rL.setText("Red: " + (int)(rS.getValue()*255));
+				rL.setText(Labels.get(this.getClass().getSimpleName()+".red")+": " + (int)(rS.getValue()*255));
 				color.r=(float) rS.getValue();
 				apply();
 			}
@@ -97,7 +98,7 @@ public class RGBContainer extends Container {
 		gS.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
-				gL.setText("Green: " + (int)(gS.getValue()*255));
+				gL.setText(Labels.get(this.getClass().getSimpleName()+".green")+": " + (int)(gS.getValue()*255));
 				color.g=(float) gS.getValue();
 				apply();
 			}
@@ -114,7 +115,7 @@ public class RGBContainer extends Container {
 		bS.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
-				bL.setText("Blue: " + (int)(bS.getValue()*255));
+				bL.setText(Labels.get(this.getClass().getSimpleName()+".blue")+": " + (int)(bS.getValue()*255));
 				color.b=(float) bS.getValue();
 				apply();
 			}

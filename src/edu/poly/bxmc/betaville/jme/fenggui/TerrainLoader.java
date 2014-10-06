@@ -53,6 +53,7 @@ import com.jme.system.DisplaySystem;
 import com.jme.util.export.binary.BinaryImporter;
 import com.jmex.terrain.TerrainBlock;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -205,7 +206,7 @@ public class TerrainLoader extends Window implements IBetavilleWindow {
 						} catch (IOException e){
 							logger.warn("File: "+file.toString()+" could not be loaded!");
 							FengUtils.showNewDismissableWindow("Bad News..",
-									"I couldn't load your file!", "ok", true);
+									"I couldn't load your file!", Labels.get("Generic.ok"), true);
 
 						}
 					}
@@ -239,7 +240,7 @@ public class TerrainLoader extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Terrain Loader - EXPERIMENTAL");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

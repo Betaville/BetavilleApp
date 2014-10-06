@@ -42,6 +42,7 @@ import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
 import org.fenggui.util.Color;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -131,7 +132,7 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 
 	private void createConnectButton(){
 		wfsConnectButton = FengGUI.createWidget(Button.class);
-		wfsConnectButton.setText("Connect to GeoServer");
+		wfsConnectButton.setText(Labels.get(this.getClass().getSimpleName()+".wfs_connect"));
 		wfsConnectButton.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
@@ -152,7 +153,7 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 						} catch (IOException e) {
 							logger.error("Can't connect to your GeoServer because no one likes you. ", e);
 							GUIGameState.getInstance().getDisp().addWidget(
-									FengUtils.createDismissableWindow("Betaville", "Could not connect to GeoServer!", "OK", true));
+									FengUtils.createDismissableWindow("Betaville", "Could not connect to GeoServer!", Labels.get("Generic.ok"), true));
 						}
 						
 						wfsConnectButton.setEnabled(true);
@@ -191,7 +192,7 @@ public class AddLayersWindow extends Window implements IBetavilleWindow {
 	 */
 	public void finishSetup() {
 		sc.forceFinishSetup();
-		setTitle("GIS Layers");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

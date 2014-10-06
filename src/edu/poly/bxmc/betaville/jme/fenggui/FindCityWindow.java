@@ -46,6 +46,7 @@ import org.fenggui.event.mouse.MouseReleasedEvent;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.util.Color;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -61,20 +62,20 @@ import edu.poly.bxmc.betaville.search.SearchResult;
  */
 public class FindCityWindow extends Window implements IBetavilleWindow {
 	private static final Logger logger = Logger.getLogger(FindCityWindow.class);
-	
+
 	private int targetWidth = 250;
 	private int targetHeight = 150;
-	
+
 	private Container searchContainer;
 	private TextEditor entry;
 	private FixedButton search;
-	
+
 	private BlockingScrollContainer results;
 	private Container isc;
-	
+
 	// The geonames ID of the selected city feature (Code: P/Class: PPL)
 	private int selectedID = -1;
-	
+
 	private ArrayList<ISelectionDeselectionListener> selectionListeners;
 
 	/**
@@ -84,61 +85,61 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 		super(true, true);
 		getContentContainer().setLayoutManager(new RowExLayout(false));
 		getContentContainer().setSize(targetWidth, targetHeight-getTitleBar().getHeight());
-		
+
 		selectionListeners = new ArrayList<FindCityWindow.ISelectionDeselectionListener>();
-		
+
 		results = FengGUI.createWidget(BlockingScrollContainer.class);
 		results.setShowScrollbars(true);
 		isc = FengGUI.createWidget(Container.class);
 		isc.setLayoutManager(new RowExLayout(false));
 		results.setInnerWidget(isc);
-		
+
 		searchContainer = FengGUI.createWidget(Container.class);
 		searchContainer.setLayoutManager(new RowExLayout(true));
 		entry = FengGUI.createWidget(TextEditor.class);
-		entry.setText("Enter City Name...");
+		entry.setText(Labels.get(this.getClass().getSimpleName()+".prompt")+"...");
 		searchContainer.addWidget(entry);
 		search = FengGUI.createWidget(FixedButton.class);
-		search.setText("search");
+		search.setText(Labels.get("Generic.search"));
 		search.addButtonPressedListener(new IButtonPressedListener() {
-			
+
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				performSearch();
 			}
 		});
 		searchContainer.addWidget(search);
-		
+
 		getContentContainer().addWidget(results, searchContainer);
 	}
-	
+
 	private void performSearch(){
-		
+
 		logger.info("Doing search: "+FengUtils.getText(entry));
-		
+
 		selectedID=-1;
-		
+
 		// hand the search task off to another thread as it is dependent on a server response.
 		SettingsPreferences.getThreadPool().submit(new Runnable() {
-			
+
 			public void run() {
 				try {
 					GeoNamesSearchQuery q = new GeoNamesSearchQuery();
 					List<SearchResult> cities = q.citySearch(FengUtils.getText(entry));
-					
+
 					for(SearchResult result : cities){
 						//ResultLabel l = FengGUI.createWidget(ResultLabel.class);
 						ResultLabel l = new ResultLabel();
 						l.configure((GeoNamesSearchResult)result);
 						isc.addWidget(l);
 					}
-					
+
 				} catch (Exception e) {
 					logger.warn("Could not perform search with text from input", e);
 				}
 			}
 		});
 	}
-	
+
 	/**
 	 * Gets the city currently selected from the results list
 	 * @return The {@link GeoNamesSearchResult} representing the selected
@@ -152,8 +153,8 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Adds a selection-deselection listener to this window
 	 * @param listener
@@ -161,7 +162,7 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 	public void addSelectionDeslectionListener(ISelectionDeselectionListener listener){
 		selectionListeners.add(listener);
 	}
-	
+
 	/**
 	 * Removes a selection-deselection listener from this window
 	 * @param listener
@@ -169,7 +170,7 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 	public void removeSelectionDeslectionListener(ISelectionDeselectionListener listener){
 		selectionListeners.add(listener);
 	}
-	
+
 	/**
 	 * Removes all selection-deselection listeners from this window
 	 */
@@ -181,25 +182,25 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Find City");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 
 	public class ResultLabel extends Container{
-		
+
 		private GeoNamesSearchResult result;
-		
+
 		public ResultLabel(){
 			setLayoutManager(new RowExLayout(true));
-			
+
 			addEventListener(EVENT_MOUSE, new IGenericEventListener() {
-				
+
 				public void processEvent(Object source, Event event) {
 					handleEvent(event);
 				}
 			});
 		}
-		
+
 		private void handleEvent(Event event){
 			if(event instanceof MouseEnteredEvent){
 				this.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
@@ -215,24 +216,24 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 				}
 			}
 		}
-		
+
 		private void configure(GeoNamesSearchResult r){
 			this.result=r;
 			Label n = FengGUI.createWidget(Label.class);
 			n.setText(result.getMainTitle());
 			this.addWidget(n);
-			
+
 			//Label loc = FengGUI.createWidget(Label.class);
 		}
 	}
-	
+
 	public interface ISelectionDeselectionListener{
 		/**
 		 * Called when a city result is selected in the FindCityWindow
 		 * @param The selected city
 		 */
 		public void resultSelected(GeoNamesSearchResult result);
-		
+
 		/**
 		 * Called when a result is deselected
 		 */

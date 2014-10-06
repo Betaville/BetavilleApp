@@ -32,6 +32,8 @@ import org.fenggui.ProgressBar;
 import org.fenggui.composite.Window;
 import org.fenggui.layout.RowLayout;
 
+import edu.poly.bxmc.betaville.Labels;
+
 /**
  * @author Skye Book
  *
@@ -53,7 +55,7 @@ public class ColladaProgressWindow extends Window {
 		FengGUI.getTheme().setUp(this);
 		buildUI();
 		this.setXY(100, 100);
-		this.setTitle("Model Loading");
+		this.setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 	}
 
 	private void buildUI(){

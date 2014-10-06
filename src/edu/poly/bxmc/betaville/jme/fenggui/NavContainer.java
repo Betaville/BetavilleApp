@@ -51,6 +51,7 @@ import org.fenggui.layout.StaticLayout;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.KioskMode;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -175,7 +176,7 @@ public class NavContainer extends Container {
 
 					if(SettingsPreferences.guestMode()){
 						GUIGameState.getInstance().getDisp().addWidget(
-								FengUtils.createDismissableWindow("Betaville", "You cannot fave an object in guest mode!", "ok", true));
+								FengUtils.createDismissableWindow("Betaville", "You cannot fave an object in guest mode!", Labels.get("Generic.ok"), true));
 					}
 
 					if(!SceneScape.getTargetSpatial().getName().endsWith("$empty")){
@@ -183,11 +184,11 @@ public class NavContainer extends Container {
 							int response = NetPool.getPool().getSecureConnection().faveDesign(SceneScape.getPickedDesign().getID());
 							if(response==0){
 								FengUtils.showNewDismissableWindow("Betaville",
-										"Faved!", "ok", true);
+										"Faved!", Labels.get("Generic.ok"), true);
 							}
 							else if(response == -2){
 								FengUtils.showNewDismissableWindow("Betaville",
-										"You have already favorited this item!", "ok", true);
+										"You have already favorited this item!", Labels.get("Generic.ok"), true);
 							}
 						} catch (UnknownHostException e) {
 							// TODO Auto-generated catch block
@@ -225,7 +226,7 @@ public class NavContainer extends Container {
 					// If we're in kiosk mode, the user is not allowed to put up a proposal!
 					if(KioskMode.isInKioskMode()){
 						logger.info("New proposals cannot be created in kiosk mode - Showing dialog instead");
-						GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Betaville", "New proposals cannot be created in kiosk mode", "OK", true));
+						GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Betaville", "New proposals cannot be created in kiosk mode", Labels.get("Generic.ok"), true));
 						return;
 					}
 

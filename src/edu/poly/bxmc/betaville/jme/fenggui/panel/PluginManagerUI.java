@@ -44,6 +44,7 @@ import org.fenggui.layout.RowExLayout;
 import org.fenggui.layout.RowExLayoutData;
 import org.jdom.JDOMException;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.XMLFileFilter;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
@@ -91,7 +92,7 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 		list.setLayoutManager(new RowExLayout(false));
 		
 		Button addPluginFromWeb = FengGUI.createWidget(Button.class);
-		addPluginFromWeb.setText("Add Plugin From Web");
+		addPluginFromWeb.setText(Labels.get(this.getClass().getSimpleName()+".load_from_web"));
 		addPluginFromWeb.addButtonPressedListener(new LaunchLoadFromWebWindowDelegate());
 		
 		
@@ -120,7 +121,7 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 	}
 	
 	public void finishSetup(){
-		setTitle("Plugin Manager");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 	
@@ -172,7 +173,7 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 		final Window w = FengGUI.createWindow(true, true);
 		w.getContentContainer().setLayoutManager(new RowExLayout(false));
 		w.setSize(275, 175);
-		w.setTitle("Load Plugin From Web");
+		w.setTitle(Labels.get(this.getClass().getSimpleName()+".load_from_web"));
 		
 		Container xmlContainer = FengGUI.createWidget(Container.class);
 		xmlContainer.setLayoutManager(new RowExLayout(true));
@@ -182,14 +183,14 @@ public class PluginManagerUI extends Window implements IBetavilleWindow, IPanelO
 		xmlEditor.setLayoutData(new RowExLayoutData(true, true));
 		
 		Button browse = FengGUI.createWidget(Button.class);
-		browse.setText("Browse..");
+		browse.setText(Labels.get("Generic.browse")+"..");
 		browse.setLayoutData(new RowExLayoutData(true, false));
 		browse.addButtonPressedListener(new LoadPluginFromWebDelegate(xmlEditor));
 		
 		xmlContainer.addWidget(xmlEditor, browse);
 		
 		Button load = FengGUI.createWidget(Button.class);
-		load.setText("Load");
+		load.setText(Labels.get("Generic.load"));
 		load.addButtonPressedListener(new IButtonPressedListener() {
 			
 			@Override

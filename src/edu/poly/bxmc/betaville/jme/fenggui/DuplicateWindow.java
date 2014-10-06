@@ -48,6 +48,7 @@ import com.jme.math.Vector3f;
 import com.jme.scene.Node;
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
@@ -145,7 +146,7 @@ public class DuplicateWindow extends Window {
 		acceptContainer.setLayoutManager(new RowExLayout());
 
 		FixedButton save = FengGUI.createWidget(FixedButton.class);
-		save.setText("Duplicate");
+		save.setText(Labels.get(this.getClass().getSimpleName()+".duplicate"));
 		save.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				saveAction();
@@ -175,13 +176,13 @@ public class DuplicateWindow extends Window {
 		duplicateContainer.setWidth(targetWidth);
 		
 		duplicateLabel = FengGUI.createWidget(Label.class);
-		duplicateLabel.setText("Duplications: 1");
+		duplicateLabel.setText(Labels.get(this.getClass().getSimpleName()+".duplications")+": 1");
 		duplicateLabel.setXY(0, 0);
 		
 		moveSliderListener = new ISliderMovedListener(){
 			public void sliderMoved(SliderMovedEvent arg0) {
 				int newValue = (int)(duplicateSlider.getValue()*(maxCopies-1))+1;
-				duplicateLabel.setText("Duplications: " + newValue);
+				duplicateLabel.setText(Labels.get(this.getClass().getSimpleName()+".duplications")+": " + newValue);
 				copies=newValue;
 			}
 		};
@@ -219,7 +220,7 @@ public class DuplicateWindow extends Window {
 		translateContainer.setLayoutManager(new RowExLayout());
 		
 		translateLabel = FengGUI.createWidget(Label.class);
-		translateLabel.setText("Translate: ");
+		translateLabel.setText(Labels.get(this.getClass().getSimpleName()+".translate")+": ");
 
 		northing = FengGUI.createWidget(TextEditor.class);
 		northing.setText("0          ");
@@ -247,7 +248,7 @@ public class DuplicateWindow extends Window {
 		rotateContainer.setLayoutManager(new RowExLayout());
 		
 		rotateLabel = FengGUI.createWidget(Label.class);
-		rotateLabel.setText("Rotate:     ");
+		rotateLabel.setText(Labels.get(this.getClass().getSimpleName()+".rotate")+":     ");
 
 		rotX = FengGUI.createWidget(TextEditor.class);
 		rotX.setText("0          ");
@@ -280,14 +281,14 @@ public class DuplicateWindow extends Window {
 		
 
 		northingLabel = FengGUI.createWidget(Label.class);
-		northingLabel.setText("Northing    ");
+		northingLabel.setText(Labels.get("Generic.northing")+"    ");
 		
 
 		eastingLabel = FengGUI.createWidget(Label.class);
-		eastingLabel.setText("Easting      ");
+		eastingLabel.setText(Labels.get("Generic.easting")+"      ");
 
 		altitudeLabel = FengGUI.createWidget(Label.class);
-		altitudeLabel.setText("Altitude ");
+		altitudeLabel.setText(Labels.get("Generic.altitude")+" ");
 
 		translateLabelContainer.addWidget(lefttop);
 		translateLabelContainer.addWidget(northingLabel);
@@ -328,7 +329,7 @@ public class DuplicateWindow extends Window {
 
 
 	public void finishSetup(){
-		setTitle("Model Duplicator");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 		setXY(Binding.getInstance().getCanvasWidth()/2-getWidth()/2, Binding.getInstance().getCanvasHeight()/2-getHeight()/2);
 	}
@@ -354,7 +355,7 @@ public class DuplicateWindow extends Window {
 				maxCopies=500;
 			}
 			int newValue = (int)(duplicateSlider.getValue()*(maxCopies-1))+1;
-			duplicateLabel.setText("Duplications: " + newValue);
+			duplicateLabel.setText(Labels.get(DuplicateWindow.class.getSimpleName()+".duplications")+": " + newValue);
 			copies=newValue;
 		}
 

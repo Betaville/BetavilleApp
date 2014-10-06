@@ -91,6 +91,7 @@ public class VolumeControl extends PanelAction implements ICityPanelClosedListen
 		
 		volumeWindow = FengGUI.createWindow(true, true);
 		//volumeWindow.removeWidget(volumeWindow.getTitleBar());
+		// No title because this window is so small
 		volumeWindow.setTitle("");
 		volumeWindow.removeWidget(volumeWindow.getTitleLabel());
 		int windowWidth=volumeWindow.getCloseButton().getWidth();

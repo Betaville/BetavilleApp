@@ -43,6 +43,7 @@ import org.fenggui.layout.RowExLayoutData;
 
 import com.jme.math.Vector3f;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.GPSView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -183,7 +184,7 @@ public class MeasureTool extends Window implements IBetavilleWindow{
 	private void setupButtons(){
 		Button selectPoint1 = FengGUI.createWidget(Button.class);
 		selectPoint1.setLayoutData(new RowExLayoutData(true, true));
-		selectPoint1.setText("Select Point 1");
+		selectPoint1.setText(Labels.get(this.getClass().getSimpleName()+".select_point")+" 1");
 		selectPoint1.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
@@ -210,7 +211,7 @@ public class MeasureTool extends Window implements IBetavilleWindow{
 
 		Button selectPoint2 = FengGUI.createWidget(Button.class);
 		selectPoint2.setLayoutData(new RowExLayoutData(true, true));
-		selectPoint2.setText("Select Point 2");
+		selectPoint2.setText(Labels.get(this.getClass().getSimpleName()+".select_point")+" 2");
 		selectPoint2.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
@@ -308,7 +309,7 @@ public class MeasureTool extends Window implements IBetavilleWindow{
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Distance Tool");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 	}
 
 	private class SelectorItem extends Item{

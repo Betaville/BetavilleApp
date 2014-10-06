@@ -48,6 +48,7 @@ import org.fenggui.layout.RowExLayoutData;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
@@ -138,7 +139,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 								"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 						rotation.setText("0");
 						GUIGameState.getInstance().getDisp().addWidget(
-								FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+								FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 					}
 					SceneScape.getTargetSpatial().setLocalRotation(Rotator.angleY(newRotation));
 					SceneScape.getTargetSpatial().setLocalRotation(Rotator.fromThreeAngles(((ModeledDesign)SceneScape.getPickedDesign()).getRotationX(), newRotation, ((ModeledDesign)SceneScape.getPickedDesign()).getRotationZ()));
@@ -157,7 +158,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		// TRANSLATE CONTROL
 
 		translateLabel = FengGUI.createWidget(Label.class);
-		translateLabel.setText("Movement Per Click");
+		translateLabel.setText(Labels.get(this.getClass().getSimpleName()+".move_increment"));
 		translateLabel.setLayoutData(new RowExLayoutData(false, true));
 
 		translateSpeed = FengGUI.createWidget(TextEditor.class);
@@ -170,22 +171,22 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		translateSpeedContainer.addWidget(translateLabel, translateSpeed);
 
 		north = FengGUI.createWidget(Button.class);
-		north.setText("North");
+		north.setText(Labels.get("Generic.north"));
 		north.setLayoutData(new RowExLayoutData(false, true));
 		north.addButtonPressedListener(new MoveListener(Direction.NORTH));
 
 		south = FengGUI.createWidget(Button.class);
-		south.setText("South");
+		south.setText(Labels.get("Generic.south"));
 		south.setLayoutData(new RowExLayoutData(false, true));
 		south.addButtonPressedListener(new MoveListener(Direction.SOUTH));
 
 		east = FengGUI.createWidget(Button.class);
-		east.setText("East");
+		east.setText(Labels.get("Generic.east"));
 		east.setLayoutData(new RowExLayoutData(false, true));
 		east.addButtonPressedListener(new MoveListener(Direction.EAST));
 
 		west = FengGUI.createWidget(Button.class);
-		west.setText("West");
+		west.setText(Labels.get("Generic.west"));
 		west.setLayoutData(new RowExLayoutData(false, true));
 		west.addButtonPressedListener(new MoveListener(Direction.WEST));
 
@@ -195,12 +196,12 @@ public class ModelMover extends Window implements IBetavilleWindow {
 
 		// ALTITUDE CONTROL
 		up = FengGUI.createWidget(Button.class);
-		up.setText("Up");
+		up.setText(Labels.get("Generic.up"));
 		up.setLayoutData(new RowExLayoutData(false, true));
 		up.addButtonPressedListener(new MoveListener(Direction.UP));
 
 		down = FengGUI.createWidget(Button.class);
-		down.setText("Down");
+		down.setText(Labels.get("Generic.down"));
 		down.setLayoutData(new RowExLayoutData(false, true));
 		down.addButtonPressedListener(new MoveListener(Direction.DOWN));
 
@@ -211,7 +212,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 		// SAVE/REVERT CONTROL
 
 		save = FengGUI.createWidget(Button.class);
-		save.setText("Save");
+		save.setText(Labels.get("Generic.save"));
 		save.setLayoutData(new RowExLayoutData(false, true));
 		save.addButtonPressedListener(new IButtonPressedListener() {
 
@@ -236,13 +237,13 @@ public class ModelMover extends Window implements IBetavilleWindow {
 							logger.error("Network Save Success");
 							GUIGameState.getInstance().getDisp().addWidget(
 									FengUtils.createDismissableWindow("Betaville",
-											"This object's location has been saved", "ok", true));
+											"This object's location has been saved", Labels.get("Generic.ok"), true));
 						}
 						else{
 							logger.error("Network Save Failed");
 							GUIGameState.getInstance().getDisp().addWidget(
 									FengUtils.createDismissableWindow("Betaville",
-											"This object's location could not be saved", "ok", true));
+											"This object's location could not be saved", Labels.get("Generic.ok"), true));
 						}
 					} catch (UnknownHostException e) {
 						// TODO Auto-generated catch block
@@ -257,13 +258,13 @@ public class ModelMover extends Window implements IBetavilleWindow {
 					"reset button really be visible?");
 					GUIGameState.getInstance().getDisp().addWidget(
 							FengUtils.createDismissableWindow("Betaville",
-									"This object does not appear to have been moved", "ok", true));
+									Labels.get(this.getClass().getSimpleName()+".not_moved"), Labels.get("Generic.ok"), true));
 				}
 			}
 		});
 
 		reset = FengGUI.createWidget(Button.class);
-		reset.setText("Reset");
+		reset.setText(Labels.get("Generic.reset"));
 		reset.setLayoutData(new RowExLayoutData(false, true));
 		reset.addButtonPressedListener(new IButtonPressedListener() {
 
@@ -284,7 +285,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 					"reset button really be visible?");
 					GUIGameState.getInstance().getDisp().addWidget(
 							FengUtils.createDismissableWindow("Betaville",
-									"This object does not appear to have been previously moved", "ok", true));
+									"This object does not appear to have been previously moved", Labels.get("Generic.ok"), true));
 				}
 			}
 		});
@@ -336,7 +337,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Model Mover");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setHeight(getHeight()+10);
 	}
 
@@ -381,7 +382,7 @@ public class ModelMover extends Window implements IBetavilleWindow {
 						"restricted to numbers and decimals only.  Please ensure that this is the case!", e);
 				translateSpeed.setText("0");
 				GUIGameState.getInstance().getDisp().addWidget(
-						FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", "ok", true));
+						FengUtils.createDismissableWindow("Betaville", "Please input a valid floating point number", Labels.get("Generic.ok"), true));
 			}
 
 			switch (direction) {

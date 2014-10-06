@@ -70,6 +70,7 @@ import com.jme.system.DisplaySystem;
 import com.vividsolutions.jts.geom.Geometry;
 
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -122,11 +123,11 @@ public class LayerContainer extends Container{
 	private void flipStatus(boolean statusOn){
 		if(statusOn){
 			on=true;
-			showHide.setText("hide");
+			showHide.setText(Labels.generic("hide"));
 		}
 		else{
 			on=false;
-			showHide.setText("show");
+			showHide.setText(Labels.generic("show"));
 		}
 	}
 
@@ -158,7 +159,7 @@ public class LayerContainer extends Container{
 		title.setLayoutData(BorderLayoutData.WEST);
 
 		showHide = FengGUI.createWidget(Button.class);
-		showHide.setText("show");
+		showHide.setText(Labels.generic("show"));
 		showHide.setLayoutData(BorderLayoutData.EAST);
 		showHide.addButtonPressedListener(new IButtonPressedListener() {
 
@@ -280,7 +281,7 @@ public class LayerContainer extends Container{
 			name.setLayoutData(new RowExLayoutData(true, true));
 			temp = FengGUI.createWidget(Label.class);
 			temp.setLayoutData(new RowExLayoutData(true, true));
-			temp.setText("Loading Properties");
+			temp.setText(Labels.get(LayerContainer.class, "loading_properties"));
 
 			window.getContentContainer().addWidget(layer, name);
 			window.setExpandable(false);

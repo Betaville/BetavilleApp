@@ -39,6 +39,7 @@ import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -70,18 +71,18 @@ public class CreateKioskPasswordPrompt extends Window implements IBetavilleWindo
 		getContentContainer().setSize(targetWidth, targetHeight);
 
 		description = FengGUI.createWidget(Label.class);
-		description.setText("A password is required to exit the application in Kiosk mode but none has been supplied!  Please enter one or disable the exit password");
+		description.setText(Labels.get(this.getClass().getSimpleName()+".prompt"));
 		description.setHeight(description.getHeight()*2);
 		description.setMultiline(true);
 		description.setWordWarping(true);
 
 		password = FengGUI.createWidget(TextEditor.class);
-		password.setEmptyText("password");
+		password.setEmptyText(Labels.get("Generic.password"));
 		password.setWidth((int)(targetWidth*.75));
 		password.setPasswordField(true);
 
 		confirm = FengGUI.createWidget(TextEditor.class);
-		confirm.setEmptyText("confirm");
+		confirm.setEmptyText(Labels.get("Generic.confirm"));
 		confirm.setWidth((int)(targetWidth*.75));
 		confirm.setPasswordField(true);
 		
@@ -91,13 +92,13 @@ public class CreateKioskPasswordPrompt extends Window implements IBetavilleWindo
 		// limit the size of the button by putting it in a container
 
 		submit = FengGUI.createWidget(Button.class);
-		submit.setText("Submit");
+		submit.setText(Labels.get("Generic.submit"));
 		submit.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				// verify input
 				if(!FengUtils.getText(password).equals(FengUtils.getText(confirm))){
-					GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Kiosk Mode", "Passwords do not match!", "OK", true));
+					GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Kiosk Mode", "Passwords do not match!", Labels.get("Generic.ok"), true));
 				}
 				else{
 					// set the preferences and save
@@ -113,11 +114,11 @@ public class CreateKioskPasswordPrompt extends Window implements IBetavilleWindo
 		});
 		
 		disablePassword = FengGUI.createWidget(Button.class);
-		disablePassword.setText("Disable Password");
+		disablePassword.setText(Labels.get(this.getClass().getSimpleName()+".disable"));
 		disablePassword.addButtonPressedListener(new IButtonPressedListener() {
 			
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
-				GUIGameState.getInstance().getDisp().addWidget(FengUtils.createTwoOptionWindow("Kiosk Mode", "Are you sure that you would like to disable Kiosk Mode?", "Yes", "No", new IButtonPressedListener() {
+				GUIGameState.getInstance().getDisp().addWidget(FengUtils.createTwoOptionWindow("Kiosk Mode", "Are you sure that you would like to disable Kiosk Mode?", Labels.get("Generic.yes"), Labels.get("Generic.no"), new IButtonPressedListener() {
 					
 					public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 						clearPasswordEditors();
@@ -148,7 +149,7 @@ public class CreateKioskPasswordPrompt extends Window implements IBetavilleWindo
 					FengUtils.createDismissableWindow(
 							"Kiosk Mode",
 							"Default preferences could not be written, please be sure that your .betaville folder is writable",
-							"OK", true)
+							Labels.get("Generic.ok"), true)
 			);
 			logger.error("Default preferences could not be written", e);
 		}
@@ -158,7 +159,7 @@ public class CreateKioskPasswordPrompt extends Window implements IBetavilleWindo
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Betaville Kiosk");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 
 		// Put me at the middle of the screen!

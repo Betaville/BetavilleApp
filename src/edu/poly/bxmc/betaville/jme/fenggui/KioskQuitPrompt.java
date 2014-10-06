@@ -38,6 +38,7 @@ import org.fenggui.layout.RowLayout;
 import org.fenggui.layout.StaticLayout;
 
 import edu.poly.bxmc.betaville.KioskMode;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -67,13 +68,13 @@ public class KioskQuitPrompt extends Window implements IBetavilleWindow {
 		getContentContainer().setSize(targetWidth, targetHeight);
 
 		description = FengGUI.createWidget(Label.class);
-		description.setText("Kiosk Mode is enabled and a password is required to quit");
+		description.setText(this.getClass().getSimpleName()+".prompt");
 		description.setHeight(description.getHeight()*2);
 		description.setMultiline(true);
 		description.setWordWarping(true);
 		
 		password = FengGUI.createWidget(TextEditor.class);
-		password.setEmptyText("password");
+		password.setEmptyText(Labels.get("Generic.password"));
 		password.setWidth((int)(targetWidth*.75));
 		password.setPasswordField(true);
 		
@@ -82,7 +83,7 @@ public class KioskQuitPrompt extends Window implements IBetavilleWindow {
 		buttonContainer.setLayoutManager(new RowLayout(true));
 		
 		submit = FengGUI.createWidget(Button.class);
-		submit.setText("OK");
+		submit.setText(Labels.get("Generic.ok"));
 		submit.addButtonPressedListener(new IButtonPressedListener() {
 			
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
@@ -96,7 +97,7 @@ public class KioskQuitPrompt extends Window implements IBetavilleWindow {
 				else{
 					clearPassword();
 					logger.info("password wrong");
-					GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Kiosk Mode", "Password Incorrect", "OK", true));
+					GUIGameState.getInstance().getDisp().addWidget(FengUtils.createDismissableWindow("Kiosk Mode", "Password Incorrect", Labels.get("Generic.ok"), true));
 				}
 				
 				
@@ -116,7 +117,7 @@ public class KioskQuitPrompt extends Window implements IBetavilleWindow {
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Betaville Kiosk");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 		
 		// Put me at the middle of the screen!

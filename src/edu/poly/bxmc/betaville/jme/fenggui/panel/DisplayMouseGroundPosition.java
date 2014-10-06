@@ -44,6 +44,7 @@ import com.jme.math.Vector3f;
 import com.jme.scene.shape.AxisRods;
 import com.jme.system.DisplaySystem;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
@@ -74,7 +75,6 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 	
 	private PointerModule pointerModule = new PointerModule();
 	
-	private static final String groundNotTouchedString = "No Ground Contact";
 
 	/**
 	 * 
@@ -98,10 +98,10 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 		lonCon.setLayoutManager(new RowExLayout(true));
 		
 		latLabel = FengGUI.createWidget(Label.class);
-		latLabel.setText("Latitude");
+		latLabel.setText(Labels.get("Generic.latitude"));
 		latLabel.setLayoutData(new RowExLayoutData(true, true));
 		lonLabel = FengGUI.createWidget(Label.class);
-		lonLabel.setText("Longitude");
+		lonLabel.setText(Labels.get("Generic.longitude"));
 		lonLabel.setLayoutData(new RowExLayoutData(true, true));
 		
 		latValue = FengGUI.createWidget(Label.class);
@@ -148,7 +148,7 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup() {
-		setTitle("Mouse Position on Ground");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setHeight(getHeight()+10);
 	}
 	
@@ -203,8 +203,8 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 			}
 			else{
 				forceOff=true;
-				latValue.setText(groundNotTouchedString);
-				lonValue.setText(groundNotTouchedString);
+				latValue.setText(Labels.get(DisplayMouseGroundPosition.class.getSimpleName()+".ground_not_touched"));
+				lonValue.setText(Labels.get(DisplayMouseGroundPosition.class.getSimpleName()+".ground_not_touched"));
 			}
 			
 			if(wasShowingRods!=showAxisOption.isSelected()){

@@ -50,6 +50,7 @@ import com.jme.scene.Controller;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.KioskMode;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.ShutdownManager;
 import edu.poly.bxmc.betaville.jme.fenggui.IOnScreenController;
@@ -214,7 +215,7 @@ public class SceneController extends Controller {
 				((IBetavilleWindow)closeWindow).finishSetup();
 			}
 			else{
-				closeWindow = FengUtils.createTwoOptionWindow("Betaville", "Are you sure you want to exit?", "Yes", "No", new IButtonPressedListener() {
+				closeWindow = FengUtils.createTwoOptionWindow("Betaville", "Are you sure you want to exit?", Labels.get("Generic.yes"), Labels.get("Generic.no"), new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 						logger.info("Exit comment confirmed");
 						ShutdownManager.doSafeShutdown();

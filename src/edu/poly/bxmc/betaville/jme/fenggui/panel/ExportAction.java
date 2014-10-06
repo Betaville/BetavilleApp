@@ -49,6 +49,7 @@ import com.jme.scene.Spatial;
 import com.jme.util.export.binary.BinaryExporter;
 import com.jme.util.export.xml.XMLExporter;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
@@ -109,7 +110,7 @@ public class ExportAction extends PanelAction {
 
 		// create window
 		window = FengGUI.createWindow(true, true);
-		window.setTitle("Exporter");
+		window.setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		window.setSize(125, 75);
 		window.getContentContainer().setLayoutManager(new RowExLayout(false));
 
@@ -122,18 +123,18 @@ public class ExportAction extends PanelAction {
 			public void selectionChanged(Object arg0, SelectionChangedEvent arg1) {
 				if(exportSelector.getSelectedValue().equals(SELECTED) && SceneScape.isTargetSpatialEmpty()){
 					GUIGameState.getInstance().getDisp().addWidget(
-							FengUtils.createDismissableWindow("Exporter", "An object must be selected to export", "ok", true)
+							FengUtils.createDismissableWindow("Exporter", "An object must be selected to export", Labels.get("Generic.ok"), true)
 					);
 				}
 			}
 		});
 
 		Label l = FengGUI.createWidget(Label.class);
-		l.setText("Select what you would like to export");
+		l.setText(Labels.get(this.getClass().getSimpleName()+".select_target"));
 		l.setLayoutData(new RowExLayoutData(true, true));
 
 		Button go = FengGUI.createWidget(Button.class);
-		go.setText("export");
+		go.setText(Labels.get(this.getClass().getSimpleName()+".export"));
 		go.setLayoutData(new RowExLayoutData(true, true));
 		go.addButtonPressedListener(new IButtonPressedListener() {
 

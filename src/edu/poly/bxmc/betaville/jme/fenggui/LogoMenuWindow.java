@@ -41,6 +41,7 @@ import org.fenggui.event.mouse.MouseReleasedEvent;
 import org.fenggui.layout.RowExLayout;
 import org.fenggui.util.Color;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -74,7 +75,7 @@ public class LogoMenuWindow extends Window implements IBetavilleWindow {
 
 	private void initLabels(){
 		exit = FengGUI.createWidget(Label.class);
-		exit.setText("Exit Application");
+		exit.setText(Labels.get(this.getClass(), "exit"));
 		exit.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 			public void processEvent(Object source, Event event) {
 				if(event instanceof MouseEnteredEvent){
@@ -96,7 +97,7 @@ public class LogoMenuWindow extends Window implements IBetavilleWindow {
 			}
 		});
 		about = FengGUI.createWidget(Label.class);
-		about.setText("About BetaVille");
+		about.setText(Labels.get(this.getClass(), "about"));
 		about.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 			public void processEvent(Object source, Event event) {
 				if(event instanceof MouseEnteredEvent){
@@ -108,7 +109,7 @@ public class LogoMenuWindow extends Window implements IBetavilleWindow {
 					FengUtils.setAppearanceTextStyleColor(about, Color.WHITE_HALF_TRANSPARENT);
 				}
 				else if(event instanceof MouseReleasedEvent){
-					FengUtils.showNewDismissableWindow(aboutName, aboutMessage, "ok", true);
+					FengUtils.showNewDismissableWindow(aboutName, aboutMessage, Labels.get("Generic.ok"), true);
 					TopSelectionWindow.removeLogoMenu();
 					FengUtils.setAppearanceTextStyleColor(exit, Color.WHITE_HALF_TRANSPARENT);
 					FengUtils.setAppearanceTextStyleColor(about, Color.WHITE_HALF_TRANSPARENT);
@@ -117,7 +118,7 @@ public class LogoMenuWindow extends Window implements IBetavilleWindow {
 			}
 		});
 		ourSite = FengGUI.createWidget(Label.class);
-		ourSite.setText("Our Site");
+		ourSite.setText(Labels.get(this.getClass(), "web"));
 		ourSite.addEventListener(EVENT_MOUSE, new IGenericEventListener() {
 			public void processEvent(Object source, Event event) {
 				if(event instanceof MouseEnteredEvent){

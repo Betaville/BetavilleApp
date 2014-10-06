@@ -50,6 +50,7 @@ import org.fenggui.layout.StaticLayout;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
@@ -150,7 +151,7 @@ public class AdminModelMover extends Window {
 		acceptContainer.setLayoutManager(new RowExLayout());
 		
 		FixedButton cancel = FengGUI.createWidget(FixedButton.class);
-		cancel.setText("Cancel");
+		cancel.setText(Labels.get("Generic.unsaved"));
 		cancel.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				revert(getDesign().getID());
@@ -158,7 +159,7 @@ public class AdminModelMover extends Window {
 			}});
 
 		FixedButton save = FengGUI.createWidget(FixedButton.class);
-		save.setText("Save");
+		save.setText(Labels.get("Generic.save"));
 		save.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				try {
@@ -190,13 +191,13 @@ public class AdminModelMover extends Window {
 		moveSpeedContainer.setWidth(targetWidth);
 		
 		moveSpeedLabel = FengGUI.createWidget(Label.class);
-		moveSpeedLabel.setText("Move Speed: 1");
+		moveSpeedLabel.setText(Labels.get(this.getClass().getSimpleName()+".move_speed")+": 1");
 		moveSpeedLabel.setXY(0, 0);
 		
 		moveSliderListener = new ISliderMovedListener(){
 			public void sliderMoved(SliderMovedEvent arg0) {
 				int newValue = (int)(moveSpeedSlider.getValue()*(maxMoveSpeed-1))+1;
-				moveSpeedLabel.setText("Move Speed: " + newValue);
+				moveSpeedLabel.setText(Labels.get(this.getClass().getSimpleName()+".move_speed")+": " + newValue);
 				moveSpeed=newValue;
 			}
 		};
@@ -214,7 +215,7 @@ public class AdminModelMover extends Window {
 		translateContainer.setLayoutManager(new RowExLayout());
 		
 		FixedButton north = FengGUI.createWidget(FixedButton.class);
-		north.setText("Move North");
+		north.setText(Labels.compound("Generic.move Generic.north"));
 		north.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveX(SceneScape.getTargetSpatial(), moveSpeed);
@@ -223,7 +224,7 @@ public class AdminModelMover extends Window {
 		});
 
 		FixedButton south = FengGUI.createWidget(FixedButton.class);
-		south.setText("Move South");
+		south.setText(Labels.compound("Generic.move Generic.south"));
 		south.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveX(SceneScape.getTargetSpatial(), -moveSpeed);
@@ -233,7 +234,7 @@ public class AdminModelMover extends Window {
 		});
 
 		FixedButton east = FengGUI.createWidget(FixedButton.class);
-		east.setText("Move East");
+		east.setText(Labels.compound("Generic.move Generic.east"));
 		east.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveZ(SceneScape.getTargetSpatial(), moveSpeed);
@@ -242,7 +243,7 @@ public class AdminModelMover extends Window {
 		});
 
 		FixedButton west = FengGUI.createWidget(FixedButton.class);
-		west.setText("Move West");
+		west.setText(Labels.compound("Generic.move Generic.west"));
 		west.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveZ(SceneScape.getTargetSpatial(), -moveSpeed);
@@ -260,7 +261,7 @@ public class AdminModelMover extends Window {
 		elevateContainer.setLayoutManager(new RowExLayout());
 		
 		FixedButton up = FengGUI.createWidget(FixedButton.class);
-		up.setText("Move Up");
+		up.setText(Labels.compound("Generic.move Generic.up"));
 		up.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveY(SceneScape.getTargetSpatial(), moveSpeed);
@@ -269,7 +270,7 @@ public class AdminModelMover extends Window {
 		});
 
 		FixedButton down = FengGUI.createWidget(FixedButton.class);
-		down.setText("Move Down");
+		down.setText(Labels.compound("Generic.move Generic.down"));
 		down.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				Translator.moveY(SceneScape.getTargetSpatial(), -moveSpeed);
@@ -288,7 +289,7 @@ public class AdminModelMover extends Window {
 		sliderRotateContainer.setWidth(targetWidth);
 		
 		sliderLabel = FengGUI.createWidget(Label.class);
-		sliderLabel.setText("Rotation: ");
+		sliderLabel.setText(Labels.get("Generic.rotation")+": ");
 		sliderLabel.setXY(0, 0);
 		
 		rotYText = FengGUI.createWidget(TextEditor.class);
@@ -397,30 +398,30 @@ public class AdminModelMover extends Window {
 		getDesign().setCoordinate(originalLocation.clone());
 		getDesign().setRotationY(originalRotation);
 		rotYSlider.setValue(originalRotation/360);
-		sliderLabel.setText("Rotation: " + originalRotation);
+		sliderLabel.setText(Labels.get("Generic.rotation")+": " + originalRotation);
 		
 		logger.info("Reverted to "+originalLocation.toString());
 	}
 
 	public void finishSetup(){
-		setTitle("Model Mover");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 	
 	private void createErrorWindow(){
 		errorWindow = FengGUI.createWindow(true, true);
 		errorWindow.setSize(100, 75);
-		errorWindow.setTitle("Betaville: unsaved action");
+		errorWindow.setTitle(Labels.get(this.getClass().getSimpleName()+".unsaved"));
 		errorWindow.getTitleBar().removeWidget(errorWindow.getCloseButton());
 		
 		errorWindow.getContentContainer().setLayoutManager(new StaticLayout());
 		
 		errorCancel = FengGUI.createWidget(FixedButton.class);
-		errorCancel.setText("cancel");
+		errorCancel.setText(Labels.get(this.getClass().getSimpleName()+".title"));
 		errorCancel.setXY(5, 5);
 		
 		FixedButton save = FengGUI.createWidget(FixedButton.class);
-		save.setText("save");
+		save.setText(Labels.get("Generic.save"));
 		save.setXY(errorWindow.getWidth()-save.getWidth()-5, 5);
 		save.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {

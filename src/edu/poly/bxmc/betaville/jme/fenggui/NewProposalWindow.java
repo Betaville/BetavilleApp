@@ -36,6 +36,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -79,6 +80,7 @@ import com.jme.image.Image;
 import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.AcceptedModelFilter;
@@ -445,7 +447,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 
 		next = FengGUI.createWidget(FixedButton.class);
-		next.setText("next");
+		next.setText(Labels.get("Generic.next"));
 		next.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				switchTo(currentStep+1, false);
@@ -453,7 +455,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		back = FengGUI.createWidget(FixedButton.class);
-		back.setText("back");
+		back.setText(Labels.get("Generic.back"));
 		back.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				switchTo(currentStep-1, false);
@@ -481,7 +483,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		int heightOffset=20;
 
 		newProposal = FengGUI.createWidget(FixedButton.class);
-		newProposal.setText("new proposal");
+		newProposal.setText(Labels.get(NewProposalWindow.class, "new_proposal"));
 		newProposal.setWidth(newProposal.getWidth()+10);
 		if(canCommitBase){
 			newProposal.setX(10);
@@ -504,7 +506,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		newBase = FengGUI.createWidget(FixedButton.class);
-		newBase.setText("add to base");
+		newBase.setText(Labels.get(NewProposalWindow.class, "add_to_base"));
 		newBase.setWidth(newProposal.getWidth());
 		newBase.setXY(stepOne.getWidth()-newBase.getWidth()-10, stepOne.getHeight()-newBase.getHeight());
 		newBase.addButtonPressedListener(new IButtonPressedListener(){
@@ -582,17 +584,14 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		versionAdvisor = FengGUI.createWidget(Label.class);
-		versionAdvisor.setText("[Click on the model you want to update]");
+		versionAdvisor.setText("["+Labels.get(NewProposalWindow.class, "version_advisor")+"]");
 		versionAdvisor.setXY(FengUtils.midWidth(stepOne, versionAdvisor), newVersion.getY()-versionAdvisor.getHeight()-heightOffset);
 
 		versionNoGo = FengGUI.createWidget(Label.class);
 		versionNoGo.getAppearance().removeAll();
 		versionNoGo.getAppearance().add(new PlainBackground(Color.RED));
 		versionNoGo.setMultiline(true);
-		versionNoGo.setText("At its creator\'s request, the currently\n" +
-				"selected model is read-only.  You can\n" +
-				"make suggestions through its forum,\n" +
-				"or make a new proposal.");
+		versionNoGo.setText(Labels.get(NewProposalWindow.class, "version_no_go"));
 		versionNoGo.setWidth(stepOne.getWidth()-10);
 		versionNoGo.setXY(FengUtils.midWidth(stepOne, versionNoGo), newVersion.getY()-versionNoGo.getHeight()-heightOffset);
 
@@ -804,7 +803,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 							GUIGameState.getInstance().getDisp().addWidget(
 									FengUtils.createDismissableWindow("Betaville", "The selected file is rather large, at "+
-											(file.length()/1000000f)+"MB, why don't you see if you can't get that down a bit?", "ok", false));
+											(file.length()/1000000f)+"MB, why don't you see if you can't get that down a bit?", Labels.get("Generic.ok"), false));
 
 						}
 
@@ -884,7 +883,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				try {
 					coordinate = createCoordinate();
 				} catch (NumberFormatException e1) {
-					FengUtils.showNewDismissableWindow("Betaville", "Make sure you've set coordinates for your item!", "ok", true);
+					FengUtils.showNewDismissableWindow("Betaville", "Make sure you've set coordinates for your item!", Labels.get("Generic.ok"), true);
 				}
 
 				if(coordinate!=null){
@@ -1691,7 +1690,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	 */
 	public void finishSetup(){
 		//getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
-		setTitle("Got a proposal, "+SettingsPreferences.getUser()+"?");
+		setTitle(MessageFormat.format(Labels.get(this.getClass().getSimpleName()+".title"), SettingsPreferences.getUser()));
 		setSize(targetWidth, targetHeight);
 	}
 
@@ -1699,10 +1698,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		errorWindow = FengGUI.createWindow(false, false);
 		errorWindow.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 		errorWindow.getContentContainer().setLayoutManager(new StaticLayout());
-		errorWindow.setTitle("oops!");
+		errorWindow.setTitle(Labels.get(this.getClass().getSimpleName()+".error"));
 
 		errorDismiss = FengGUI.createWidget(FixedButton.class);
-		errorDismiss.setText("OK");
+		errorDismiss.setText(Labels.get("Generic.ok"));
 		errorDismiss.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				GUIGameState.getInstance().getDisp().removeWidget(errorWindow);
@@ -1738,11 +1737,11 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		simpleErrorWindow = FengGUI.createWindow(false, false);
 		simpleErrorWindow.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 		simpleErrorWindow.getContentContainer().setLayoutManager(new StaticLayout());
-		simpleErrorWindow.setTitle("oops!");
+		simpleErrorWindow.setTitle(Labels.get(this.getClass().getSimpleName()+".error"));
 		simpleErrorWindow.setSize(95, 50);
 
 		simpleErrorOK = FengGUI.createWidget(FixedButton.class);
-		simpleErrorOK.setText("OK!");
+		simpleErrorOK.setText(Labels.get("Generic.ok"));
 		simpleErrorOK.setWidth(simpleErrorOK.getWidth()+10);
 		simpleErrorOK.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e){
@@ -1763,7 +1762,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		baseModelOption = FengGUI.createWindow(false, false);
 		baseModelOption.getAppearance().add(new PlainBackground(Color.BLACK_HALF_TRANSPARENT));
 		baseModelOption.getContentContainer().setLayoutManager(new StaticLayout());
-		baseModelOption.setTitle("Base Model or Proposal?");
+		baseModelOption.setTitle(Labels.get(this.getClass().getSimpleName()+".base_or_proposal"));
 		baseModelOption.setSize(95, 50);                                                
 
 
@@ -2141,7 +2140,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 			// show progress window
 			final Window progress = FengGUI.createWindow(false, false);
-			progress.setTitle("Betaville");
+			progress.setTitle(Labels.get(this.getClass().getSimpleName()+".verify_names_progress"));
 
 			final Label progressLabel = FengGUI.createWidget(Label.class);
 			progressLabel.setText("Verifying Usernames");

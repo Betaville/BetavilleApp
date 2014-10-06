@@ -34,6 +34,7 @@ import org.fenggui.event.IButtonPressedListener;
 
 import com.jme.scene.Node;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -81,10 +82,10 @@ public class UnlockFromTerrain extends PanelAction {
 					String name = SettingsPreferences.getCity().findDesignByID(itemToLock).getName();
 					name = new String(name.substring(0, name.indexOf("$TERRAIN")));
 					if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, name)){
-						FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
+						FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", Labels.get("Generic.ok"), true);
 					}
 					else{
-						FengUtils.showNewDismissableWindow("Betaville", "Success!", "ok", true);
+						FengUtils.showNewDismissableWindow("Betaville", "Success!", Labels.get("Generic.ok"), true);
 						SceneGameState.getInstance().getDesignNode().attachChild(SceneScape.getSelectedTerrain());
 						SceneScape.clearTerrainSelection();
 					}

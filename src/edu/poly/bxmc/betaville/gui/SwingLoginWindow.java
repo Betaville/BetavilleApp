@@ -58,6 +58,7 @@ import javax.swing.text.PlainDocument;
 
 import org.apache.log4j.Logger;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.LoginManager;
 import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.SettingsPreferences;
@@ -160,7 +161,7 @@ public class SwingLoginWindow extends JFrame{
 		c.gridx=1;
 		c.gridy=1;
 		jd.add(dialogLabel, c);
-		dialogDismiss = new JButton("OK");
+		dialogDismiss = new JButton(Labels.get("Generic.ok"));
 		dialogDismiss.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				jd.setVisible(false);
@@ -449,7 +450,7 @@ public class SwingLoginWindow extends JFrame{
 		c.gridx=1;
 		serverPanel.add(serverField, c);
 
-		JButton back = new JButton("Back");
+		JButton back = new JButton(Labels.get("Generic.back"));
 		back.setToolTipText("Return to the login screen");
 		back.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -592,7 +593,7 @@ public class SwingLoginWindow extends JFrame{
 
 
 
-		JButton back = new JButton("Back");
+		JButton back = new JButton(Labels.get("Generic.back"));
 		back.setToolTipText("Return to the login screen");
 		back.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -648,7 +649,7 @@ public class SwingLoginWindow extends JFrame{
 		c.gridx=2;
 		forgotPanel.add(emailField, c);
 
-		JButton back = new JButton("Back");
+		JButton back = new JButton(Labels.get("Generic.back"));
 		back.setToolTipText("Return to the login screen");
 		back.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {

@@ -42,6 +42,7 @@ import org.fenggui.layout.RowExLayout;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.SwingCommentWindow;
@@ -179,7 +180,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		terrainWindow = FengGUI.createWidget(TerrainLoader.class);
 		terrainWindow.finishSetup();
 		terrain = FengGUI.createWidget(FixedButton.class);
-		terrain.setText("Add Terrain");
+		terrain.setText(Labels.get(this.getClass().getSimpleName()+".add_terrain"));
 		terrain.setWidth(terrain.getWidth()+10);
 		terrain.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -188,14 +189,14 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		});
 
 		delete = FengGUI.createWidget(FixedButton.class);
-		delete.setText("Delete");
+		delete.setText(Labels.get(this.getClass().getSimpleName()+".delete"));
 		delete.setWidth(delete.getWidth()+10);
 		delete.setEnabled(false);
 		delete.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				Window window = FengUtils.createTwoOptionWindow("Delete", "Are you sure that you would like to delete this design?",
-						"no", "yes",
+						Labels.get("Generic.no"), Labels.get("Generic.yes"),
 						new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 
@@ -236,7 +237,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		modelSwapper = FengGUI.createWidget(ModelSwapWindow.class);
 		modelSwapper.finishSetup();
 		swap = FengGUI.createWidget(FixedButton.class);
-		swap.setText("Swap Model");
+		swap.setText(Labels.get(this.getClass().getSimpleName()+".swap_model"));
 		swap.setWidth(swap.getWidth()+10);
 		swap.setEnabled(false);
 		swap.addButtonPressedListener(new IButtonPressedListener() {
@@ -246,7 +247,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		});
 
 		lockToTerrain = FengGUI.createWidget(FixedButton.class);
-		lockToTerrain.setText("Lock to Terrain");
+		lockToTerrain.setText(Labels.get(this.getClass().getSimpleName()+".lock_to_terrain"));
 		lockToTerrain.setEnabled(false);
 		lockToTerrain.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -254,11 +255,11 @@ public class CityPanel extends Window implements IBetavilleWindow{
 					int itemToLock = SceneScape.getPickedDesign().getID();
 					SceneGameState.getInstance().getTerrainNode().attachChild(SceneGameState.getInstance().getSpecificDesign(itemToLock));
 					if(!NetPool.getPool().getSecureConnection().changeDesignName(itemToLock, SettingsPreferences.getCity().findDesignByID(itemToLock).getName()+"$TERRAIN")){
-						FengUtils.showNewDismissableWindow("Betaville", "You don't have permissions to do this!", "ok", true);
+						FengUtils.showNewDismissableWindow("Betaville", Labels.get("Permissions.not_permitted"), Labels.get("Generic.ok"), true);
 					}
 					else{
 						SceneScape.clearTargetSpatial();
-						FengUtils.showNewDismissableWindow("Betaville", "Success!", "ok", true);
+						FengUtils.showNewDismissableWindow("Betaville", Labels.get("Generic.success"), Labels.get("Generic.ok"), true);
 					}
 				} catch (UnknownHostException e1) {
 					// TODO Auto-generated catch block
@@ -341,7 +342,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 	}
 
 	public void finishSetup(){
-		setTitle("City Panel");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize(targetWidth, targetHeight);
 	}
 

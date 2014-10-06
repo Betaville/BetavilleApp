@@ -53,6 +53,7 @@ import org.fenggui.layout.GridLayout;
 
 import com.jme.input.MouseInput;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainerFactory;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -217,7 +218,7 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 
 	@Override
 	public void finishSetup() {
-		setTitle("Upload Thumbnails");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setSize((int)((float)Binding.getInstance().getCanvasWidth()*.75),
 				(int)((float)Binding.getInstance().getCanvasHeight()*.75));
 	}

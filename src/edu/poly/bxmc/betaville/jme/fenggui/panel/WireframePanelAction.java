@@ -32,6 +32,7 @@ import org.fenggui.event.IButtonPressedListener;
 import com.jme.scene.Spatial;
 import com.jme.scene.state.RenderState.StateType;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.intersections.ISpatialSelectionListener;
 import edu.poly.bxmc.betaville.jme.loaders.util.GeometryUtilities;
@@ -64,11 +65,11 @@ public class WireframePanelAction extends PanelAction {
 
 			public void designSelected(Spatial spatial, Design design) {
 				if(GeometryUtilities.checkForRenderState(spatial, StateType.Wireframe)){
-					button.setText("Turn Off Wireframe");
+					button.setText(Labels.get(WireframePanelAction.class.getSimpleName()+".disable"));
 					wireOn=true;
 				}
 				else{
-					button.setText("Apply Wireframe");
+					button.setText(Labels.get(WireframePanelAction.class.getSimpleName()+".enable"));
 					wireOn=false;
 				}
 
@@ -80,12 +81,12 @@ public class WireframePanelAction extends PanelAction {
 				if(wireOn){
 					GeometryUtilities.stripWireframe(SceneScape.getTargetSpatial());
 					wireOn=false;
-					button.setText("Apply Wireframe");
+					button.setText(Labels.get(WireframePanelAction.class.getSimpleName()+".enable"));
 				}
 				else{
 					GeometryUtilities.applyWireframe(SceneScape.getTargetSpatial());
 					wireOn=true;
-					button.setText("Turn Off Wireframe");
+					button.setText(Labels.get(WireframePanelAction.class.getSimpleName()+".disable"));
 				}
 			}};
 

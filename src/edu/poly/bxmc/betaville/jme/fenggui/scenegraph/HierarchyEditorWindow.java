@@ -33,6 +33,7 @@ import org.fenggui.layout.StaticLayout;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
@@ -97,6 +98,6 @@ public class HierarchyEditorWindow extends Window implements IBetavilleWindow {
 	 */
 	public void finishSetup() {
 		setSize(targetWidth, targetHeight);
-		setTitle("Hierarchy Editor");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 	}
 }

@@ -43,6 +43,7 @@ import org.fenggui.layout.StaticLayout;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
@@ -101,7 +102,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		};
 		
 		nameLabel = FengGUI.createWidget(Label.class);
-		nameLabel.setText("name");
+		nameLabel.setText(Labels.get("Generic.name"));
 		
 		nameEditor = FengGUI.createWidget(TextEditor.class);
 		nameEditor.setSize(targetWidth-10, normalEditorHeight);
@@ -112,7 +113,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		nameEditor.setExpandable(false);
 		
 		addressLabel = FengGUI.createWidget(Label.class);
-		addressLabel.setText("address");
+		addressLabel.setText(Labels.get(this.getClass().getSimpleName()+".address"));
 		
 		addressEditor = FengGUI.createWidget(TextEditor.class);
 		addressEditor.setSize(targetWidth-10, normalEditorHeight);
@@ -123,7 +124,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		addressEditor.setExpandable(false);
 		
 		descriptionLabel = FengGUI.createWidget(Label.class);
-		descriptionLabel.setText("description");
+		descriptionLabel.setText(Labels.get("Generic.description"));
 		
 		descriptionEditor = FengGUI.createWidget(TextEditor.class);
 		descriptionEditor.setSize(targetWidth-10, normalEditorHeight*3);
@@ -133,7 +134,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		descriptionEditor.setMaxLines(3);
 		
 		urlLabel = FengGUI.createWidget(Label.class);
-		urlLabel.setText("url");
+		urlLabel.setText(Labels.get("Generic.url"));
 		
 		urlEditor = FengGUI.createWidget(TextEditor.class);
 		urlEditor.setSize(targetWidth-10, normalEditorHeight);
@@ -149,7 +150,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		Container urlContainer = mergeItems(urlLabel, urlEditor);
 		
 		update = FengGUI.createWidget(FixedButton.class);
-		update.setText("update");
+		update.setText(Labels.get("Generic.update"));
 		update.setWidth(update.getWidth()+10);
 		update.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -308,7 +309,7 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 		l.setText(text);
 		
 		FixedButton b = FengGUI.createWidget(FixedButton.class);
-		b.setText("ok");
+		b.setText(Labels.get("Generic.ok"));
 		b.setWidth(b.getWidth()+10);
 		b.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -330,6 +331,6 @@ public class InformationWindow extends Window implements IBetavilleWindow{
 	
 	public void finishSetup(){
 		setSize(targetWidth, targetHeight);
-		setTitle("Information");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 	}
 }

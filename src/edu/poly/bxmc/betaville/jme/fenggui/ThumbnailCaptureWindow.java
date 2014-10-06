@@ -55,6 +55,7 @@ import com.jme.scene.state.MaterialState;
 import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.fenggui.panel.IPanelOnScreenAwareWindow;
@@ -315,7 +316,7 @@ public class ThumbnailCaptureWindow extends Window implements IBetavilleWindow, 
 	 */
 	@Override
 	public void finishSetup() {
-		setTitle("Create Thumbnails");
+		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
 		setWidth(photoFrame.getWidth());
 	}
 
