@@ -520,7 +520,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		 *****************************************************/
 
 		translate = FengGUI.createWidget(FixedButton.class);
-		translate.setText("Translate");
+		translate.setText(Labels.get(this.getClass(), "translate"));
 		translate.setWidth(translate.getWidth()+10);
 		translate.setEnabled(true);
 		translate.addButtonPressedListener(new IButtonPressedListener() {
@@ -726,7 +726,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		});
 
 		rotate = FengGUI.createWidget(FixedButton.class);
-		rotate.setText("Rotate");
+		rotate.setText(Labels.get(this.getClass(), "rotate"));
 		rotate.setWidth(rotate.getWidth()+10);
 		rotate.setEnabled(true);
 		rotate.addButtonPressedListener(new IButtonPressedListener() {
@@ -911,7 +911,7 @@ public class EditBuildingWindow extends Window implements IBetavilleWindow {
 		});
 
 		resize = FengGUI.createWidget(FixedButton.class);
-		resize.setText("Resize");
+		resize.setText(Labels.get(this.getClass(), "resize"));
 		resize.setWidth(resize.getWidth()+10);
 		resize.setEnabled(true);
 		resize.addButtonPressedListener(new IButtonPressedListener() {

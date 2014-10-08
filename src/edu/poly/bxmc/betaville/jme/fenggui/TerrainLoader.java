@@ -104,10 +104,10 @@ public class TerrainLoader extends Window implements IBetavilleWindow {
 		lon.setWidth(targetWidth);
 		
 		latL = FengGUI.createWidget(Label.class);
-		latL.setText("Latitude");
+		latL.setText(Labels.generic("latitude"));
 		
 		lonL = FengGUI.createWidget(Label.class);
-		lonL.setText("Longitude");
+		lonL.setText(Labels.generic("longitude"));
 		
 		latE = FengGUI.createWidget(TextEditor.class);
 		latE.setText("                             ");
@@ -122,7 +122,7 @@ public class TerrainLoader extends Window implements IBetavilleWindow {
 		lon.addWidget(lonL, lonE);
 		
 		wire = FengGUI.createWidget(FixedButton.class);
-		wire.setText("Wireframe Mode");
+		wire.setText(Labels.get(this.getClass(), "wireframe_mode"));
 		wire.addButtonPressedListener(new IButtonPressedListener() {
 			
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -130,11 +130,11 @@ public class TerrainLoader extends Window implements IBetavilleWindow {
 				
 				if(terrainBlock.getRenderState(StateType.Wireframe)!=null){
 					terrainBlock.clearRenderState(StateType.Wireframe);
-					wire.setText("Wireframe Mode");
+					wire.setText(Labels.get(TerrainLoader.class, "wireframe_mode"));
 				}
 				else{
 					terrainBlock.setRenderState(DisplaySystem.getDisplaySystem().getRenderer().createWireframeState());
-					wire.setText("Solid Mode");
+					wire.setText(Labels.get(TerrainLoader.class, "solid_mode"));
 				}
 				
 				terrainBlock.updateRenderState();
@@ -142,7 +142,7 @@ public class TerrainLoader extends Window implements IBetavilleWindow {
 		});
 		
 		load = FengGUI.createWidget(FixedButton.class);
-		load.setText("Load Terrain");
+		load.setText(Labels.get(this.getClass(), "load"));
 		load.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 				final FileDialogWindow fileDiag = new FileDialogWindow(true, false, false, false);
@@ -215,7 +215,7 @@ public class TerrainLoader extends Window implements IBetavilleWindow {
 		});
 		
 		stickToTerrain = FengGUI.createCheckBox();
-		stickToTerrain.setText("Hug Terrain");
+		stickToTerrain.setText(Labels.get(this.getClass(), "hug"));
 		stickToTerrain.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(Object sender,
 					SelectionChangedEvent selectionChangedEvent) {

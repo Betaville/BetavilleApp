@@ -52,6 +52,7 @@ import com.jme.math.FastMath;
 import com.jme.scene.Spatial;
 
 import edu.poly.bxmc.betaville.KioskMode;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengUtils;
 import edu.poly.bxmc.betaville.jme.fenggui.listeners.ReportBugListener;
@@ -155,7 +156,7 @@ public class TopSelectionWindow extends Window{
 		urlLabel = FengGUI.createWidget(Label.class);
 		faveButton=FengGUI.createWidget(FixedButton.class);
 		bugButton = FengGUI.createWidget(FixedButton.class);
-		bugButton.setText("Feedback");
+		bugButton.setText(Labels.get(this.getClass(), "feedback"));
 		bugButton.setWidth(bugButton.getWidth()+10);
 		bugButton.setXY(Binding.getInstance().getCanvasWidth()-bugButton.getWidth(), -1);
 		logoMenuWindow.finishSetup();
@@ -165,7 +166,7 @@ public class TopSelectionWindow extends Window{
 	private void setupCityPanel(){
 		// Build admin panel if necessary
 		panelButton = FengGUI.createWidget(FixedButton.class);
-		panelButton.setText("City Panel");
+		panelButton.setText(Labels.get(CityPanel.class, "title"));
 		panelButton.setWidth(panelButton.getWidth()+10);
 		
 		// nudge the city panel over if we are not in Kiosk mode

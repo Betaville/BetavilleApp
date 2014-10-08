@@ -60,7 +60,7 @@ public class ShutdownPasswordPrompt extends Window implements IBetavilleWindow {
 		super(true, true);
 
 		passwordLabel = FengGUI.createWidget(Label.class);
-		passwordLabel.setText("Password:");
+		passwordLabel.setText(Labels.generic("password")+":");
 
 		passwordField = FengGUI.createWidget(TextEditor.class);
 		passwordField.setPasswordField(true);

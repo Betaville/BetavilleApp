@@ -45,6 +45,7 @@ import org.fenggui.layout.RowExLayout;
 import com.jme.input.MouseInput;
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.fenggui.FixedButton;
@@ -204,7 +205,7 @@ public class PanelAction extends Module {
 		description.setText(getDescription());
 		tooltip.getContentContainer().addWidget(name, description);
 		if(getDeveloperName()!=null){
-			developer.setText("By: " + getDeveloperName());
+			developer.setText(Labels.generic("by")+": " + getDeveloperName());
 			tooltip.getContentContainer().addWidget(developer);
 		}
 	}

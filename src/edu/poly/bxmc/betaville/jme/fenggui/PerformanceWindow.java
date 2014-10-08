@@ -97,7 +97,7 @@ public class PerformanceWindow extends Window  implements IBetavilleWindow{
 		Container fpsContainer = FengGUI.createWidget(Container.class);
 		fpsContainer.setLayoutManager(new RowLayout(true));
 		fpsLabel = FengGUI.createWidget(Label.class);
-		fpsLabel.setText("Frames Per Second:");
+		fpsLabel.setText(Labels.get(this.getClass(), "fps"));
 		fpsCount = FengGUI.createWidget(Label.class);
 		fpsContainer.addWidget(fpsLabel, fpsCount);
 		this.addWidget(fpsContainer);
@@ -107,7 +107,7 @@ public class PerformanceWindow extends Window  implements IBetavilleWindow{
 		Container triContainer = FengGUI.createWidget(Container.class);
 		triContainer.setLayoutManager(new RowLayout(true));
 		triLabel = FengGUI.createWidget(Label.class);
-		triLabel.setText("Triangles in Scene:");
+		triLabel.setText(Labels.get(this.getClass(), "triangles_scene"));
 		triCount = FengGUI.createWidget(Label.class);
 		triContainer.addWidget(triLabel, triCount);
 		this.addWidget(triContainer);
@@ -115,7 +115,7 @@ public class PerformanceWindow extends Window  implements IBetavilleWindow{
 		Container selectedContainer = FengGUI.createWidget(Container.class);
 		selectedContainer.setLayoutManager(new RowLayout(true));
 		selectedLabel = FengGUI.createWidget(Label.class);
-		selectedLabel.setText("Triangles in Selected: ");
+		selectedLabel.setText(Labels.get(this.getClass(), "triangles_selected")+": ");
 		selectedCount = FengGUI.createWidget(Label.class);
 		selectedCount.setText("0");
 		selectedContainer.addWidget(selectedLabel, selectedCount);
@@ -128,7 +128,7 @@ public class PerformanceWindow extends Window  implements IBetavilleWindow{
 		
 		final CheckBox<Boolean> fpsRounding = FengGUI.createCheckBox();
 		fpsRounding.setSelected(framesInWholeNumbers);
-		fpsRounding.setText("Round FPS");
+		fpsRounding.setText(Labels.get(this.getClass(), "round_fps"));
 		fpsRounding.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(Object sender,
 					SelectionChangedEvent selectionChangedEvent) {
@@ -138,7 +138,7 @@ public class PerformanceWindow extends Window  implements IBetavilleWindow{
 		
 		final CheckBox<Boolean> triRounding = FengGUI.createCheckBox();
 		triRounding.setSelected(trisInThousands);
-		triRounding.setText("Round Triangle Count");
+		triRounding.setText(Labels.get(this.getClass(), "round_tris"));
 		triRounding.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(Object sender,
 					SelectionChangedEvent selectionChangedEvent) {

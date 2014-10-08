@@ -124,10 +124,10 @@ public class ThumbnailCaptureWindow extends Window implements IBetavilleWindow, 
 
 	private void setupControls(){
 		capture = FengGUI.createWidget(Label.class);
-		capture.setText("Click an object below to take a picture");
+		capture.setText(Labels.get(this.getClass(), "photo_prompt"));
 
 		upload = FengGUI.createWidget(Button.class);
-		upload.setText("Upload");
+		upload.setText(Labels.generic("upload"));
 		upload.setLayoutData(new RowExLayoutData(false, false));
 
 		getContentContainer().addWidget(capture, upload);

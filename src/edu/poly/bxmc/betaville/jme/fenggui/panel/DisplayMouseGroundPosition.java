@@ -45,6 +45,7 @@ import com.jme.scene.shape.AxisRods;
 import com.jme.system.DisplaySystem;
 
 import edu.poly.bxmc.betaville.Labels;
+import edu.poly.bxmc.betaville.jme.fenggui.extras.GPSView;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.IBetavilleWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.jme.map.DecimalDegreeConverter;
@@ -113,11 +114,11 @@ public class DisplayMouseGroundPosition extends Window implements IBetavilleWind
 		lonCon.addWidget(lonLabel, lonValue);
 		
 		ddDMSOption = FengGUI.createCheckBox();
-		ddDMSOption.setText("Display in Degrees/Minutes/Seconds");
+		ddDMSOption.setText(Labels.get(GPSView.class, "dd_dms_option"));
 		ddDMSOption.setSelected(false);
 		
 		showAxisOption = FengGUI.createCheckBox();
-		showAxisOption.setText("Show Axis Rods");
+		showAxisOption.setText(Labels.get(this.getClass(), "show_axis_rods"));
 		showAxisOption.setSelected(false);
 		
 		gpsView.addWidget(latCon, lonCon, ddDMSOption, showAxisOption);

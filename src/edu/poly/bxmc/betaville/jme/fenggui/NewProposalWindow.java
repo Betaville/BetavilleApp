@@ -654,15 +654,14 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		stepTwo.setXY(5, 20);
 
 		setItUp = FengGUI.createWidget(Label.class);
-		setItUp.setText("SET IT UP!");
+		setItUp.setText(Labels.get(this.getClass(), "set_it_up"));
 		setItUp.setXY((stepTwo.getWidth()/2)-(setItUp.getWidth()/2), stepTwo.getHeight()-20);
 
 		int heightOffset=10;
 
 		setItUpAdvisor = FengGUI.createWidget(Label.class);
 		setItUpAdvisor.setMultiline(true);
-		setItUpAdvisor.setText("[Click on a building or the ground\n" +
-				"to automatically set coordinates]");
+		setItUpAdvisor.setText("["+Labels.get(this.getClass(), "select_bldg_or_grnd")+"]");
 		applyAdvisorAppearance(setItUpAdvisor);
 		setItUpAdvisor.setXY(stepTwo.getWidth()/2-setItUpAdvisor.getWidth()/2, setItUp.getY()-setItUpAdvisor.getHeight()-heightOffset);
 
@@ -737,20 +736,20 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 
 		removeObstructionsButton = FengGUI.createWidget(FixedButton.class);
-		removeObstructionsButton.setText("remove obstructions");
+		removeObstructionsButton.setText(Labels.get(this.getClass(), "remove_obstructions"));
 		removeObstructionsButton.setWidth(removeObstructionsButton.getWidth()+10);
 		removeObstructionsButton.setXY(FengUtils.midWidth(stepTwo, removeObstructionsButton), lonContainer.getY()-removeObstructionsButton.getHeight()-(heightOffset*2));
 		removeObstructionsButton.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(!makeRoomWindow.isInWidgetTree()){
 					placeMakeRoomWindow();
-					removeObstructionsButton.setText("done removing");
+					removeObstructionsButton.setText(Labels.get(NewProposalWindow.class, "done_removing"));
 					browseButton.setEnabled(false);
 					importModel.setEnabled(false);
 				}
 				else{
 					makeRoomWindow.completeAndClose();
-					removeObstructionsButton.setText("remove obstructions");
+					removeObstructionsButton.setText(Labels.get(NewProposalWindow.class, "remove_obstructions"));
 					browseButton.setEnabled(true);
 					importModel.setEnabled(true);
 				}
@@ -758,22 +757,22 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		if(stepOneSelection.equals(Classification.BASE)){
-			removeObstructionsButton.setText("Nothing to Remove");
+			removeObstructionsButton.setText(Labels.get(this.getClass(), "nothing_to_remove"));
 			removeObstructionsButton.setEnabled(false);
 		}
 		else{
 			removeObstructionsButton.setEnabled(true);
-			removeObstructionsButton.setText("remove obstructions");
+			removeObstructionsButton.setText(Labels.get(this.getClass(), "remove_obstructions"));
 		}
 
 		mediaPath = FengGUI.createWidget(TextEditor.class);
-		mediaPath.setText("Location of Media");
+		mediaPath.setText(Labels.get(this.getClass(), "location_of_media"));
 		mediaPath.setReadonly(true);
 		mediaPath.setWidth(stepTwo.getWidth()-10);
 		mediaPath.setXY((stepTwo.getWidth()/2)-(mediaPath.getWidth()/2), removeObstructionsButton.getY()-mediaPath.getHeight()-(heightOffset*2));
 
 		browseButton = FengGUI.createWidget(FixedButton.class);
-		browseButton.setText("Browse Media..");
+		browseButton.setText(Labels.get(this.getClass(), "browse_media")+"..");
 		browseButton.setWidth(browseButton.getWidth()+5);
 		int tripletY=mediaPath.getY()-browseButton.getHeight()-heightOffset;
 		browseButton.setXY(5, tripletY);
@@ -834,7 +833,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		textureSelector.setXY(FengUtils.midWidth(stepTwo, textureSelector), tripletY);
 
 		importModel = FengGUI.createWidget(FixedButton.class);
-		importModel.setText("Import");
+		importModel.setText(Labels.generic("import"));
 		importModel.setWidth(browseButton.getWidth());
 		importModel.setXY(stepTwo.getWidth()-importModel.getWidth()-5, tripletY);
 		importModel.addButtonPressedListener(new IButtonPressedListener(){
@@ -875,7 +874,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 				if(mediaURL==null){
 					showSimpleError("No Media Selected!");
-					mediaPath.setText("MODEL NOT SELECTED!");
+					mediaPath.setText(Labels.get(this.getClass(), "model_not_selected"));
 					return;
 				}
 
@@ -930,11 +929,11 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		int offset=15;
 
 		tweakIt = FengGUI.createWidget(Label.class);
-		tweakIt.setText("TWEAK IT!");
+		tweakIt.setText(Labels.get(this.getClass(), "tweak_it")+"!");
 		tweakIt.setXY((stepThree.getWidth()/2)-(tweakIt.getWidth()/2), stepThree.getHeight()-offset);
 
 		north = FengGUI.createWidget(FixedButton.class);
-		north.setText("north");
+		north.setText(Labels.generic("north"));
 		north.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(!modelIsLoaded){
@@ -948,7 +947,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		south = FengGUI.createWidget(FixedButton.class);
-		south.setText("south");
+		south.setText(Labels.generic("south"));
 		south.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(!modelIsLoaded){
@@ -961,7 +960,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		east = FengGUI.createWidget(FixedButton.class);
-		east.setText("east");
+		east.setText(Labels.generic("east"));
 		east.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(!modelIsLoaded){
@@ -989,7 +988,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		west = FengGUI.createWidget(FixedButton.class);
-		west.setText("west");
+		west.setText(Labels.generic("west"));
 		west.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(!modelIsLoaded){
@@ -1003,7 +1002,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		up = FengGUI.createWidget(FixedButton.class);
-		up.setText("up");
+		up.setText(Labels.generic("up"));
 		up.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(!modelIsLoaded){
@@ -1017,7 +1016,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		down = FengGUI.createWidget(FixedButton.class);
-		down.setText("down");
+		down.setText(Labels.generic("down"));
 		down.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				if(!modelIsLoaded){
@@ -1144,21 +1143,20 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		int offset=20;
 
 		snapIt = FengGUI.createWidget(Label.class);
-		snapIt.setText("SNAP IT!");
+		snapIt.setText(Labels.get(this.getClass(), "snap_it")+"!");
 		snapIt.setXY(FengUtils.midWidth(stepFour, snapIt), stepFour.getHeight()-offset);
 
 		snapItAdvisor = FengGUI.createWidget(Label.class);
 		snapItAdvisor.setMultiline(true);
-		snapItAdvisor.setText("[Move this panel to frame a view,\n" +
-				"save it as the proposal menu icon]");
+		snapItAdvisor.setText("["+Labels.get(this.getClass(), "move_to_frame")+"]");
 		applyAdvisorAppearance(snapItAdvisor);
 		snapItAdvisor.setXY(FengUtils.midWidth(stepFour, snapItAdvisor), snapIt.getY()-snapItAdvisor.getHeight()-offset);
 
 		shoot = FengGUI.createWidget(FixedButton.class);
-		shoot.setText("shoot");
+		shoot.setText(Labels.get(this.getClass(), "shoot"));
 		shoot.setWidth(shoot.getWidth()+10);
 		shoot.setXY(FengUtils.midWidth(stepFour, shoot), snapItAdvisor.getY()-shoot.getHeight()-offset);
-		shoot.addButtonPressedListener(new IButtonPressedListener() {
+		shoot.addButtonPressedListener(new IButtonPressedListener() { 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				// Just return if there is no model loaded && registered in the window
 				if(modelIdentifier==null) return;
@@ -1211,7 +1209,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		save = FengGUI.createWidget(FixedButton.class);
-		save.setText("save");
+		save.setText(Labels.generic("save"));
 		save.setWidth(shoot.getWidth());
 		save.setXY(FengUtils.midWidth(stepFour, save), shoot.getY()-save.getHeight()-(offset/4));
 		save.addButtonPressedListener(new IButtonPressedListener() {
@@ -1241,28 +1239,28 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		int offset = 20;
 
 		shareIt = FengGUI.createWidget(Label.class);
-		shareIt.setText("SHARE IT!");
+		shareIt.setText(Labels.get(this.getClass(), "share_it")+"!");
 		shareIt.setXY((stepFive.getWidth()/2)-(shareIt.getWidth()/2), stepFive.getHeight()-offset);
 
 		permissionsSelection = new ToggableGroup<RadioButton<String>>();
 
 		permissionsClosed = FengGUI.<String>createRadioButton();
-		permissionsClosed.setText("editable by creator only");
-		permissionsClosed.setValue("CLOSED");
+		permissionsClosed.setText(Labels.get(this.getClass(), "editable_by_creator"));
+		permissionsClosed.setValue(Labels.get(this.getClass(), "closed"));
 		permissionsClosed.setRadioButtonGroup(permissionsSelection);
 		//permissionsClosed.setLayoutData(layoutData);
 		permissionsClosed.setXY((stepFive.getWidth()/2)-25, shareIt.getY()-permissionsClosed.getHeight()-offset);
 
 		permissionsOpen = FengGUI.<String>createRadioButton();
-		permissionsOpen.setText("editable by anyone");
-		permissionsOpen.setValue("OPEN");
+		permissionsOpen.setText(Labels.get(this.getClass(), "editable_by_anyone"));
+		permissionsOpen.setValue(Labels.get(this.getClass(), "open"));
 		permissionsOpen.setRadioButtonGroup(permissionsSelection);
 		//permissionsOpen.setLayoutData(layoutData);
 		permissionsOpen.setXY((stepFive.getWidth()/2)-25, permissionsClosed.getY()-permissionsOpen.getHeight()-(offset/4));
 
 		permissionsGroup = FengGUI.<String>createRadioButton();
-		permissionsGroup.setText("editable by these users:");
-		permissionsGroup.setValue("GROUP");
+		permissionsGroup.setText(Labels.get(this.getClass(), "editable_by_these")+":");
+		permissionsGroup.setValue(Labels.get(this.getClass(), "group"));
 		permissionsGroup.setRadioButtonGroup(permissionsSelection);
 		//permissionsGroup.setLayoutData(layoutData);
 		permissionsGroup.setXY((stepFive.getWidth()/2)-25, permissionsOpen.getY()-permissionsGroup.getHeight()-(offset/4));
@@ -1317,7 +1315,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		groupList.setXY(((stepFive.getWidth()/2)-groupList.getWidth()/2), permissionsGroup.getY()-groupList.getHeight()-(offset*4));
 
 		upload = FengGUI.createWidget(FixedButton.class);
-		upload.setText("Publish");
+		upload.setText(Labels.get(this.getClass(), "publish"));
 		upload.setWidth(upload.getWidth()+10);
 		//upload.setXY((stepFive.getWidth()/2)-(upload.getWidth()/2), groupList.getY()-upload.getHeight()-offset);
 		upload.setXY(FengUtils.midWidth(stepFive, upload), groupList.getY()-upload.getHeight()-offset);
@@ -1369,9 +1367,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							// open connection and send design
 							SecureClientManager manager = NetPool.getPool().getSecureConnection();
 							final Window progressWindow = FengGUI.createWidget(Window.class);
-							progressWindow.setTitle("Progress");
+							progressWindow.setTitle(Labels.generic("progress"));
 							final Label progressLabel = FengGUI.createWidget(Label.class);
-							progressLabel.setText("Progress: N/A");
+							progressLabel.setText(Labels.generic("progress")+": N/A");
 							progressWindow.getContentContainer().addWidget(progressLabel);
 							manager.getProgressOutputStream().setListener(new ProgressOutputListener() {
 
@@ -1396,7 +1394,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 										int leftoverKB = bytesWritten%1000000;
 										updateString = numberMB+"."+leftoverKB+"MB";
 									}
-									progressLabel.setText("Progress: "+updateString);
+									progressLabel.setText(Labels.generic("progress")+": "+updateString);
 								}
 							});
 							StaticLayout.center(progressWindow, GUIGameState.getInstance().getDisp());
@@ -1535,7 +1533,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			proposalAddress.setEnabled(true);
 			proposalURL.setEnabled(true);
 			versionDescription.setEnabled(false);
-			removeObstructionsButton.setText("base model");
+			removeObstructionsButton.setText(Labels.get(this.getClass(), "base_model"));
 			removeObstructionsButton.setEnabled(false);
 			break;
 		case PROPOSAL:
@@ -1544,7 +1542,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			proposalAddress.setEnabled(true);
 			proposalURL.setEnabled(true);
 			versionDescription.setEnabled(false);
-			removeObstructionsButton.setText("remove obstructions");
+			removeObstructionsButton.setText(Labels.get(this.getClass(), "remove_obstructions"));
 			removeObstructionsButton.setEnabled(true);
 			break;
 		case VERSION:
@@ -1553,7 +1551,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			proposalAddress.setEnabled(false);
 			proposalURL.setEnabled(false);
 			versionDescription.setEnabled(true);
-			removeObstructionsButton.setText("remove obstructions");
+			removeObstructionsButton.setText(Labels.get(this.getClass(), "remove_obstructions"));
 			removeObstructionsButton.setEnabled(true);
 			break;
 		}
@@ -1713,7 +1711,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		errorMoveOn = FengGUI.createWidget(FixedButton.class);
-		errorMoveOn.setText("Move On");
+		errorMoveOn.setText(Labels.get(this.getClass(), "move_on"));
 		errorMoveOn.addButtonPressedListener(new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				GUIGameState.getInstance().getDisp().removeWidget(errorWindow);
@@ -1767,7 +1765,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 
 		proposalDesignButton = FengGUI.createWidget(FixedButton.class);
-		proposalDesignButton.setText("Proposal");
+		proposalDesignButton.setText(Labels.generic("proposal"));
 		proposalDesignButton.setWidth(proposalDesignButton.getWidth()+10);
 		proposalDesignButton.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -1777,7 +1775,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		baseDesignButton = FengGUI.createWidget(FixedButton.class);
-		baseDesignButton.setText("Base");
+		baseDesignButton.setText(Labels.generic("base"));
 		baseDesignButton.setWidth(proposalDesignButton.getWidth());
 		baseDesignButton.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -2080,40 +2078,6 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		return false;
 	}
 
-	/**
-	 * If a design is loaded, it is updated based on the current
-	 * selection in step one.
-	 */
-	private void applyDesignType(){
-		// a null identifier means that there is not
-		// yet a design to modify
-		if(modelIdentifier==null)
-			return;
-
-		Design design = SettingsPreferences.getCity().findDesignByFullIdentifier(modelIdentifier);
-		design.setClassification(stepOneSelection);
-
-		if(stepOneSelection.equals(Classification.BASE)){
-			removeObstructionsButton.setText("Nothing to Remove");
-			removeObstructionsButton.setEnabled(false);
-		}
-		else{
-			removeObstructionsButton.setEnabled(true);
-			removeObstructionsButton.setText("make room for " + stepOneSelection.toString().toLowerCase());
-		}
-
-		// Base and Proposal share the same fields, so the method of data application is the same.
-		if(stepOneSelection.equals(Classification.BASE) || stepOneSelection.equals(Classification.PROPOSAL)){
-			design.setName(FengUtils.getText(proposalTitle));
-			if(descriptionChanged) design.setDescription(FengUtils.getText(proposalDescription));
-			if(addressChanged) design.setAddress(FengUtils.getText(proposalAddress));
-			if(urlChanged) design.setURL(FengUtils.getText(proposalURL));
-		}
-		else if(stepOneSelection.equals(Classification.VERSION)){
-			if(versionDescriptionChanged) design.setDescription(FengUtils.getText(versionDescription));
-		}
-	}
-
 	private void placeMakeRoomWindow(){
 		makeRoomWindow.setXY(removeObstructionsButton.getDisplayX()+removeObstructionsButton.getWidth(), removeObstructionsButton.getDisplayY()+removeObstructionsButton.getHeight()-makeRoomWindow.getHeight());
 		GUIGameState.getInstance().getDisp().addWidget(makeRoomWindow);
@@ -2143,7 +2107,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			progress.setTitle(Labels.get(this.getClass().getSimpleName()+".verify_names_progress"));
 
 			final Label progressLabel = FengGUI.createWidget(Label.class);
-			progressLabel.setText("Verifying Usernames");
+			progressLabel.setText(Labels.get(this.getClass(), "verifying_usernames"));
 			progress.addWidget(progressLabel);
 
 			progress.setSize(progressLabel.getWidth()+30, progressLabel.getHeight()+30);
@@ -2299,7 +2263,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		// set the coordinate to null so we don't use the old one.
 		coordinate= null;
 
-		mediaPath.setText("Location of Media");
+		mediaPath.setText(Labels.get(this.getClass(), "location_of_media"));
 
 		xRotationLabel.setText(xRotationPrefix+"0");
 		xRotationSlider.setValue(0);

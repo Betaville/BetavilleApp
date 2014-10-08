@@ -80,7 +80,7 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 		super(true, true);
 		
 		uploadButton = FengGUI.createWidget(Button.class);
-		uploadButton.setText("Upload");
+		uploadButton.setText(Labels.generic("upload"));
 		uploadButton.addButtonPressedListener(new IButtonPressedListener() {
 			
 			@Override
@@ -164,7 +164,7 @@ public class ThumbnailUploadWindow extends Window implements IBetavilleWindow, I
 				imageLabel.setPixmap(px);
 			} catch (IOException e1) {
 				logger.error("Could not load the default thumbnail image", e);
-				imageLabel.setText("Image Not Found");
+				imageLabel.setText(Labels.generic("image_not_found"));
 			}
 		}
 		imageLabel.setLayoutData(BorderLayoutData.NORTH);

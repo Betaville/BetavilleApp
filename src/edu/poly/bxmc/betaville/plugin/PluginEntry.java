@@ -33,6 +33,8 @@ import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 import org.fenggui.layout.RowExLayout;
 
+import edu.poly.bxmc.betaville.Labels;
+
 /**
  * @author Skye Book
  *
@@ -52,7 +54,7 @@ public class PluginEntry extends Container{
 		name.setReadonly(true);
 		
 		button = FengGUI.createWidget(Button.class);
-		button.setText("Remove");
+		button.setText(Labels.generic("remove"));
 		button.addButtonPressedListener(new IButtonPressedListener() {
 			
 			@Override
