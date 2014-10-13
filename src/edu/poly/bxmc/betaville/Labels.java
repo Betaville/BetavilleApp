@@ -4,7 +4,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -18,7 +17,7 @@ import org.apache.log4j.Logger;
  */
 public class Labels {
 
-	private static Logger logger = Logger.getLogger(Labels	.class);
+	private static Logger logger = Logger.getLogger(Labels.class);
 
 	private static ResourceBundle bundle;
 
