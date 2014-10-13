@@ -164,7 +164,7 @@ public class BetavilleSettingsPanel extends JFrame{
 		});
 		okButton.addKeyListener(enterButtonListener);
 
-		cancelButton = new JButton(Labels.get("Generic.unsaved"));
+		cancelButton = new JButton(Labels.get("Generic.cancel"));
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				System.exit(0);
