@@ -127,7 +127,7 @@ public class SwingLoginWindow extends JFrame{
 	 * 
 	 */
 	public SwingLoginWindow(IAuthenticationListener authListener){
-		super("Login To Betaville");
+		super(Labels.get(SwingLoginWindow.class, "title"));
 
 		setFocusable(true);
 		addFocusListener(new FocusListener() {
@@ -223,7 +223,7 @@ public class SwingLoginWindow extends JFrame{
 			setVisible(false);
 		}
 		else{
-			flashDialog("Please try again!", false);
+			flashDialog(Labels.get(this.getClass(), "try_again")+"!", false);
 			passField.setText("");
 		}
 		passBuilder = null;
@@ -323,16 +323,16 @@ public class SwingLoginWindow extends JFrame{
 		}
 		userField = new JTextField(16);
 		userField.setDocument(new JTextFieldLimit(255));
-		userField.setName("Username");
+		userField.setName(Labels.generic("username"));
 		userField.setToolTipText("Enter your user name here");
 		//userField.addKeyListener(keyAuthListener);
 
 		passField = new JPasswordField(16);
-		passField.setName("Password");
+		passField.setName(Labels.generic("password"));
 		passField.setToolTipText("Enter your password here");
 		passField.addKeyListener(keyAuthListener);
 
-		savePassword = new JCheckBox("Remember Login");
+		savePassword = new JCheckBox(Labels.get(this.getClass(), "remember_login"));
 		savePassword.setSelected(false);
 		if(loginData!=null){
 			userField.setText(loginData[0]);
@@ -340,7 +340,7 @@ public class SwingLoginWindow extends JFrame{
 			savePassword.setSelected(true);
 		}
 
-		forgotPassword = new JButton("Forgot Password");
+		forgotPassword = new JButton(Labels.get(this.getClass(), "forgot_password"));
 		forgotPassword.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				createForgotPanel();
@@ -349,7 +349,7 @@ public class SwingLoginWindow extends JFrame{
 			}
 		});
 
-		registerAccount = new JButton("Register Account");
+		registerAccount = new JButton(Labels.get(this.getClass(), "register_account"));
 		registerAccount.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				//BareBonesBrowserLaunch.openURL("http://betaville.net");
@@ -358,7 +358,7 @@ public class SwingLoginWindow extends JFrame{
 			}
 		});
 
-		login = new JButton("Login");
+		login = new JButton(Labels.get(this.getClass(), "login"));
 		login.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				//login.setEnabled(false);
@@ -387,7 +387,7 @@ public class SwingLoginWindow extends JFrame{
 			}
 		});
 
-		changeServer = new JButton("Change Server");
+		changeServer = new JButton(Labels.get(this.getClass(), "change_server"));
 		changeServer.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent e) {
@@ -601,22 +601,22 @@ public class SwingLoginWindow extends JFrame{
 			}
 		});
 
-		JButton submitRegistration = new JButton("Register");
+		JButton submitRegistration = new JButton(Labels.get(this.getClass(), "register"));
 		submitRegistration.setToolTipText("Register your account!");
 		submitRegistration.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				if(!registerAccountVerifyPasswordField.getText().equals(registerAccountPasswordField.getText())){
-					flashDialog("Please ensure that your passwords match!", false);
+					flashDialog(Labels.get(SwingLoginWindow.class, "passwords_not_matching"), false);
 					return;
 				}
 				try {
 					if(NetPool.getPool().getSecureConnection().addUser(registerAccountUserField.getText(), registerAccountPasswordField.getText(), registerAccountEmailField.getText(), "", "")){
-						flashDialog("Cool!  You're good to go!", false);
+						flashDialog(Labels.get(SwingLoginWindow.class, "success"), false);
 						setContentPane(loginPanel);
 						validate();
 					}
 					else{
-						flashDialog("You couldn't be registered!", false);
+						flashDialog(Labels.get(SwingLoginWindow.class, "fail")+"!", false);
 					}
 				} catch (UnknownHostException e1) {
 					// TODO Auto-generated catch block
@@ -642,14 +642,14 @@ public class SwingLoginWindow extends JFrame{
 
 		c.gridy=0;
 		c.gridx=1;
-		forgotPanel.add(new JLabel("E-Mail Address"), c);
+		forgotPanel.add(new JLabel(Labels.get(this.getClass(), "email")), c);
 
 		emailField = new JTextField(16);
 		emailField.setToolTipText("Enter your email address here");
 		c.gridx=2;
 		forgotPanel.add(emailField, c);
 
-		JButton back = new JButton(Labels.get("Generic.back"));
+		JButton back = new JButton(Labels.generic("back"));
 		back.setToolTipText("Return to the login screen");
 		back.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -657,7 +657,7 @@ public class SwingLoginWindow extends JFrame{
 			}
 		});
 
-		JButton submit = new JButton("Submit");
+		JButton submit = new JButton(Labels.generic("submit"));
 		submit.setToolTipText("Send your request for a password change");
 		submit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -692,11 +692,11 @@ public class SwingLoginWindow extends JFrame{
 				return;
 			}
 			if(versionCheck<0){
-				flashDialog("Update your Betaville Client!", true);
+				flashDialog(Labels.get(this.getClass(), "need_update")+"!", true);
 				return;
 			}
 			else if(versionCheck>0){
-				flashDialog("Your Client is to new for your server!", true);
+				flashDialog(Labels.get(this.getClass(), "too_new")+"!", true);
 				return;
 			}
 
@@ -705,25 +705,25 @@ public class SwingLoginWindow extends JFrame{
 				if(userField.getText()!=null && !userField.getText().isEmpty()){
 					if(!StringVerifier.isValidUsername(userField.getText())&&
 							!StringVerifier.isValidEmail(userField.getText())){
-						flashDialog("This is not a valid username!", false);
+						flashDialog(Labels.get(this.getClass(), "invalid_username")+"!", false);
 						return;
 					}
 					authenticate();
 					loginInProgress.set(false);
 				}
 				else{
-					flashDialog("Please enter a username", false);
+					flashDialog(Labels.get(this.getClass(), "need_username"), false);
 				}
 			}
 			else{
-				flashDialog("Please enter a password", false);
+				flashDialog(Labels.get(this.getClass(), "need_password"), false);
 			}
 		} catch (UnknownHostException e1) {
 			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);
-			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
+			JOptionPane.showMessageDialog(null, Labels.get(this.getClass(), "could_not_connect")+" "+SettingsPreferences.getServerIP());
 		} catch (IOException e1) {
 			logger.fatal("Could not connect to server at "+SettingsPreferences.getServerIP(), e1);
-			JOptionPane.showMessageDialog(null, "Could not connect to server at "+SettingsPreferences.getServerIP());
+			JOptionPane.showMessageDialog(null, Labels.get(this.getClass(), "could_not_connect")+" "+SettingsPreferences.getServerIP());
 		}
 	}
 

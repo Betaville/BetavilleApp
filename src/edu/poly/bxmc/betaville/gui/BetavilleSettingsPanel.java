@@ -138,22 +138,22 @@ public class BetavilleSettingsPanel extends JFrame{
 		setLayout(new GridBagLayout());
 		add(fullScreen, c);
 		c.gridx=0;
-		add(new JLabel("Fullscreen"), c);
+		add(new JLabel(Labels.get(this.getClass(), "fullscreen")), c);
 		c.gridx=1;
 		c.gridy+=1;
 		add(resolutionSelector, c);
 		c.gridx=0;
-		add(new JLabel("Resolution"), c);
+		add(new JLabel(Labels.get(this.getClass(), "resolution")), c);
 		c.gridx=1;
 		c.gridy+=1;
 		add(texturedSelector, c);
 		c.gridx=0;
-		add(new JLabel("Load Textures"), c);
+		add(new JLabel(Labels.get(this.getClass(), "load_textures")), c);
 		c.gridx=1;
 		c.gridy+=1;
 		add(alwaysShow, c);
 		c.gridx=0;
-		add(new JLabel("Always Show"), c);
+		add(new JLabel(Labels.get(this.getClass(), "always_show")), c);
 		c.gridx=1;
 
 		okButton = new JButton(Labels.get("Generic.ok"));
@@ -183,7 +183,7 @@ public class BetavilleSettingsPanel extends JFrame{
 		settings.setHeight((int) ((ResComboItem)resolutionSelector.getSelectedItem()).getDimension().getHeight());
 		System.setProperty("betaville.display.resolution", (int) ((ResComboItem)resolutionSelector.getSelectedItem()).getDimension().getWidth()+"x"+
 				(int) ((ResComboItem)resolutionSelector.getSelectedItem()).getDimension().getHeight());
-		boolean fs = ((String)fullScreen.getSelectedItem()).equals("On");
+		boolean fs = ((String)fullScreen.getSelectedItem()).equals(Labels.generic("on"));
 
 		// only allow fullscreen if we are using the native resolution
 		if(fs){
@@ -209,8 +209,8 @@ public class BetavilleSettingsPanel extends JFrame{
 			}
 		}
 		settings.setFullscreen(fs);
-		System.setProperty("betaville.display.fullscreen", Boolean.toString(((String)fullScreen.getSelectedItem()).equals("On")));
-		System.setProperty("betaville.display.textured", Boolean.toString(((String)texturedSelector.getSelectedItem()).equals("On")));
+		System.setProperty("betaville.display.fullscreen", Boolean.toString(((String)fullScreen.getSelectedItem()).equals(Labels.generic("on"))));
+		System.setProperty("betaville.display.textured", Boolean.toString(((String)texturedSelector.getSelectedItem()).equals(Labels.generic("on"))));
 		System.setProperty("betaville.startup.showsettings", Boolean.toString(alwaysShow.isSelected()));
 		PreferenceWriter pr;
 		try {
@@ -228,15 +228,15 @@ public class BetavilleSettingsPanel extends JFrame{
 	protected void createFullScreen(){
 		fullScreen = new JComboBox();
 		fullScreen.setName("Full Screen");
-		fullScreen.addItem("On");
-		fullScreen.addItem("Off");
+		fullScreen.addItem(Labels.generic("on"));
+		fullScreen.addItem(Labels.generic("off"));
 		fullScreen.setSelectedIndex(SettingsPreferences.isFullscreen() ? 0 : 1);
 		fullScreen.addKeyListener(enterButtonListener);
 	}
 
 	protected void createResolutions(){
 		resolutionSelector = new JComboBox();
-		resolutionSelector.setName("Resolution");
+		resolutionSelector.setName(Labels.get(this.getClass(), "resolution"));
 		resolutionSelector.addKeyListener(enterButtonListener);
 		resolutionSelector.addActionListener(new resolutionChangedListener());
 		resolutions = new ArrayList<Dimension>();
@@ -245,8 +245,8 @@ public class BetavilleSettingsPanel extends JFrame{
 	protected void createTextured(){
 		texturedSelector = new JComboBox();
 		texturedSelector.setName("Textures");
-		texturedSelector.addItem("On");
-		texturedSelector.addItem("Off");
+		texturedSelector.addItem(Labels.generic("on"));
+		texturedSelector.addItem(Labels.generic("off"));
 		texturedSelector.setSelectedIndex(SettingsPreferences.isTextured() ? 0 : 1);
 		texturedSelector.addKeyListener(enterButtonListener);
 	}
@@ -254,7 +254,7 @@ public class BetavilleSettingsPanel extends JFrame{
 	protected void updateResolutions(){
 		resolutions.clear();
 
-		if((fullScreen.getSelectedItem().toString().equals("On"))){
+		if((fullScreen.getSelectedItem().toString().equals(Labels.generic("on")))){
 			if((Toolkit.getDefaultToolkit().getScreenSize().getWidth()/Toolkit.getDefaultToolkit().getScreenSize().getHeight())==1.6){
 				// 16:10 Aspect Ratio
 				resolutions.add(new Dimension(768,590));
@@ -392,7 +392,7 @@ public class BetavilleSettingsPanel extends JFrame{
 
 	public static final boolean prompt(GameSettings settings, String title) throws InterruptedException {
 		BetavilleSettingsPanel bsp = new BetavilleSettingsPanel(settings);
-		bsp.setTitle(title);
+		bsp.setTitle(Labels.get(BetavilleSettingsPanel.class, "title"));
 		bsp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		bsp.setAlwaysOnTop(true);
 		bsp.setSize(300, 250);

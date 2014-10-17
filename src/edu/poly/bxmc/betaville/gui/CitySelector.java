@@ -42,6 +42,7 @@ import javax.swing.JScrollPane;
 
 import org.apache.log4j.Logger;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.model.Wormhole;
 import edu.poly.bxmc.betaville.net.NetPool;
 import edu.poly.bxmc.betaville.net.UnprotectedManager;
@@ -65,7 +66,7 @@ public class CitySelector extends JFrame {
 	 */
 	public CitySelector() throws HeadlessException, UnknownHostException, IOException {
 		setLayout(new BorderLayout());
-		setTitle("Select Starting Location");
+		setTitle(Labels.get(this.getClass(), "title"));
 		final List<Wormhole> locations = NetPool.getPool().getConnection().getAllWormholes();
 
 		UnprotectedManager net = NetPool.getPool().getConnection();
@@ -79,7 +80,7 @@ public class CitySelector extends JFrame {
 		
 		JScrollPane scrollPane = new JScrollPane(cityList);
 		
-		JButton selectButton = new JButton("Select");
+		JButton selectButton = new JButton(Labels.generic("go"));
 		selectButton.addActionListener(new ActionListener() {
 			
 			@Override
