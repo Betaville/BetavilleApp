@@ -94,7 +94,7 @@ public class TopSelectionWindow extends Window{
 	// The name of the selected design, or the contents of emptyText if
 	// nothing is selected
 	private Label nameLabel;
-	private String emptyText = "Nothing Selected";
+	private String emptyText = Labels.get(TopSelectionWindow.class, "nothing");
 	public static LogoMenuWindow logoMenuWindow = FengGUI.createWidget(LogoMenuWindow.class);
 	private Container nameBGContainer;
 	//private Container menuContainer;

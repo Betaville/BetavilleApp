@@ -215,7 +215,7 @@ public class SceneController extends Controller {
 				((IBetavilleWindow)closeWindow).finishSetup();
 			}
 			else{
-				closeWindow = FengUtils.createTwoOptionWindow("Betaville", "Are you sure you want to exit?", Labels.get("Generic.yes"), Labels.get("Generic.no"), new IButtonPressedListener() {
+				closeWindow = FengUtils.createTwoOptionWindow("Betaville", Labels.generic("exit_prompt"), Labels.get("Generic.yes"), Labels.get("Generic.no"), new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 						logger.info("Exit comment confirmed");
 						ShutdownManager.doSafeShutdown();
