@@ -34,6 +34,7 @@ import com.jme.scene.state.FogState;
 import com.jme.scene.state.RenderState.StateType;
 import com.jme.util.GameTaskQueueManager;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
@@ -46,8 +47,8 @@ public class TurnFogOnOffAction extends PanelAction {
 
 	private FogState fogState;
 
-	private static final String disableText = "Turn off Fog";
-	private static final String enableText = "Turn on Fog";
+	private static final String disableText = Labels.get(TurnFogOnOffAction.class, "disable");
+	private static final String enableText = Labels.get(TurnFogOnOffAction.class, "enable");
 
 	/**
 	 * @param name

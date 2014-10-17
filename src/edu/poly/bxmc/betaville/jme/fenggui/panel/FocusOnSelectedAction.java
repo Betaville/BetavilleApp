@@ -40,6 +40,7 @@ import com.jme.scene.Node;
 import com.jme.system.DisplaySystem;
 import com.jme.util.GameTaskQueueManager;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
@@ -65,7 +66,7 @@ public class FocusOnSelectedAction extends PanelAction {
 	private static final Vector2f screenPosition = new Vector2f(0, 0);
 	
 	public FocusOnSelectedAction() {
-		super("Focuser", "Focuses on Objects", "Focus on Object", AvailabilityRule.OBJECT_SELECTED, UserType.BASE_COMMITTER, new IButtonPressedListener(){
+		super(Labels.get(CityPanel.class, "focus_on_object"), "Focuses on Objects", Labels.get(CityPanel.class, "focus_on_object"), AvailabilityRule.OBJECT_SELECTED, UserType.BASE_COMMITTER, new IButtonPressedListener(){
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				
 				logger.info("Distance between sides at ground: " + viewportWidthAtGround());

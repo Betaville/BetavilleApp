@@ -57,7 +57,7 @@ public class WireframePanelAction extends PanelAction {
 	 * 
 	 */
 	public WireframePanelAction() {
-		super("Wireframe", "Makes things wireframe!", "Apply Wireframe", AvailabilityRule.OBJECT_SELECTED, UserType.MEMBER, null);
+		super(Labels.get(WireframePanelAction.class, "title"), "Makes things wireframe!", Labels.get(WireframePanelAction.class, "title"), AvailabilityRule.OBJECT_SELECTED, UserType.MEMBER, null);
 
 		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
 

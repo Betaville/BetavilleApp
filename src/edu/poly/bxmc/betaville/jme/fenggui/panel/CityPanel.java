@@ -132,11 +132,11 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		//addAction(new BookmarkPanel());
 
 		addAction(new OSCOnOffPanelAction());
-		addAction(new OnOffPanelAction("Upload Thumbnail", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailUploadWindow.class, false));
-		addAction(new SwingOnOffPanelAction("Comments in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingCommentWindow.class));
-		addAction(new SwingOnOffPanelAction("Proposals in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingProposalWindow.class));
-		addAction(new OnOffPanelAction("Thumbnail Capture", "Capture thumbnail images", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailCaptureWindow.class, false));
-		addAction(new OnOffPanelAction("Search", "Allows you to search", AvailabilityRule.ALWAYS, UserType.MEMBER, false, SearchActionWindow.class, false));
+		addAction(new OnOffPanelAction(Labels.get(ThumbnailUploadWindow.class, "title"), "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailUploadWindow.class, false));
+		//addAction(new SwingOnOffPanelAction("Comments in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingCommentWindow.class));
+		//addAction(new SwingOnOffPanelAction("Proposals in Swing", "Blerg!", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, SwingProposalWindow.class));
+		addAction(new OnOffPanelAction(Labels.get(ThumbnailCaptureWindow.class, "title"), "Capture thumbnail images", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ThumbnailCaptureWindow.class, false));
+		addAction(new OnOffPanelAction(Labels.generic("search"), "Allows you to search", AvailabilityRule.ALWAYS, UserType.MEMBER, false, SearchActionWindow.class, false));
 		//addAction(new WhitewashAction());
 		addAction(new UnlockFromTerrain());
 		addAction(new ScreenshotPanelAction());
@@ -146,20 +146,20 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		//addAction(new TranslucentPanelAction());
 		addAction(new OnOffPanelAction("Move Object", "Moving objects in the scene", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ModelMover.class, false));
 		addAction(new OnOffPanelAction("Pointer Location", "Shows the mouse's position in the scene", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DisplayMouseGroundPosition.class, false));
-		addAction(new OnOffPanelAction("Measure Tool", "Measures the distance between two points", AvailabilityRule.ALWAYS, UserType.MEMBER, false, MeasureTool.class, false));
-		addAction(new OnOffPanelAction("Lights", "Light tweaking functionality", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightTweaker.class, false));
-		addAction(new OnOffPanelAction("Details", "Details about the selected model", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DetailedInfoAction.class, false));
-		addAction(new OnOffPanelAction("Layers", "GIS Layers", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, AddLayersWindow.class, false));
-		addAction(new OnOffPanelAction("Move Speed", "Controls the speed of movement", AvailabilityRule.ALWAYS, UserType.MEMBER, false, AdminCustomMoveSpeed.class,false));
-		addAction(new OnOffPanelAction("Tutorials", "Learn some stuff!", AvailabilityRule.ALWAYS, UserType.MEMBER, true, TutorialWindow.class, false));
+		addAction(new OnOffPanelAction(Labels.get(MeasureTool.class, "title"), "Measures the distance between two points", AvailabilityRule.ALWAYS, UserType.MEMBER, false, MeasureTool.class, false));
+		addAction(new OnOffPanelAction(Labels.get(LightTweaker.class, "title"), "Light tweaking functionality", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightTweaker.class, false));
+		addAction(new OnOffPanelAction(Labels.get(DetailedInfoAction.class, "title"), "Details about the selected model", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DetailedInfoAction.class, false));
+		addAction(new OnOffPanelAction(Labels.get(AddLayersWindow.class, "title"), "GIS Layers", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, AddLayersWindow.class, false));
+		addAction(new OnOffPanelAction(Labels.get(AdminCustomMoveSpeed.class, "title"), "Controls the speed of movement", AvailabilityRule.ALWAYS, UserType.MEMBER, false, AdminCustomMoveSpeed.class,false));
+		addAction(new OnOffPanelAction(Labels.get(CityPanel.class,  "tutorials"), "Learn some stuff!", AvailabilityRule.ALWAYS, UserType.MEMBER, true, TutorialWindow.class, false));
 		//addAction(new OnOffPanelAction("Hierarchy Editor", "Stuff", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, HierarchyEditorWindow.class, false));
-		addAction(new OnOffPanelAction("My Location", "Shows My Location!", AvailabilityRule.ALWAYS, UserType.MEMBER, false, MyLocationWindow.class, false));
+		addAction(new OnOffPanelAction(Labels.get(MyLocationWindow.class, "title"), "Shows My Location!", AvailabilityRule.ALWAYS, UserType.MEMBER, false, MyLocationWindow.class, false));
 		//addAction(new OnOffPanelAction("Bookmarks", "Manage your bookmarks", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, BookmarkWindow.class, false));
-		addAction(new OnOffPanelAction("Wormhole", "Wormholes", AvailabilityRule.ALWAYS, UserType.MEMBER, false, NetworkedWormholeWindow.class, false));
+		addAction(new OnOffPanelAction(Labels.get(NetworkedWormholeWindow.class, "title"), "Wormholes", AvailabilityRule.ALWAYS, UserType.MEMBER, false, NetworkedWormholeWindow.class, false));
 		//addAction(new OnOffPanelAction("Edit Building", "Edit existing building", AvailabilityRule.OBJECT_SELECTED, UserType.MEMBER, false, EditBuildingWindow.class, false));
-		addAction(new OnOffPanelAction("Plugin Manager", "Install Plugins", AvailabilityRule.ALWAYS, UserType.MEMBER, false, PluginManagerUI.class, false));
+		addAction(new OnOffPanelAction(Labels.get(PluginManagerUI.class, "title"), "Install Plugins", AvailabilityRule.ALWAYS, UserType.MEMBER, false, PluginManagerUI.class, false));
 		addAction(new PerformancePanelAction());
-		addAction(new PanelAction("Toggle Shadows", "Shadows", new IButtonPressedListener() {
+		addAction(new PanelAction(Labels.get(CityPanel.class, "toggle_shaddows"), "Shadows", new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				ShadowPassState.getInstance().toggleMapPass();
@@ -167,7 +167,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 			}
 		}));
 
-		addAction(new OnOffPanelAction("Light Angles", "Light Angle Modifier", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightAngleModifier.class, false));
+		addAction(new OnOffPanelAction(Labels.get(LightAngleModifier.class, "title"), "Light Angle Modifier", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightAngleModifier.class, false));
 		/*
 		addAction(new PanelAction("Toggle Shadow Volumes", "Volumes", new IButtonPressedListener() {
 

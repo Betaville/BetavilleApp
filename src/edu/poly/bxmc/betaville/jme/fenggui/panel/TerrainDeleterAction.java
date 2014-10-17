@@ -62,12 +62,12 @@ public class TerrainDeleterAction extends PanelAction {
 	 * @param listener
 	 */
 	public TerrainDeleterAction() {
-		super("Delete Terrain", "Deletes the selected terrain", "Delete Terrain", AvailabilityRule.IGNORE, UserType.MODERATOR,
+		super(Labels.get(TerrainDeleterAction.class, "title"), "Deletes the selected terrain", Labels.get(TerrainDeleterAction.class, "title"), AvailabilityRule.IGNORE, UserType.MODERATOR,
 				new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				Window window = FengUtils.createTwoOptionWindow("Delete", "Are you sure that you would like to delete this terrain?",
-						Labels.get("Generic.no"), Labels.get("Generic.yes"),
+				Window window = FengUtils.createTwoOptionWindow(Labels.generic("delete"), "Are you sure that you would like to delete this terrain?",
+						Labels.generic("no"), Labels.generic("yes"),
 						new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 

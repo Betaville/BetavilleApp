@@ -33,6 +33,7 @@ import org.fenggui.event.IButtonPressedListener;
 import com.jme.scene.Skybox;
 import com.jme.util.GameTaskQueueManager;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
@@ -43,8 +44,8 @@ import edu.poly.bxmc.betaville.module.PanelAction;
  */
 public class TurnSkyboxOnOffAction extends PanelAction {
 	
-	private static final String disableText = "Turn off Skybox";
-	private static final String enableText = "Turn on Skybox";
+	private static final String disableText = Labels.get(TurnSkyboxOnOffAction.class, "disable");
+	private static final String enableText = Labels.get(TurnSkyboxOnOffAction.class, "enable");
 
 	/**
 	 * @param name

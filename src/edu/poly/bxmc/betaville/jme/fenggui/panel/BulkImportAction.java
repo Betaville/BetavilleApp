@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -63,7 +64,7 @@ public class BulkImportAction extends PanelAction {
 	 * @param listener
 	 */
 	public BulkImportAction() {
-		super("Bulk Import", "Imports multiple 3D objects", "Bulk Import", AvailabilityRule.NO_OBJECT_SELECTED, UserType.BASE_COMMITTER,
+		super(Labels.get(CityPanel.class, "bulk_import"), "Imports multiple 3D objects", Labels.get(CityPanel.class, "bulk_import"), AvailabilityRule.NO_OBJECT_SELECTED, UserType.BASE_COMMITTER,
 				new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
