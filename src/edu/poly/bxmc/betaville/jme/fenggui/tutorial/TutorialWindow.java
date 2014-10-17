@@ -28,6 +28,7 @@ package edu.poly.bxmc.betaville.jme.fenggui.tutorial;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.fenggui.Container;
@@ -109,7 +110,7 @@ public class TutorialWindow extends Window implements IBetavilleWindow {
 		createNavigator();
 		
 		try {
-			TutorialListLoader tl = new TutorialListLoader(ResourceLoader.loadResource("/data/tutorial"));
+			TutorialListLoader tl = new TutorialListLoader(ResourceLoader.loadResource("/data/tutorial/"));
 			for(URL url : tl.getTutoralList()){
 				SlideLoader sl = new SlideLoader(url);
 				sl.parse();

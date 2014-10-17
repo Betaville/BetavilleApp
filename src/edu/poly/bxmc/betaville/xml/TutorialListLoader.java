@@ -28,7 +28,9 @@ package edu.poly.bxmc.betaville.xml;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 /**
@@ -37,23 +39,36 @@ import org.jdom.Element;
  */
 public class TutorialListLoader extends XMLReader{
 	
+	private static final Logger logger = Logger.getLogger(TutorialListLoader.class);
+
 	private URL urlRoot;
 	private List<URL> tutorialList;
-	
+
 	public TutorialListLoader(URL urlRoot) throws Exception{
-		this.urlRoot = urlRoot;
+		this.urlRoot = new URL(urlRoot.toString()+Locale.getDefault().getLanguage().toLowerCase()+"/");
+
+		try{
+			load();
+		}catch(Exception e){
+			logger.warn("Tutorials not found for default locale: " + Locale.getDefault().getLanguage().toLowerCase());
+			this.urlRoot = new URL(urlRoot.toString()+"en/");
+			load();
+		}
+	}
+
+	private void load() throws Exception{
 		URL url;
-		if(urlRoot.toString().endsWith("/")) url = new URL(urlRoot.toString()+"tutorials.xml");
-		else url = new URL(urlRoot.toString()+"/tutorials.xml");
+		if(this.urlRoot.toString().endsWith("/")) url = new URL(this.urlRoot.toString()+"tutorials.xml");
+		else url = new URL(this.urlRoot.toString()+"/tutorials.xml");
 		tutorialList = new ArrayList<URL>();
 		loadFile(url);
 		parse();
 	}
-	
+
 	public List<URL> getTutoralList(){
 		return tutorialList;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void parse() throws Exception {
