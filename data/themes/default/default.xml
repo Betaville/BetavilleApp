@@ -87,7 +87,6 @@
       <!-- <create fontName="Alte DIN 1451 Mittelschrift gepraegt" type="plain" size="12" antialiasing="true"/> -->
         <load fontName="Alte DIN" type="plain" size="12" antialiasing="true" map="fonts/font_din_12.font" image="fonts/font_din_12.png"/>
 		</ImageFont>
-		
 
 		<SimpleShadowTextRenderer name="btr_default" y="-1">
 			<Font ref="font11" />

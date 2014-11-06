@@ -30,7 +30,11 @@ import java.io.IOException;
 
 import org.fenggui.binding.render.Binding;
 import org.fenggui.binding.render.Cursor;
+import org.fenggui.binding.render.Font;
+import org.fenggui.binding.render.ImageFont;
 import org.fenggui.binding.render.lwjgl.LWJGLCursorFactory;
+import org.fenggui.binding.render.text.BaseTextRenderer;
+import org.fenggui.binding.render.text.DirectTextRenderer;
 import org.fenggui.composite.tree.Tree;
 import org.fenggui.decorator.switches.SetFontStyleSwitch;
 import org.fenggui.renderer.text.BufferedTextRenderer;
@@ -38,10 +42,13 @@ import org.fenggui.text.content.IContentFactory;
 import org.fenggui.text.content.factory.simple.ContentFactory;
 import org.fenggui.theme.XMLTheme;
 import org.fenggui.theme.xml.IXMLStreamableException;
+import org.fenggui.util.Alphabet;
 import org.fenggui.util.Color;
 import org.fenggui.util.Util;
+import org.fenggui.util.fonttoolkit.FontFactory;
 
 import edu.poly.bxmc.betaville.jme.fenggui.experimental.SimpleShadowTextRenderer;
+import edu.poly.bxmc.betaville.jme.fenggui.experimental.RichTextRenderer;
 import edu.poly.bxmc.betaville.jme.fenggui.tab.BottomTabContainer;
 import edu.poly.bxmc.betaville.jme.fenggui.tab.BottomTabItem;
 
@@ -71,11 +78,29 @@ public class BetavilleXMLTheme extends XMLTheme {
 	      TEXTRENDERER_REGISTRY.register(SimpleShadowTextRenderer.class);
 	}
 
+	private BaseTextRenderer tr_font10;
+	private BaseTextRenderer tr_font10Bold;
+	private BaseTextRenderer tr_font10Italic;
+	private BaseTextRenderer tr_font11;
+	private BaseTextRenderer tr_font11Bold;
+	private BaseTextRenderer tr_font12;
+	private BaseTextRenderer tr_font14;
+	private RichTextRenderer richTextRenderer;
+	private ImageFont font10_bold;
+	private ImageFont font10;
+	private ImageFont font10_italic;
+	private ImageFont font11;
+	private ImageFont font11_bold;
+	private ImageFont font12;
+	private ImageFont font14;
+
 	public BetavilleXMLTheme(String xmlThemeFile) throws IOException,
 			IXMLStreamableException {
 		super(xmlThemeFile);
 		
 		initialzieCursors();
+		
+		initializeTextRenderers();
 	}
 
 	private void initialzieCursors() {
@@ -102,5 +127,156 @@ public class BetavilleXMLTheme extends XMLTheme {
 
 	  Cursor textCursor = Binding.getInstance().getCursorFactory().createCursor(3, size / 2, textCursorImage);
 	  Binding.getInstance().getCursorFactory().setTextCursor(textCursor);
+	}
+
+  /**
+	 * Create all the textRenderers we need
+	 */
+	private void initializeTextRenderers() {
+		font10 = FontFactory.renderStandardFont(new java.awt.Font(
+				"Verdana", java.awt.Font.PLAIN, 10), true, Alphabet.ENGLISH);
+		tr_font10 = new DirectTextRenderer(font10);
+		
+	
+		font10_bold = FontFactory.renderStandardFont(new java.awt.Font(
+				"Verdana", java.awt.Font.BOLD, 10), true, Alphabet.ENGLISH);
+		tr_font10Bold = new DirectTextRenderer(font10_bold);
+	
+		font10_italic = FontFactory.renderStandardFont(new java.awt.Font(
+				"Verdana", java.awt.Font.ITALIC, 10), true, Alphabet.ENGLISH);
+		tr_font10Italic = new DirectTextRenderer(font10_italic);
+	
+		font11 = FontFactory.renderStandardFont(new java.awt.Font(
+				"Verdana", java.awt.Font.PLAIN, 11), true, Alphabet.ENGLISH);
+		tr_font11 = new DirectTextRenderer(font11);
+	
+		font11_bold = FontFactory.renderStandardFont(new java.awt.Font(
+				"Verdana", java.awt.Font.BOLD, 11), true, Alphabet.ENGLISH);
+		tr_font11Bold = new DirectTextRenderer(font11_bold);
+	
+		font12 = FontFactory.renderStandardFont(new java.awt.Font(
+				"Verdana", java.awt.Font.PLAIN, 12), true, Alphabet.ENGLISH);
+		tr_font12 = new DirectTextRenderer(font12);
+	
+		font14 = FontFactory.renderStandardFont(new java.awt.Font(
+				"Verdana", java.awt.Font.PLAIN, 14), true, Alphabet.ENGLISH);
+		tr_font14 = new DirectTextRenderer(font14);
+		
+		richTextRenderer = new RichTextRenderer();
+		richTextRenderer.setFont(font10);
+	}
+
+	/**
+	 * TODO
+	 * @return
+	 */
+	public BaseTextRenderer getTr_font10() {
+		return tr_font10;
+	}
+
+	/**
+	 * TODO
+	 * @return
+	 */
+	public BaseTextRenderer getTr_font10Bold() {
+		return tr_font10Bold;
+	}
+
+	/**
+	 * TODO
+	 * @return
+	 */
+	public BaseTextRenderer getTr_font10Italic() {
+		return tr_font10Italic;
+	}
+
+	/**
+	 * TODO
+	 * @return
+	 */
+	public BaseTextRenderer getTr_font11() {
+		return tr_font11;
+	}
+
+	/**
+	 * TODO
+	 * @return
+	 */
+	public BaseTextRenderer getTr_font11Bold() {
+		return tr_font11Bold;
+	}
+
+	/**
+	 * TODO
+	 * @return
+	 */
+	public BaseTextRenderer getTr_font12() {
+		return tr_font12;
+	}
+
+	/**
+	 * TODO
+	 * @return
+	 */
+	public BaseTextRenderer getTr_font14() {
+		return tr_font14;
+	}
+	
+	
+	/**
+	 * @return the font10_bold
+	 */
+	public Font getFont10_bold() {
+		return font10_bold;
+	}
+
+	/**
+	 * @return the font10
+	 */
+	public Font getFont10() {
+		return font10;
+	}
+
+	/**
+	 * @return the font10_italic
+	 */
+	public Font getFont10_italic() {
+		return font10_italic;
+	}
+
+	/**
+	 * @return the font11
+	 */
+	public Font getFont11() {
+		return font11;
+	}
+
+	/**
+	 * @return the font11_bold
+	 */
+	public Font getFont11_bold() {
+		return font11_bold;
+	}
+
+	/**
+	 * @return the font12
+	 */
+	public Font getFont12() {
+		return font12;
+	}
+
+	/**
+	 * @return the font14
+	 */
+	public Font getFont14() {
+		return font14;
+	}
+
+	/**
+	 * TODO
+	 * @return
+	 */
+	public RichTextRenderer getRichTextRenderer() {
+		return richTextRenderer;
 	}
 }
