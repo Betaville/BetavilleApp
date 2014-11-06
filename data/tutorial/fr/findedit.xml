@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slidedeck>
+	<properties>
+		<authors>
+			<author>Carl Skelton</author>
+			<author>Skye Book</author>
+		</authors>
+		<title>Trouvez et Changez les Infos</title>
+		<date>12-22-2010</date>
+		<default>
+			<font>verdana</font>
+			<size>8</size>
+			<color r="255" g="255" b="255" a="255"/>
+		</default>
+	</properties>
+	<slides>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide">
+			<title size="10" color="0 0 0 255">Bienvenue > Trouver/Editer les Infos</title>
+			<image>findedit_a.png</image>
+			<caption>A. Sélectionnez un Objet (il deviendra jaune)</caption>
+		</slide>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide">
+			<title size="10" color="0 0 0 255">Bienvenue > Trouver/Editer les Infos</title>
+			<image>findedit_b.png</image>
+			<caption>B. Clic-droite ou Clic-Ctrl (un menu apparaîtra comme ceci)</caption>
+		</slide>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide">
+			<title size="10" color="0 0 0 255">Bienvenue > Trouver/Editer les Infos</title>
+			<image>findedit_c.png</image>
+			<caption>C. Lisez et/ou Editez (certaines sont lecture seule)</caption>
+		</slide>
+	</slides>
+</slidedeck>

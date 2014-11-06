@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slidedeck>
+	<properties>
+		<authors>
+			<author>Skye Book</author>
+			<author>Carl Skelton</author>
+		</authors>
+		<title>Sur Betaville</title>
+		<date>3-24-2011</date>
+		<default>
+			<font>verdana</font>
+			<size>8</size>
+			<color r="255" g="255" b="255" a="255"/>
+		</default>
+	</properties>
+	<slides>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
+			<title size="10" color="0 0 0 255">A quoi sert Betaville?</title>
+			<bullets>
+				<bullet>Urbanisme Intelligent</bullet>
+				<bullet>Engagement Communautaire</bullet>
+				<bullet>Nouvelles Idées et Coalitions</bullet>
+			</bullets>
+		</slide>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
+			<title size="10" color="0 0 0 255">Editeur de Quartiers virtuels</title>
+			<bullets>
+				<bullet>Circulez</bullet>
+				<bullet>Discutez</bullet>
+				<bullet>Créez</bullet>
+			</bullets>
+		</slide>
+	</slides>
+</slidedeck>

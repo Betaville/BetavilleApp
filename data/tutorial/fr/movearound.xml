@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slidedeck>
+	<properties>
+		<authors>
+			<author>Carl Skelton</author>
+			<author>Skye Book</author>
+		</authors>
+		<title>Naviguer</title>
+		<date>12-22-2010</date>
+		<default>
+			<font>verdana</font>
+			<size>8</size>
+			<color r="255" g="255" b="255" a="255"/>
+		</default>
+	</properties>
+	<slides>
+		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
+			<title size="10" color="0 0 0 255">Bienvenue > Naviguer</title>
+			<bullets>
+				<bullet>avancer: touche W</bullet>
+				<bullet>reculer: touche S</bullet>
+				<bullet>aller à gauche: touche A</bullet>
+				<bullet>aller à droite: touche D</bullet>
+				<bullet>aller plus haut: touche Q</bullet>
+				<bullet>aller plus bas: touche Z</bullet>
+				<bullet>tourner à gauche: flèche gauche</bullet>
+				<bullet>tourner à droite: flèche droite</bullet>
+			</bullets>
+		</slide>
+	</slides>
+</slidedeck>
