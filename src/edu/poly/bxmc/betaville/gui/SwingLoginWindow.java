@@ -442,7 +442,7 @@ public class SwingLoginWindow extends JFrame{
 
 		c.gridy=0;
 		c.gridx=0;
-		serverPanel.add(new JLabel("Betaville Server"), c);
+		serverPanel.add(new JLabel(Labels.generic("server")), c);
 
 		serverField = new JTextField();
 		serverField.setText(SettingsPreferences.getServerIP());
@@ -458,7 +458,7 @@ public class SwingLoginWindow extends JFrame{
 			}
 		});
 
-		JButton submit = new JButton("Submit");
+		JButton submit = new JButton(Labels.generic("Generic.confirm"));
 		submit.setToolTipText("Sets the new Betaville Server");
 		submit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
