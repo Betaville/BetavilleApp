@@ -136,7 +136,6 @@ public class BetavilleXMLTheme extends XMLTheme {
 		font10 = FontFactory.renderStandardFont(new java.awt.Font(
 				"Verdana", java.awt.Font.PLAIN, 10), true, Alphabet.ENGLISH);
 		tr_font10 = new DirectTextRenderer(font10);
-		
 	
 		font10_bold = FontFactory.renderStandardFont(new java.awt.Font(
 				"Verdana", java.awt.Font.BOLD, 10), true, Alphabet.ENGLISH);

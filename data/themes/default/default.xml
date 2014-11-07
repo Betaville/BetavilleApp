@@ -74,18 +74,18 @@
 		
 
 		<!-- FONTS -->	
-		<ImageFont name="font10"><create fontName="Verdana" type="plain" size="10" antialiasing="true"/></ImageFont>
-		<ImageFont name="font10Bold"><create fontName="Verdana" type="bold" size="10" antialiasing="true"/></ImageFont>
-		<ImageFont name="font10Italic"><create fontName="Verdana" type="italic" size="10" antialiasing="true"/></ImageFont>
-		<ImageFont name="font11"><create fontName="Verdana" type="plain" size="11" antialiasing="true"/></ImageFont>
-		<ImageFont name="font11Bold"><create fontName="Verdana" type="bold" size="11" antialiasing="true"/></ImageFont>
-		<ImageFont name="font12"><create fontName="Verdana" type="plain" size="12" antialiasing="true"/></ImageFont>
-		<ImageFont name="font12Bold"><create fontName="Verdana" type="bold" size="12" antialiasing="true"/></ImageFont>
-		<ImageFont name="font14"><create fontName="Verdana" type="plain" size="14" antialiasing="true"/></ImageFont>
+		<ImageFont name="font10"><create fontName="Verdana" type="plain" size="10" antialiasing="true" alphabet="FRENCH"/></ImageFont>
+		<ImageFont name="font10Bold"><create fontName="Verdana" type="bold" size="10" antialiasing="true" alphabet="FRENCH"/></ImageFont>
+		<ImageFont name="font10Italic"><create fontName="Verdana" type="italic" size="10" antialiasing="true" alphabet="FRENCH"/></ImageFont>
+		<ImageFont name="font11"><create fontName="Verdana" type="plain" size="11" antialiasing="true" alphabet="FRENCH"/></ImageFont>
+		<ImageFont name="font11Bold"><create fontName="Verdana" type="bold" size="11" antialiasing="true" alphabet="FRENCH"/></ImageFont>
+		<ImageFont name="font12"><create fontName="Verdana" type="plain" size="12" antialiasing="true" alphabet="FRENCH"/></ImageFont>
+		<ImageFont name="font12Bold"><create fontName="Verdana" type="bold" size="12" antialiasing="true" alphabet="FRENCH"/></ImageFont>
+		<ImageFont name="font14"><create fontName="Verdana" type="plain" size="14" antialiasing="true" alphabet="FRENCH"/></ImageFont>
 
 		<ImageFont name="font12DIN">
       <!-- <create fontName="Alte DIN 1451 Mittelschrift gepraegt" type="plain" size="12" antialiasing="true"/> -->
-        <load fontName="Alte DIN" type="plain" size="12" antialiasing="true" map="fonts/font_din_12.font" image="fonts/font_din_12.png"/>
+        <load fontName="Alte DIN" type="plain" size="12" antialiasing="true" map="fonts/font_din_12_fr.font" image="fonts/font_din_12_fr.png"/>
 		</ImageFont>
 
 		<SimpleShadowTextRenderer name="btr_default" y="-1">

@@ -95,6 +95,7 @@ public class TopSelectionWindow extends Window{
 	// nothing is selected
 	private Label nameLabel;
 	private String emptyText = Labels.get(TopSelectionWindow.class, "nothing");
+	
 	public static LogoMenuWindow logoMenuWindow = FengGUI.createWidget(LogoMenuWindow.class);
 	private Container nameBGContainer;
 	//private Container menuContainer;
