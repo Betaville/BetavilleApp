@@ -43,6 +43,7 @@ import com.jme.image.Image;
 import com.jme.system.DisplaySystem;
 import com.jme.util.geom.BufferUtils;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.PNGFileFilter;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
@@ -61,7 +62,7 @@ public class ScreenshotPanelAction extends PanelAction {
 	 * 
 	 */
 	public ScreenshotPanelAction() {
-		super("Take Screenshot", "Takes a screenshot", "Take Screenshot",
+		super(Labels.get(ScreenshotPanelAction.class, "title"), "Takes a screenshot", Labels.get(ScreenshotPanelAction.class, "title"),
 				AvailabilityRule.ALWAYS, UserType.GUEST, null);
 
 
