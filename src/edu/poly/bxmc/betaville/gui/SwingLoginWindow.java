@@ -450,7 +450,7 @@ public class SwingLoginWindow extends JFrame{
 		c.gridx=1;
 		serverPanel.add(serverField, c);
 
-		JButton back = new JButton(Labels.get("Generic.back"));
+		JButton back = new JButton(Labels.generic("back"));
 		back.setToolTipText("Return to the login screen");
 		back.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -458,7 +458,7 @@ public class SwingLoginWindow extends JFrame{
 			}
 		});
 
-		JButton submit = new JButton(Labels.generic("Generic.confirm"));
+		JButton submit = new JButton(Labels.generic("confirm"));
 		submit.setToolTipText("Sets the new Betaville Server");
 		submit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
