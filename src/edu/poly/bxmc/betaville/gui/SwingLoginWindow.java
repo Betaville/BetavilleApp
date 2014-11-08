@@ -403,14 +403,14 @@ public class SwingLoginWindow extends JFrame{
 		c.fill=GridBagConstraints.HORIZONTAL;
 		c.gridy=0;
 		c.gridx=1;
-		loginPanel.add(new JLabel("Username"), c);
+		loginPanel.add(new JLabel(Labels.generic("username")), c);
 
 		c.gridx=2;
 		loginPanel.add(userField, c);
 
 		c.gridy=1;
 		c.gridx=1;
-		loginPanel.add(new JLabel("Password"), c);
+		loginPanel.add(new JLabel(Labels.generic("password")), c);
 
 		c.gridx=2;
 		loginPanel.add(passField, c);
@@ -488,7 +488,7 @@ public class SwingLoginWindow extends JFrame{
 
 		c.gridy=0;
 		c.gridx=0;
-		registerPanel.add(new JLabel("Username"), c);
+		registerPanel.add(new JLabel(Labels.generic("username")), c);
 
 		currentUsernameRegistrationInputHasBeenChecked = false;
 		lastInputInUserRegistrationWindow = -1;
@@ -538,7 +538,7 @@ public class SwingLoginWindow extends JFrame{
 
 		c.gridy++;
 		c.gridx=0;
-		registerPanel.add(new JLabel("Password"), c);
+		registerPanel.add(new JLabel(Labels.generic("password")), c);
 
 		c.gridx=1;
 		registerAccountPasswordField = new JPasswordField();
@@ -547,7 +547,7 @@ public class SwingLoginWindow extends JFrame{
 
 		c.gridy++;
 		c.gridx=0;
-		registerPanel.add(new JLabel("Verify Password"), c);
+		registerPanel.add(new JLabel(Labels.generic("verify_password")), c);
 
 		c.gridx=1;
 		registerAccountVerifyPasswordField = new JPasswordField();
@@ -556,7 +556,7 @@ public class SwingLoginWindow extends JFrame{
 
 		c.gridy++;
 		c.gridx=0;
-		registerPanel.add(new JLabel("Email Address"), c);
+		registerPanel.add(new JLabel("Email"), c);
 
 		c.gridx=1;
 		registerAccountEmailField = new JTextField();
