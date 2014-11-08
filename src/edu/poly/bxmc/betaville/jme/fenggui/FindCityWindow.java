@@ -100,7 +100,7 @@ public class FindCityWindow extends Window implements IBetavilleWindow {
 		entry.setText(Labels.get(this.getClass().getSimpleName()+".prompt")+"...");
 		searchContainer.addWidget(entry);
 		search = FengGUI.createWidget(FixedButton.class);
-		search.setText(Labels.get("Generic.search"));
+		search.setText(Labels.get("Generic.search")+"...");
 		search.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {

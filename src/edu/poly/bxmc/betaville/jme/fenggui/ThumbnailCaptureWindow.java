@@ -79,8 +79,8 @@ public class ThumbnailCaptureWindow extends Window implements IBetavilleWindow, 
 	private Label capture;
 	private Button upload;
 	private Label imageOfNotification;
-	private final String imageOfPrefix = "Image of: ";
-	private final String noTarget = "Nothing Detected";
+	private final String imageOfPrefix = "Image: ";
+	private final String noTarget = Labels.generic("nothing");
 
 	private Arrow viewfinderTargetPointer;
 

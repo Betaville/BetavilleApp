@@ -31,6 +31,7 @@ import org.fenggui.binding.render.Binding;
 import org.fenggui.event.ButtonPressedEvent;
 import org.fenggui.event.IButtonPressedListener;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.fenggui.OnScreenControllerPanel;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.BlockingScrollContainer;
 import edu.poly.bxmc.betaville.jme.gamestates.GUIGameState;
@@ -47,7 +48,7 @@ public class OSCOnOffPanelAction extends PanelAction{
 	protected OSCPanel oscWindow;
 
 	public OSCOnOffPanelAction(){
-		super("On Screen Controller", "Blerg!", "On Screen Controller", AvailabilityRule.ALWAYS, UserType.MEMBER, null);
+		super(Labels.get(OSCOnOffPanelAction.class, "title"), "Blerg!", Labels.get(OSCOnOffPanelAction.class, "title"), AvailabilityRule.ALWAYS, UserType.MEMBER, null);
 		oscWindow = FengGUI.createWidget(OSCPanel.class);
 		oscWindow.finishSetup();
 		oscWindow.setY( (Binding.getInstance().getCanvasHeight() - oscWindow.getHeight()) / 2);

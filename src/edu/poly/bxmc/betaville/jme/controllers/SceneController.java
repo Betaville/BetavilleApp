@@ -27,6 +27,7 @@ package edu.poly.bxmc.betaville.jme.controllers;
 
 import static com.jme.input.KeyInput.KEY_ESCAPE;
 
+import java.awt.im.InputContext;
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
@@ -182,9 +183,12 @@ public class SceneController extends Controller {
 	}
 
 	private void adjustPerLocale() {
+		
 		KeyBindingManager keyBindingManager = KeyBindingManager
 				.getKeyBindingManager();
-		Locale locale = Locale.getDefault();
+		
+		// Use the locale from the InputContext to ascertain what the keyboard is
+		Locale locale = InputContext.getInstance().getLocale();
 		if (locale.equals(Locale.FRANCE) || locale.equals(Locale.FRENCH)) {
 			keyBindingManager.set("forward", KeyInput.KEY_Z);
 			keyBindingManager.set("backward", KeyInput.KEY_S);
@@ -192,10 +196,7 @@ public class SceneController extends Controller {
 			keyBindingManager.set("strafeRight", KeyInput.KEY_D);
 			keyBindingManager.set("elevateUp", KeyInput.KEY_A);
 			keyBindingManager.set("elevateDown", KeyInput.KEY_W);
-			keyBindingManager.set("elevateDown", KeyInput.KEY_E);
-		} else if (locale.equals(Locale.GERMANY)
-				|| locale.equals(Locale.GERMAN)) {
-			keyBindingManager.set("forward", KeyInput.KEY_E);
+		} else if (locale.equals(Locale.GERMANY) || locale.equals(Locale.GERMAN)) {
 			keyBindingManager.set("forward", KeyInput.KEY_W);
 			keyBindingManager.set("backward", KeyInput.KEY_S);
 			keyBindingManager.set("strafeLeft", KeyInput.KEY_A);

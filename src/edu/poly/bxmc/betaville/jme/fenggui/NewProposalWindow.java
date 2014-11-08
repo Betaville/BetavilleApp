@@ -1991,7 +1991,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		case 1:
 			if(stepOneSelection.equals(Classification.VERSION)){
 				if(!titleChanged || !descriptionChanged){
-					if(!moveForced)showError("Finish Step One First!");
+					if(!moveForced)showError(Labels.get(NewProposalWindow.class, "incomplete_step"));
 					return false;
 				}
 				else{
@@ -2002,7 +2002,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			}
 			else{
 				if(!versionDescriptionChanged){
-					if(!moveForced)showError("Finish Step One First!");
+					if(!moveForced)showError(Labels.get(NewProposalWindow.class, "incomplete_step"));
 					return false;
 				}
 				else{
@@ -2013,7 +2013,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			}
 		case 2:
 			if(!modelIsLoaded || !locationIsSet){
-				if(!moveForced)showError("Finish Step Two First!");
+				if(!moveForced)showError(Labels.get(NewProposalWindow.class, "incomplete_step"));
 				return false;
 			}
 			statusTwo.setPixmap(green);
@@ -2023,7 +2023,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			return true;
 			/*
 			if(!positionTweaked){
-				if(!moveForced)showError("Finish Step Three First!");
+				if(!moveForced)showError(Labels.get(NewProposalWindow.class, "incomplete_step"));
 				return false;
 			}
 			else{
@@ -2034,7 +2034,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			 */
 		case 4:
 			if(!pictureTakenAndAccepted){
-				if(!moveForced)showError("Finish Step Four First!");
+				if(!moveForced)showError(Labels.get(NewProposalWindow.class, "incomplete_step"));
 				return false;
 			}
 			else{
@@ -2044,7 +2044,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			}
 		case 5:
 			if(groupSelected && !groupEntered){
-				if(!moveForced)showError("Finish Step Five First!");
+				if(!moveForced)showError(Labels.get(NewProposalWindow.class, "incomplete_step"));
 				return false;
 			}
 			else{

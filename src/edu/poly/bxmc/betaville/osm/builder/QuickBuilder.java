@@ -36,6 +36,7 @@ import org.jdom.JDOMException;
 
 import com.jme.scene.Spatial;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.jme.exporters.ColladaExporter;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -65,7 +66,7 @@ public class QuickBuilder extends PanelAction {
 	 * 
 	 */
 	public QuickBuilder() {
-		super("Build OSM", "Builds an OSM road", "Build OSM", AvailabilityRule.ALWAYS, UserType.MEMBER,
+		super(Labels.get(QuickBuilder.class, "title"), "Builds an OSM road", Labels.get(QuickBuilder.class, "title"), AvailabilityRule.ALWAYS, UserType.MEMBER,
 				null);
 		getButton().addButtonPressedListener(new IButtonPressedListener() {
 			

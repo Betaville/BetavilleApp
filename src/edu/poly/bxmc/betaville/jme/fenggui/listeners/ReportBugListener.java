@@ -37,7 +37,7 @@ import com.centerkey.utils.BareBonesBrowserLaunch;
  */
 public class ReportBugListener implements IButtonPressedListener {
 	
-	private final String bugLink = "http:/bugzilla.betaville.net/enter_bug.cgi?product=Betaville";
+	private final String bugLink = "mailto:info@betaville.net";
 
 	/* (non-Javadoc)
 	 * @see org.fenggui.event.IButtonPressedListener#buttonPressed(java.lang.Object, org.fenggui.event.ButtonPressedEvent)

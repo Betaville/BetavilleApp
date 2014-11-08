@@ -6,6 +6,7 @@ package edu.poly.bxmc.betaville.jme.fenggui.panel;
 import org.apache.log4j.Logger;
 
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.BetavilleNoCanvas;
 import edu.poly.bxmc.betaville.jme.fenggui.PerformanceWindow;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
@@ -22,7 +23,7 @@ public class PerformancePanelAction extends OnOffPanelAction {
 	private static final Logger logger = Logger.getLogger(PerformancePanelAction.class);
 
 	public PerformancePanelAction() {
-		super("Performance", "Performance Data", AvailabilityRule.ALWAYS, UserType.MEMBER, false, PerformanceWindow.class, false);
+		super(Labels.get(PerformancePanelAction.class, "title"), "Performance Data", AvailabilityRule.ALWAYS, UserType.MEMBER, false, PerformanceWindow.class, false);
 
 		BetavilleNoCanvas.addCompletionListener(new IAppInitializationCompleteListener() {
 

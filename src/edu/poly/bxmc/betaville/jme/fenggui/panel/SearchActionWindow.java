@@ -169,7 +169,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 		createGeonamesOptions();
 
 		search = FengGUI.createWidget(FixedButton.class);
-		search.setText(Labels.get("Generic.search"));
+		search.setText(Labels.get("Generic.search")+"...");
 		search.setEnabled(false);
 		search.addButtonPressedListener(new IButtonPressedListener() {
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
@@ -244,7 +244,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 						}
 						// search post-processing
 						setTitle(MessageFormat.format(Labels.get(this.getClass().getSimpleName()+".results_title"), results.size()));
-						search.setText(Labels.get("Generic.search"));
+						search.setText(Labels.get("Generic.search")+"...");
 
 						resultsContainer.removeAllWidgets();
 						for(SearchResult result : results){

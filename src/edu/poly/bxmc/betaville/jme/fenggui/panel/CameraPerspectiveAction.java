@@ -30,6 +30,7 @@ import org.fenggui.event.IButtonPressedListener;
 
 import com.jme.math.Vector3f;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.jme.gamestates.SceneGameState;
 import edu.poly.bxmc.betaville.model.IUser.UserType;
 import edu.poly.bxmc.betaville.module.PanelAction;
@@ -49,7 +50,7 @@ public class CameraPerspectiveAction extends PanelAction {
 	 * @param listener
 	 */
 	public CameraPerspectiveAction() {
-		super("Camera Perspective", "Change the perspective of the camera", "Camera Perspective", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER,
+		super(Labels.get(CameraPerspectiveAction.class, "title"), "Change the perspective of the camera", Labels.get(CameraPerspectiveAction.class, "title"), AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER,
 				new IButtonPressedListener() {
 					
 					public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {

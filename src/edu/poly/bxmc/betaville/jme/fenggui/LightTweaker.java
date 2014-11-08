@@ -171,7 +171,7 @@ public class LightTweaker extends Window implements IBetavilleWindow, IPanelOnSc
 	 * @see edu.poly.bxmc.betaville.jme.fenggui.IBetavilleWindow#finishSetup()
 	 */
 	public void finishSetup(){
-		setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
+		setTitle(Labels.get(this.getClass(), "title"));
 		setSize(targetWidth, targetHeight);
 	}
 

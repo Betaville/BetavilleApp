@@ -55,8 +55,8 @@ public class UnlockFromTerrain extends PanelAction {
 	 * 
 	 */
 	public UnlockFromTerrain() {
-		super("Unlock From Terrain", "Unlocks an object from the terrain",
-				"Unlock From Terrain", AvailabilityRule.IGNORE,
+		super(Labels.get(UnlockFromTerrain.class, "title"), "Unlocks an object from the terrain",
+				Labels.get(UnlockFromTerrain.class, "title"), AvailabilityRule.IGNORE,
 				UserType.BASE_COMMITTER,null);
 		
 		// turned off by default

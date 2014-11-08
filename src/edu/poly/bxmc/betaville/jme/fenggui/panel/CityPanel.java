@@ -144,8 +144,8 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new ExportAction());
 		addAction(new CameraPerspectiveAction());
 		//addAction(new TranslucentPanelAction());
-		addAction(new OnOffPanelAction("Move Object", "Moving objects in the scene", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ModelMover.class, false));
-		addAction(new OnOffPanelAction("Pointer Location", "Shows the mouse's position in the scene", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DisplayMouseGroundPosition.class, false));
+		addAction(new OnOffPanelAction(Labels.get(ModelMover.class, "title"), "Moving objects in the scene", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, ModelMover.class, false));
+		addAction(new OnOffPanelAction(Labels.get(DisplayMouseGroundPosition.class, "title"), "Shows the mouse's position in the scene", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DisplayMouseGroundPosition.class, false));
 		addAction(new OnOffPanelAction(Labels.get(MeasureTool.class, "title"), "Measures the distance between two points", AvailabilityRule.ALWAYS, UserType.MEMBER, false, MeasureTool.class, false));
 		addAction(new OnOffPanelAction(Labels.get(LightTweaker.class, "title"), "Light tweaking functionality", AvailabilityRule.ALWAYS, UserType.BASE_COMMITTER, false, LightTweaker.class, false));
 		addAction(new OnOffPanelAction(Labels.get(DetailedInfoAction.class, "title"), "Details about the selected model", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DetailedInfoAction.class, false));
@@ -159,7 +159,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		//addAction(new OnOffPanelAction("Edit Building", "Edit existing building", AvailabilityRule.OBJECT_SELECTED, UserType.MEMBER, false, EditBuildingWindow.class, false));
 		addAction(new OnOffPanelAction(Labels.get(PluginManagerUI.class, "title"), "Install Plugins", AvailabilityRule.ALWAYS, UserType.MEMBER, false, PluginManagerUI.class, false));
 		addAction(new PerformancePanelAction());
-		addAction(new PanelAction(Labels.get(CityPanel.class, "toggle_shaddows"), "Shadows", new IButtonPressedListener() {
+		addAction(new PanelAction(Labels.get(CityPanel.class, "toggle_shadows"), "Shadows", new IButtonPressedListener() {
 
 			public void buttonPressed(Object arg0, ButtonPressedEvent arg1) {
 				ShadowPassState.getInstance().toggleMapPass();
