@@ -50,6 +50,7 @@ import com.jmex.game.state.load.LoadingGameState;
 
 import edu.poly.bxmc.betaville.IAppInitializationCompleteListener;
 import edu.poly.bxmc.betaville.KioskMode;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.flags.DesktopFlagPositionStrategy;
 import edu.poly.bxmc.betaville.flags.FlagProducer;
@@ -371,7 +372,7 @@ public class BetavilleNoCanvas {
 		transitionGameState.setProgress(0, "Getting Design Data");
 		transitionGameState.setActive(true);
 
-		transitionGameState.setProgress(0.03f, "Loading Preferences");
+		transitionGameState.setProgress(0.03f, Labels.get("Loading.preferences"));
 
 		try {
 			List<City> cities = NetPool.getPool().getConnection().findAllCities();
@@ -390,8 +391,6 @@ public class BetavilleNoCanvas {
 			e1.printStackTrace();
 		}
 
-
-		transitionGameState.setProgress(0.05f, "Initializing Scene");
 
 		sceneGameState = new SceneGameState("sceneGameState", cameraStartPosition);
 		GameStateManager.getInstance().attachChild(sceneGameState);
@@ -436,21 +435,17 @@ public class BetavilleNoCanvas {
 		 * waterGameState.setActive(false); }
 		 */
 
-		transitionGameState.setProgress(0.81f, "Drawing Shadows");
-
 		shadowPassState = new ShadowPassState("shadowPassState");
 		GameStateManager.getInstance().attachChild(shadowPassState);
 		shadowPassState.setActive(false);
 
-		transitionGameState.setProgress(0.90f, "Setting Up Sounds");
+		transitionGameState.setProgress(0.90f, Labels.get("Loading.sounds"));
 
 		soundGameState = new SoundGameState("soundGameState");
 		GameStateManager.getInstance().attachChild(soundGameState);
 		soundGameState.setActive(false);
 
-		// transitionGameState.setProgress(0.94f, "Making Pretty Water");
-
-		transitionGameState.setProgress(0.97f, "Making Pretty Interface");
+		transitionGameState.setProgress(0.97f, Labels.get("Loading.interface"));
 
 		guiGameState = new GUIGameState("guiGameState");
 		GameStateManager.getInstance().attachChild(guiGameState);

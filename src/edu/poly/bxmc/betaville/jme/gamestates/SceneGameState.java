@@ -76,6 +76,7 @@ import com.jmex.model.collada.GoogleEarthPlugin;
 import com.jmex.terrain.TerrainBlock;
 
 import edu.poly.bxmc.betaville.CacheManager;
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
@@ -271,7 +272,7 @@ public class SceneGameState extends BasicGameState {
 		cameraInitialization();
 
 		transitionGameState = (LoadingGameState)GameStateManager.getInstance().getChild("transitionGameState");
-		transitionGameState.setProgress(0.06f, "Creating Sky");
+		transitionGameState.setProgress(0.06f, Labels.get("Loading.sky"));
 
 		setupGroundBox();
 
@@ -279,17 +280,13 @@ public class SceneGameState extends BasicGameState {
 		if(skyboxOn)
 			buildSkybox();
 
-		transitionGameState.setProgress(0.07f, "Starting Weather");
-
 		// build fog
 		if(SettingsPreferences.isFogEnabled()) setupFog();
-
-		transitionGameState.setProgress(0.09f, "Setting Up Lights");
 
 		// build lighting
 		buildLights();
 
-		transitionGameState.setProgress(0.10f, "Loading Terrain");
+		transitionGameState.setProgress(0.10f, Labels.get("Loading.terrain"));
 
 		//designNode.lockBounds();
 		//designNode.lockTransforms();

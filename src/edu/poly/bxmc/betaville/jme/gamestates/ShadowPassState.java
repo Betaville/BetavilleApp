@@ -73,9 +73,6 @@ public class ShadowPassState extends GameState {
 		setName(name);
 		passManager = new BasicPassManager();
 
-		// The shadow pass renders the shadow volumes for the scene.
-		((LoadingGameState)GameStateManager.getInstance().getChild("transitionGameState")).setProgress(0.82f, "Adding Occluders");
-
 		Future<ShadowedRenderPass> future = GameTaskQueueManager.getManager().update(new Callable<ShadowedRenderPass>() {
 			public ShadowedRenderPass call() throws Exception {
 				shadowPass = new ShadowedRenderPass();
