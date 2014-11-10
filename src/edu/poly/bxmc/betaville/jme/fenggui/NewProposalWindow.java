@@ -271,7 +271,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 	private  RadioButton<String> permissionsOpen;
 	private  RadioButton<String> permissionsGroup;
 	private TextEditor groupList;
-	private String defaultGroupListText="username, username,...";
+	private String defaultGroupListText=Labels.get(NewProposalWindow.class, "username_list");
 	private ComboBox permissionsCombo;
 	private FixedButton upload;
 	private boolean verifyingNames=false;
@@ -1296,7 +1296,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		permissionsCombo.addSelectionChangedListener(new ISelectionChangedListener(){
 			public void selectionChanged(Object sender,
 					SelectionChangedEvent selectionChangedEvent) {
-				if(permissionsCombo.getSelectedValue().equals("editable by these users:")){
+				if(permissionsCombo.getSelectedValue().equals(Labels.get(this.getClass(), "editable_by_these")+":")){
 					groupList.setEnabled(true);
 				}
 				else{
@@ -1328,7 +1328,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 							// handle permissions
 							ProposalPermission permission=null;
 							if(stepOneSelection.equals(Classification.PROPOSAL)){
-								if(permissionsCombo.getSelectedValue().equals("editable by these users:")){
+								if(permissionsCombo.getSelectedValue().equals(Labels.get(this.getClass(), "editable_by_these")+":")){
 
 									if(!verifyGroupNames()){
 										return;
@@ -1343,7 +1343,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 									}
 
 								}
-								else if (permissionsCombo.getSelectedValue().equals("editable by anyone")){
+								else if (permissionsCombo.getSelectedValue().equals(Labels.get(this.getClass(), "editable_by_anyone"))){
 									permission = new ProposalPermission(Type.ALL, null);
 								}
 								else{
