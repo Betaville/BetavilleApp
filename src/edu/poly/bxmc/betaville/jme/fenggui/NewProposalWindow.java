@@ -800,10 +800,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						// flash an error if the file is larger than 5mb
 						if(file.length()>5000000){
 							logger.warn(file.toString()+" is "+file.length()+"bytes.  This is rather large");
-
+							
 							GUIGameState.getInstance().getDisp().addWidget(
-									FengUtils.createDismissableWindow("Betaville", "The selected file is rather large, at "+
-											(file.length()/1000000f)+"MB, why don't you see if you can't get that down a bit?", Labels.get("Generic.ok"), false));
+									FengUtils.createDismissableWindow("Betaville", MessageFormat.format(Labels.get(this.getClass().getSimpleName()+".too_big_error"), (file.length()/1000000f)), Labels.get("Generic.ok"), false));
 
 						}
 
@@ -828,8 +827,8 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		});
 
 		textureSelector = FengGUI.createWidget(ComboBox.class);
-		textureSelector.addItem("Textured");
-		textureSelector.addItem("Untextured");
+		textureSelector.addItem(Labels.get(NewProposalWindow.class, "textures_on"));
+		textureSelector.addItem(Labels.get(NewProposalWindow.class, "textures_off"));
 		textureSelector.setSize(textureSelector.getWidth()+5, browseButton.getHeight());
 		textureSelector.setXY(FengUtils.midWidth(stepTwo, textureSelector), tripletY);
 
@@ -883,7 +882,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				try {
 					coordinate = createCoordinate();
 				} catch (NumberFormatException e1) {
-					FengUtils.showNewDismissableWindow("Betaville", "Make sure you've set coordinates for your item!", Labels.get("Generic.ok"), true);
+					FengUtils.showNewDismissableWindow("Betaville", Labels.get(NewProposalWindow.class, "no_coordinates_error"), Labels.get("Generic.ok"), true);
 				}
 
 				if(coordinate!=null){
