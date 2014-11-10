@@ -624,10 +624,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 		String urlTag=null;
 		switch (stepOneSelection) {
 		case BASE:
-			titleTag = "Base Model Name";
-			descTag = "Base Model Description";
-			addrTag = "Base Model Address (Optional)";
-			urlTag = "Base Model URL (Optional)";
+			titleTag = Labels.get(NewProposalWindow.class, "base_title_prompt");
+			descTag = Labels.get(NewProposalWindow.class, "base_description_prompt");
+			addrTag = Labels.get(NewProposalWindow.class, "proposal_address_prompt");
+			urlTag = Labels.get(NewProposalWindow.class, "proposal_url_prompt");
 			break;
 		case PROPOSAL:
 			titleTag = proposalTitleDefaultContent;
@@ -636,10 +636,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			urlTag = proposalURLDefaultContent;
 			break;
 		case VERSION:
-			titleTag = "Version Model Name";
-			descTag = "Version Model Description";
-			addrTag = "Version Model Address (Optional)";
-			urlTag = "Version Model URL (Optional)";
+			titleTag = Labels.get(NewProposalWindow.class, "version_title_prompt");
+			descTag = Labels.get(NewProposalWindow.class, "version_description_prompt");
+			addrTag = Labels.get(NewProposalWindow.class, "proposal_address_prompt");
+			urlTag = Labels.get(NewProposalWindow.class, "proposal_url_prompt");
 			break;
 		}
 		proposalTitle.setText(titleTag);
@@ -1288,9 +1288,9 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 			}});
 
 		permissionsCombo = FengGUI.createWidget(ComboBox.class);
-		permissionsCombo.addItem("editable by creator only");
-		permissionsCombo.addItem("editable by anyone");
-		permissionsCombo.addItem("editable by these users:");
+		permissionsCombo.addItem(Labels.get(this.getClass(), "editable_by_creator"));
+		permissionsCombo.addItem(Labels.get(this.getClass(), "editable_by_anyone"));
+		permissionsCombo.addItem(Labels.get(this.getClass(), "editable_by_these")+":");
 		permissionsCombo.setWidth(stepFive.getWidth()-50);
 		permissionsCombo.setXY(FengUtils.midWidth(stepFive, permissionsCombo), shareIt.getY()-permissionsCombo.getHeight()-offset);
 		permissionsCombo.addSelectionChangedListener(new ISelectionChangedListener(){
