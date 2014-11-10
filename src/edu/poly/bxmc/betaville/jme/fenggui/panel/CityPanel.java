@@ -195,8 +195,8 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		delete.addButtonPressedListener(new IButtonPressedListener() {
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
-				Window window = FengUtils.createTwoOptionWindow("Delete", "Are you sure that you would like to delete this design?",
-						Labels.get("Generic.no"), Labels.get("Generic.yes"),
+				Window window = FengUtils.createTwoOptionWindow(Labels.generic("delete"), Labels.get(CityPanel.class, "delete_confirm"),
+						Labels.generic("no"), Labels.generic("yes"),
 						new IButtonPressedListener() {
 					public void buttonPressed(Object source, ButtonPressedEvent e) {
 

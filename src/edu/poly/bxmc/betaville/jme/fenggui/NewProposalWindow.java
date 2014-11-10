@@ -1458,7 +1458,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 								// we need to reset or clearthe target spatial here in accordance with its new name
 								SceneScape.clearTargetSpatial();
 
-								showSimpleError("Success!");
+								showSimpleError(Labels.generic("success"));
 								logger.info("Added design: " + response);
 								currentNewProposalWindow.close();
 							}

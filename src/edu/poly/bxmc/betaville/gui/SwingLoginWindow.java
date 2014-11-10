@@ -611,7 +611,7 @@ public class SwingLoginWindow extends JFrame{
 				}
 				try {
 					if(NetPool.getPool().getSecureConnection().addUser(registerAccountUserField.getText(), registerAccountPasswordField.getText(), registerAccountEmailField.getText(), "", "")){
-						flashDialog(Labels.get(SwingLoginWindow.class, "success"), false);
+						flashDialog(Labels.get(SwingLoginWindow.class, Labels.generic("success")), false);
 						setContentPane(loginPanel);
 						validate();
 					}
