@@ -213,7 +213,6 @@
 	    <signjar jar="lib/timingframework/TimingFramework-1.0.jar"		alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
 	    <signjar jar="lib/ogg-video-codec.jar"							alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
 		<signjar jar="lib/AppleJavaExtensions/AppleJavaExtensions.jar"	alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
-	    <signjar jar="webstart/native.jar"								alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
 	    <signjar jar="webstart/windows-native.jar"						alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
 	    <signjar jar="webstart/mac-native.jar"							alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
 	    <signjar jar="webstart/linux-native.jar"						alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
