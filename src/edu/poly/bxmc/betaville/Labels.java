@@ -1,7 +1,5 @@
 package edu.poly.bxmc.betaville;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Locale;
@@ -22,13 +20,8 @@ public class Labels {
 	private static ResourceBundle bundle;
 
 	static{
-		File file = new File("data/localization");
-		try {
-			ClassLoader bundleLoader = new URLClassLoader(new URL[]{file.toURI().toURL()});
-			bundle = ResourceBundle.getBundle("Labels", Locale.getDefault(), bundleLoader);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		ClassLoader bundleLoader = new URLClassLoader(new URL[]{ResourceLoader.loadResource("/data/localization/")});
+		bundle = ResourceBundle.getBundle("Labels", Locale.getDefault(), bundleLoader);
 	}
 
 	public static String get(String key){
