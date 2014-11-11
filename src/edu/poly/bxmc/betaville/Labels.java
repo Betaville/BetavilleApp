@@ -20,6 +20,8 @@ public class Labels {
 	private static ResourceBundle bundle;
 
 	static{
+		logger.info("System Default Locale\t"+Locale.getDefault());
+		logger.info("JVM: user.language\t"+System.getProperty("user.language"));
 		ClassLoader bundleLoader = new URLClassLoader(new URL[]{ResourceLoader.loadResource("/data/localization/")});
 		bundle = ResourceBundle.getBundle("Labels", Locale.getDefault(), bundleLoader);
 	}
