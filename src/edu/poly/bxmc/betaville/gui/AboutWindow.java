@@ -52,7 +52,7 @@ public class AboutWindow extends JFrame {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx=0;
 		c.gridy=0;
-		add(new JLabel("Betaville is open-source software"), c);
+		add(new JLabel("Betaville is open source software"), c);
 		c.gridy++;
 		add(new JLabel("Copyright 2008-2011 Brooklyn eXperimental Media Center"), c);
 		c.gridy++;
