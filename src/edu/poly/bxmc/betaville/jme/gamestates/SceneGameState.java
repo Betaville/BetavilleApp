@@ -109,6 +109,7 @@ import edu.poly.bxmc.betaville.proposals.LiveProposalManager;
  * Creates the Betaville application's 3D content layer.
  * @author Skye Book
  * @author Caroline Bouchat
+ * @author Carl Skelton
  */
 public class SceneGameState extends BasicGameState {
 	private static Logger logger = Logger.getLogger(SceneGameState.class);
@@ -132,7 +133,7 @@ public class SceneGameState extends BasicGameState {
 
 	private static double MOVE_ACCELERATION_TIME = 5000.0;
 
-	public static final float NEAR_FRUSTUM = Scale.fromMeter(1f);
+	public static final float NEAR_FRUSTUM = Scale.fromMeter(3f);
 	public static final float FAR_FRUSTUM = (int) Scale.fromMeter(35000);
 
 
