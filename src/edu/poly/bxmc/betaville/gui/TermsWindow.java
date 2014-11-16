@@ -46,6 +46,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
+import edu.poly.bxmc.betaville.Labels;
 import edu.poly.bxmc.betaville.ResourceLoader;
 import edu.poly.bxmc.betaville.xml.UpdatedPreferenceWriter;
 
@@ -69,7 +70,7 @@ public class TermsWindow extends JFrame {
 	 * @throws HeadlessException
 	 */
 	public TermsWindow(String licenseName, String licenseLink, URL licenseFile, String licenseUse) throws HeadlessException {
-		super("Terms of Use");
+		super(Labels.get(TermsWindow.class, "title"));
 		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
