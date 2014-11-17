@@ -99,7 +99,7 @@ public class SearchActionWindow extends Window implements IBetavilleWindow {
 	private ComboBox searchType;
 
 	private TextEditor searchEditor;
-	private final String emptySearchText = Labels.get(SearchActionWindow.class, "prompt");
+	private String emptySearchText = Labels.get(SearchActionWindow.class, "prompt") + "...";
 
 	private Container geonamesOptions;
 	private CheckBox<Boolean> searchAll;

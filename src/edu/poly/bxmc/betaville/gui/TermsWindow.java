@@ -61,6 +61,11 @@ public class TermsWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(TermsWindow.class);
 	
+	private static final String licenseName = "Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)";
+	private static final String licenseLink = "http://creativecommons.org/licenses/by-sa/3.0/";
+	private static final URL licenseFile = ResourceLoader.loadResource("/data/license/by-sa.html");
+	private static final String licenseUse = "Betaville Content License";
+	
 	private int declineCounter=0;
 	private int declineLimit=3;
 	
@@ -69,9 +74,8 @@ public class TermsWindow extends JFrame {
 	/**
 	 * @throws HeadlessException
 	 */
-	public TermsWindow(String licenseName, String licenseLink, URL licenseFile, String licenseUse) throws HeadlessException {
+	public TermsWindow() throws HeadlessException {
 		super(Labels.get(TermsWindow.class, "title"));
-		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
@@ -208,7 +212,7 @@ public class TermsWindow extends JFrame {
 			
 			@Override
 			public void run() {
-				TermsWindow tw = new TermsWindow("Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)", "http://creativecommons.org/licenses/by-sa/3.0/", ResourceLoader.loadResource("/data/license/by-sa.html"), "Betaville Content License");
+				TermsWindow tw = new TermsWindow();
 				tw.setVisible(true);
 			}
 		});

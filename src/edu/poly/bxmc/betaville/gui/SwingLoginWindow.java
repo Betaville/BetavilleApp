@@ -366,10 +366,7 @@ public class SwingLoginWindow extends JFrame{
 				// check that the terms have been accepted first
 				if(!Boolean.parseBoolean(System.getProperty("betaville.license.content.agree"))){
 					// agree to the license
-					TermsWindow contentLicenseWindow = new TermsWindow("Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)",
-							"http://creativecommons.org/licenses/by-sa/3.0/",
-							ResourceLoader.loadResource("/data/license/by-sa.html"),
-							"Betaville Content License");
+					TermsWindow contentLicenseWindow = new TermsWindow();
 					contentLicenseWindow.setVisible(true);
 					contentLicenseWindow.addTermsAcceptedListener(new TermsAcceptedListener() {
 

@@ -98,7 +98,7 @@ public class ExportAction extends PanelAction {
 	 * @param listener
 	 */
 	public ExportAction() {
-		super(Labels.generic("export"), "Exports a 3D object", "Export", AvailabilityRule.OBJECT_SELECTED, UserType.MODERATOR, null);
+		super(Labels.get(ExportAction.class, "export"), "Exports a 3D object", Labels.get(ExportAction.class, "export"), AvailabilityRule.OBJECT_SELECTED, UserType.MODERATOR, null);
 
 		getButton().addButtonPressedListener(new IButtonPressedListener() {
 
