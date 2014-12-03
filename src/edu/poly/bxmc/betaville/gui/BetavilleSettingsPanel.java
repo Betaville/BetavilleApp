@@ -386,7 +386,7 @@ public class BetavilleSettingsPanel extends JFrame{
 		}
 
 		public String toString(){
-			return dimension.getWidth()+"x"+dimension.getHeight();
+			return (int)dimension.getWidth()+"x"+(int)dimension.getHeight();
 		}
 	}
 
