@@ -5,7 +5,7 @@
 			<author>Carl Skelton</author>
 			<author>Skye Book</author>
 		</authors>
-		<title>Trouvez et Changez les Infos</title>
+		<title>Trouver et Changer les Infos</title>
 		<date>12-22-2010</date>
 		<default>
 			<font>verdana</font>
@@ -27,7 +27,7 @@
 		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide">
 			<title size="10" color="0 0 0 255">Bienvenue > Trouver/Editer les Infos</title>
 			<image>findedit_c.png</image>
-			<caption>C. Lisez et/ou Editez (certaines sont lecture seule)</caption>
+			<caption>C. Lire et/ou Editer (certaines sont lecture seule)</caption>
 		</slide>
 	</slides>
 </slidedeck>

@@ -25,9 +25,9 @@
 		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
 			<title size="10" color="0 0 0 255">Editeur de Quartiers virtuels</title>
 			<bullets>
-				<bullet>Circulez</bullet>
-				<bullet>Discutez</bullet>
-				<bullet>Créez</bullet>
+				<bullet>Circuler</bullet>
+				<bullet>Discuter</bullet>
+				<bullet>Créer</bullet>
 			</bullets>
 		</slide>
 	</slides>

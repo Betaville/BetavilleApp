@@ -5,7 +5,7 @@
 			<author>Skye Book</author>
 			<author>Carl Skelton</author>
 		</authors>
-		<title>Affichez un Commentaire</title>
+		<title>Afficher un Commentaire</title>
 		<date>12-28-2010</date>
 		<default>
 			<font>verdana</font>
@@ -15,17 +15,17 @@
 	</properties>
 	<slides>
 		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide">
-			<title size="10" color="0 0 0 255">Bienvenue > affichez un commentaire</title>
+			<title size="10" color="0 0 0 255">Bienvenue > afficher un commentaire</title>
 			<image>findedit_a.png</image>
-			<caption>A. Sélectionnez un Objet (il deviendra jaune)</caption>
+			<caption>A. Sélectionner un Objet (il deviendra jaune)</caption>
 		</slide>
 		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.ImageSlide">
-			<title size="10" color="0 0 0 255">Bienvenue > affichez un commentaire</title>
+			<title size="10" color="0 0 0 255">Bienvenue > afficher un commentaire</title>
 			<image>findedit_b.png</image>
 			<caption>B. Clic-droite ou Clic-Ctrl (un menu apparaîtra comme ceci)</caption>
 		</slide>
 		<slide type="edu.poly.bxmc.betaville.jme.fenggui.tutorial.TextSlide">
-			<title size="10" color="0 0 0 255">Bienvenue > affichez un commentaire</title>
+			<title size="10" color="0 0 0 255">Bienvenue > afficher un commentaire</title>
 			<bullets>
 				<bullet>Echangeons nos idées…</bullet>
 				<bullet>avec franchise,</bullet>
