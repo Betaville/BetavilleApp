@@ -151,9 +151,10 @@ public class BetavilleSettingsPanel extends JFrame{
 		add(new JLabel(Labels.get(this.getClass(), "load_textures")), c);
 		c.gridx=1;
 		c.gridy+=1;
-		add(alwaysShow, c);
+		// 2 December 2014, changed to not show the checkbox or label for alwaysShow since we always show the dialog now
+		//add(alwaysShow, c);
 		c.gridx=0;
-		add(new JLabel(Labels.get(this.getClass(), "always_show")), c);
+		//add(new JLabel(Labels.get(this.getClass(), "always_show")), c);
 		c.gridx=1;
 
 		okButton = new JButton(Labels.get("Generic.ok"));

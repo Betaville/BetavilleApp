@@ -299,21 +299,10 @@ public class BetavilleNoCanvas {
 			}
 		});
 
-		// If there's a bad resolution value, or its set to always show, show
-		// the options prompt
-		if (!validateResolutionString(System
-				.getProperty("betaville.display.resolution"))
-				|| SettingsPreferences.alwaysShowSettings()) {
-			if (BetavilleSettingsPanel.prompt(game.getSettings(),
-					"Betaville Settings")) {
-				logger.warn("Display settings set");
-			}
-		} else {
-			// load the resolution already there
-			String[] widthHeight = SettingsPreferences.getResolution().split(
-					"x");
-			game.getSettings().setWidth(Integer.parseInt(widthHeight[0]));
-			game.getSettings().setHeight(Integer.parseInt(widthHeight[1]));
+		// Always show settings panel
+		if (BetavilleSettingsPanel.prompt(game.getSettings(),
+				"Betaville Settings")) {
+			logger.warn("Display settings set");
 		}
 
 		if(!SettingsPreferences.guestMode()) SwingLoginWindow.prompt();
