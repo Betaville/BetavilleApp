@@ -184,11 +184,11 @@ public class NavContainer extends Container {
 							int response = NetPool.getPool().getSecureConnection().faveDesign(SceneScape.getPickedDesign().getID());
 							if(response==0){
 								FengUtils.showNewDismissableWindow("Betaville",
-										"Faved!", Labels.get("Generic.ok"), true);
+										Labels.get(NavContainer.class, "faved"), Labels.get("Generic.ok"), true);
 							}
 							else if(response == -2){
 								FengUtils.showNewDismissableWindow("Betaville",
-										"You have already favorited this item!", Labels.get("Generic.ok"), true);
+										Labels.get(NavContainer.class, "already_faved"), Labels.get("Generic.ok"), true);
 							}
 						} catch (UnknownHostException e) {
 							// TODO Auto-generated catch block
