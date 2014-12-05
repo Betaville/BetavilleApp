@@ -85,6 +85,7 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.AcceptedModelFilter;
 import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
+import edu.poly.bxmc.betaville.gui.JFileChooserDialog;
 import edu.poly.bxmc.betaville.gui.WavefrontFileFilter;
 import edu.poly.bxmc.betaville.jme.fenggui.MakeRoomWindow.IFinishedListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
@@ -785,18 +786,23 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				SettingsPreferences.getThreadPool().submit(new Runnable() {
 
 					public void run() {
-						JDialog dialog = new JDialog();
-						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
+						JFileChooserDialog fileChooser = new JFileChooserDialog();
+						fileChooser.setCurrentDirectory(SettingsPreferences.BROWSER_LOCATION);
 						AcceptedModelFilter modelFilter = new AcceptedModelFilter();
 						fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
 						fileChooser.addChoosableFileFilter(modelFilter);
 						fileChooser.addChoosableFileFilter(new ColladaFileFilter());
 						fileChooser.addChoosableFileFilter(new WavefrontFileFilter());
 						fileChooser.setFileFilter(modelFilter);
+						
+						JDialog dialog = fileChooser.createDialog(null);
+						dialog.setAlwaysOnTop(true);
+						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+
+						fileChooser.setVisible(true);
 						fileChooser.showOpenDialog(dialog);
 						File file = fileChooser.getSelectedFile();
-
+						
 						// flash an error if the file is larger than 5mb
 						if(file.length()>5000000){
 							logger.warn(file.toString()+" is "+file.length()+"bytes.  This is rather large");
