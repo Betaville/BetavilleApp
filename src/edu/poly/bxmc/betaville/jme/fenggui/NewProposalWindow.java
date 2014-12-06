@@ -26,7 +26,9 @@
 package edu.poly.bxmc.betaville.jme.fenggui;
 
 import java.awt.Dialog.ModalityType;
+import java.awt.Frame;
 import java.awt.image.BufferedImage;
+import java.awt.FileDialog; 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -85,7 +87,6 @@ import edu.poly.bxmc.betaville.SceneScape;
 import edu.poly.bxmc.betaville.SettingsPreferences;
 import edu.poly.bxmc.betaville.gui.AcceptedModelFilter;
 import edu.poly.bxmc.betaville.gui.ColladaFileFilter;
-import edu.poly.bxmc.betaville.gui.JFileChooserDialog;
 import edu.poly.bxmc.betaville.gui.WavefrontFileFilter;
 import edu.poly.bxmc.betaville.jme.fenggui.MakeRoomWindow.IFinishedListener;
 import edu.poly.bxmc.betaville.jme.fenggui.extras.FengTextContentException;
@@ -784,25 +785,21 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 			public void buttonPressed(Object source, ButtonPressedEvent e) {
 				SettingsPreferences.getThreadPool().submit(new Runnable() {
-
 					public void run() {
-						JFileChooserDialog fileChooser = new JFileChooserDialog();
-						fileChooser.setCurrentDirectory(SettingsPreferences.BROWSER_LOCATION);
+						
+						/* clem dec 5 awt fix. 
+						JDialog dialog = new JDialog();
+						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
+						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
 						AcceptedModelFilter modelFilter = new AcceptedModelFilter();
 						fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
 						fileChooser.addChoosableFileFilter(modelFilter);
 						fileChooser.addChoosableFileFilter(new ColladaFileFilter());
 						fileChooser.addChoosableFileFilter(new WavefrontFileFilter());
 						fileChooser.setFileFilter(modelFilter);
-						
-						JDialog dialog = fileChooser.createDialog(null);
-						dialog.setAlwaysOnTop(true);
-						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-
-						fileChooser.setVisible(true);
 						fileChooser.showOpenDialog(dialog);
 						File file = fileChooser.getSelectedFile();
-						
+
 						// flash an error if the file is larger than 5mb
 						if(file.length()>5000000){
 							logger.warn(file.toString()+" is "+file.length()+"bytes.  This is rather large");
@@ -812,6 +809,30 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 						}
 
+						end clem */
+
+						
+						File file = null; 						
+						FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.LOAD);
+						fd.setFile("*.xml");
+						fd.setVisible(true);
+						String filename = fd.getFile();
+						if (filename == null) {
+						  System.out.println("You cancelled the choice");
+						} else {
+						  File[] fileArray = new File[2];
+						  fileArray = fd.getFiles();
+						  file = fileArray[0];
+						  System.out.println("You chose " + file.toString());
+						}
+						
+						try {
+							mediaURL = file.toURI().toURL();
+							System.out.println("File found: " + mediaURL.toString()); 
+							
+						} catch (MalformedURLException e) {
+							logger.warn("Problem occured when selecting from file browser", e);
+						}					
 						String pathToDisplay = file.toString();
 						if(pathToDisplay.contains("/")){
 							pathToDisplay = new String(pathToDisplay.substring(pathToDisplay.lastIndexOf("/")+1));
@@ -819,7 +840,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						else if(pathToDisplay.contains("\\")){
 							pathToDisplay = new String(pathToDisplay.substring(pathToDisplay.lastIndexOf("\\")+1));
 						}
-						SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
+						// clem SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
 						logger.info("path "+pathToDisplay);
 						mediaPath.setText(pathToDisplay);
 						try {
@@ -827,8 +848,11 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						} catch (MalformedURLException e) {
 							logger.warn("Problem occured when selecting from file browser", e);
 						}
+					
 					}
-				});
+					
+					}
+				);
 			}
 		});
 
@@ -876,7 +900,6 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 					url="None";
 				}
 				else url=FengUtils.getText(proposalURL);
-
 
 				if(mediaURL==null){
 					showSimpleError("No Media Selected!");
