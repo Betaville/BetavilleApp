@@ -797,7 +797,10 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 						fileChooser.addChoosableFileFilter(new ColladaFileFilter());
 						fileChooser.addChoosableFileFilter(new WavefrontFileFilter());
 						fileChooser.setFileFilter(modelFilter);
-						fileChooser.showOpenDialog(dialog);
+						
+						int returnVal = fileChooser.showOpenDialog(dialog);
+							System.out.println(" --- clem showOpenDialog returns " + returnVal);
+					
 						File file = fileChooser.getSelectedFile();
 
 						// flash an error if the file is larger than 5mb
@@ -813,23 +816,21 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 
 						
 						File file = null; 						
-						FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.LOAD);
+						FileDialog fd = new FileDialog(new Frame(), "Load a model", FileDialog.LOAD);
 						fd.setFile("*.xml");
 						fd.setVisible(true);
 						String filename = fd.getFile();
 						if (filename == null) {
-						  System.out.println("You cancelled the choice");
+							logger.warn("Cancelled file browser");
 						} else {
 						  File[] fileArray = new File[2];
 						  fileArray = fd.getFiles();
 						  file = fileArray[0];
-						  System.out.println("You chose " + file.toString());
+						  logger.warn("You chose " + file.toString());
 						}
 						
 						try {
-							mediaURL = file.toURI().toURL();
-							System.out.println("File found: " + mediaURL.toString()); 
-							
+							mediaURL = file.toURI().toURL();							
 						} catch (MalformedURLException e) {
 							logger.warn("Problem occured when selecting from file browser", e);
 						}					

@@ -256,9 +256,13 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 					e.printStackTrace();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
+				} catch (Error e) {
+					System.out.println("Default Exception - Model loading Issue");
 					e.printStackTrace();
+					
 				}
 			}
+			
 		});
 	}
 
