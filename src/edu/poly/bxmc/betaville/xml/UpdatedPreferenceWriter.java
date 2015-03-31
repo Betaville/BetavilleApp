@@ -55,7 +55,11 @@ public class UpdatedPreferenceWriter {
 		if(System.getProperty("betaville.display.fog.enabled")==null) System.setProperty("betaville.display.fog.enabled", "true");
 		if(System.getProperty("betaville.display.terrain.usegenerated")==null) System.setProperty("betaville.display.terrain.usegenerated", "false");
 		if(System.getProperty("betaville.sound.volume.master")==null) System.setProperty("betaville.sound.volume.master", "1.0");
-		if(System.getProperty("betaville.cache.location")==null) System.setProperty("betaville.cache.location", new File(DriveFinder.getHomeDir().toString()+"/.betaville/cache/").toURI().toURL().toString());
+		
+		String cache_location = new String("/.betaville/cache/");
+		if(System.getProperty("betaville.cache.location")==null) System.setProperty("betaville.cache.location", new File(DriveFinder.getHomeDir().toString() + cache_location).toURI().toURL().toString());		
+		System.out.println(" -->Writing default cache location:" + cache_location);
+		
 		if(System.getProperty("betaville.cache.size")==null) System.setProperty("betaville.cache.size", "300");
 		if(System.getProperty("betaville.server")==null)System.setProperty("betaville.server", "master.betaville.net");
 		if(System.getProperty("betaville.startup.showsettings")==null) System.setProperty("betaville.startup.showsettings", "true");
