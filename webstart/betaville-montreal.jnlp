@@ -110,6 +110,8 @@
     <nativelib href="linux-native.jar"/>
   </resources>
 
-  <application-desc main-class="edu.poly.bxmc.betaville.jme.BetavilleNoCanvas" />
+  <application-desc main-class="edu.poly.bxmc.betaville.jme.BetavilleNoCanvas"> 
+      <argument>{"server":"208.64.38.157:8080","location:thumnails":"208.64.38.157:14500/storage/design/thumbs","location:webservice":"208.64.38.157/service/service.php?"}</argument>          
+  </application-desc>
   <component-desc/>
 </jnlp>
