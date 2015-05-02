@@ -160,7 +160,7 @@
 				<attribute name="Codebase" value="*.betaville.net"/>
 			</manifest>
 		
-			<copy file="webstart/betaville.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>	
+			<copy file="webstart/montreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>	
 
 			<jar destfile="BetavilleApp.jar"
 				basedir="bin/"
