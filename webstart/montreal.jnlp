@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp spec="1.0+"
-      codebase="http://betaville.net/webstart"
-      href="betaville.jnlp">
+      codebase="http://208.64.38.157/webstart"
+      href="montreal.jnlp">
  
   <information>
     <title>Betaville</title>
