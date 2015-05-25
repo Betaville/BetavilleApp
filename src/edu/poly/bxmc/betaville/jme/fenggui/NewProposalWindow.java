@@ -1316,23 +1316,36 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				groupList.setEnabled(true);
 			}});
 
+		// bug per carl - May 17, 2015 
+		// multi user select broken. 
+		
 		permissionsCombo = FengGUI.createWidget(ComboBox.class);
 		permissionsCombo.addItem(Labels.get(this.getClass(), "editable_by_creator"));
 		permissionsCombo.addItem(Labels.get(this.getClass(), "editable_by_anyone"));
 		permissionsCombo.addItem(Labels.get(this.getClass(), "editable_by_these")+":");
+		
+		// this has to be set outside the inner class. clem may 21
+		final String editableByThese = Labels.get(this.getClass(), "editable_by_these");
+		
 		permissionsCombo.setWidth(stepFive.getWidth()-50);
 		permissionsCombo.setXY(FengUtils.midWidth(stepFive, permissionsCombo), shareIt.getY()-permissionsCombo.getHeight()-offset);
-		permissionsCombo.addSelectionChangedListener(new ISelectionChangedListener(){
+
+		permissionsCombo.addSelectionChangedListener(new ISelectionChangedListener(){			
+			
+			// clem may 21 - Carl bug groupList not enabled. 
 			public void selectionChanged(Object sender,
 					SelectionChangedEvent selectionChangedEvent) {
-				if(permissionsCombo.getSelectedValue().equals(Labels.get(this.getClass(), "editable_by_these")+":")){
+				if(permissionsCombo.getSelectedValue().equals(editableByThese + ":")){
+					// logger.info("Set 'editable_be_these' groupListEnabled.");
 					groupList.setEnabled(true);
 				}
-				else{
+				else{	
+					// logger.info(" preferences value --> " + editableByThese + ": ?= " + permissionsCombo.getSelectedValue() + " <---- control value");					
 					groupList.setEnabled(false);
 					groupList.setText(defaultGroupListText);
 				}
 			}
+			
 		});
 
 		groupList = FengGUI.createWidget(TextEditor.class);
