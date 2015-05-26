@@ -25,6 +25,8 @@
  */
 package edu.poly.bxmc.betaville.jme.fenggui;
 
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.Dialog.ModalityType;
 import java.io.File;
 import java.io.FileInputStream;
@@ -100,20 +102,46 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 			public void buttonPressed(Object source, ButtonPressedEvent e){
 
 				SettingsPreferences.getThreadPool().submit(new Runnable() {
-
+					
 					public void run() {
+						
+						logger.warn("  --> Button");
+
 						JDialog dialog = new JDialog();
 						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-						JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
-						AcceptedModelFilter modelFilter = new AcceptedModelFilter();
-						fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
-						fileChooser.addChoosableFileFilter(modelFilter);
-						fileChooser.addChoosableFileFilter(new ColladaFileFilter());
-						fileChooser.addChoosableFileFilter(new WavefrontFileFilter());
-						fileChooser.setFileFilter(modelFilter);
-						fileChooser.showOpenDialog(dialog);
-						File file = fileChooser.getSelectedFile();
+						// Clem may 25, 2015
+						// File browser won't appear. 
+						// JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
+						// AcceptedModelFilter modelFilter = new AcceptedModelFilter();
+						// fileChooser.removeChoosableFileFilter(fileChooser.getAcceptAllFileFilter());
+						// fileChooser.addChoosableFileFilter(modelFilter);
+						// fileChooser.addChoosableFileFilter(new ColladaFileFilter());
+						// fileChooser.addChoosableFileFilter(new WavefrontFileFilter());
+						// fileChooser.setFileFilter(modelFilter);
+						// fileChooser.showOpenDialog(dialog);
+						// File file = fileChooser.getSelectedFile();
 
+						File file = null; 						
+						FileDialog fd = new FileDialog(new Frame(), "Load a model", FileDialog.LOAD);
+						//fd.setFile("*.xml");
+						fd.setVisible(true);
+						String filename = fd.getFile();
+						if (filename == null) {
+							logger.warn("Cancelled file browser");
+						} else {
+						  File[] fileArray = new File[2];
+						  fileArray = fd.getFiles();
+						  file = fileArray[0];
+						  logger.warn("You chose " + file.toString());
+						}
+						
+						/*
+						try {
+							// mediaURL = file.toURI().toURL();							
+						} catch (MalformedURLException e) {
+							logger.warn("Problem occured when selecting from file browser", e);
+						}*/					
+						
 						// flash an error if the file is larger than 5mb
 						if(file.length()>5000000){
 							logger.warn(file.toString()+" is "+file.length()+"bytes.  This is rather large");
@@ -131,7 +159,9 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 						else if(pathToDisplay.contains("\\")){
 							pathToDisplay = new String(pathToDisplay.substring(pathToDisplay.lastIndexOf("\\")+1));
 						}
-						SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
+						
+						// clem may 20 2015
+						// SettingsPreferences.BROWSER_LOCATION = fileChooser.getCurrentDirectory();
 						logger.info("path "+pathToDisplay);
 						modelEditor.setText(pathToDisplay);
 						try {
