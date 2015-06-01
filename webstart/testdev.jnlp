@@ -2,7 +2,7 @@
 <jnlp spec="1.0+"
       codebase="http://testdev.metamagine.com/webstart"
       href="testdev.jnlp">
- 
+    
   <information>
     <title>Betaville</title>
     <vendor>Gotham Innovation Greenhouse</vendor>
