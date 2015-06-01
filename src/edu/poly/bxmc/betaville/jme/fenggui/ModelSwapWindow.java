@@ -36,7 +36,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
+//import javax.swing.JFileChooser;
 
 import org.apache.log4j.Logger;
 import org.fenggui.ComboBox;
@@ -105,11 +105,11 @@ public class ModelSwapWindow extends Window implements IBetavilleWindow {
 					
 					public void run() {
 						
-						logger.warn("  --> Button");
+						//logger.warn("  --> Button");
 
-						JDialog dialog = new JDialog();
-						dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 						// Clem may 25, 2015
+						// JDialog dialog = new JDialog();
+						// dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 						// File browser won't appear. 
 						// JFileChooser fileChooser = new JFileChooser(SettingsPreferences.BROWSER_LOCATION);
 						// AcceptedModelFilter modelFilter = new AcceptedModelFilter();

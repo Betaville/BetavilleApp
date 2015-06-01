@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -279,7 +280,12 @@ public class ModelLoader {
 				design.setFilepath(newFilename);
 			}
 			else{
-				fileout = new File(new URL(SettingsPreferences.getDataFolder()+"local/"+design.getFullIdentifier().replaceAll(" ", "")+".jme").toURI());
+				
+				// clem may28. 
+				// some characters illegal. 
+				// fileout = new File(new URL(SettingsPreferences.getDataFolder()+"local/"+design.getFullIdentifier().replaceAll(" ", "")+".jme").toURI());
+				fileout = new File(new URL(SettingsPreferences.getDataFolder() + "local/" + URLEncoder.encode(design.getFullIdentifier().replaceAll(" ", "")) + ".jme").toURI());
+
 				design.setFilepath(design.getFullIdentifier()+".jme");
 			}
 			fileout.getParentFile().mkdirs();

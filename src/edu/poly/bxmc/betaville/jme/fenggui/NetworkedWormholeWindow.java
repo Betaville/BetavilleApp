@@ -230,8 +230,13 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 		//citySelector.setEnabled(false);
 		SettingsPreferences.getGUIThreadPool().submit(new Runnable() {
 			public void run() {
-				if(currentlySearching.get()) return;
-				currentlySearching.set(true);
+												
+				/* clem removed this dec 15 2014.
+					seemed to be set but never reset to false. 
+					if(currentlySearching.get()) return;
+					currentlySearching.set(true);
+				*/
+				
 				logger.info("Looking for wormholes in city " + cityID);
 				try {
 					List<Wormhole> wormholes = NetPool.getPool().getConnection().getAllWormholesInCity(cityID);
@@ -250,7 +255,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 					// go back to normal status
 					//citySelector.setEnabled(true);
 					setTitle(Labels.get(this.getClass().getSimpleName()+".title"));
-					currentlySearching.set(false);
+					// clem currentlySearching.set(false);
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -261,6 +266,7 @@ public class NetworkedWormholeWindow extends Window implements IBetavilleWindow 
 					e.printStackTrace();
 					
 				}
+				
 			}
 			
 		});

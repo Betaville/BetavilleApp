@@ -153,6 +153,8 @@ public class SettingsPreferences {
 	public synchronized static URL getDataFolder(){
 		if(DATA_FOLDER==null){
 			try {
+				
+				System.out.println(" --> SettingsPreferences.");
 				DATA_FOLDER = new URL(System.getProperty("betaville.cache.location") + "/");
 				File cacheFile = new File(DATA_FOLDER.toURI());
 				if(!cacheFile.exists()){

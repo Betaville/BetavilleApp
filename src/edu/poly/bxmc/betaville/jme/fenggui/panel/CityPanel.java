@@ -271,7 +271,6 @@ public class CityPanel extends Window implements IBetavilleWindow{
 			}
 		});
 
-
 		SceneScape.addSelectionListener(new ISpatialSelectionListener() {
 			public void selectionCleared(Design previousDesign) {
 				delete.setEnabled(false);
