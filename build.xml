@@ -160,8 +160,8 @@
 				<attribute name="Codebase" value="*.metamagine.com"/>
 			</manifest>
 		
-			<!-- <copy file="webstart/montreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/> -->
-			<copy file="webstart/testdev.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>
+			<copy file="webstart/betaville.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>
+			<!-- <copy file="webstart/testdev.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/> -->
 
 			<jar destfile="BetavilleApp.jar"
 				basedir="bin/"
