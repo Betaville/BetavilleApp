@@ -157,7 +157,7 @@
 		 	<manifest file="MANIFEST.MF">
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Permissions" value="all-permissions"/>
-				<attribute name="Codebase" value="*.metamagine.com"/>
+				<attribute name="Codebase" value="*.betaville.net"/>
 			</manifest>
 		
 			<copy file="webstart/montreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>
