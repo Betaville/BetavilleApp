@@ -201,11 +201,11 @@ public class NetModelLoader{
 
 										//logger.info("Adding " + nodeList.size() + " objects");
 
-										for(Node node : nodeList){
+										for(int i = 0; i < nodeList.size(); i++){
 
-											SceneGameState.getInstance().getDesignNode().attachChild(node);
+											SceneGameState.getInstance().getDesignNode().attachChild(nodeList.get(i));
 
-											node.updateRenderState();
+											nodeList.get(i).updateRenderState();
 											itemsLoaded.incrementAndGet();
 											item.update(itemsLoaded.get());
 										}
