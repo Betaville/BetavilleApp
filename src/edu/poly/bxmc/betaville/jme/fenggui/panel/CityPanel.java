@@ -151,7 +151,7 @@ public class CityPanel extends Window implements IBetavilleWindow{
 		addAction(new OnOffPanelAction(Labels.get(DetailedInfoAction.class, "title"), "Details about the selected model", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, DetailedInfoAction.class, false));
 		addAction(new OnOffPanelAction(Labels.get(AddLayersWindow.class, "title"), "GIS Layers", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, AddLayersWindow.class, false));
 		addAction(new OnOffPanelAction(Labels.get(AdminCustomMoveSpeed.class, "title"), "Controls the speed of movement", AvailabilityRule.ALWAYS, UserType.MEMBER, false, AdminCustomMoveSpeed.class,false));
-		addAction(new OnOffPanelAction(Labels.get(CityPanel.class,  "tutorials"), "Learn some stuff!", AvailabilityRule.ALWAYS, UserType.MEMBER, true, TutorialWindow.class, false));
+		//addAction(new OnOffPanelAction(Labels.get(CityPanel.class,  "tutorials"), "Learn some stuff!", AvailabilityRule.ALWAYS, UserType.MEMBER, true, TutorialWindow.class, false));
 		//addAction(new OnOffPanelAction("Hierarchy Editor", "Stuff", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, HierarchyEditorWindow.class, false));
 		addAction(new OnOffPanelAction(Labels.get(MyLocationWindow.class, "title"), "Shows My Location!", AvailabilityRule.ALWAYS, UserType.MEMBER, false, MyLocationWindow.class, false));
 		//addAction(new OnOffPanelAction("Bookmarks", "Manage your bookmarks", AvailabilityRule.ALWAYS, UserType.MODERATOR, false, BookmarkWindow.class, false));
