@@ -25,6 +25,8 @@
 */
 package edu.poly.bxmc.betaville.jme.fenggui.panel;
 
+import java.text.DecimalFormat;
+
 import org.apache.log4j.Logger;
 import org.fenggui.CheckBox;
 import org.fenggui.Container;
@@ -68,10 +70,13 @@ import edu.poly.bxmc.betaville.module.ModuleNameException;
 public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	private static Logger logger = Logger.getLogger(AdminCustomMoveSpeed.class);
 	
-	private int targetWidth=300;
+	private int targetWidth=420;
 	private int targetHeight=80;
 	
+	private Container nextToEachOtherContainer;
+	
 	private Container speedContainer;
+	private Container rotateSpeedContainer;
 	
 	private AltitudeUpdater altitudeUpdater;
 	private GroundMagnet groundMagnet;
@@ -84,67 +89,71 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	private String labelPrefix = Labels.get(this.getClass().getSimpleName()+".move_speed")+": ";
 	private Slider speedSlider;
 	
-	private Container minMaxContainer;
-	
-	private Label minLabel;
-	private TextEditor speedMin;
-	
-	private Label maxLabel;
-	private TextEditor speedMax;
+	private int speedMin = 1;
+	private int speedMax = 500;
 	
 	private Label altitude;
 	private String altitudePrefix = Labels.get(this.getClass().getSimpleName()+".altitude")+": ";
 	
-	private CheckBox<Boolean> speedLock;
-	
 	private boolean speedIsSafe=true;
-	private boolean constantSpeed = false;
+	private boolean constantSpeed = true;
 	private int finalSpeed=500;
 	
 	public AdminCustomMoveSpeed(){
 		super(true, true);
 		getContentContainer().setLayoutManager(new RowExLayout(false));
 		
+		nextToEachOtherContainer = FengGUI.createWidget(Container.class);
+		nextToEachOtherContainer.setLayoutManager(new RowExLayout (true));
+		
+		rotateSpeedContainer = FengGUI.createWidget(Container.class);
+		rotateSpeedContainer.setLayoutManager(new StaticLayout());
+		rotateSpeedContainer.setWidth(targetWidth);
+		
 		rotateSpeedLabel = FengGUI.createWidget(Label.class);
 		rotateSpeedLabel.setText(rotateSpeedLabelPrefix);
-		
+		rotateSpeedLabel.setXY(0, 0);
+		rotateSpeedLabel.setHeight(40);
+		rotateSpeedLabel.setWidth(200);
+			
 		rotateSpeedSlider = FengGUI.createSlider(true);
+		rotateSpeedSlider.setWidth(180);
+		rotateSpeedSlider.setXY(10, 0);
 		rotateSpeedSlider.addSliderMovedListener(new ISliderMovedListener() {
 			
 			@Override
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
 				// The default rotate speed is .5f, so we can scale from 0f-1f by using the default slider range
 				SceneGameState.getInstance().getSceneController().setTurnSpeed((float)rotateSpeedSlider.getValue());
-				rotateSpeedLabel.setText(rotateSpeedLabelPrefix+(float)rotateSpeedSlider.getValue());
+				Double value = (double)rotateSpeedSlider.getValue();
+				DecimalFormat df = new DecimalFormat("##.###");
+				rotateSpeedLabel.setText(rotateSpeedLabelPrefix+df.format(value));
 			}
 		});
 		
 		speedContainer = FengGUI.createWidget(Container.class);
 		speedContainer.setLayoutManager(new StaticLayout());
-		speedContainer.setWidth(targetWidth-10);
+
 		
 		speedLabel = FengGUI.createWidget(Label.class);
 		speedLabel.setText(labelPrefix);
 		speedLabel.setXY(0, 0);
+		speedLabel.setHeight(40);
+		speedLabel.setWidth(200);
 		
 		speedSlider = FengGUI.createSlider(true);
-		speedSlider.setWidth(speedContainer.getWidth()/2);
-		speedSlider.setXY(speedContainer.getWidth()/2, 0);
+		speedSlider.setWidth(180);
+		speedSlider.setXY(10, 0);
+		
+
 		speedSlider.addSliderMovedListener(new ISliderMovedListener() {
 			
-
+	
+		
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
 				try {
-					if(speedIsSafe){
-						if(!verifyNumberValidity()){
-							FengUtils.showNewDismissableWindow("Betaville", "Maximum speed must be greater than minimum speed!", Labels.get("Generic.ok"), true);
-							return;
-						}
-					}
-					else verifyNumberValidity();
-					
 					int toAdd = (int) (speedSlider.getValue()*calculateRange());
-					finalSpeed = FengUtils.getNumber(speedMin)+toAdd;
+					finalSpeed = speedMin+toAdd;
 					if(verifyConstantSpeed()){
 						SceneGameState.getInstance().setMoveSpeed(Scale.fromMeter(finalSpeed));
 						
@@ -159,32 +168,16 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 		});
 		
 		speedContainer.setHeight(speedLabel.getHeight());
+     	speedContainer.setWidth(targetWidth);
 		speedContainer.addWidget(speedLabel, speedSlider);
 		
-		minMaxContainer = FengGUI.createWidget(Container.class);
-		minMaxContainer.setLayoutManager(new StaticLayout());
-		minMaxContainer.setWidth(targetWidth-10);
+		rotateSpeedContainer.setHeight(speedLabel.getHeight());
+     	rotateSpeedContainer.setWidth(targetWidth);
+		rotateSpeedContainer.addWidget(rotateSpeedLabel, rotateSpeedSlider);
 		
-		minLabel = FengGUI.createWidget(Label.class);
-		minLabel.setText(Labels.get(this.getClass().getSimpleName()+".slider_min"));
-		minLabel.setXY(0, 0);
+		nextToEachOtherContainer.setWidth(420);		
+		nextToEachOtherContainer.addWidget(rotateSpeedContainer, speedContainer);
 		
-		speedMin = FengGUI.createWidget(TextEditor.class);
-		speedMin.setText("1");
-		speedMin.setRestrict(TextEditor.RESTRICT_NUMBERSONLY);
-		speedMin.setXY(minLabel.getWidth()+10, 0);
-		
-		speedMax = FengGUI.createWidget(TextEditor.class);
-		speedMax.setText("500");
-		speedMax.setRestrict(TextEditor.RESTRICT_NUMBERSONLY);
-		speedMax.setXY(minMaxContainer.getWidth()-speedMax.getWidth(), 0);
-		
-		maxLabel = FengGUI.createWidget(Label.class);
-		maxLabel.setText(Labels.get(this.getClass().getSimpleName()+".slider_max"));
-		maxLabel.setXY(speedMax.getX()-maxLabel.getWidth()-10, 0);
-		
-		minMaxContainer.setHeight(speedMax.getHeight());
-		minMaxContainer.addWidget(minLabel, speedMin, speedMax, maxLabel);
 		
 		Container bottomContainer = FengGUI.createWidget(Container.class);
 		bottomContainer.setLayoutManager(new RowLayout(true));
@@ -192,30 +185,16 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 		altitude = FengGUI.createWidget(Label.class);
 		altitude.setText(altitudePrefix);
 		
-		speedLock = FengGUI.createCheckBox();
-		speedLock.setText(Labels.get(this.getClass().getSimpleName()+".speed_lock"));
-		speedLock.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(Object sender,
-					SelectionChangedEvent selectionChangedEvent) {
-				if(speedLock.isSelected()){
-					constantSpeed = true;
-					SceneGameState.getInstance().setConstantSpeed(true);
-					SceneGameState.getInstance().setMoveSpeed(Scale.fromMeter(finalSpeed));
-				}
-				else{
-					constantSpeed = false;
-					SceneGameState.getInstance().setConstantSpeed(false);
-				}
-			}
-		});
-		speedLock.setXY(getContentContainer().getWidth()-speedLock.getWidth(), altitude.getY());
+		SceneGameState.getInstance().setConstantSpeed(true);
+		SceneGameState.getInstance().setMoveSpeed(Scale.fromMeter(finalSpeed));
 		
-		bottomContainer.addWidget(altitude, speedLock);
+		bottomContainer.addWidget(altitude);
 		
-		getContentContainer().addWidget(rotateSpeedLabel, rotateSpeedSlider, speedContainer, minMaxContainer, bottomContainer);
+		getContentContainer().addWidget(nextToEachOtherContainer, bottomContainer);
 		
 		try {
 			speedSlider.setValue(calculateRange()/SceneGameState.getInstance().getSceneController().getMoveSpeed());
+			rotateSpeedSlider.setValue(SceneGameState.getInstance().getSceneController().getTurnSpeed());
 		} catch (FengTextContentException e) {
 			// SHOW ERROR!
 			logger.error("Bad Value Given", e);
@@ -243,10 +222,7 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	 * @return true of the maximum speed is larger; false if not
 	 * @throws FengTextContentException 
 	 */
-	private boolean verifyNumberValidity() throws FengTextContentException{
-		speedIsSafe=FengUtils.getNumber(speedMax)>FengUtils.getNumber(speedMin);
-		return speedIsSafe;
-	}
+
 	public boolean verifyConstantSpeed(){
 		return constantSpeed;
 	}
@@ -276,7 +252,7 @@ public class AdminCustomMoveSpeed extends Window implements IBetavilleWindow{
 	}
 	
 	private int calculateRange() throws FengTextContentException{
-		return FengUtils.getNumber(speedMax)-FengUtils.getNumber(speedMin);
+		return speedMax-speedMin;
 	}
 	
 	private class GroundMagnet extends Module implements GlobalSceneModule{
