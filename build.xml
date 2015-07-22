@@ -157,10 +157,12 @@
 		 	<manifest file="MANIFEST.MF">
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Permissions" value="all-permissions"/>
-				<attribute name="Codebase" value="*.betaville.net"/>
+				<!-- <attribute name="Codebase" value="*.betaville.net"/> -->
+				<attribute name="Codebase" value="*.betamontreal.net"/> 
 			</manifest>
 		
-			<copy file="webstart/montreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>
+			<copy file="webstart/betamontreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>
+			<!-- <copy file="webstart/montreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/> -->
 			<!-- <copy file="webstart/testdev.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/> -->
 
 			<jar destfile="BetavilleApp.jar"
@@ -176,6 +178,7 @@
 			/>
 			 <delete file="MANIFEST.MF"/>
 	</target>
+	
 	<target name="sign-jars" depends="jar" description="sign JARs for JNLP distribution">
 	    <signjar jar="BetavilleApp.jar"									alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
 	    <signjar jar="BetavilleData.jar"								alias="${alias}" storepass="${keypass}" keystore="${keystore}" tsaurl="http://timestamp.digicert.com"/>
