@@ -171,6 +171,7 @@
 				manifest="MANIFEST.MF"
 			/>
 		
+		
 			<jar destfile="BetavilleData.jar"
 				basedir="./"
 				includes="data/**"
