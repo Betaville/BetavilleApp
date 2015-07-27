@@ -157,12 +157,12 @@
 		 	<manifest file="MANIFEST.MF">
 				<attribute name="Built-By" value="${user.name}"/>
 				<attribute name="Permissions" value="all-permissions"/>
-				<attribute name="Codebase" value="*.betaville.net"/> 
-				<!-- <attribute name="Codebase" value="*.betamontreal.net"/> --> 
+				<!-- <attribute name="Codebase" value="*.betaville.net"/> --> 
+				<attribute name="Codebase" value="*.betamontreal.net"/>  
 			</manifest>
 		
-			<!-- <copy file="webstart/betamontreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/> -->
-			<copy file="webstart/betaville.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>
+			<copy file="webstart/betamontreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/>
+			<!-- <copy file="webstart/betaville.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/> -->
 			<!-- <copy file="webstart/montreal.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/> -->
 			<!-- <copy file="webstart/testdev.jnlp" tofile="src/JNLP-INF/APPLICATION.JNLP"/> -->
 
