@@ -64,8 +64,10 @@ public class UpdatedPreferenceWriter {
 		if(System.getProperty("betaville.cache.size")==null) System.setProperty("betaville.cache.size", "300");
 		
 		// manually changing for demo 
-		//if(System.getProperty("betaville.server")==null)System.setProperty("betaville.server", "208.64.38.157");
-		if(System.getProperty("betaville.server")==null)System.setProperty("betaville.server", "master.betaville.net");
+		// if(System.getProperty("betaville.server")==null)System.setProperty("betaville.server", "208.64.38.157");
+		// if(System.getProperty("betaville.server")==null)System.setProperty("betaville.server", "master.betaville.net");
+		if(System.getProperty("betaville.server")==null)System.setProperty("betaville.server", "betamontreal.net");
+
 		
 		if(System.getProperty("betaville.startup.showsettings")==null) System.setProperty("betaville.startup.showsettings", "true");
 		if(System.getProperty("betaville.startup.city")==null) System.setProperty("betaville.startup.city", "2");
