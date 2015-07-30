@@ -76,7 +76,7 @@ public class QuickBuilder extends PanelAction {
 					public void run() {
 						try {
 							
-							UTMCoordinate[] box = JME2MapManager.createBox(2500, 2500, SquareCorner.CENTER,
+							UTMCoordinate[] box = JME2MapManager.createBox(1500, 1500, SquareCorner.CENTER,
 									JME2MapManager.instance.betavilleToUTM(SceneGameState.getInstance().getCamera().getLocation()));
 							
 							GPSCoordinate bottomLeft = box[2].getGPS();
