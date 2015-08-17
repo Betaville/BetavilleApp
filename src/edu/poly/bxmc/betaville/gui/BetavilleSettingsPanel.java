@@ -314,6 +314,10 @@ public class BetavilleSettingsPanel extends JFrame{
 			resolutions.add(new Dimension(2560,1440));
 			resolutions.add(new Dimension(2560,1600));
 		}
+		
+		// Add square resolution(s)
+		resolutions.add(new Dimension(1024, 1024));
+		resolutions.add(new Dimension(2048, 2048));
 
 		// take out resolutions larger than the screen
 		Iterator<Dimension> it = resolutions.iterator();
