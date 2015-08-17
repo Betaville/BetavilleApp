@@ -81,7 +81,7 @@ public class RGBContainer extends Container {
 		rS.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
-				rL.setText(Labels.get(this.getClass().getSimpleName()+".red")+": " + (int)(rS.getValue()*255));
+				rL.setText(Labels.get(RGBContainer.class.getSimpleName()+".red")+": " + (int)(rS.getValue()*255));
 				color.r=(float) rS.getValue();
 				apply();
 			}
@@ -98,7 +98,7 @@ public class RGBContainer extends Container {
 		gS.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
-				gL.setText(Labels.get(this.getClass().getSimpleName()+".green")+": " + (int)(gS.getValue()*255));
+				gL.setText(Labels.get(RGBContainer.class.getSimpleName()+".green")+": " + (int)(gS.getValue()*255));
 				color.g=(float) gS.getValue();
 				apply();
 			}
@@ -115,7 +115,7 @@ public class RGBContainer extends Container {
 		bS.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
-				bL.setText(Labels.get(this.getClass().getSimpleName()+".blue")+": " + (int)(bS.getValue()*255));
+				bL.setText(Labels.get(RGBContainer.class.getSimpleName()+".blue")+": " + (int)(bS.getValue()*255));
 				color.b=(float) bS.getValue();
 				apply();
 			}
