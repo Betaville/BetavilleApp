@@ -916,7 +916,7 @@ public class NewProposalWindow extends Window implements IBetavilleWindow{
 				}
 
 				if(coordinate!=null){
-					boolean textured = textureSelector.getSelectedValue().equals("Textured");
+					boolean textured = textureSelector.getSelectedValue().equals(Labels.get(NewProposalWindow.class, "textures_on"));
 
 					// create a design from the supplied information, it will initialize with an ID and sourceID of zero
 					designCreatedInThisWindow = new ModeledDesign(title, coordinate, address, SettingsPreferences.getCity().getCityID(), SettingsPreferences.getUser(), description, mediaURL.toString(), url, true, 0, 0, 0, textured);
