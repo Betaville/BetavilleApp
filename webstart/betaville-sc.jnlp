@@ -110,6 +110,8 @@
     <nativelib href="linux-native.jar"/>
   </resources>
 
-  <application-desc main-class="edu.poly.bxmc.betaville.jme.BetavilleNoCanvas" />
+  <application-desc main-class="edu.poly.bxmc.betaville.jme.BetavilleNoCanvas"> 
+    <argument>sc</argument>
+  </application-desc>
   <component-desc/>
 </jnlp>

@@ -36,6 +36,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -265,15 +266,6 @@ public class BetavilleSettingsPanel extends JFrame{
 				resolutions.add(new Dimension(1680,1050));
 				resolutions.add(new Dimension(1920,1200));
 				resolutions.add(new Dimension(2560,1600));
-
-				// take out resolutions larger than the screen
-				for(int i=0; i<resolutions.size(); i++){
-					if(resolutions.get(i).getWidth() > Toolkit.getDefaultToolkit().getScreenSize().getWidth() ||
-							resolutions.get(i).getHeight() > Toolkit.getDefaultToolkit().getScreenSize().getHeight()){
-						resolutions.remove(i);
-						i--;
-					}
-				}
 			}
 			else if(((Toolkit.getDefaultToolkit().getScreenSize().getWidth()/Toolkit.getDefaultToolkit().getScreenSize().getHeight())>1.6) &&
 					((Toolkit.getDefaultToolkit().getScreenSize().getWidth()/Toolkit.getDefaultToolkit().getScreenSize().getHeight())<1.95)){
@@ -285,15 +277,6 @@ public class BetavilleSettingsPanel extends JFrame{
 				resolutions.add(new Dimension(1920,1080));
 				resolutions.add(new Dimension(2048,1152));
 				resolutions.add(new Dimension(2560,1440));
-
-				// take out resolutions larger than the screen
-				for(int i=0; i<resolutions.size(); i++){
-					if(resolutions.get(i).getWidth() > Toolkit.getDefaultToolkit().getScreenSize().getWidth() ||
-							resolutions.get(i).getHeight() > Toolkit.getDefaultToolkit().getScreenSize().getHeight()){
-						resolutions.remove(i);
-						i--;
-					}
-				}
 			}
 			else if(((Toolkit.getDefaultToolkit().getScreenSize().getWidth()/Toolkit.getDefaultToolkit().getScreenSize().getHeight())>1.3) &&
 					((Toolkit.getDefaultToolkit().getScreenSize().getWidth()/Toolkit.getDefaultToolkit().getScreenSize().getHeight())<1.4) ||
@@ -331,13 +314,18 @@ public class BetavilleSettingsPanel extends JFrame{
 			resolutions.add(new Dimension(2560,1440));
 			resolutions.add(new Dimension(2560,1600));
 		}
+		
+		// Add square resolution(s)
+		resolutions.add(new Dimension(1024, 1024));
+		resolutions.add(new Dimension(2048, 2048));
 
 		// take out resolutions larger than the screen
-		for(int i=0; i<resolutions.size(); i++){
-			if(resolutions.get(i).getWidth() > Toolkit.getDefaultToolkit().getScreenSize().getWidth() ||
-					resolutions.get(i).getHeight() > Toolkit.getDefaultToolkit().getScreenSize().getHeight()){
-				resolutions.remove(i);
-				i--;
+		Iterator<Dimension> it = resolutions.iterator();
+		while(it.hasNext()){
+			Dimension d = it.next();
+			if(d.getWidth() > Toolkit.getDefaultToolkit().getScreenSize().getWidth() ||
+					d.getHeight() > Toolkit.getDefaultToolkit().getScreenSize().getHeight()){
+				it.remove();
 			}
 		}
 

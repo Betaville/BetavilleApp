@@ -63,7 +63,7 @@ public class RGBAContainer extends RGBContainer {
 		aS.addSliderMovedListener(new ISliderMovedListener() {
 			
 			public void sliderMoved(SliderMovedEvent sliderMovedEvent) {
-				aL.setText(Labels.get(this.getClass().getSimpleName()+".alpha")+": " + (int)(aS.getValue()*255));
+				aL.setText(Labels.get(RGBAContainer.class.getSimpleName()+".alpha")+": " + (int)(aS.getValue()*255));
 				color.r=(float) aS.getValue();
 				apply();
 			}

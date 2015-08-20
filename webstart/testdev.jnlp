@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp spec="1.0+"
-      codebase="http://betaville.net/webstart"
-      href="betaville.jnlp">
- 
+      codebase="http://testdev.metamagine.com/webstart"
+      href="testdev.jnlp">
+    
   <information>
     <title>Betaville</title>
     <vendor>Gotham Innovation Greenhouse</vendor>
-    <homepage href="http://betaville.net"/>
+    <homepage href="http://testdev.metamagine.com/wordpress"/>
     <description>Every living city is in Beta.</description>
     <icon kind="splash" href="http://betaville.net/webstart/BetavilleLogoColor.gif"/> 
     <icon href="http://betaville.net/webstart/BetavilleAppIcon.gif"/> 

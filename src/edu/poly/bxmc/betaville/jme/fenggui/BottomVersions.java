@@ -234,12 +234,15 @@ public class BottomVersions extends Window {
 			thumbnail.getAppearance().setEnabled("default", true);
 		}
 
-		/*
+		
 		SettingsPreferences.getGUIThreadPool().submit(new Runnable() {
 			public void run() {
 				logger.info("Looking for thumbnail for design " + versionDesign.getID());
-				if(CacheManager.getCacheManager().requestThumbnail(versionDesign.getID())){
-					try {
+				
+				try {
+				
+					if(CacheManager.getCacheManager().requestThumbnail(versionDesign.getID())){
+					
 						Label netnail = FengGUI.createWidget(Label.class);
 						netnail.setSize(105, 70);
 						netnail.setXY(5, 0);
@@ -255,13 +258,13 @@ public class BottomVersions extends Window {
 						thumbnail.getAppearance().removeAll();
 						clickableContainer.addWidget(netnail);
 						logger.info("netnail added to widget tree");
-					} catch (IOException e) {
-						logger.error("Could not load the thumbnail image for the proposal, using default image", e);
 					}
+				} catch (IOException e) {
+					logger.error("Could not load the thumbnail image for the proposal, using default image", e);
 				}
 			}
 		});
-		*/
+		
 
 		
 		Label name = FengGUI.createWidget(Label.class);
