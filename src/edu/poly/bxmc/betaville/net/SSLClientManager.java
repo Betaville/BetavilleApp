@@ -64,7 +64,7 @@ public class SSLClientManager extends SecureClientManager{
 	/**
 	 * Constant <PORT_SERVER> - Port of the server
 	 */
-	private final int PORT_SERVER = 14501;
+	private final int PORT_SERVER = 31501;
 
 	private char[] keyStorePass = "123456".toCharArray();
 	private char[] trustStorePass = keyStorePass;

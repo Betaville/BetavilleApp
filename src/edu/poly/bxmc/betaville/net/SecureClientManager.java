@@ -54,7 +54,7 @@ public class SecureClientManager extends ClientManager implements ProtectedManag
 	/**
 	 * Constant <PORT_SERVER> - Port of the server
 	 */
-	private final int PORT_SERVER = 14500;
+	private final int PORT_SERVER = 31500;
 
 	/**
 	 * Constructor - Creation of the client manager
